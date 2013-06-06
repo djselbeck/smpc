@@ -1,0 +1,48 @@
+import QtQuick 1.1
+import Sailfish.Silica 1.0
+import "../components"
+
+Page
+{
+    id: settingsPage;
+    SilicaListView {
+        anchors.fill: parent
+        contentWidth: width
+        header: Heading
+        {
+            anchors.left: parent.left;
+            anchors.right: parent.right;
+            text: qsTr("settings")
+        }
+        model: mainMenuModel
+        delegate: BackgroundItem {
+            Label {
+                anchors.centerIn: parent
+                text: name
+            }
+            onClicked: {
+                parseClickedSettings(ident);
+            }
+        }
+    }
+
+
+    ListModel {
+        id: mainMenuModel
+        ListElement { name: "Server settings"; ident:"servers"; icon:"icons/music.svg" }
+        ListElement { name: "Outputs"; ident:"outputs"; icon:"icons/music.svg" }
+        ListElement { name: "About"; ident:"about"; icon:"icons/music.svg" }
+    }
+
+    function parseClickedSettings(ident)
+    {
+        switch (ident) {
+        case "about" :
+            pageStack.push(Qt.resolvedUrl("AboutPage.qml"));
+            break;
+        case "servers" :
+            pageStack.push(Qt.resolvedUrl("ServerListPage.qml"));
+            break;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=jollampc
+Icon=icon-launcher-gallery
+Exec=invoker --type=j -s /opt/sdk/bin/jollampc
+Comment=Sailfish UI application
+
+
