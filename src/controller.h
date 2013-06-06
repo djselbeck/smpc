@@ -111,7 +111,7 @@ private slots:
     void setPort(int port);
     void connectToServer();
     void quit();
-    void newProfile();
+    void newProfile(QVariant profile);
     void changeProfile(QVariant profile);
     void deleteProfile(int index);
     void connectProfile(int index);

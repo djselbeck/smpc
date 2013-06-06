@@ -5,6 +5,7 @@ import "../components"
 Page
 {
     id: serverListPage
+    property alias listmodel: serverListView.model;
     SilicaListView {
             id : serverListView
             anchors.fill: parent

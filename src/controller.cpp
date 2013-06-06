@@ -26,6 +26,7 @@ Controller::Controller(QDeclarativeView *viewer,QObject *parent) : QObject(paren
     readSettings();
     qmlRegisterType<MpdArtist>();
     qmlRegisterType<MpdAlbum>();
+    qmlRegisterType<ServerProfile>();
     volIncTimer.setInterval(250);
     volDecTimer.setInterval(250);
     filemodels = new QStack<QList<QObject*>*>();
@@ -210,7 +211,7 @@ void Controller::connectSignals()
     connect(netaccess,SIGNAL(statusUpdate(status_struct)),this,SLOT(updateStatus(status_struct)));
     connect(netaccess,SIGNAL(busy()),item,SIGNAL(busy()));
     connect(netaccess,SIGNAL(ready()),item,SIGNAL(ready()));
-    connect(item,SIGNAL(newProfile()),this,SLOT(newProfile()));
+    connect(item,SIGNAL(newProfile(QVariant)),this,SLOT(newProfile(QVariant)));
     connect(item,SIGNAL(changeProfile(QVariant)),this,SLOT(changeProfile(QVariant)));
     connect(item,SIGNAL(deleteProfile(int)),this,SLOT(deleteProfile(int)));
     connect(item,SIGNAL(connectProfile(int)),this,SLOT(connectProfile(int)));
@@ -489,11 +490,40 @@ void Controller::exitRequest()
     exit(0);
 }
 
-void Controller::newProfile()
+//void Controller::newProfile()
+//{
+//    serverprofiles->append(new ServerProfile("","",6600,"Profile_"+QString::number(serverprofiles->length()),false));
+//    viewer->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)serverprofiles));
+//    emit serverProfilesUpdated();
+//}
+
+void Controller::newProfile(QVariant profile)
 {
-    serverprofiles->append(new ServerProfile("","",6600,"Profile_"+QString::number(serverprofiles->length()),false));
+    QStringList strings = profile.toStringList();
+    QString hostname,password, profilename;
+    hostname = strings[2];
+    password = strings[3];
+    profilename = strings[1];
+    int port = strings.at(4).toInt();
+    bool autoconnect;
+    if(strings.at(5).toInt()==1) {
+        //Check for other autoconnects
+        CommonDebug("New auto connect profile");
+        for(int j = 0; j<serverprofiles->length();j++)
+        {
+            serverprofiles->at(j)->setAutoconnect(false);
+        }
+        autoconnect = true;
+    }
+    else{
+        autoconnect = false;
+    }
+    ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
+    serverprofiles->append(tempprofile);
+    CommonDebug("Profiles length:"+QString::number(serverprofiles->length()));
     viewer->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)serverprofiles));
     emit serverProfilesUpdated();
+    writeSettings();
 }
 
 void Controller::changeProfile(QVariant profile)

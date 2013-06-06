@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
-
+import "../components"
 
 Page
 {
@@ -9,6 +9,11 @@ Page
     {
         anchors.fill: parent
         id: contentColumn;
+        Heading {
+            anchors.right: parent.right
+            anchors.left: parent.left
+            text: qsTr("about");
+        }
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
