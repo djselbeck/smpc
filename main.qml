@@ -184,7 +184,7 @@ ApplicationWindow
         function filesClicked(path)
         {
             lastpath = path;
-            window.requestFilesPage(path);
+            requestFilesPage(path);
         }
 
         function updatePlaylist()
@@ -195,18 +195,16 @@ ApplicationWindow
         }
 
         function updateAlbumsModel(){
-            pageStack.push(Qt.resolvedUrl("AlbumPage.qml"),{listmodel:albumsModel,artistname:artistname});
-            infobanner.close();
+            pageStack.push(Qt.resolvedUrl("pages/AlbumListPage.qml"),{listmodel:albumsModel,artistname:artistname});
         }
 
         function updateArtistModel(){
-            pageStack.push(Qt.resolvedUrl("ArtistPage.qml"),{listmodel:artistsModel});
-            infobanner.close();
+            pageStack.push(Qt.resolvedUrl("pages/ArtistListPage.qml"),{listmodel:artistsModel});
         }
 
         function updateAlbumModel()
         {
-            pageStack.push(Qt.resolvedUrl("AlbumSongPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
+            pageStack.push(Qt.resolvedUrl("pages/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
         }
 
         function updateOutputsModel()
@@ -216,7 +214,7 @@ ApplicationWindow
 
         function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
         {
-            pageStack.push(Qt.resolvedUrl("SongPage.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
+            pageStack.push(Qt.resolvedUrl("pages/SongPage.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
         }
 
 
@@ -226,9 +224,7 @@ ApplicationWindow
 
         function receiveFilesPage()
         {
-            infobanner.close();
-            pageStack.push(Qt.resolvedUrl("FilesPage.qml"), {listmodel: filesModel,filepath :lastpath});
-
+            pageStack.push(Qt.resolvedUrl("pages/FileBrowserPage.qml"), {listmodel: filesModel,filepath :lastpath});
         }
 
         function formatLength(length)
@@ -258,9 +254,9 @@ ApplicationWindow
 
         function albumClicked(artist,albumstring)
         {
-            window.requestAlbum([artist,albumstring]);
+            requestAlbum([artist,albumstring]);
             artistname = artist;
-            this.albumname = albumstring;
+            albumname = albumstring;
         }
 
         function artistalbumClicked(artist, album)
@@ -300,12 +296,12 @@ ApplicationWindow
                 else if(ident=="albums"){
                     artistname = "";
                     if(connected)
-                        window.requestAlbums();
+                        requestAlbums();
 
                 }
                 else if(ident=="artists"){
                     if(connected)
-                        window.requestArtists();
+                        requestArtists();
 
                 }
                 else if(ident=="files"){
@@ -332,8 +328,8 @@ ApplicationWindow
 
         function artistClicked(item)
         {
-            this.artistname = item;
-            window.requestArtistAlbums(item);
+            artistname = item;
+            requestArtistAlbums(item);
         }
         function updateSearchedModel()
         {

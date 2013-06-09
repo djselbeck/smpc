@@ -14,7 +14,7 @@ Page
             header: PageHeader {
                 title: qsTr("playlist");
             }
-            PushUpMenu {
+            PullDownMenu {
                 MenuItem {
                     text: qsTr("delete playlist")
                     onClicked: {
