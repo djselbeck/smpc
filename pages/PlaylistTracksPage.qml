@@ -4,28 +4,28 @@ import "../components"
 
 Page
 {
-    id: albumTracksPage
-    property alias listmodel: albumTracksListView.model;
-    property string albumname;
-    property string artistname;
+    id: playlistTracksPage
+    property alias listmodel: playlistTracksListView.model;
+    property string playlistname;
     SilicaListView {
-            id : albumTracksListView
+            id : playlistTracksListView
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
-                title: albumname;
+                title: playlistname;
             }
             PullDownMenu {
                 MenuItem {
-                    text: qsTr("add album")
+                    text: qsTr("delete list")
                     onClicked: {
-                        addAlbum([artistname,albumname]);
+                        deleteSavedPlaylistQuestion.playlistname = playlistname;
+                        pageStack.openDialog(deleteSavedPlaylistQuestion);
                     }
              }
                 MenuItem {
-                    text: qsTr("play album")
+                    text: qsTr("add list")
                     onClicked: {
-                        playAlbum([artistname,albumname]);
+                        addPlaylist(playlistname)
                     }
              }
             }
@@ -49,6 +49,30 @@ Page
                     albumTrackClicked(title,album,artist,lengthformated,uri,year,tracknr);
                 }
             }
+    }
+    Dialog
+    {
+        id: deleteSavedPlaylistQuestion
+        property string playlistname;
+        Column {
+            width: parent.width
+            spacing: 10
+            anchors.margins: theme.paddingMedium
+            DialogHeader {
+                acceptText: qsTr("delete playlist");
+            }
+            Label {
+                text: qsTr("really delete playlist?")
+             }
+        }
+        onDone: {
+            if ( result == DialogResult.Accepted)
+            {
+                deleteSavedPlaylist(playlistname);
+                pageStack.clear();
+                pageStack.push(initialPage);
+            }
+        }
     }
 
 }

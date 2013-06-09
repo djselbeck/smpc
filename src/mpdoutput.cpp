@@ -7,3 +7,9 @@ MPDOutput::MPDOutput(QString name, bool enabled, int id, QObject *parent) :
     mEnabled = enabled;
     mID = id;
 }
+
+void MPDOutput::setEnabled(bool en)
+{
+    mEnabled = en;
+    emit activechanged();
+}

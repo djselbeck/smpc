@@ -27,6 +27,12 @@ Page
                         pageStack.openDialog(saveplaylistDialog);
                     }
              }
+                MenuItem {
+                    text: qsTr("open playlist")
+                    onClicked: {
+                        requestSavedPlaylists();
+                    }
+             }
             }
             delegate: BackgroundItem {
 

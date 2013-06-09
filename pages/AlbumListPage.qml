@@ -22,6 +22,13 @@ Page
                         addArtist(artistname);
                     }
              }
+                MenuItem {
+                    text: qsTr("play albums")
+                    visible: artistname === "" ? false : true;
+                    onClicked: {
+                        playArtist(artistname);
+                    }
+             }
             }
             delegate: BackgroundItem {
                 Column{

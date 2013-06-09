@@ -42,6 +42,9 @@ Page
             //pageStack.push(Qt.resolvedUrl("ServerListPage.qml"));
             pageStack.push(serverList);
             break;
+        case "outputs" :
+            requestOutputs();
+            break;
         }
     }
 }

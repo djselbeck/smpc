@@ -168,17 +168,17 @@ ApplicationWindow
         function savedPlaylistClicked(modelData)
         {
             playlistname = modelData;
-            window.requestSavedPlaylist(modelData);
+            requestSavedPlaylist(modelData);
         }
 
         function updateSavedPlaylistModel()
         {
-            pageStack.push(Qt.resolvedUrl("SavedPlaylistTracks.qml"),{listmodel:savedPlaylistModel,playlistname:playlistname});
+            pageStack.push(Qt.resolvedUrl("pages/PlaylistTracksPage.qml"),{listmodel:savedPlaylistModel,playlistname:playlistname});
         }
 
         function updateSavedPlaylistsModel()
         {
-            pageStack.push(Qt.resolvedUrl("SavedPlaylistsPage.qml"),{listmodel:savedPlaylistsModel});
+            pageStack.push(Qt.resolvedUrl("pages/SavedPlaylistsPage.qml"),{listmodel:savedPlaylistsModel});
         }
 
         function filesClicked(path)
@@ -209,7 +209,7 @@ ApplicationWindow
 
         function updateOutputsModel()
         {
-            pageStack.push(Qt.resolvedUrl("OutputList.qml"),{listmodel:outputsModel});
+            pageStack.push(Qt.resolvedUrl("pages/OutputsPage.qml"),{listmodel:outputsModel});
         }
 
         function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
