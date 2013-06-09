@@ -2,6 +2,7 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 import "pages"
 
+
 ApplicationWindow
 {
     id: mainWindow
@@ -79,6 +80,7 @@ ApplicationWindow
        property int liststretch:20;
        property int lastsongid:-1;
        property string playbuttoniconsource;
+       property string playbuttoniconsourcecover;
        property string volumebuttoniconsource;
        property string lastpath;
        property string artistname;
@@ -142,16 +144,17 @@ ApplicationWindow
                 currentsongpage.position = list[3];
             }
             currentsongpage.length = list[4];
-            currentsongpage.lengthtextcurrent = formatLength(list[3]);
+            //currentsongpage.lengthtextcurrent = formatLength(list[3]);
             currentsongpage.lengthtextcomplete = list[4]==0 ? "": formatLength(list[4]);
             currentsongpage.bitrate = list[5]+"kbps";
-            playbuttoniconsource = (list[6]=="playing") ? "toolbar-mediacontrol-pause" : "toolbar-mediacontrol-play";
+            playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-m-pause" : "image://theme/icon-m-play";
+            playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
             playing = (list[6]=="playing") ? true : false;
-//            if(volumeslider.pressed===false){
-//                volumeslider.value = list[7];
-//            }
-//            currentsongpage.repeat = (list[8]=="0" ?  false:true);
-//            currentsongpage.shuffle = (list[9]=="0" ?  false:true);
+            if(currentsongpage.volumepressed===false){
+                currentsongpage.volume = list[7];
+            }
+            currentsongpage.repeat = (list[8]=="0" ?  false:true);
+            currentsongpage.shuffle = (list[9]=="0" ?  false:true);
             currentsongpage.nr = (list[10]===0? "":list[10]);
             currentsongpage.uri = list[11];
             if(list[12]!=lastsongid)
@@ -352,8 +355,6 @@ ApplicationWindow
                    currentsongpage = object;
             console.debug("currentsong Page created");
             }
-
-
 
 
     initialPage: MainPage { }

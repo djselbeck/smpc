@@ -10,7 +10,6 @@ Page
     SilicaListView {
             id : playlistView
             anchors.fill: parent
-            anchors.margins: theme.paddingLarge
             contentWidth: width
             header: PageHeader {
                 title: qsTr("playlist");
@@ -30,7 +29,9 @@ Page
              }
             }
             delegate: BackgroundItem {
+
                 Column{
+                    x : theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
                         Row{
                             Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
@@ -65,7 +66,7 @@ Page
     Dialog
     {
         id: deleteQuestionDialog
-        sourceComponent: Column {
+        Column {
             width: parent.width
             spacing: 10
             anchors.margins: theme.paddingMedium
@@ -87,7 +88,7 @@ Page
     Dialog
     {
         id: saveplaylistDialog
-        sourceComponent: Column {
+            Column {
             width: parent.width
             spacing: 10
             anchors.margins: theme.paddingMedium
@@ -100,15 +101,17 @@ Page
         TextField
         {
             id: playlistNameField
+            width: parent.width
             placeholderText: qsTr("input playlist name")
         }
         }
         onDone: {
             if ( result == DialogResult.Accepted)
             {
+                console.debug("Saving playlist: " + playlistNameField.text);
                 savePlaylist(playlistNameField.text);
             }
-            playlistNameField.text="";
+            playlistNameField.text = "";
         }
     }
 

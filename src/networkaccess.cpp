@@ -370,7 +370,7 @@ status_struct NetworkAccess::getStatus()
         QString title;
         QString album;
         QString artist;
-        QString bitrate;
+        QString bitrate = "";
 
         qint32 percentage;
         quint32 playlistid=-1;
@@ -391,9 +391,9 @@ status_struct NetworkAccess::getStatus()
         bool repeat=false;
         bool random=false;
         quint8 volume = 0;
-        quint8 bitdepth;
-        quint16 samplerate;
-        quint8 channelcount;
+        quint8 bitdepth = 0;
+        quint16 samplerate = 0;
+        quint8 channelcount = 0;
 
         outstream << "status" << endl;
         while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))

@@ -2,13 +2,17 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 
 Rectangle {
+    id: coverpage
     anchors.fill: parent
-    color: "black"
+    opacity: 0.5
+    color: theme.secondaryColor
     
     Label {
         id: label
         anchors.centerIn: parent
-        text: "My Cover"
+        opacity:1
+        z:1
+        text: "JollaMPC"
     }
     
     CoverActionList {
@@ -16,10 +20,12 @@ Rectangle {
         
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
+            onTriggered: next();
         }
         
         CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
+            iconSource: playbuttoniconsourcecover//"image://theme/icon-cover-pause"
+            onTriggered: play();
         }
     }
 }
