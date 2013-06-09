@@ -109,23 +109,23 @@ ApplicationWindow
 
         function busy()
         {
-            playlistbusyindicator.running=true;
+            /*playlistbusyindicator.running=true;
             playlistbusyindicator.visible=true;
-            blockinteraction.enabled=true;
+            blockinteraction.enabled=true;*/
         }
 
         function ready()
         {
-            playlistbusyindicator.running=false;
-            playlistbusyindicator.visible=false;
-            blockinteraction.enabled=false;
+//            playlistbusyindicator.running=false;
+//            playlistbusyindicator.visible=false;
+//            blockinteraction.enabled=false;
         }
 
         function settingsModelUpdated()
         {
             console.debug("Got new server list");
             serverList.listmodel = settingsModel;
-            selectserverdialog.model = settingsModel;
+            //selectserverdialog.model = settingsModel;
         }
 
         function showWelcome()
@@ -147,11 +147,11 @@ ApplicationWindow
             currentsongpage.bitrate = list[5]+"kbps";
             playbuttoniconsource = (list[6]=="playing") ? "toolbar-mediacontrol-pause" : "toolbar-mediacontrol-play";
             playing = (list[6]=="playing") ? true : false;
-            if(volumeslider.pressed===false){
-                volumeslider.value = list[7];
-            }
-            currentsongpage.repeat = (list[8]=="0" ?  false:true);
-            currentsongpage.shuffle = (list[9]=="0" ?  false:true);
+//            if(volumeslider.pressed===false){
+//                volumeslider.value = list[7];
+//            }
+//            currentsongpage.repeat = (list[8]=="0" ?  false:true);
+//            currentsongpage.shuffle = (list[9]=="0" ?  false:true);
             currentsongpage.nr = (list[10]===0? "":list[10]);
             currentsongpage.uri = list[11];
             if(list[12]!=lastsongid)
@@ -186,8 +186,9 @@ ApplicationWindow
 
         function updatePlaylist()
         {
-            blockinteraction.enabled=false;
+          //  blockinteraction.enabled=false;
             playlistpage.listmodel = playlistModel;
+            console.debug("received new playlist and set model");
         }
 
         function updateAlbumsModel(){
@@ -268,13 +269,13 @@ ApplicationWindow
 
         function slotShowPopup(string)
         {
-            infobanner.text=string;
-            infobanner.open();
+            //infobanner.text=string;
+            //infobanner.open();
         }
 
         function parseClickedPlaylist(index)
         {
-            window.playPlaylistTrack(index);
+            playPlaylistTrack(index);
         }
         function parseClicked(ident)
         {
@@ -291,6 +292,7 @@ ApplicationWindow
                 else if(ident=="currentsong"){
                     if(connected)
                         pageStack.push(currentsongpage);
+//                        pageStack.push(Qt.resolvedUrl("pages/CurrentSong.qml"));
                 }
                 else if(ident=="albums"){
                     artistname = "";
@@ -341,6 +343,14 @@ ApplicationWindow
                 var object = component.createObject(mainWindow);
                 mainWindow.serverList = object;
             console.debug("ServerListPage created");
+            component = Qt.createComponent("pages/CurrentPlaylistPage.qml");
+            object = component.createObject(mainWindow);
+            mainWindow.playlistpage = object;
+        console.debug("PlaylistPage created");
+            component = Qt.createComponent("pages/CurrentSong.qml");
+                   object = component.createObject(mainWindow);
+                   currentsongpage = object;
+            console.debug("currentsong Page created");
             }
 
 

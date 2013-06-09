@@ -9,10 +9,8 @@ Page
     {
         anchors.fill: parent
         id: contentColumn;
-        Heading {
-            anchors.right: parent.right
-            anchors.left: parent.left
-            text: qsTr("about");
+        PageHeader {
+            title: qsTr("about");
         }
         Label
         {
@@ -23,7 +21,7 @@ Page
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:"Hendrik Borghorst"
+            text:"© by Hendrik Borghorst"
             font.pixelSize: theme.fontSizeMedium
         }
         Label

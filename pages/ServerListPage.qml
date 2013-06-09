@@ -11,11 +11,8 @@ Page
             anchors.fill: parent
             anchors.margins: theme.paddingLarge
             contentWidth: width
-            header: Heading
-            {
-                anchors.left: parent.left;
-                anchors.right: parent.right;
-                text: qsTr("serverlist")
+            header: PageHeader {
+                title: qsTr("servers");
             }
             PushUpMenu {
              MenuItem {
@@ -32,8 +29,9 @@ Page
                     text: name
                 }
                 onClicked: {
-                    parseClickedServerListItem(ident);
+                    pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
                 }
             }
     }
+
 }

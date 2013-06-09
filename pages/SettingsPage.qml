@@ -9,11 +9,8 @@ Page
         anchors.fill: parent
         anchors.margins: theme.paddingMedium
         contentWidth: width
-        header: Heading
-        {
-            anchors.left: parent.left;
-            anchors.right: parent.right;
-            text: qsTr("settings")
+        header: PageHeader {
+            title: qsTr("settings");
         }
         model: mainMenuModel
         delegate: BackgroundItem {

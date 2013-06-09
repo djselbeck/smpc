@@ -11,23 +11,44 @@ Page
     property alias port: portInputField.text;
     property alias autoconnect: autoconnectSwitch.checked;
     property int index;
-    Flickable
+    property bool newprofile;
+    SilicaFlickable
     {
         anchors.fill: parent
         anchors.margins: theme.paddingLarge;
         contentHeight: settingsContent.height + 20;
         VerticalScrollDecorator {}
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("remove server profile")
+                onClicked: {
+                    pageStack.pop();
+                    console.debug("Delete profile requested: " + index);
+                    deleteProfile(index);
+
+                }
+            }
+        }
+
+//        PullDownMenu {
+//                         MenuItem {
+//                             text: "Option 1"
+//                             onClicked: console.log("Clicked option 1")
+//                         }
+//                         MenuItem {
+//                             text: "Option 2"
+//                             onClicked: console.log("Clicked option 2")
+//                         }
+//                     }
+
         //{fill: parent; margins: theme.paddingLarge;}
         Column
         {
             id: settingsContent;
             width: parent.width
-            Heading {
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text: qsTr("edit server");
+            PageHeader {
+                title: qsTr("edit profile");
             }
-
             Label
             {
                 anchors.right: parent.right
@@ -100,7 +121,10 @@ Page
         if(status == PageStatus.Deactivating )
         {
             console.debug("edit server page deactivating");
-            newProfile([index,name,hostname,password,port,autoconnect?1:0]);
+            if(newprofile)
+                newProfile([index,name,hostname,password,port,autoconnect?1:0]);
+            else
+                changeProfile([index,name,hostname,password,port,autoconnect?1:0]);
 
         }
     }

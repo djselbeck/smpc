@@ -7,11 +7,8 @@ Page {
         anchors.fill: parent
         anchors.margins: theme.paddingMedium
         contentWidth: width
-        header: Heading
-        {
-            anchors.left: parent.left;
-            anchors.right: parent.right;
-            text: qsTr("JollaMPC")
+        header: PageHeader {
+            title: qsTr("JollaMPC");
         }
         model: mainMenuModel
         delegate: BackgroundItem {
