@@ -1,11 +1,17 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
 
-Image {
+Rectangle {
     id: coverpage
     anchors.fill: parent
     opacity: 0.5
-    source: coverimageurl;
+    Image{
+        anchors.fill: parent
+        source: coverimageurl;
+        fillMode: Image.PreserveAspectFit
+    }
+
+
     //color: theme.secondaryColor
     
     Label {

@@ -45,6 +45,7 @@ Page {
                 height: infoFlickable.height - (titleText.height + albumText.height + artistText.height + pageHeading.height)
                 width: height
                 anchors.horizontalCenter: parent.horizontalCenter
+                fillMode: Image.PreserveAspectCrop
                 source: coverimageurl
             }
 
