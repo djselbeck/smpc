@@ -17,6 +17,13 @@ Page
             }
             PullDownMenu {
                 MenuItem {
+                    text: qsTr("home")
+                    onClicked: {
+                        pageStack.clear();
+                        pageStack.push(initialPage);
+                    }
+             }
+                MenuItem {
                     text: qsTr("add folder")
                     onClicked: {
                         addFiles(filepath);

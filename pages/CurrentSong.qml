@@ -24,8 +24,6 @@ Page {
     property int fontsize:theme.fontSizeMedium;
     property int fontsizegrey:theme.fontSizeSmall;
     property bool detailsvisible:true;
-    property alias coverImageURL: coverImage.source
-
 
 
     SilicaFlickable
@@ -47,7 +45,7 @@ Page {
                 height: infoFlickable.height - (titleText.height + albumText.height + artistText.height + pageHeading.height)
                 width: height
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: "http://img.media.xda-developers.com/images/XDA2013/header/xdaLogo.png"
+                source: coverimageurl
             }
 
             Label{id:titleText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
@@ -189,8 +187,10 @@ Page {
                             }
                             console.debug("imageurl: " + coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image);
                             var coverurl = coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image;
-                            if(coverurl !== coverImageURL)
-                                coverImageURL = coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image;
+                            if(coverurl !== coverimageurl) {
+                                // global
+                                coverimageurl = coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image;
+                            }
                         }
                     }
                     if(status == XmlListModel.Error)

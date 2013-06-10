@@ -90,6 +90,7 @@ ApplicationWindow
     property string artistname;
     property string albumname;
     property string playlistname;
+    property string coverimageurl;
     property bool repeat;
     property bool shuffle;
     property bool quitbtnenabled;

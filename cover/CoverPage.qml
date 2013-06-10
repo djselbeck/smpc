@@ -1,11 +1,12 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
 
-Rectangle {
+Image {
     id: coverpage
     anchors.fill: parent
     opacity: 0.5
-    color: theme.secondaryColor
+    source: coverimageurl;
+    //color: theme.secondaryColor
     
     Label {
         id: label
