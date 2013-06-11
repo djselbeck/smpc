@@ -15,15 +15,6 @@ Page
                 title: qsTr("artists");
             }
             VerticalScrollDecorator { flickable: artistListView }
-//            PullDownMenu {
-//                MenuItem {
-//                    text: qsTr("add albums")
-//                    visible: artist === "" ? false : true;
-//                    onClicked: {
-//                        addArtist(artistname);
-//                    }
-//             }
-//            }
             delegate: BackgroundItem {
                 Column{
                     x : theme.paddingLarge
@@ -44,5 +35,10 @@ Page
             }
     }
 
+    function artistClicked(item)
+    {
+        mainWindow.artistname = item;
+        requestArtistAlbums(item);
+    }
 
 }

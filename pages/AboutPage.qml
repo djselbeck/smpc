@@ -21,13 +21,19 @@ Page
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:"© by Hendrik Borghorst"
+            text:"© 2013 by Hendrik Borghorst"
             font.pixelSize: theme.fontSizeMedium
         }
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
             text:"Licensed under GPLv3"
+            font.pixelSize: theme.fontSizeMedium
+        }
+        Label
+        {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text:"Fetches covers from last.fm"
             font.pixelSize: theme.fontSizeMedium
         }
     }

@@ -17,7 +17,7 @@ Page {
                 text: name
             }
             onClicked: {
-                parseClicked(ident);
+                parseClickedMainMenu(ident);
             }
         }
     }
@@ -33,6 +33,75 @@ Page {
         ListElement { name: "search"; ident:"search";icon:"icons/search.svg"}
         ListElement { name: "connect"; ident:"connectto";icon:"icons/connectivity.svg"}
         ListElement { name: "settings"; ident:"settings";icon:"icons/settings.svg"}
+    }
+
+    Timer
+    {
+        id: showCurrentSongTimer;
+        interval: 5000
+        repeat: false
+        onTriggered: {
+            parseClickedMainMenu("currentsong");
+        }
+    }
+
+    onStatusChanged: {
+        if (status ==PageStatus.Active) {
+            showCurrentSongTimer.start();
+        }
+        else if (status == PageStatus.Deactivating)
+        {
+            if (showCurrentSongTimer.running)
+            {
+                showCurrentSongTimer.stop();
+            }
+        }
+    }
+
+
+    function parseClickedMainMenu(ident)
+    {
+        if(ident=="playlist"){
+            if(connected)
+                pageStack.push(playlistpage);
+        }
+        else if(ident=="settings"){
+            pageStack.push(Qt.resolvedUrl("SettingsPage.qml"));
+        }
+        else if(ident=="currentsong"){
+            if(connected)
+                pageStack.push(currentsongpage);
+        }
+        else if(ident=="albums"){
+            artistname = "";
+            if(connected)
+                requestAlbums();
+
+        }
+        else if(ident=="artists"){
+            if(connected)
+                requestArtists();
+
+        }
+        else if(ident=="files"){
+            if(connected)
+                filesClicked("/");
+
+        }
+        else if(ident=="connectto"){
+            pageStack.push(Qt.resolvedUrl("ConnectServerPage.qml"),{listmodel:settingsModel});
+        }
+        else if(ident=="about"){
+            aboutdialog.visible=true;
+            aboutdialog.version = versionstring;
+            aboutdialog.open();
+        }
+        else if(ident=="updatedb"){
+            updateDB();
+        }
+        else if(ident=="search"){
+            pageStack.push(Qt.resolvedUrl("SearchPage.qml"));
+        }
     }
 
 }

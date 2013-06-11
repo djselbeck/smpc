@@ -233,7 +233,6 @@ void Controller::connectSignals()
     connect(this,SIGNAL(albumTracksReady()),item,SLOT(updateAlbumModel()));
     connect(this,SIGNAL(savedPlaylistsReady()),item,SLOT(updateSavedPlaylistsModel()));
     connect(this,SIGNAL(savedPlaylistReady()),item,SLOT(updateSavedPlaylistModel()));
-    connect(this,SIGNAL(sendPopup(QVariant)),item,SLOT(slotShowPopup(QVariant)));
     connect(this,SIGNAL(sendStatus(QVariant)),item,SLOT(updateCurrentPlaying(QVariant)));
     connect(this,SIGNAL(playlistUpdated()),item,SLOT(updatePlaylist()));
     connect(this,SIGNAL(getFiles(QString)),netaccess,SLOT(getDirectory(QString)));
@@ -241,7 +240,6 @@ void Controller::connectSignals()
     connect(this,SIGNAL(requestConnect()),netaccess,SLOT(connectToHost()));
     connect(this,SIGNAL(requestDisconnect()),netaccess,SLOT(disconnect()));
     connect(this,SIGNAL(serverProfilesUpdated()),item,SLOT(settingsModelUpdated()));
-    connect(this,SIGNAL(showWelcome()),item,SLOT(showWelcome()));
     connect(this,SIGNAL(setUpdateInterval(int)),netaccess,SLOT(setUpdateInterval(int)));
 
     connect(netaccess,SIGNAL(outputsReady(QList<QObject*>*)),this,SLOT(updateOutputsModel(QList<QObject*>*)));

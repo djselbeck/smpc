@@ -116,28 +116,18 @@ ApplicationWindow
 
     function busy()
     {
-        /*playlistbusyindicator.running=true;
-            playlistbusyindicator.visible=true;
-            blockinteraction.enabled=true;*/
+        // FIXME
     }
 
     function ready()
     {
-        //            playlistbusyindicator.running=false;
-        //            playlistbusyindicator.visible=false;
-        //            blockinteraction.enabled=false;
+        // FIXME
     }
 
     function settingsModelUpdated()
     {
         console.debug("Got new server list");
         serverList.listmodel = settingsModel;
-        //selectserverdialog.model = settingsModel;
-    }
-
-    function showWelcome()
-    {
-        welcomedialog.open();
     }
 
     function updateCurrentPlaying(list)
@@ -265,82 +255,9 @@ ApplicationWindow
         albumname = albumstring;
     }
 
-    function artistalbumClicked(artist, album)
-    {
-        window.requestAlbum([artist,album]);
-        artistname = artistname;
-        albumname = album;
-    }
 
-    function slotShowPopup(string)
-    {
-        //infobanner.text=string;
-        //infobanner.open();
-    }
-
-    function parseClickedPlaylist(index)
-    {
-        playPlaylistTrack(index);
-    }
-    function parseClicked(ident)
-    {
-        if(ident=="playlist"){
-            if(connected)
-                pageStack.push(playlistpage);
-        }
-        else if(ident=="settings"){
-            pageStack.push(Qt.resolvedUrl("pages/SettingsPage.qml"));
-
-            //pageStack.push(settingslist);
-
-        }
-        else if(ident=="currentsong"){
-            if(connected)
-                pageStack.push(currentsongpage);
-            //pageStack.push(Qt.resolvedUrl("pages/CurrentSong.qml"));
-        }
-        else if(ident=="albums"){
-            artistname = "";
-            if(connected)
-                requestAlbums();
-
-        }
-        else if(ident=="artists"){
-            if(connected)
-                requestArtists();
-
-        }
-        else if(ident=="files"){
-            if(connected)
-                filesClicked("/");
-
-        }
-        else if(ident=="connectto"){
-            pageStack.push(Qt.resolvedUrl("pages/ConnectServerPage.qml"),{listmodel:settingsModel});
-            /*selectserverdialog.visible=true;
-                    selectserverdialog.open();*/
-        }
-        else if(ident=="about"){
-            aboutdialog.visible=true;
-            aboutdialog.version = versionstring;
-            aboutdialog.open();
-        }
-        else if(ident=="updatedb"){
-            window.updateDB();
-        }
-        else if(ident=="search"){
-            pageStack.push(Qt.resolvedUrl("SearchPage.qml"));
-        }
-    }
-
-    function artistClicked(item)
-    {
-        artistname = item;
-        requestArtistAlbums(item);
-    }
     function updateSearchedModel()
     {
-        console.debug("BLA");
         pageStack.currentPage.listmodel = searchedTracksModel;
     }
 

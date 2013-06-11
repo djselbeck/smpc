@@ -125,4 +125,9 @@ Page
     }
 
 
+    function parseClickedPlaylist(index)
+    {
+        playPlaylistTrack(index);
+    }
+
 }

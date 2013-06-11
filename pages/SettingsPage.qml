@@ -27,9 +27,10 @@ Page
 
     ListModel {
         id: mainMenuModel
-        ListElement { name: "server settings"; ident:"servers"; icon:"icons/music.svg" }
-        ListElement { name: "outputs"; ident:"outputs"; icon:"icons/music.svg" }
-        ListElement { name: "about"; ident:"about"; icon:"icons/music.svg" }
+        ListElement { name: "server settings"; ident:"servers";}
+        ListElement { name: "outputs"; ident:"outputs";}
+        ListElement { name: "update database"; ident:"updatedb";}
+        ListElement { name: "about"; ident:"about";}
     }
 
     function parseClickedSettings(ident)
@@ -39,8 +40,10 @@ Page
             pageStack.push(Qt.resolvedUrl("AboutPage.qml"));
             break;
         case "servers" :
-            //pageStack.push(Qt.resolvedUrl("ServerListPage.qml"));
             pageStack.push(serverList);
+            break;
+        case "updatedb" :
+            updateDB();
             break;
         case "outputs" :
             requestOutputs();
