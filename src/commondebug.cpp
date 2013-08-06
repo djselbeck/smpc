@@ -3,7 +3,7 @@
 CommonDebug::CommonDebug(QString out)
 {
 #ifdef DEBUG
-    qDebug(out.toAscii());
+    qDebug(out.toUtf8());
 #endif
 }
 

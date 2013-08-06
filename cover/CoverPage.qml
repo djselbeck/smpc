@@ -1,10 +1,10 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-Rectangle {
+CoverBackground {
     id: coverpage
     anchors.fill: parent
-    opacity: 0.5
+
     Image{
         anchors.fill: parent
         source: coverimageurl;
@@ -14,13 +14,13 @@ Rectangle {
 
     //color: theme.secondaryColor
     
-    Label {
-        id: label
-        anchors.centerIn: parent
-        opacity:1
-        z:1
-        text: "JollaMPC"
-    }
+//    Label {
+//        id: label
+//        anchors.centerIn: parent
+//        opacity:1
+//        z:1
+//        text: "JollaMPC"
+//    }
     
     CoverActionList {
         id: coverAction

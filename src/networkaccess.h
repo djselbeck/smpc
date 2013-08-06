@@ -40,6 +40,7 @@ public:
     void seekPosition(int id,int pos);
     status_struct getStatus();
     void setConnectParameters(QString hostname,int port, QString password);
+    void setQmlThread(QThread *thread);
 
 
 signals:
@@ -138,6 +139,7 @@ private:
     QList<MpdTrack*>* getAlbumTracks_prv(QString album);
     QList<MpdTrack*>* getAlbumTracks_prv(QString album, QString cartist);
     QList<MpdAlbum*>* getArtistsAlbums_prv(QString artist);
+    QThread *mQmlThread;
 };
 
 #endif // NETWORKACCESS_H

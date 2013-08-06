@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -118,11 +118,13 @@ Page
     }
 
     onStatusChanged: {
-        if(status == PageStatus.Deactivating )
+        if(status === PageStatus.Deactivating )
         {
             console.debug("edit server page deactivating");
-            if(newprofile)
+            if(newprofile) {
+                console.debug("creating new profile");
                 newProfile([index,name,hostname,password,port,autoconnect?1:0]);
+            }
             else
                 changeProfile([index,name,hostname,password,port,autoconnect?1:0]);
 

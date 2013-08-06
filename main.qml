@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
 
@@ -184,10 +184,16 @@ ApplicationWindow
     }
 
     function updatePlaylist()
-    {
+    {   
         //  blockinteraction.enabled=false;
         playlistpage.listmodel = playlistModel;
         console.debug("received new playlist and set model");
+    }
+
+    function clearPlaylist()
+    {
+        playlistpage.listmodel = 0;
+        console.debug("playlist model cleared");
     }
 
     function updateAlbumsModel(){

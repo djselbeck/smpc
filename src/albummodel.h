@@ -31,6 +31,7 @@ public:
     }
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE QHash<int, QByteArray> roleNames() const;
 
 
 private:

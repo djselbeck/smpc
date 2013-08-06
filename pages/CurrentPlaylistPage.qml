@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -37,7 +37,7 @@ Page
         delegate: BackgroundItem {
 
             Column{
-                x : theme.paddingLarge
+                x : Theme.paddingLarge
                 anchors.verticalCenter: parent.verticalCenter
                 Row{
                     Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
@@ -46,8 +46,8 @@ Page
                 }
                 Label{
                     text:(artist!=="" ? artist + " - " : "" )+(album!=="" ? album : "");
-                    color: theme.secondaryColor;
-                    font.pixelSize: theme.fontSizeSmall
+                    color: Theme.secondaryColor;
+                    font.pixelSize: Theme.fontSizeSmall
                 }
             }
             GlassItem
@@ -75,7 +75,7 @@ Page
         Column {
             width: parent.width
             spacing: 10
-            anchors.margins: theme.paddingMedium
+            anchors.margins: Theme.paddingMedium
             DialogHeader {
                 acceptText: qsTr("delete playlist");
             }
@@ -97,7 +97,7 @@ Page
         Column {
             width: parent.width
             spacing: 10
-            anchors.margins: theme.paddingMedium
+            anchors.margins: Theme.paddingMedium
             DialogHeader {
                 acceptText: qsTr("save playlist");
             }

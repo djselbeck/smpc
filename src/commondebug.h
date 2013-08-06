@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-//#define DEBUG
+#define DEBUG
 
 class CommonDebug : public QObject
 {

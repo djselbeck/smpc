@@ -1,4 +1,5 @@
-import QtQuick 1.1
+import QtQuick 2.0
+import QtQuick.XmlListModel 2.0
 import Sailfish.Silica 1.0
 
 
@@ -21,8 +22,8 @@ Page {
     property alias volume: volumeSlider.value;
     property alias volumepressed: volumeSlider.pressed;
     property bool playing;
-    property int fontsize:theme.fontSizeMedium;
-    property int fontsizegrey:theme.fontSizeSmall;
+    property int fontsize: Theme.fontSizeMedium;
+    property int fontsizegrey: Theme.fontSizeSmall;
     property bool detailsvisible:true;
 
 
@@ -49,9 +50,9 @@ Page {
                 source: coverimageurl
             }
 
-            Label{id:titleText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
-            Label{id:albumText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
-            Label{id:artistText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
+            Label{id:titleText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
+            Label{id:albumText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
+            Label{id:artistText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter}
 
             TextSwitch
             {
@@ -61,14 +62,14 @@ Page {
                 onClicked: detailsvisible = checked
             }
 
-            Label{text: qsTr("nr.:");color:theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
-            Label{id:nrText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
-            Label{text: qsTr("bitrate:");color:theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
-            Label{id:bitrateText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
-            Label{text: qsTr("properties:");color:theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
-            Label{id:audiopropertiesText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
-            Label{text: qsTr("uri:");color:theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
-            Label{id:fileText ;text: "";color:theme.primaryColor; font.pixelSize:fontsize;wrapMode:"WrapAnywhere" ; visible: detailsvisible;anchors {left:parent.left; right: parent.right;}}
+            Label{text: qsTr("nr.:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
+            Label{id:nrText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
+            Label{text: qsTr("bitrate:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
+            Label{id:bitrateText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
+            Label{text: qsTr("properties:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
+            Label{id:audiopropertiesText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors.horizontalCenter: parent.horizontalCenter; visible: detailsvisible}
+            Label{text: qsTr("uri:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey; visible: detailsvisible}
+            Label{id:fileText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode:"WrapAnywhere" ; visible: detailsvisible;anchors {left:parent.left; right: parent.right;}}
         }
     }
             Slider
@@ -110,7 +111,7 @@ Page {
                 onValueChanged: {
                     valueText = formatLength(value);
                 }
-                Label{id:lengthTextcomplete ; text: "";color:theme.primaryColor; font.pixelSize:fontsizegrey;wrapMode: "WordWrap";anchors {right: parent.right; bottom:parent.bottom}}
+                Label{id:lengthTextcomplete ; text: "";color:Theme.primaryColor; font.pixelSize:fontsizegrey;wrapMode: "WordWrap";anchors {right: parent.right; bottom:parent.bottom}}
             }
             Row
             {

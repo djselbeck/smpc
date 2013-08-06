@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -17,7 +17,7 @@ Page
             VerticalScrollDecorator { flickable: artistListView }
             delegate: BackgroundItem {
                 Column{
-                    x : theme.paddingLarge
+                    x : Theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
                          Label{
                              text: (artist===""? "No Artist Tag": artist)

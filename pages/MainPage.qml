@@ -1,11 +1,11 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
 Page {
     SilicaListView {
         anchors.fill: parent
-        anchors.margins: theme.paddingMedium
+        anchors.margins: Theme.paddingMedium
         contentWidth: width
         header: PageHeader {
             title: qsTr("JollaMPC");

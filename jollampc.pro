@@ -1,14 +1,12 @@
 # The name of your app
 TARGET = jollampc
 
-QT       += core gui network
+QT += network gui
 
 # C++ sources
 SOURCES += main.cpp \
             src/networkaccess.cpp \
             src/controller.cpp \
-            src/wlitrack.cpp \
-            src/wlifile.cpp \
             src/mpdtrack.cpp \
             src/mpdfileentry.cpp \
             src/mpdartist.cpp \
@@ -23,8 +21,6 @@ SOURCES += main.cpp \
 
 # C++ headers
 HEADERS += \
-    src/wlitrack.h \
-    src/wlifile.h \
     src/controller.h \
     src/networkaccess.h \
     src/mpdtrack.h \

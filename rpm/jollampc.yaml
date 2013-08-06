@@ -1,31 +1,26 @@
-Name:    jollampc
+Name: jollampc
 Summary: Port of qmobilempd client
 Version: 0.1
 Release: 1
-Group:   Qt/Qt
-License: LICENSE
+Group: Qt/Qt
+License: GPLv3
 Sources:
-    - "%{name}-%{version}.tar.bz2"
+- '%{name}-%{version}.tar.bz2'
 Description: |
   This is a port the symbian based mpd-client qmobilempd.
-# Qt Applications generally don't use configure and do use qmake
 Configure: none
-Builder: qmake
-# pkgconfigs we depend on to build
+Builder: qtc5
 PkgConfigBR:
-  - ""
-# Packages we depend on to build
-PkgBR:
-  - ""
-# Packages we require to run
+- Qt5Quick
+- Qt5Qml
+- Qt5Core
+- qdeclarative5-boostable
 Requires:
-  - ""
+- qt5-qtdeclarative-import-xmllistmodel
+- mapplauncherd-booster-silica-qt5
+- sailfishsilica-qt5
 Files:
-  - "/opt"
-
-
-
-# This is a spectacle file.
-# It is a yaml file that uses specify to manage the spec file used to package the application.
-# See https://wiki.merproject.org/wiki/Spectacle for more information
-
+- /usr/bin
+- /usr/share/jollampc
+- /usr/share/applications
+PkgBR: []

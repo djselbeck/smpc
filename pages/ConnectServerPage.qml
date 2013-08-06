@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -9,7 +9,7 @@ Page
     SilicaListView {
             id : connectListView
             anchors.fill: parent
-            anchors.margins: theme.paddingLarge
+            anchors.margins: Theme.paddingLarge
             contentWidth: width
             header: PageHeader {
                 title: qsTr("servers");

@@ -4,7 +4,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 }
 
-Controller::Controller(QDeclarativeView *viewer,QObject *parent) : QObject(parent),viewer(viewer),password(""),hostname(""),port(6600)
+Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),viewer(viewer),password(""),hostname(""),port(6600)
 {
     netaccess = new NetworkAccess(0);
     netaccess->setUpdateInterval(1000);
@@ -31,6 +31,7 @@ Controller::Controller(QDeclarativeView *viewer,QObject *parent) : QObject(paren
     volDecTimer.setInterval(250);
     filemodels = new QStack<QList<QObject*>*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+    netaccess->setQmlThread(viewer->thread());
     //Start auto connect
     for(int i = 0;i<serverprofiles->length();i++)
     {
@@ -44,6 +45,7 @@ Controller::Controller(QDeclarativeView *viewer,QObject *parent) : QObject(paren
 void Controller::updatePlaylistModel(QList<QObject*>* list)
 {
     CommonDebug("PLAYLIST  UPDATE REQUIRED\n");
+    emit requestPlaylistClear();
     if(playlist==0){
         currentsongid=0;
     } else{
@@ -57,6 +59,8 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
     }
     currentsongid = -1;
     playlist = (QList<MpdTrack*>*)(list);
+
+
     viewer->rootContext()->setContextProperty("playlistModel",QVariant::fromValue(*list));
     CommonDebug("Playlist length:"+QString::number(playlist->length())+"\n");
     emit playlistUpdated();
@@ -227,7 +231,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(cleanFileStack()),this,SLOT(cleanFileStack()));
     connect(&volDecTimer,SIGNAL(timeout()),this,SLOT(decVolume()));
     connect(&volIncTimer,SIGNAL(timeout()),this,SLOT(incVolume()));
-    connect(QApplication::instance(),SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(focusChanged(QWidget*,QWidget*)));
+    //connect(QApplication::instance(),SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(focusChanged(QWidget*,QWidget*)));
     connect(this,SIGNAL(albumsReady()),item,SLOT(updateAlbumsModel()));
     connect(this,SIGNAL(artistsReady()),item,SLOT(updateArtistModel()));
     connect(this,SIGNAL(albumTracksReady()),item,SLOT(updateAlbumModel()));
@@ -253,6 +257,8 @@ void Controller::connectSignals()
     connect(this,SIGNAL(searchedTracksReady()),item,SLOT(updateSearchedModel()));
     connect(item,SIGNAL(addlastsearch()),this,SLOT(addlastsearchtoplaylist()));
     connect(this,SIGNAL(addURIToPlaylist(QString)),netaccess,SLOT(addTrackToPlaylist(QString)));
+
+    connect(this,SIGNAL(requestPlaylistClear()),item,SLOT(clearPlaylist()));
 }
 
 void Controller::setPassword(QString password)
@@ -425,7 +431,7 @@ void Controller::readSettings()
     QSettings settings;
     settings.beginGroup("server_properties");
     int size = settings.beginReadArray("profiles");
-    CommonDebug(QString::number(size).toAscii()+" Settings found");
+    CommonDebug(QString::number(size).toUtf8()+" Settings found");
     QString hostname,password,name;
     int port;
     bool autoconnect;
@@ -462,7 +468,7 @@ void Controller::writeSettings()
             settings.setValue("profilename",serverprofiles->at(i)->getName());
             settings.setValue("port",serverprofiles->at(i)->getPort());
             settings.setValue("default",serverprofiles->at(i)->getAutoconnect());
-            CommonDebug("wrote setting:"+QString::number(i).toAscii());
+            CommonDebug("wrote setting:"+QString::number(i).toUtf8());
         }
         settings.endArray();
         settings.endGroup();
@@ -627,17 +633,17 @@ void Controller::applicationDeactivate()
     netaccess->setUpdateInterval(1000);
 }
 
-void Controller::focusChanged(QWidget *old, QWidget *now){
-    if(now==0)
-    {
-        CommonDebug("Focus lost");
-        emit setUpdateInterval(25000);
-    }
-    else{
-        CommonDebug("Focus gained");
-        emit setUpdateInterval(1000);
-    }
-}
+//void Controller::focusChanged(QWidget *old, QWidget *now){
+//    if(now==0)
+//    {
+//        CommonDebug("Focus lost");
+//        emit setUpdateInterval(25000);
+//    }
+//    else{
+//        CommonDebug("Focus gained");
+//        emit setUpdateInterval(1000);
+//    }
+//}
 
 void Controller::fileStackPop()
 {

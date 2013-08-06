@@ -3,13 +3,12 @@
 
 #include <QObject>
 #include <QString>
-#include <QWidget>
 #include <QStack>
 #include "mpdtrack.h"
 
-#include <QtDeclarative>
-#include <QDeclarativeContext>
-#include <QDeclarativeListReference>
+#include <QQuickView>
+#include <QtQml>
+
 #include "networkaccess.h"
 #include "commondebug.h"
 #include "qthreadex.h"
@@ -25,10 +24,9 @@ class Controller : public QObject
     Q_OBJECT
 public:
     explicit Controller(QObject *parent = 0);
-    Controller(QDeclarativeView *viewer,QObject *parent = 0);
+    Controller(QQuickView *viewer,QObject *parent = 0);
     void connectSignals();
 public slots:
-    void focusChanged(QWidget *old, QWidget *now);
 
 signals:
     void sendPopup(QVariant text);
@@ -52,11 +50,11 @@ signals:
     void requestExit();
     void searchedTracksReady();
     void addURIToPlaylist(QString);
-
+    void requestPlaylistClear();
 
 
 private:
-    QDeclarativeView *viewer;
+    QQuickView *viewer;
     NetworkAccess *netaccess;
     QString hostname,password,profilename;
     quint16 port;

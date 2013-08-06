@@ -8,13 +8,6 @@ AlbumModel::AlbumModel(QObject *parent) :
 AlbumModel::AlbumModel(QList<MpdAlbum *> *list,QObject *parent) : QAbstractListModel(parent)
 {
        m_entries = list;
-    QHash<int,QByteArray> roles;
-
-    roles[AlbumRole] = "title";
-    roles[SectionRole] = "sectionprop";
-
-    setRoleNames(roles);
-
 }
 
 QVariant AlbumModel::data(const QModelIndex &index, int role) const
@@ -29,4 +22,12 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
 
 int AlbumModel::rowCount(const QModelIndex &parent) const{
     return m_entries->length();
+}
+
+QHash<int, QByteArray> AlbumModel::roleNames() const {
+    QHash<int,QByteArray> roles;
+
+    roles[AlbumRole] = "title";
+    roles[SectionRole] = "sectionprop";
+    return roles;
 }

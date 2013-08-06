@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -74,6 +74,7 @@ Page
     }
 
     Component.onDestruction: {
+        model = 0;
         console.debug("popping file model stack");
         popfilemodelstack();
     }
