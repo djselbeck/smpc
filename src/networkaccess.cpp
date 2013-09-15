@@ -1370,6 +1370,30 @@ void NetworkAccess::getDirectory(QString path)
                     }
 
                 }
+                if (response.left(10)==QString("playlist: "))
+                {
+                    filename = response.right(response.length()-10);
+                    filename.chop(1);
+                    tempsplitter = filename.split("/");
+                    if (tempsplitter.length()>0)
+                    {
+                        prepath ="";
+                        for (int j=0;j<tempsplitter.length()-1;j++)
+                        {
+                            prepath += tempsplitter.at(j);
+                            if (j!=tempsplitter.length()-2)
+                            {
+                                prepath += "/";
+                            }
+
+                        }
+                        tempfile = new MpdFileEntry(path,tempsplitter.last(),MpdFileEntry::MpdFileType_Playlist,NULL);
+                        tempfiles->append(tempfile);
+                        filename = "";
+                        tempsplitter.clear();
+                    }
+
+                }
             }
         }
         //LAST FILE ADD

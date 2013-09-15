@@ -56,7 +56,7 @@ Page
                 Label
                 {
                     visible: isDirectory===false
-                    text: (isDirectory===true ? "" : (title==="" ?"" : title+ " - ") + (artist==="" ?  "" : artist) );
+                    text: ( !isFile ? "" : (title==="" ?"" : title+ " - ") + (artist==="" ?  "" : artist) );
                     anchors {left: parent.left;right:parent.right;}
                 }
                 }
@@ -67,6 +67,10 @@ Page
                 if(isFile) {
                     console.debug("Album:"+album)
                     albumTrackClicked(title,album,artist,length,path,year,tracknr);
+                }
+                if(isPlaylist) {
+                    console.debug("Playlist:"+(prepath=="/"? "": prepath+"/")+name);
+                    savedPlaylistClicked((prepath=="/"? "": prepath+"/")+name);
                 }
             }
 

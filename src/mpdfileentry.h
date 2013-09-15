@@ -12,6 +12,7 @@ class MpdFileEntry : public QObject
     Q_PROPERTY(QString prepath READ getPrePath)
     Q_PROPERTY(bool isFile READ isFile)
     Q_PROPERTY(bool isDirectory READ isDirectory)
+    Q_PROPERTY(bool isPlaylist READ isPlaylist)
     Q_PROPERTY(QString title READ getTitle)
     Q_PROPERTY(QString album READ getAlbum)
     Q_PROPERTY(QString path READ getPath)

@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define VERSION "1.0.7"
+#define VERSION "1.0.0"
 
 #include <QString>
 
