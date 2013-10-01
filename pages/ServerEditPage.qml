@@ -15,7 +15,7 @@ Page
     SilicaFlickable
     {
         anchors.fill: parent
-        anchors.margins: theme.paddingLarge;
+        anchors.margins: Theme.paddingLarge;
         contentHeight: settingsContent.height + 20;
         VerticalScrollDecorator {}
         PullDownMenu {
@@ -30,18 +30,6 @@ Page
             }
         }
 
-//        PullDownMenu {
-//                         MenuItem {
-//                             text: "Option 1"
-//                             onClicked: console.log("Clicked option 1")
-//                         }
-//                         MenuItem {
-//                             text: "Option 2"
-//                             onClicked: console.log("Clicked option 2")
-//                         }
-//                     }
-
-        //{fill: parent; margins: theme.paddingLarge;}
         Column
         {
             id: settingsContent;

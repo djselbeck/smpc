@@ -9,13 +9,15 @@ Page
     property string artistname;
     SilicaListView {
             id : artistListView
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
                 title: qsTr("artists");
             }
             VerticalScrollDecorator { flickable: artistListView }
-            delegate: BackgroundItem {
+            delegate: ListItem {
+                menu: contextMenu
                 Column{
                     x : Theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
@@ -25,6 +27,34 @@ Page
                     }
                 onClicked: {
                     artistClicked(artist);
+                }
+                function playArtistRemorse() {
+                    remorseAction(qsTr("playing artist"), function() { playArtist(artist); },3000)
+                }
+                function addArtistRemorse() {
+                    remorseAction(qsTr("adding artist"), function() { addArtist(artist); },3000)
+                }
+                Component {
+                            id: contextMenu
+                            ContextMenu {
+                                MenuItem {
+                                    text: qsTr("play artist");
+                                    onClicked: {
+                                        if(artist !=="") {
+                                            playArtistRemorse();
+                                        }
+                                    }
+                                }
+
+                                MenuItem {
+                                    text: qsTr("add artist to list")
+                                    onClicked: {
+                                        if(artist !=="") {
+                                            addArtistRemorse();
+                                        }
+                                    }
+                                }
+                            }
                 }
             }
             section {

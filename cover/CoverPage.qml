@@ -8,19 +8,8 @@ CoverBackground {
     Image{
         anchors.fill: parent
         source: coverimageurl;
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
     }
-
-
-    //color: theme.secondaryColor
-    
-//    Label {
-//        id: label
-//        anchors.centerIn: parent
-//        opacity:1
-//        z:1
-//        text: "JollaMPC"
-//    }
     
     CoverActionList {
         id: coverAction

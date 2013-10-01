@@ -159,6 +159,7 @@ Page {
             {
                 var url = "";
                 url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="+ lastfmapikey + "&artist="+artist+"&album="+album
+                url = url.replace(/#|\|/g,"");
                 console.debug("LastFM url created: " + url);
                 coverfetcherXMLModel.source = url;
 
@@ -181,17 +182,26 @@ Page {
                         if(count>0)
                         {
                             console.debug("Xml model ready, count: "+count);
-                            for (var i = 0;i <count;i++)
+                            var fetchindex;
+                            if ( count >= 3 )
                             {
-                                console.debug("item: "+i);
-                                console.debug(coverfetcherXMLModel.get(i).size+":");
-                                console.debug(coverfetcherXMLModel.get(i).image);
+                                console.debug("item: "+3);
+                                console.debug(coverfetcherXMLModel.get(3).size+":");
+                                console.debug(coverfetcherXMLModel.get(3).image);
+                                fetchindex = 3;
                             }
-                            console.debug("imageurl: " + coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image);
-                            var coverurl = coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image;
+                            else {
+                                console.debug("item: "+count);
+                                console.debug(coverfetcherXMLModel.get(count-1).size+":");
+                                console.debug(coverfetcherXMLModel.get(count-1).image);
+                                fetchindex = count-1;
+                            }
+
+                            console.debug("imageurl: " + coverfetcherXMLModel.get(fetchindex).image);
+                            var coverurl = coverfetcherXMLModel.get(fetchindex).image;
                             if(coverurl !== coverimageurl) {
                                 // global
-                                coverimageurl = coverfetcherXMLModel.get(coverfetcherXMLModel.count-1).image;
+                                coverimageurl = coverfetcherXMLModel.get(fetchindex).image;
                             }
                         }
                     }

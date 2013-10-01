@@ -9,12 +9,14 @@ Page
     property string artistname;
     SilicaListView {
             id : savedPlaylistsListView
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
                 title: qsTr("playlists")
             }
-            delegate: BackgroundItem {
+            delegate: ListItem {
+                menu: contextMenu
                 Column{
                     x : Theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
@@ -24,6 +26,31 @@ Page
                     }
                 onClicked: {
                     savedPlaylistClicked(modelData);
+                }
+                function playListRemorse() {
+                    remorseAction(qsTr("playing list"), function() { playPlaylist(modelData); },3000)
+                }
+                function addListRemorse() {
+                    remorseAction(qsTr("adding list"), function() { addPlaylist(modelData); },3000)
+                }
+                Component {
+
+                            id: contextMenu
+                            ContextMenu {
+                                MenuItem {
+                                    text: qsTr("play playlist");
+                                    onClicked: {
+                                        playListRemorse();
+                                    }
+                                }
+
+                                MenuItem {
+                                    text: qsTr("add list")
+                                    onClicked: {
+                                        addListRemorse();
+                                    }
+                                }
+                            }
                 }
             }
     }

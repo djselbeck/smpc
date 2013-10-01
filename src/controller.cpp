@@ -224,6 +224,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(addSong(QString)),netaccess,SLOT(addTrackToPlaylist(QString)));
     connect(item,SIGNAL(requestSavedPlaylist(QString)),netaccess,SLOT(getPlaylistTracks(QString)));
     connect(item,SIGNAL(addPlaylist(QString)),netaccess,SLOT(addPlaylist(QString)));
+    connect(item,SIGNAL(playPlaylist(QString)),netaccess,SLOT(playPlaylist(QString)));
     connect(item,SIGNAL(setShuffle(bool)),netaccess,SLOT(setRandom(bool)));
     connect(item,SIGNAL(setRepeat(bool)),netaccess,SLOT(setRepeat(bool)));
     connect(item,SIGNAL(updateDB()),netaccess,SLOT(updateDB()));

@@ -8,9 +8,9 @@ class MPDOutput : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString outputname READ getName )
+    Q_PROPERTY(QString outputname READ getName NOTIFY changed )
     Q_PROPERTY(bool outputenabled READ getEnabled WRITE setEnabled NOTIFY activechanged )
-    Q_PROPERTY(int id READ getID )
+    Q_PROPERTY(int id READ getID NOTIFY changed )
 public:
     explicit MPDOutput(QString name, bool enabled, int id,QObject *parent = 0);
 
@@ -28,6 +28,7 @@ private:
     
 signals:
     void activechanged();
+    void changed();
     
 public slots:
     

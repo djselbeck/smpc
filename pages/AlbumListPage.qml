@@ -9,6 +9,7 @@ Page
     property string artistname;
     SilicaListView {
             id : albumListView
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -30,7 +31,8 @@ Page
                     }
              }
             }
-            delegate: BackgroundItem {
+            delegate: ListItem {
+                menu: contextMenu
                 Column{
                     x : Theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
@@ -40,6 +42,34 @@ Page
                     }
                 onClicked: {
                     albumClicked(artistname,title);
+                }
+                function playAlbumRemorse() {
+                    remorseAction(qsTr("playing album"), function() { playAlbum([artistname,title]); },3000)
+                }
+                function addAlbumRemorse() {
+                    remorseAction(qsTr("adding album"), function() { addAlbum([artistname,title]); },3000)
+                }
+                Component {
+                            id: contextMenu
+                            ContextMenu {
+                                MenuItem {
+                                    text: qsTr("play album");
+                                    onClicked: {
+                                        if(title !=="") {
+                                            playAlbumRemorse();
+                                        }
+                                    }
+                                }
+
+                                MenuItem {
+                                    text: qsTr("add album to list")
+                                    onClicked: {
+                                        if(title !=="") {
+                                            addAlbumRemorse();
+                                        }
+                                    }
+                                }
+                            }
                 }
             }
             section {

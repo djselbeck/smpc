@@ -1177,6 +1177,29 @@ void NetworkAccess::addPlaylist(QString name)
     emit ready();
 }
 
+void NetworkAccess::playPlaylist(QString name)
+{
+    emit busy();
+    clearPlaylist();
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "load \"" << name << "\"" <<endl;
+        QString response ="";
+        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+
+            }
+        }
+    }
+    playTrackByNumber(0);
+    emit ready();
+}
+
 void NetworkAccess::clearPlaylist()
 {
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
@@ -1294,6 +1317,8 @@ void NetworkAccess::getDirectory(QString path)
                             }
                             tempfile = new MpdFileEntry(prepath,tempsplitter.last(),MpdFileEntry::MpdFileType_File,temptrack,NULL);
                             tempfiles->append(tempfile);
+                            temptrack->moveToThread(mQmlThread);
+                            tempfile->moveToThread(mQmlThread);
                             tempsplitter.clear();
                         }
                         artist= "";
@@ -1365,6 +1390,7 @@ void NetworkAccess::getDirectory(QString path)
                         }
                         tempfile = new MpdFileEntry(path,tempsplitter.last(),1,NULL);
                         tempfiles->append(tempfile);
+                        tempfile->moveToThread(mQmlThread);
                         filename = "";
                         tempsplitter.clear();
                     }
@@ -1389,6 +1415,7 @@ void NetworkAccess::getDirectory(QString path)
                         }
                         tempfile = new MpdFileEntry(path,tempsplitter.last(),MpdFileEntry::MpdFileType_Playlist,NULL);
                         tempfiles->append(tempfile);
+                        tempfile->moveToThread(mQmlThread);
                         filename = "";
                         tempsplitter.clear();
                     }
@@ -1415,6 +1442,8 @@ void NetworkAccess::getDirectory(QString path)
                 }
                 tempfile = new MpdFileEntry(prepath,tempsplitter.last(),MpdFileEntry::MpdFileType_File,temptrack,NULL);
                 tempfiles->append(tempfile);
+                temptrack->moveToThread(mQmlThread);
+                tempfile->moveToThread(mQmlThread);
                 tempsplitter.clear();
             }
         }

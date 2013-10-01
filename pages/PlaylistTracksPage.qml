@@ -9,6 +9,7 @@ Page
     property string playlistname;
     SilicaListView {
             id : playlistTracksListView
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -27,10 +28,16 @@ Page
                     onClicked: {
                         addPlaylist(playlistname)
                     }
-             }
+                }
+                MenuItem {
+                    text: qsTr("play list")
+                    onClicked: {
+                        playlistModelPlaylist(playlistname)
+                    }
+                }
             }
-            delegate: BackgroundItem {
-
+            delegate: ListItem {
+                menu: contextMenu
                 Column{
                     x : Theme.paddingLarge
                     anchors.verticalCenter: parent.verticalCenter
@@ -47,6 +54,30 @@ Page
                     }
                 onClicked: {
                     albumTrackClicked(title,album,artist,lengthformated,uri,year,tracknr);
+                }
+                function playTrackRemorse() {
+                    remorseAction(qsTr("playing track"), function() { playSong(uri); },3000)
+                }
+                function addTrackRemorse() {
+                    remorseAction(qsTr("adding track"), function() { addSong(uri); },3000)
+                }
+                Component {
+                    id: contextMenu
+                    ContextMenu {
+                        MenuItem {
+                            text: qsTr("play track");
+                            onClicked: {
+                                playTrackRemorse();
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("add track to list")
+                            onClicked: {
+                                addTrackRemorse();
+                            }
+                        }
+                    }
                 }
             }
     }

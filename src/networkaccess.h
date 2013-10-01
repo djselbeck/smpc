@@ -106,6 +106,7 @@ public slots:
     void seek(int pos);
     void savePlaylist(QString name);
     void addPlaylist(QString name);
+    void playPlaylist(QString name);
     void deletePlaylist(QString name);
     void setUpdateInterval(int ms);
     void exitRequest();

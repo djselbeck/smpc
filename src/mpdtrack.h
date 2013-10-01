@@ -14,16 +14,16 @@ class MpdTrack : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString title READ getTitle )
-    Q_PROPERTY(QString uri READ getFileUri )
-    Q_PROPERTY(QString lengthformated READ getLengthFormated )
-    Q_PROPERTY(int length READ getLength )
-    Q_PROPERTY(QString artist READ getArtist )
-    Q_PROPERTY(QString album READ getAlbum )
+    Q_PROPERTY(QString title READ getTitle NOTIFY changed )
+    Q_PROPERTY(QString uri READ getFileUri NOTIFY changed )
+    Q_PROPERTY(QString lengthformated READ getLengthFormated NOTIFY changed )
+    Q_PROPERTY(int length READ getLength NOTIFY changed )
+    Q_PROPERTY(QString artist READ getArtist NOTIFY changed )
+    Q_PROPERTY(QString album READ getAlbum NOTIFY changed )
     Q_PROPERTY(bool playing READ getPlaying NOTIFY playingchanged )
-    Q_PROPERTY(int tracknr READ getTrackNr)
-    Q_PROPERTY(QString year READ getYear)
-    Q_PROPERTY(QString filename READ getFileName)
+    Q_PROPERTY(int tracknr READ getTrackNr NOTIFY changed )
+    Q_PROPERTY(QString year READ getYear NOTIFY changed )
+    Q_PROPERTY(QString filename READ getFileName NOTIFY changed )
 public:
     explicit MpdTrack(QObject *parent = 0);
     MpdTrack(QObject *parent,QString file,QString title, quint32 length);
@@ -68,6 +68,7 @@ private:
 
 signals:
     void playingchanged();
+    void changed();
 
 public slots:
 

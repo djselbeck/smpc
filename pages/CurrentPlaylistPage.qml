@@ -9,6 +9,7 @@ Page
     property alias songid: playlistView.currentIndex
     SilicaListView {
         id : playlistView
+        ScrollDecorator {}
         anchors.fill: parent
         contentWidth: width
         header: PageHeader {
@@ -34,8 +35,8 @@ Page
                 }
             }
         }
-        delegate: BackgroundItem {
-
+        delegate: ListItem {
+            menu: contextMenu
             Column{
                 x : Theme.paddingLarge
                 anchors.verticalCenter: parent.verticalCenter
@@ -64,6 +65,27 @@ Page
                 else{
                     pageStack.push(currentsongpage);
                 }
+            }
+
+            function remove() {
+                remorseAction(qsTr("Deleting"), function() { deletePlaylistTrack(index); },3000)
+            }
+
+            Component {
+                        id: contextMenu
+                        ContextMenu {
+                            MenuItem {
+                                text: qsTr("Play song");
+                                onClicked: playPlaylistTrack(index);
+                            }
+
+                            MenuItem {
+                                text: qsTr("Remove")
+                                onClicked: {
+                                    remove();
+                                }
+                            }
+                        }
             }
         }
     }

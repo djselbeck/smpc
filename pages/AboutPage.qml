@@ -18,23 +18,46 @@ Page
             text:"JollaMPC"
             font.pixelSize: Theme.fontSizeExtraLarge
         }
+        Button
+        {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text:"Homepage"
+            onClicked:
+            {
+                Qt.openUrlExternally('http://github.com/djselbeck/jollampc');
+            }
+
+        }
+        Separator
+        {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width:parent.width-Theme.paddingLarge
+            color: Theme.primaryColor
+        }
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
             text:"© 2013 by Hendrik Borghorst"
             font.pixelSize: Theme.fontSizeMedium
         }
+
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
             text:"Licensed under GPLv3"
             font.pixelSize: Theme.fontSizeMedium
         }
+        Separator
+        {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width:parent.width-Theme.paddingLarge
+            color: Theme.primaryColor
+        }
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
             text:"Fetches covers from last.fm"
-            font.pixelSize: Theme.fontSizeMedium
+            font.pixelSize: Theme.fontSizeTiny
         }
     }
 

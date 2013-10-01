@@ -8,18 +8,18 @@
 class MpdFileEntry : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(QString prepath READ getPrePath)
-    Q_PROPERTY(bool isFile READ isFile)
-    Q_PROPERTY(bool isDirectory READ isDirectory)
-    Q_PROPERTY(bool isPlaylist READ isPlaylist)
-    Q_PROPERTY(QString title READ getTitle)
-    Q_PROPERTY(QString album READ getAlbum)
-    Q_PROPERTY(QString path READ getPath)
-    Q_PROPERTY(QString artist READ getArtist)
-    Q_PROPERTY(QString length READ getLengthFormatted)
-    Q_PROPERTY(int tracknr READ getTrackNr)
-    Q_PROPERTY(QString year READ getYear)
+    Q_PROPERTY(QString name READ getName NOTIFY changed )
+    Q_PROPERTY(QString prepath READ getPrePath NOTIFY changed )
+    Q_PROPERTY(bool isFile READ isFile NOTIFY changed )
+    Q_PROPERTY(bool isDirectory READ isDirectory NOTIFY changed )
+    Q_PROPERTY(bool isPlaylist READ isPlaylist NOTIFY changed )
+    Q_PROPERTY(QString title READ getTitle NOTIFY changed )
+    Q_PROPERTY(QString album READ getAlbum NOTIFY changed )
+    Q_PROPERTY(QString path READ getPath NOTIFY changed )
+    Q_PROPERTY(QString artist READ getArtist NOTIFY changed )
+    Q_PROPERTY(QString length READ getLengthFormatted NOTIFY changed )
+    Q_PROPERTY(int tracknr READ getTrackNr NOTIFY changed )
+    Q_PROPERTY(QString year READ getYear NOTIFY changed )
 public:
     enum MpdFileType {MpdFileType_File,MpdFileType_Directory,MpdFileType_Playlist,MpdFileType_NR};
     explicit MpdFileEntry(QObject *parent = 0);
@@ -73,6 +73,7 @@ private:
     MpdTrack *track;
 
 signals:
+    void changed();
 
 public slots:
 

@@ -9,8 +9,8 @@ class MpdTrack;
 class MpdAlbum : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString title READ getTitle)
-    Q_PROPERTY(QString sectionprop READ getSection)
+    Q_PROPERTY(QString title READ getTitle NOTIFY changed )
+    Q_PROPERTY(QString sectionprop READ getSection NOTIFY changed )
 public:
     explicit MpdAlbum(QObject *parent = 0);
     MpdAlbum(QObject *parent,QString title);
@@ -28,6 +28,7 @@ private:
     QList<MpdTrack*> *tracks;
 
 signals:
+    void changed();
 
 public slots:
 

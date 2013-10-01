@@ -10,6 +10,7 @@ Page
     property alias listmodel: fileListView.model;
     SilicaListView {
             id : fileListView
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -36,7 +37,8 @@ Page
                     }
              }
             }
-            delegate: BackgroundItem {
+            delegate: ListItem {
+            menu: contextMenu
             id:filesDelegate
                 Image {
                     id: fileicon
@@ -71,6 +73,60 @@ Page
                 if(isPlaylist) {
                     console.debug("Playlist:"+(prepath=="/"? "": prepath+"/")+name);
                     savedPlaylistClicked((prepath=="/"? "": prepath+"/")+name);
+                }
+            }
+
+            function addTrackRemorse() {
+                remorseAction(qsTr("adding track"), function() { addSong(path); },3000)
+            }
+            function addPlaylistRemorse() {
+                remorseAction(qsTr("adding playlist"), function() { console.debug("playlist: " + (prepath=="/"? "": prepath+"/")+name + " requested");
+                    addPlaylist((prepath=="/"? "": prepath+"/")+name); },3000)
+            }
+            function addFolderRemorse() {
+                remorseAction(qsTr("adding directory"), function() { addFiles((prepath=="/"? "": prepath+"/")+name); },3000)
+            }
+            function playTrackRemorse() {
+                remorseAction(qsTr("playing track"), function() { playSong(path); },3000)
+            }
+            function playPlaylistRemorse() {
+                remorseAction(qsTr("playing playlist"), function() { playPlaylist((prepath=="/"? "": prepath+"/")+name); },3000)
+            }
+            function playFolderRemorse() {
+                remorseAction(qsTr("playing directory"), function() { playFiles((prepath=="/"? "": prepath+"/")+name); },3000)
+            }
+            Component {
+                id: contextMenu
+                ContextMenu {
+                    MenuItem {
+                        text: isFile ? qsTr("play file") : ( isDirectory ? qsTr("play directory") : qsTr("play playlist") );
+                        onClicked: {
+                            if(isFile) {
+                                playTrackRemorse();
+                            }
+                            else if (isDirectory) {
+                                playFolderRemorse();
+                            }
+                            else if (isPlaylist) {
+                                playPlaylistRemorse();
+                            }
+                        }
+                    }
+
+                    MenuItem {
+                        text: isFile ? qsTr("add file") : ( isDirectory ? qsTr("add directory") : qsTr("add playlist") );
+                        onClicked: {
+                            if(isFile) {
+                                addTrackRemorse();
+                            }
+                            else if (isDirectory) {
+                                addFolderRemorse();
+                            }
+                            else if (isPlaylist) {
+                                addPlaylistRemorse();
+                            }
+                        }
+                    }
                 }
             }
 

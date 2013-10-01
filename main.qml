@@ -19,6 +19,7 @@ ApplicationWindow
     signal addFiles(string files);
     signal addSong(string uri);
     signal addPlaylist(string name);
+    signal playPlaylist(string name);
     signal playAlbum(variant album);
     signal playArtist(string artist);
 
