@@ -57,9 +57,11 @@ Page
                 }
                 Label
                 {
-                    visible: isDirectory===false
+                    visible: isFile
                     text: ( !isFile ? "" : (title==="" ?"" : title+ " - ") + (artist==="" ?  "" : artist) );
                     anchors {left: parent.left;right:parent.right;}
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.secondaryColor
                 }
                 }
             onClicked: {

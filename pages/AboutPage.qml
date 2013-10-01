@@ -24,7 +24,7 @@ Page
             text:"Homepage"
             onClicked:
             {
-                Qt.openUrlExternally('http://github.com/djselbeck/jollampc');
+                Qt.openUrlExternally('https://github.com/djselbeck/jollampc');
             }
 
         }
