@@ -32,7 +32,7 @@ Page
                 MenuItem {
                     text: qsTr("play list")
                     onClicked: {
-                        playlistModelPlaylist(playlistname)
+                        playPlaylist(playlistname)
                     }
                 }
             }
