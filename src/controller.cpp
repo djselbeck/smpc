@@ -681,8 +681,10 @@ void Controller::cleanFileStack()
 
 void Controller::addlastsearchtoplaylist()
 {
-    for(int i = 0;i<searchedtracks->length();i++)
-    {
-        emit addURIToPlaylist(searchedtracks->at(i)->getFileUri());
+    if ( searchedtracks ) {
+        for(int i = 0;i<searchedtracks->length();i++)
+        {
+            emit addURIToPlaylist(searchedtracks->at(i)->getFileUri());
+        }
     }
 }

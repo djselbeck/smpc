@@ -135,6 +135,7 @@ Page{
         PullDownMenu {
             MenuItem {
                 text: qsTr("add all results")
+                visible: albumsongs_list_view.model !== undefined
                 onClicked: {
                     deletePlaylist();
                     addlastsearch();
@@ -142,6 +143,7 @@ Page{
          }
             MenuItem {
                 text: qsTr("play all results")
+                visible: albumsongs_list_view.model !== undefined
                 onClicked: {
                     deletePlaylist();
                     addlastsearch();
