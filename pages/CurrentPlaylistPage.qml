@@ -15,6 +15,8 @@ Page
         header: PageHeader {
             title: qsTr("playlist");
         }
+        highlightFollowsCurrentItem: true
+        highlightMoveDuration: 300
         PullDownMenu {
             MenuItem {
                 text: qsTr("delete playlist")

@@ -15,7 +15,7 @@ Page
     SilicaFlickable
     {
         anchors.fill: parent
-        anchors.margins: Theme.paddingLarge;
+//        anchors.margins: Theme.paddingLarge;
         contentHeight: settingsContent.height + 20;
         VerticalScrollDecorator {}
         PullDownMenu {
@@ -33,7 +33,7 @@ Page
         Column
         {
             id: settingsContent;
-            width: parent.width
+            width: parent.width - Theme.paddingMedium
             PageHeader {
                 title: qsTr("edit profile");
             }
