@@ -11,20 +11,29 @@ Item {
         id: lbl
         width: contentWidth
         height: contentHeight
+        property bool shouldScroll:false
 
         function checkAnimation() {
             if (contentWidth > parent.width) {
                 anchors.horizontalCenter = undefined
                 if (lbl.visible) {
+                    shouldScroll = true;
                     animation.running = false
                     blendin.running = false
                     x = parent.x
+                    lbl.opacity = 1.0
                     animation.running = true
                 } else {
+                    shouldScroll = false;
                     animation.running = false
                     blendin.running = false
                 }
             } else {
+                shouldScroll = false;
+                animation.running = false;
+                blendin.running = false;
+                lbl.x = parent.x
+                lbl.opacity = 1.0
                 anchors.horizontalCenter = parent.horizontalCenter
             }
         }
@@ -53,7 +62,7 @@ Item {
             onStopped: {
                 lbl.opacity = 0.0
                 lbl.x = parent.x
-                if (lbl.visible)
+                if (lbl.visible && lbl.shouldScroll)
                     blendin.running = true
             }
         }
@@ -66,7 +75,7 @@ Item {
             to: 1.0
             duration: 500
             onStopped: {
-                if (lbl.visible)
+                if (lbl.visible && lbl.shouldScroll)
                     animation.running = true
             }
         }
