@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
+    id: mainItm
     property alias text: lbl.text
     property alias font: lbl.font
     property alias color: lbl.color
@@ -17,11 +18,20 @@ Item {
             if (contentWidth > parent.width) {
                 anchors.horizontalCenter = undefined
                 if (lbl.visible) {
-                    shouldScroll = true;
+                    shouldScroll = false;
                     animation.running = false
                     blendin.running = false
+                    shouldScroll = true;
                     x = parent.x
                     lbl.opacity = 1.0
+                    var restPixels =  ( ( lbl.contentWidth - mainItm.width ) );
+                    var restChars = ((lbl.text.length) / lbl.contentWidth) * restPixels;
+                    animation.duration = Math.round(restChars * 500); // Around 2 Chars per Second scroll
+                    if(animation.duration < 3000 ) {
+                        animation.duration = 3000;
+                    }
+
+                    animation.to = ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width);
                     animation.running = true
                 } else {
                     shouldScroll = false;
@@ -51,13 +61,10 @@ Item {
             id: animation
             target: lbl
             property: "x"
-            from: parent.x
-            to: (parent.x) - lbl.contentWidth
-            duration: ((lbl.text.length) * 1000) / 1.75
+            from: mainItm.x
+            to: ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width)
+            duration: 500
 
-            onStarted: {
-
-            }
 
             onStopped: {
                 lbl.opacity = 0.0
@@ -80,10 +87,4 @@ Item {
             }
         }
     }
-
-    //    Rectangle {
-    //        color: "#FFFFFF"
-    //        opacity:0.5
-    //        anchors.fill: lbl
-    //    }
 }
