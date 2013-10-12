@@ -20,6 +20,7 @@ Item {
                 if (lbl.visible) {
                     shouldScroll = false;
                     animation.running = false
+                    blendout.running = false
                     blendin.running = false
                     shouldScroll = true;
                     x = parent.x
@@ -36,11 +37,13 @@ Item {
                 } else {
                     shouldScroll = false;
                     animation.running = false
+                    blendout.running = false
                     blendin.running = false
                 }
             } else {
                 shouldScroll = false;
                 animation.running = false;
+                blendout.running = false
                 blendin.running = false;
                 lbl.x = parent.x
                 lbl.opacity = 1.0
@@ -64,13 +67,27 @@ Item {
             from: mainItm.x
             to: ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width)
             duration: 500
+            easing.type: Easing.InOutCubic
 
 
             onStopped: {
-                lbl.opacity = 0.0
-                lbl.x = parent.x
                 if (lbl.visible && lbl.shouldScroll)
+                    blendout.running = true
+            }
+        }
+        PropertyAnimation {
+            id: blendout
+            target: lbl
+            property: "opacity"
+            from: 1.0
+            to: 0.0
+            duration: 400
+            easing.type: Easing.InQuad
+            onStopped: {
+                if (lbl.visible && lbl.shouldScroll) {
+                    lbl.x = mainItm.x
                     blendin.running = true
+                }
             }
         }
 
@@ -80,7 +97,8 @@ Item {
             property: "opacity"
             from: 0.0
             to: 1.0
-            duration: 500
+            duration: 750
+            easing.type: Easing.OutQuad
             onStopped: {
                 if (lbl.visible && lbl.shouldScroll)
                     animation.running = true
