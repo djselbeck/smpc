@@ -78,11 +78,6 @@ Page{
             id: albumsongs_list_view
             contentHeight: 0
             height: contentHeight
-
-            onContentHeightChanged: {
-//                height = contentHeight;
-                console.debug("New contentHeight:" + contentHeight + " height: " + height);
-            }
             interactive: false
 
             delegate:ListItem {
@@ -110,9 +105,17 @@ Page{
                 function addTrackRemorse() {
                     remorseAction(qsTr("adding track"), function() { addSong(uri); },3000)
                 }
+
+                function playAlbumRemorse() {
+                    remorseAction(qsTr("playing album"), function() { playAlbum(["",album]); },3000)
+                }
+                function addAlbumRemorse() {
+                    remorseAction(qsTr("adding album"), function() { addAlbum(["",album]) },3000)
+                }
                 Component {
                     id: contextMenu
                     ContextMenu {
+                        property int lastHeight: 0
                         MenuItem {
                             text: qsTr("play track");
                             onClicked: {
@@ -125,6 +128,22 @@ Page{
                             onClicked: {
                                 addTrackRemorse();
                             }
+                        }
+                        MenuItem {
+                            text: qsTr("add album to list")
+                            onClicked: {
+                                addAlbumRemorse();
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr("play album")
+                            onClicked: {
+                                playAlbumRemorse();
+                            }
+                        }
+                        onHeightChanged: {
+                            mainSearchFlickable.contentY += (height-lastHeight);
+                            lastHeight = height;
                         }
                     }
                 }

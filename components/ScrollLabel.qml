@@ -67,7 +67,7 @@ Item {
             from: mainItm.x
             to: ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width)
             duration: 500
-            easing.type: Easing.InOutCubic
+            easing.type: Easing.InOutQuad
 
 
             onStopped: {

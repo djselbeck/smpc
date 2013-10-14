@@ -213,8 +213,8 @@ void Controller::connectSignals()
     connect(netaccess,SIGNAL(connectionestablished()),item,SLOT(slotConnected()));
     connect(netaccess,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
     connect(netaccess,SIGNAL(statusUpdate(status_struct)),this,SLOT(updateStatus(status_struct)));
-    connect(netaccess,SIGNAL(busy()),item,SIGNAL(busy()));
-    connect(netaccess,SIGNAL(ready()),item,SIGNAL(ready()));
+    connect(netaccess,SIGNAL(busy()),item,SLOT(busy()));
+    connect(netaccess,SIGNAL(ready()),item,SLOT(ready()));
     connect(item,SIGNAL(newProfile(QVariant)),this,SLOT(newProfile(QVariant)));
     connect(item,SIGNAL(changeProfile(QVariant)),this,SLOT(changeProfile(QVariant)));
     connect(item,SIGNAL(deleteProfile(int)),this,SLOT(deleteProfile(int)));

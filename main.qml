@@ -117,12 +117,12 @@ ApplicationWindow
 
     function busy()
     {
-        // FIXME
+        busyIndicator.running = true;
     }
 
     function ready()
     {
-        // FIXME
+        busyIndicator.running = false;
     }
 
     function settingsModelUpdated()
@@ -282,7 +282,11 @@ ApplicationWindow
         currentsongpage = object;
         console.debug("currentsong Page created");
     }
-
+    BusyIndicator
+    {
+        id:busyIndicator
+        anchors.centerIn: parent
+    }
 
     initialPage: MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
