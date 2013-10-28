@@ -1,8 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=jollampc
-Icon=icon-launcher-gallery
-Exec=invoker --type=j -s /opt/sdk/bin/jollampc
-Comment=Sailfish UI application
-
-
+Name=JollaMPC
+Icon=/usr/share/icons/jollampc.png
+Exec=invoker --type=silica-qt5 -s jollampc
+Comment=JollaMPC MPD remote control

@@ -39,12 +39,16 @@ HEADERS += \
 qml.files = *.qml pages cover main.qml components
 
 # The .desktop file
-desktop.files = jollampc.desktop
+desktop.files = $${TARGET}.desktop
+icon.files = $${TARGET}.png
+icon.path = /usr/share/icons/
+INSTALLS += icon desktopfile
+
 
 # Please do not modify the following line.
 include(sailfishapplication/sailfishapplication.pri)
 
+
 OTHER_FILES = rpm/jollampc.yaml \
-    pages/MainPage.qml \
-    components/MainGridItem.qml
+    jollampc.png
 

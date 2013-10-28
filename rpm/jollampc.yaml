@@ -1,6 +1,7 @@
 Name: jollampc
 Summary: Port of qmobilempd client
-Version: 0.1
+URL: https://github.com/djselbeck/jollampc
+Version: 1.0.0
 Release: 1
 Group: Qt/Qt
 License: GPLv3
@@ -20,7 +21,11 @@ Requires:
 - mapplauncherd-booster-silica-qt5
 - sailfishsilica-qt5
 Files:
-- /usr/bin
-- /usr/share/jollampc
+- /usr/share/icons/
 - /usr/share/applications
+- /usr/share/jollampc
+- /usr/bin
+- '%{_bindir}'
+- '%{_datadir}/jollampc'
+- '%{_datadir}/applications'
 PkgBR: []
