@@ -66,10 +66,10 @@ Page{
                 label: "Search for:"
                 width: parent.width - Theme.paddingMedium
                 menu: ContextMenu {
-                        MenuItem { text: "Titles" }
-                        MenuItem { text: "Albums" }
-                        MenuItem { text: "Artists" }
-                        MenuItem { text: "Files" }
+                        MenuItem { text: qsTr("Titles") }
+                        MenuItem { text: qsTr("Albums") }
+                        MenuItem { text: qsTr("Artists") }
+                        MenuItem { text: qsTr("Files") }
                 }
             }
         }

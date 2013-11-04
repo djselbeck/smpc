@@ -38,11 +38,16 @@ HEADERS += \
 # QML files and folders
 qml.files = *.qml pages cover main.qml components
 
+
+TRANSLATIONS += $${TARGET}_de.ts
+
+
 # The .desktop file
 desktop.files = $${TARGET}.desktop
 icon.files = $${TARGET}.png
 icon.path = /usr/share/icons/
-INSTALLS += icon desktopfile
+
+INSTALLS += icon
 
 
 # Please do not modify the following line.
@@ -72,5 +77,7 @@ pages/ServerListPage.qml \
 pages/SettingsPage.qml \
 pages/SongPage.qml \
 }
-    
-TRANSLATIONS += jollampc_de.ts
+
+RESOURCES += \
+    translations.qrc
+

@@ -187,6 +187,7 @@ ApplicationWindow
     function updatePlaylist()
     {   
         //  blockinteraction.enabled=false;
+        console.debug("setting new playlist");
         playlistpage.listmodel = playlistModel;
         console.debug("received new playlist and set model");
     }
