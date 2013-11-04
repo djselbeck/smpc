@@ -25,42 +25,42 @@ Page {
     ListModel {
         id: mainMenuModel
         ListElement {
-            name: qsTr("song information")
+            name: "song information"
             ident: "currentsong"
             icon: "icons/music.svg"
         }
         ListElement {
-            name: qsTr("artists")
+            name: "artists"
             ident: "artists"
             icon: "icons/contacts.svg"
         }
         ListElement {
-            name: qsTr("albums")
+            name: "albums"
             ident: "albums"
             icon: "icons/music_album.svg"
         }
         ListElement {
-            name: qsTr("files")
+            name: "files"
             ident: "files"
             icon: "icons/music_file.svg"
         }
         ListElement {
-            name: qsTr("playlist")
+            name: "playlist"
             ident: "playlist"
             icon: "icons/playlistlist.svg"
         }
         ListElement {
-            name: qsTr("search")
+            name: "search"
             ident: "search"
             icon: "icons/search.svg"
         }
         ListElement {
-            name: qsTr("connect")
+            name: "connect"
             ident: "connectto"
             icon: "icons/connectivity.svg"
         }
         ListElement {
-            name: qsTr("settings")
+            name: "settings"
             ident: "settings"
             icon: "icons/settings.svg"
         }

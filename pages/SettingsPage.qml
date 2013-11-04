@@ -27,10 +27,10 @@ Page
 
     ListModel {
         id: mainMenuModel
-        ListElement { name: qsTr("server settings"); ident:"servers";}
-        ListElement { name: qsTr("outputs"); ident:"outputs";}
-        ListElement { name: qsTr("update database"); ident:"updatedb";}
-        ListElement { name: qsTr("about"); ident:"about";}
+        ListElement { name: "server settings"; ident:"servers";}
+        ListElement { name: "outputs"; ident:"outputs";}
+        ListElement { name: "update database"; ident:"updatedb";}
+        ListElement { name: "about"; ident:"about";}
     }
 
     function parseClickedSettings(ident)
