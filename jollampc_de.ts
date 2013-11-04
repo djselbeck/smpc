@@ -322,6 +322,46 @@
         <source>JollaMPC</source>
         <translation type="unfinished">JollaMPC</translation>
     </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="28"/>
+        <source>song information</source>
+        <translation type="unfinished">Liedinformationen</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="33"/>
+        <source>artists</source>
+        <translation type="unfinished">Interpreten</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="38"/>
+        <source>albums</source>
+        <translation type="unfinished">Alben</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="43"/>
+        <source>files</source>
+        <translation type="unfinished">Dateien</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="48"/>
+        <source>playlist</source>
+        <translation type="unfinished">Wiedergabeliste</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="53"/>
+        <source>search</source>
+        <translation type="unfinished">Suchen</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="58"/>
+        <source>connect</source>
+        <translation type="unfinished">Verbinden</translation>
+    </message>
+    <message>
+        <location filename="pages/MainPage.qml" line="63"/>
+        <source>settings</source>
+        <translation type="unfinished">Einstellungen</translation>
+    </message>
 </context>
 <context>
     <name>OutputsPage</name>
@@ -418,6 +458,26 @@
         <location filename="pages/SearchPage.qml" line="35"/>
         <source>Search</source>
         <translation type="unfinished">Suchen</translation>
+    </message>
+    <message>
+        <location filename="pages/SearchPage.qml" line="69"/>
+        <source>Titles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pages/SearchPage.qml" line="70"/>
+        <source>Albums</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pages/SearchPage.qml" line="71"/>
+        <source>Artists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pages/SearchPage.qml" line="72"/>
+        <source>Files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="pages/SearchPage.qml" line="103"/>
@@ -538,6 +598,26 @@
         <location filename="pages/SettingsPage.qml" line="13"/>
         <source>settings</source>
         <translation type="unfinished">Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="pages/SettingsPage.qml" line="30"/>
+        <source>server settings</source>
+        <translation type="unfinished">Servereinstellungen</translation>
+    </message>
+    <message>
+        <location filename="pages/SettingsPage.qml" line="31"/>
+        <source>outputs</source>
+        <translation type="unfinished">Ausgänge</translation>
+    </message>
+    <message>
+        <location filename="pages/SettingsPage.qml" line="32"/>
+        <source>update database</source>
+        <translation type="unfinished">Datenbank aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="pages/SettingsPage.qml" line="33"/>
+        <source>about</source>
+        <translation type="unfinished">über</translation>
     </message>
 </context>
 <context>
