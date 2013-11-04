@@ -52,3 +52,25 @@ include(sailfishapplication/sailfishapplication.pri)
 OTHER_FILES = rpm/jollampc.yaml \
     jollampc.png
 
+evil_hack_to_fool_lupdate {
+SOURCES += \
+  pages/AboutPage.qml \
+pages/AlbumListPage.qml \
+pages/AlbumTracksPage.qml \
+pages/ArtistListPage.qml \
+pages/ConnectServerPage.qml \
+pages/CurrentPlaylistPage.qml \
+pages/CurrentSong.qml \
+pages/FileBrowserPage.qml \
+pages/MainPage.qml \
+pages/OutputsPage.qml \
+pages/PlaylistTracksPage.qml \
+pages/SavedPlaylistsPage.qml \
+pages/SearchPage.qml \
+pages/ServerEditPage.qml \
+pages/ServerListPage.qml \
+pages/SettingsPage.qml \
+pages/SongPage.qml \
+}
+    
+TRANSLATIONS += jollampc_de.ts
