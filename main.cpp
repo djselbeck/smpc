@@ -10,10 +10,10 @@
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
-    app->setOrganizationName("jollampc");
-    app->setApplicationName("jollampc");
+    app->setOrganizationName("smpc");
+    app->setApplicationName("smpc");
     QString locale = QLocale::system().name();
-    QString translationFile = QString(":translations/jollampc_") + locale;
+    QString translationFile = QString(":translations/smpc_") + locale;
     QTranslator translator;
     CommonDebug("Trying: " + translationFile);
     translator.load(translationFile);

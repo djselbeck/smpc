@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/translations">
-        <file>jollampc_de.qm</file>
+        <file>smpc_de.qm</file>
     </qresource>
 </RCC>

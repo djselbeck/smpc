@@ -11,9 +11,9 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="80.112732"
-   height="81.160316"
-   viewBox="0 0 80.112732 81.160316"
+   width="80"
+   height="80"
+   viewBox="0 0 80 79.999999"
    id="svg2"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="jollampc.svg"
@@ -35,16 +35,16 @@
      showgrid="true"
      inkscape:zoom="4.9166667"
      inkscape:cx="45.734101"
-     inkscape:cy="35.563537"
+     inkscape:cy="35.563532"
      inkscape:window-x="-2"
      inkscape:window-y="-3"
      inkscape:window-maximized="1"
      inkscape:current-layer="g3898"
      inkscape:snap-grids="false"
-     fit-margin-top="0"
+     fit-margin-top="0.8"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0">
+     fit-margin-bottom="-1.9428903e-16">
     <inkscape:grid
        type="xygrid"
        id="grid3105"
@@ -63,7 +63,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -806,7 +806,7 @@
   </linearGradient>
   <g
      id="g3898"
-     transform="translate(-7.9889651,-7.8417272)">
+     transform="translate(-7.9889651,-9.0020474)">
     <rect
        style="fill:none"
        id="rect13"
@@ -815,7 +815,8 @@
        height="96"
        width="96" />
     <g
-       id="g3940">
+       id="g3940"
+       transform="matrix(1.0000034,0,0,1,-2.6934866e-5,1.1600046)">
       <path
          d="m 88,49 c 0.02362,13.29508 0.03061,39.885292 0.03061,39.885292 0,0 -21.942703,-0.117867 -40.030611,0.114708 C 29.145378,89.242433 7.9886996,67.856177 8,49 8.0073769,36.690619 8.4015936,9.113957 8.4015936,9.113957 8.4015936,9.113957 32.633972,8.9999549 48,9 c 18.856181,5.54e-5 39.968284,22.150476 40,40 z"
          id="path4"

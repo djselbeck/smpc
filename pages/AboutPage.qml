@@ -15,7 +15,7 @@ Page
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:"JollaMPC"
+            text:"SMPC"
             font.pixelSize: Theme.fontSizeExtraLarge
         }
         Button
@@ -24,7 +24,7 @@ Page
             text:"Homepage"
             onClicked:
             {
-                Qt.openUrlExternally('https://github.com/djselbeck/jollampc');
+                Qt.openUrlExternally('https://github.com/djselbeck/smpc');
             }
 
         }

@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=JollaMPC
-Icon=/usr/share/icons/jollampc.png
-Exec=invoker --type=silica-qt5 -s jollampc
-Comment=JollaMPC MPD remote control

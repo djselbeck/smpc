@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=SMPC
+Icon=/usr/share/icons/smpc.png
+Exec=invoker --type=silica-qt5 -s smpc
+Comment=SMPC MPD remote control

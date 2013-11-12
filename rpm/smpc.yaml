@@ -1,6 +1,6 @@
-Name: jollampc
-Summary: Port of qmobilempd client
-URL: https://github.com/djselbeck/jollampc
+Name: smpc
+Summary: SailfishOS Port of qmobilempd client
+URL: https://github.com/djselbeck/smpc
 Version: 1.0.0
 Release: 1
 Group: Qt/Qt
@@ -8,7 +8,7 @@ License: GPLv3
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |
-  This is a port the symbian based mpd-client qmobilempd.
+  This is a port the symbian based mpd-client qmobilempd to SailfishOS
 Configure: none
 Builder: qtc5
 PkgConfigBR:
@@ -21,11 +21,13 @@ Requires:
 - mapplauncherd-booster-silica-qt5
 - sailfishsilica-qt5
 Files:
+- /usr/share/smpc
 - /usr/share/icons/
 - /usr/share/applications
-- /usr/share/jollampc
+- /usr/share/smpc
 - /usr/bin
 - '%{_bindir}'
-- '%{_datadir}/jollampc'
+- '%{_datadir}/smpc'
 - '%{_datadir}/applications'
+- /usr/share/smpc/
 PkgBR: []

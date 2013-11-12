@@ -8,7 +8,7 @@ Page {
         anchors.margins: Theme.paddingMedium
         contentWidth: width
         header: PageHeader {
-            title: qsTr("JollaMPC")
+            title: "SMPC"
         }
         model: mainMenuModel
         delegate: BackgroundItem {

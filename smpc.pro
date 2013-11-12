@@ -1,5 +1,5 @@
 # The name of your app
-TARGET = jollampc
+TARGET = smpc
 
 QT += network gui
 
@@ -54,8 +54,8 @@ INSTALLS += icon
 include(sailfishapplication/sailfishapplication.pri)
 
 
-OTHER_FILES = rpm/jollampc.yaml \
-    jollampc.png
+OTHER_FILES = rpm/smpc.yaml \
+    smpc.png
 
 evil_hack_to_fool_lupdate {
 SOURCES += \
