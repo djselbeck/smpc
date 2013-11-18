@@ -94,8 +94,8 @@ Page {
         } else if (ident == "currentsong") {
             if (connected)
                 pageStack.push(currentsongpage)
-            //            if(connected)
-            //                pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
+//                        if(connected)
+//                            pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
         } else if (ident == "albums") {
             artistname = ""
             if (connected)

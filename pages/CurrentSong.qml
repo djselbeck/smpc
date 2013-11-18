@@ -45,14 +45,15 @@ Page {
             }
             width: parent.width
 
-            Image {
+            ToggleImage {
                 id: coverImage
                 height: infoFlickable.height - (titleText.height + albumText.height
                                                 + artistText.height + pageHeading.height)
                 width: height
                 anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectCrop
-                source: coverimageurl
+                sourceprimary: coverimageurl
+                sourcesecondary: artistimageurl
             }
 
             ScrollLabel {
@@ -246,16 +247,21 @@ Page {
     }
 
     function makeLastFMRequestURL() {
-        var url = ""
+        var url = "";
         url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="
-                + lastfmapikey + "&artist=" + artist + "&album=" + album
-        url = url.replace(/#|\|/g, "")
-        console.debug("LastFM url created: " + url)
-        coverfetcherXMLModel.source = url
+                + lastfmapikey + "&artist=" + artist + "&album=" + album;
+        url = url.replace(/#|\|/g, "");
+        console.debug("LastFM url created: " + url);
+        coverfetcherXMLModel.source = url;
 
-        coverfetcherXMLModel.reload()
+        coverfetcherXMLModel.reload();
 
-        return url
+        // Fetch artist image
+
+        url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
+                + lastfmapikey + "&artist=" + artist;
+        artistfetcherXMLModel.source = url;
+        artistfetcherXMLModel.reload();
     }
 
     XmlListModel {
@@ -294,6 +300,52 @@ Page {
                     if (coverurl !== coverimageurl) {
                         // global
                         coverimageurl = coverfetcherXMLModel.get(
+                                    fetchindex).image
+                    }
+                }
+            }
+            if (status == XmlListModel.Error) {
+                console.debug(coverfetcherXMLModel.errorString())
+            }
+        }
+    }
+
+    XmlListModel {
+        id: artistfetcherXMLModel
+        query: "/lfm/artist/image"
+        XmlRole {
+            name: "image"
+            query: "./string()"
+        }
+        XmlRole {
+            name: "size"
+            query: "@size/string()"
+        }
+        onStatusChanged: {
+            console.debug("XML status changed to: " + status)
+            if (status == XmlListModel.Ready) {
+                if (count > 0) {
+                    console.debug("Xml model ready, count: " + count)
+                    var fetchindex
+                    if (count >= 3) {
+                        console.debug("item: " + 3)
+                        console.debug(artistfetcherXMLModel.get(3).size + ":")
+                        console.debug(artistfetcherXMLModel.get(3).image)
+                        fetchindex = 3
+                    } else {
+                        console.debug("item: " + count)
+                        console.debug(artistfetcherXMLModel.get(
+                                          count - 1).size + ":")
+                        console.debug(artistfetcherXMLModel.get(count - 1).image)
+                        fetchindex = count - 1
+                    }
+
+                    console.debug("artist imageurl: " + artistfetcherXMLModel.get(
+                                      fetchindex).image)
+                    var artisturl = artistfetcherXMLModel.get(fetchindex).image
+                    if (artisturl !== artistimageurl) {
+                        // global
+                        artistimageurl = artistfetcherXMLModel.get(
                                     fetchindex).image
                     }
                 }
