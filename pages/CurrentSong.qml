@@ -51,7 +51,7 @@ Page {
                                                 + artistText.height + pageHeading.height)
                 width: height
                 anchors.horizontalCenter: parent.horizontalCenter
-                fillMode: Image.PreserveAspectCrop
+                fillMode: Image.PreserveAspectFit
                 sourceprimary: coverimageurl
                 sourcesecondary: artistimageurl
             }
@@ -351,7 +351,7 @@ Page {
                 }
             }
             if (status == XmlListModel.Error) {
-                console.debug(coverfetcherXMLModel.errorString())
+                console.debug(artistfetcherXMLModel.errorString())
             }
         }
     }

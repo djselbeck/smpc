@@ -1,14 +1,25 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components"
 
 CoverBackground {
     id: coverpage
     anchors.fill: parent
 
-    Image{
+    ToggleImage{
+        id: coverimg
         anchors.fill: parent
-        source: coverimageurl;
+        sourceprimary: coverimageurl;
+        sourcesecondary: artistimageurl;
         fillMode: Image.PreserveAspectCrop
+    }
+    onStatusChanged: {
+        if(status === Cover.Activating || status === Cover.Active) {
+            coverimg.visible = true;
+        }
+        else {
+            coverimg.visible = false;
+        }
     }
     
     CoverActionList {

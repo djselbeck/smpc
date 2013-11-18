@@ -35,8 +35,10 @@ Item {
         duration: 400
         easing.type: Easing.InQuad
         onStopped: {
-            toggleSource();
-            blendin.start();
+            if(mainImg.visible) {
+                toggleSource();
+                blendin.start();
+            }
         }
     }
 
@@ -49,7 +51,9 @@ Item {
         duration: 750
         easing.type: Easing.OutQuad
         onStopped: {
-            waitTimer.start();
+            if(mainImg.visible) {
+                waitTimer.start();
+            }
         }
     }
 
@@ -58,17 +62,19 @@ Item {
         interval: 5000
         repeat: false
         onTriggered: {
-            blendout.start();
+            if(mainImg.visible) {
+                blendout.start();
+            }
         }
     }
     onVisibleChanged: {
         if (visible) {
-            console.debug("Setting primary source, visiblity changed")
             mainImg.opacity = 1.0;
             mainImg.source = sourceprimary
             waitTimer.start();
         }
         else {
+            console.debug("Disabling all");
             waitTimer.stop();
             blendin.stop();
         }
