@@ -15,6 +15,7 @@
 #include "serverprofile.h"
 #include "artistmodel.h"
 #include "albummodel.h"
+#include "filemodel.h"
 #include "mpdoutput.h"
 
 
@@ -51,6 +52,7 @@ signals:
     void searchedTracksReady();
     void addURIToPlaylist(QString);
     void requestPlaylistClear();
+    void filePopCleared();
 
 
 private:
@@ -75,7 +77,7 @@ private:
     QList<MpdTrack*> *playlist;
     QList<MpdTrack*> *searchedtracks;
     QList<MPDOutput*> *outputs;
-    QStack<QList<QObject*>*> *filemodels;
+    QStack<FileModel*> *filemodels;
     QThread *oldnetthread;
 
 private slots:
@@ -85,7 +87,6 @@ private slots:
     void requestArtistAlbums(QString artist);
     void requestAlbum(QVariant array);
     void requestFilePage(QString);
-    void requestFileModel(QString);
     void seek(int);
     void incVolume();
     void decVolume();

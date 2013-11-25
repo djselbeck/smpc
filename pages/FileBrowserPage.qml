@@ -6,11 +6,15 @@ Page
 {
     id: filePage
     property string filepath;
-    property variant model;
     property alias listmodel: fileListView.model;
     SilicaListView {
             id : fileListView
-            ScrollDecorator {}
+            SpeedScroller{
+                id: scroller
+                listview: fileListView
+                scrollenabled: fastscrollenabled
+            }
+
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -136,9 +140,13 @@ Page
     }
 
     Component.onDestruction: {
-        model = 0;
         console.debug("popping file model stack");
+        fastscrollenabled = false;
         popfilemodelstack();
+    }
+
+    Component.onCompleted: {
+        console.debug("filepage created: ");
     }
 
 }

@@ -29,7 +29,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     qmlRegisterType<ServerProfile>();
     volIncTimer.setInterval(250);
     volDecTimer.setInterval(250);
-    filemodels = new QStack<QList<QObject*>*>();
+    filemodels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
     netaccess->setQmlThread(viewer->thread());
     //Start auto connect
@@ -71,8 +71,9 @@ void Controller::updateFilesModel(QList<QObject*>* list)
     CommonDebug("FILES UPDATE REQUIRED");
     if(list->length()>0)
     {
-        viewer->rootContext()->setContextProperty("filesModel",QVariant::fromValue(*list));
-        filemodels->push(list);
+        FileModel *model = new FileModel((QList<MpdFileEntry*>*)list);
+        viewer->rootContext()->setContextProperty("filesModel",model);
+        filemodels->push(model);
         emit filesModelReady();
     }
 
@@ -99,7 +100,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
         delete(artistmodelold);
     }
     //ArtistModel *model = new ArtistModel((QList<MpdTrack*>*)list,this);
-    artistlist = (QList<MpdArtist*>*)list;
+//    artistlist = (QList<MpdArtist*>*)list;
     ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list);
     artistmodelold = model;
     viewer->rootContext()->setContextProperty("artistsModel",model);
@@ -179,7 +180,6 @@ void Controller::connectSignals()
     connect(item,SIGNAL(requestArtistAlbums(QString)),netaccess,SLOT(getArtistsAlbums(QString)));
     connect(item,SIGNAL(requestAlbums()),netaccess,SLOT(getAlbums()));
     connect(item,SIGNAL(requestFilesPage(QString)),this,SLOT(requestFilePage(QString)));
-    connect(item,SIGNAL(requestFilesModel(QString)),this,SLOT(requestFileModel(QString)));
   //  connect(item,SIGNAL(requestCurrentPlaylist()),this,SLOT(requestCurrentPlaylist()));
     connect(item,SIGNAL(playPlaylistTrack(int)),netaccess,SLOT(playTrackByNumber(int)));
     connect(item,SIGNAL(deletePlaylistTrack(int)),netaccess,SLOT(deleteTrackByNumer(int)));
@@ -260,6 +260,8 @@ void Controller::connectSignals()
     connect(this,SIGNAL(addURIToPlaylist(QString)),netaccess,SLOT(addTrackToPlaylist(QString)));
 
     connect(this,SIGNAL(requestPlaylistClear()),item,SLOT(clearPlaylist()));
+    connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
+    connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
 }
 
 void Controller::setPassword(QString password)
@@ -406,23 +408,10 @@ void Controller::seek(int pos)
     netaccess->seekPosition(currentsongid,pos);
 }
 
-void Controller::requestFileModel(QString path)
-{
-    CommonDebug("Connecting Signals with qml part");
-    QObject *item = (QObject *)viewer->rootObject();
-    disconnect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesModel()));
-    disconnect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
-    connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesModel()));
-    emit getFiles(path);
-}
-
 void Controller::requestFilePage(QString path)
 {
     CommonDebug("Connecting Signals with qml part");
     QObject *item = (QObject *)viewer->rootObject();
-    disconnect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesModel()));
-    disconnect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
-    connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
     emit getFiles(path);
 }
 
@@ -634,30 +623,16 @@ void Controller::applicationDeactivate()
     netaccess->setUpdateInterval(1000);
 }
 
-//void Controller::focusChanged(QWidget *old, QWidget *now){
-//    if(now==0)
-//    {
-//        CommonDebug("Focus lost");
-//        emit setUpdateInterval(25000);
-//    }
-//    else{
-//        CommonDebug("Focus gained");
-//        emit setUpdateInterval(1000);
-//    }
-//}
 
 void Controller::fileStackPop()
 {
-    QList<MpdFileEntry*> *list = (QList<MpdFileEntry*>*)filemodels->pop();
-    for(int i=0;i<list->length();i++)
-    {
-        delete(list->at(i));
-    }
-    delete(list);
-    if(!filemodels->empty())
-    {
-        viewer->rootContext()->setContextProperty("filesModel",QVariant::fromValue(*(filemodels->top())));
-    }
+    FileModel *model = filemodels->pop();
+    delete(model);
+//    if(!filemodels->empty())
+//    {
+//        viewer->rootContext()->setContextProperty("filesModel",QVariant::fromValue(*(filemodels->top())));
+//    }
+    emit filePopCleared();
 }
 
 void Controller::cleanFileStack()
@@ -677,6 +652,7 @@ void Controller::cleanFileStack()
         delete(searchedtracks);
         searchedtracks = 0;
     }
+    emit filePopCleared();
 }
 
 void Controller::addlastsearchtoplaylist()

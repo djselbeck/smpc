@@ -56,6 +56,10 @@ public:
         if(track!=0)
             return getTrack()->getYear();
     }
+    QString getSection() {
+        return (name=="" ? "" :QString(name.toUpper()[0]));
+    }
+
     int getTrackNr() {
         if(track!=0)
             return getTrack()->getTrackNr();
