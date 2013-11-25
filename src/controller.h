@@ -16,6 +16,8 @@
 #include "artistmodel.h"
 #include "albummodel.h"
 #include "filemodel.h"
+#include "playlistmodel.h"
+
 #include "mpdoutput.h"
 
 
@@ -74,7 +76,7 @@ private:
     ArtistModel *artistmodelold;
     AlbumModel *albumsmodelold;
     QList<MpdTrack*> *trackmodel;
-    QList<MpdTrack*> *playlist;
+    PlaylistModel *playlist;
     QList<MpdTrack*> *searchedtracks;
     QList<MPDOutput*> *outputs;
     QStack<FileModel*> *filemodels;

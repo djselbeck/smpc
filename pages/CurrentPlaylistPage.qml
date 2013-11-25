@@ -9,7 +9,10 @@ Page
     property alias songid: playlistView.currentIndex
     SilicaListView {
         id : playlistView
-        ScrollDecorator {}
+        SpeedScroller{
+            listview: playlistView
+        }
+
         anchors.fill: parent
         contentWidth: width
         header: PageHeader {
@@ -38,7 +41,7 @@ Page
             }
         }
         delegate: ListItem {
-            menu: contextMenu
+           // menu: contextMenu
             Column{
                 x : Theme.paddingLarge
                 anchors.verticalCenter: parent.verticalCenter
@@ -56,7 +59,7 @@ Page
             GlassItem
             {
                 anchors.fill: parent
-                visible: playing
+                visible: (playing == true)
                 scale: 0.5
             }
             onClicked: {
@@ -108,7 +111,7 @@ Page
             }
         }
         onDone: {
-            if ( result == DialogResult.Accepted)
+            if ( result === DialogResult.Accepted)
             {
                 deletePlaylist();
             }
@@ -136,12 +139,13 @@ Page
             }
         }
         onDone: {
-            if ( result == DialogResult.Accepted)
+            if ( result === DialogResult.Accepted)
             {
                 console.debug("Saving playlist: " + playlistNameField.text);
                 savePlaylist(playlistNameField.text);
             }
             playlistNameField.text = "";
+            playlistNameField.focus = false;
         }
         onOpened: {
             playlistNameField.focus = true;

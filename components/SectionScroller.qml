@@ -9,11 +9,11 @@ Item {
     x: parent.x+parent.width-width;
     z:1
     property ListView listview;
-    Rectangle {
-        id: testrect
-        opacity:0.5
-        anchors.fill:parent
-    }
+//    Rectangle {
+//        id: testrect
+//        opacity:0.5
+//        anchors.fill:parent
+//    }
 
     onListviewChanged: {
         console.debug("Listview changed");

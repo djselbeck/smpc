@@ -49,20 +49,13 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
     if(playlist==0){
         currentsongid=0;
     } else{
-        QList<MpdTrack*>::iterator i;
-        for(i = playlist->begin();i!=playlist->end();i++){
-            delete(*i);
-        }
         delete(playlist);
-       // viewer->rootContext()->setContextProperty("playlistModel",QVariant::fromValue(0));
-        playlist=0;
+        playlist = 0;
     }
     currentsongid = -1;
-    playlist = (QList<MpdTrack*>*)(list);
+    playlist = new PlaylistModel((QList<MpdTrack*>*)list);
 
-
-    viewer->rootContext()->setContextProperty("playlistModel",QVariant::fromValue(*list));
-    CommonDebug("Playlist length:"+QString::number(playlist->length())+"\n");
+    viewer->rootContext()->setContextProperty("playlistModel",playlist);
     emit playlistUpdated();
 }
 
@@ -339,26 +332,29 @@ void Controller::updateStatus(status_struct status)
     {
         if(status.playing==NetworkAccess::PLAYING)
             emit sendPopup(status.title+"\n"+status.album+"\n"+status.artist);
-        if(playlist!=0&&playlist->length()>status.id&&playlist->length()>currentsongid
+        if(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
                 &&status.id>=0&&currentsongid>=0){
             CommonDebug("1Changed playlist "+QString::number(status.id)+":"+QString::number(currentsongid));
-            playlist->at(currentsongid)->setPlaying(false);
-            playlist->at(status.id)->setPlaying(true);
+            playlist->setPlaying(currentsongid,false);
+            playlist->setPlaying(status.id,true);
+//            playlist->get(currentsongid)->setPlaying(false);
+//            playlist->get(status.id)->setPlaying(true);
             CommonDebug("2Changed playlist");
 
         }
-        if(currentsongid==-1&&(playlist!=0&&playlist->length()>status.id&&playlist->length()>currentsongid
+        if(currentsongid==-1&&(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
                                &&status.id>=0))
         {
-            playlist->at(status.id)->setPlaying(true);
+            playlist->setPlaying(status.id,true);
         }
     }
     if(lastplaybackstate!=status.playing)
     {
         CommonDebug("Playback state changed");
-        if(status.playing==NetworkAccess::STOP&&playlist!=0&&currentsongid>=0&&currentsongid<playlist->length())
+        if(status.playing==NetworkAccess::STOP&&playlist!=0&&currentsongid>=0&&currentsongid<playlist->rowCount())
         {
-            playlist->at(currentsongid)->setPlaying(false);
+            playlist->setPlaying(currentsongid,false);
+//            playlist->get(currentsongid)->setPlaying(false);
         }
     }
     lastplaybackstate = status.playing;

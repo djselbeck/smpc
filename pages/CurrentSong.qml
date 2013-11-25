@@ -248,11 +248,12 @@ Page {
 
     function makeLastFMRequestURL() {
         coverimageurl = "";
+        var artistclean = artist.replace(/[|&;$%@"<>()+,]/g, "");
+        var albumclean = album.replace(/[|&;$%@"<>()+,]/g, "");
         artistimageurl = "";
         var url = "";
         url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="
-                + lastfmapikey + "&artist=" + artist + "&album=" + album;
-        url = url.replace(/#|\|/g, "");
+                + lastfmapikey + "&artist=" + artistclean + "&album=" + albumclean;
         console.debug("LastFM url created: " + url);
         if( album!="" ) {
             coverfetcherXMLModel.source = url;
