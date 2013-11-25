@@ -63,7 +63,7 @@ Page{
             }
             ComboBox{
                 id: searchforcombobox
-                label: "Search for:"
+                label: qsTr("Search for:")
                 width: parent.width - Theme.paddingMedium
                 menu: ContextMenu {
                         MenuItem { text: qsTr("Titles") }

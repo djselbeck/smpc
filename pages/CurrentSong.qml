@@ -247,21 +247,26 @@ Page {
     }
 
     function makeLastFMRequestURL() {
+        coverimageurl = "";
+        artistimageurl = "";
         var url = "";
         url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="
                 + lastfmapikey + "&artist=" + artist + "&album=" + album;
         url = url.replace(/#|\|/g, "");
         console.debug("LastFM url created: " + url);
-        coverfetcherXMLModel.source = url;
-
-        coverfetcherXMLModel.reload();
+        if( album!="" ) {
+            coverfetcherXMLModel.source = url;
+            coverfetcherXMLModel.reload();
+        }
 
         // Fetch artist image
 
         url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
                 + lastfmapikey + "&artist=" + artist;
-        artistfetcherXMLModel.source = url;
-        artistfetcherXMLModel.reload();
+        if(artist!="") {
+            artistfetcherXMLModel.source = url;
+            artistfetcherXMLModel.reload();
+        }
     }
 
     XmlListModel {
@@ -281,11 +286,11 @@ Page {
                 if (count > 0) {
                     console.debug("Xml model ready, count: " + count)
                     var fetchindex
-                    if (count >= 3) {
-                        console.debug("item: " + 3)
-                        console.debug(coverfetcherXMLModel.get(3).size + ":")
-                        console.debug(coverfetcherXMLModel.get(3).image)
-                        fetchindex = 3
+                    if (count >= 4) {
+                        console.debug("item: " + 4)
+                        console.debug(coverfetcherXMLModel.get(4).size + ":")
+                        console.debug(coverfetcherXMLModel.get(4).image)
+                        fetchindex = 4
                     } else {
                         console.debug("item: " + count)
                         console.debug(coverfetcherXMLModel.get(
@@ -327,11 +332,11 @@ Page {
                 if (count > 0) {
                     console.debug("Xml model ready, count: " + count)
                     var fetchindex
-                    if (count >= 3) {
-                        console.debug("item: " + 3)
-                        console.debug(artistfetcherXMLModel.get(3).size + ":")
-                        console.debug(artistfetcherXMLModel.get(3).image)
-                        fetchindex = 3
+                    if (count >= 4) {
+                        console.debug("item: " + 4)
+                        console.debug(artistfetcherXMLModel.get(4).size + ":")
+                        console.debug(artistfetcherXMLModel.get(4).image)
+                        fetchindex = 4
                     } else {
                         console.debug("item: " + count)
                         console.debug(artistfetcherXMLModel.get(

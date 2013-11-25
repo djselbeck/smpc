@@ -9,7 +9,10 @@ Page
     property string artistname;
     SilicaListView {
             id : albumListView
-            ScrollDecorator {}
+            SectionScroller {
+                listview: albumListView
+            }
+
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {

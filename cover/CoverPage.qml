@@ -21,6 +21,7 @@ CoverBackground {
             coverimg.visible = false;
         }
     }
+
     
     CoverActionList {
         id: coverAction
