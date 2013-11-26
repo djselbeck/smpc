@@ -52,18 +52,18 @@ Item {
         anchors.fill:parent
         preventStealing: true
         onPressed: {
-            console.debug("scrollerpos:"+mouseX+":"+mouseY);
+
         }
         onMouseYChanged: {
             if(pressed) {
                 var relPos = (mouseY/height)*100;
-                console.debug("pos changed:"
-                              + relPos);
                 var item = Sections.getSectionNameAtRelativePos(relPos);
                 secDialog.text = item.value;
-                console.debug("Jump to index:"+ item.index);
+
                 listview.positionViewAtIndex(item.index,ListView.Beginning);
             }
         }
     }
+
+
 }

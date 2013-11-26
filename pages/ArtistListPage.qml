@@ -68,10 +68,6 @@ Page
             }
     }
 
-    function artistClicked(item)
-    {
-        mainWindow.artistname = item;
-        requestArtistAlbums(item);
-    }
+
 
 }

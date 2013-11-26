@@ -16,7 +16,9 @@ SOURCES += main.cpp \
             src/serverprofile.cpp \
             src/artistmodel.cpp \
             src/mpdoutput.cpp \
-            src/albummodel.cpp
+            src/albummodel.cpp \
+    src/filemodel.cpp \
+    src/playlistmodel.cpp
 
 
 # C++ headers
@@ -33,7 +35,9 @@ HEADERS += \
     src/serverprofile.h \
     src/artistmodel.h \
     src/albummodel.h \
-    src/mpdoutput.h
+    src/mpdoutput.h \
+    src/filemodel.h \
+    src/playlistmodel.h
 
 # QML files and folders
 qml.files = *.qml pages cover main.qml components
@@ -79,5 +83,6 @@ pages/SongPage.qml \
 }
 
 RESOURCES += \
-    translations.qrc
+    translations.qrc \
+    miscresources.qrc
 

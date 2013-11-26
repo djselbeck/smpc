@@ -42,16 +42,19 @@ Page
              }
             }
             delegate: ListItem {
+
+
             menu: contextMenu
             id:filesDelegate
                 Image {
+                    anchors.leftMargin: Theme.paddingMedium
                     id: fileicon
                     source: (isDirectory===true ? "image://theme/icon-l-storage": "image://theme/icon-m-music");
                     width: height
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 Column{
-                    anchors{left: fileicon.right;right:parent.right;verticalCenter:parent.verticalCenter;}
+                    anchors{left: fileicon.right;right:parent.right;verticalCenter:parent.verticalCenter; rightMargin: Theme.paddingMedium}
                 Label{
                     id:filenametext
                     text: name

@@ -118,12 +118,13 @@ private slots:
     void connectProfile(int index);
     void updateSavedPlaylistsModel(QStringList*);
     void updateSavedPlaylistModel(QList<QObject*>* list);
-    void applicationActivate();
-    void applicationDeactivate();
     void fileStackPop();
     void cleanFileStack();
     void exitRequest();
     void addlastsearchtoplaylist();
+
+    void focusChanged(QObject *now);
+
 
 
 

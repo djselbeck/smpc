@@ -54,6 +54,12 @@ Page {
                 fillMode: Image.PreserveAspectFit
                 sourceprimary: coverimageurl
                 sourcesecondary: artistimageurl
+                Image{
+                    id:fallbackImage
+                    source: "qrc:/images/smpc-big.png"
+                    anchors.fill: parent
+                    visible: (coverImage.sourceprimary=="" && coverImage.sourcesecondary=="")
+                }
             }
 
             ScrollLabel {
@@ -149,6 +155,22 @@ Page {
                 anchors {
                     left: parent.left
                     right: parent.right
+                }
+            }
+            Button {
+                id: showArtistBtn
+                text: qsTr("show albums from artist")
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: {
+                    artistClicked(artist);
+                }
+            }
+            Button {
+                id: showAlbumBtn
+                text: qsTr("show all tracks from album")
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: {
+                    albumClicked("",album);
                 }
             }
         }
@@ -247,15 +269,14 @@ Page {
     }
 
     function makeLastFMRequestURL() {
-        coverimageurl = "";
+
         var artistclean = artist.replace(/[|&;$%@"<>()+,]/g, "");
         var albumclean = album.replace(/[|&;$%@"<>()+,]/g, "");
-        artistimageurl = "";
+
         var url = "";
         url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="
                 + lastfmapikey + "&artist=" + artistclean + "&album=" + albumclean;
-        console.debug("LastFM url created: " + url);
-        if( album!="" ) {
+        if( albumclean!="" ) {
             coverfetcherXMLModel.source = url;
             coverfetcherXMLModel.reload();
         }
@@ -263,8 +284,8 @@ Page {
         // Fetch artist image
 
         url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
-                + lastfmapikey + "&artist=" + artist;
-        if(artist!="") {
+                + lastfmapikey + "&artist=" + artistclean;
+        if(artistclean!="") {
             artistfetcherXMLModel.source = url;
             artistfetcherXMLModel.reload();
         }
@@ -282,28 +303,20 @@ Page {
             query: "@size/string()"
         }
         onStatusChanged: {
-            console.debug("XML status changed to: " + status)
             if (status == XmlListModel.Ready) {
                 if (count > 0) {
-                    console.debug("Xml model ready, count: " + count)
                     var fetchindex
                     if (count >= 4) {
-                        console.debug("item: " + 4)
-                        console.debug(coverfetcherXMLModel.get(4).size + ":")
-                        console.debug(coverfetcherXMLModel.get(4).image)
                         fetchindex = 4
                     } else {
-                        console.debug("item: " + count)
-                        console.debug(coverfetcherXMLModel.get(
-                                          count - 1).size + ":")
-                        console.debug(coverfetcherXMLModel.get(count - 1).image)
                         fetchindex = count - 1
                     }
 
-                    console.debug("imageurl: " + coverfetcherXMLModel.get(
-                                      fetchindex).image)
+
                     var coverurl = coverfetcherXMLModel.get(fetchindex).image
                     if (coverurl !== coverimageurl) {
+                        console.debug("imageurl: " + coverfetcherXMLModel.get(
+                                          fetchindex).image)
                         // global
                         coverimageurl = coverfetcherXMLModel.get(
                                     fetchindex).image
@@ -328,28 +341,20 @@ Page {
             query: "@size/string()"
         }
         onStatusChanged: {
-            console.debug("XML status changed to: " + status)
             if (status == XmlListModel.Ready) {
                 if (count > 0) {
-                    console.debug("Xml model ready, count: " + count)
                     var fetchindex
                     if (count >= 4) {
-                        console.debug("item: " + 4)
-                        console.debug(artistfetcherXMLModel.get(4).size + ":")
-                        console.debug(artistfetcherXMLModel.get(4).image)
                         fetchindex = 4
                     } else {
-                        console.debug("item: " + count)
-                        console.debug(artistfetcherXMLModel.get(
-                                          count - 1).size + ":")
-                        console.debug(artistfetcherXMLModel.get(count - 1).image)
                         fetchindex = count - 1
                     }
 
-                    console.debug("artist imageurl: " + artistfetcherXMLModel.get(
-                                      fetchindex).image)
+
                     var artisturl = artistfetcherXMLModel.get(fetchindex).image
                     if (artisturl !== artistimageurl) {
+                        console.debug("artist imageurl: " + artistfetcherXMLModel.get(
+                                          fetchindex).image)
                         // global
                         artistimageurl = artistfetcherXMLModel.get(
                                     fetchindex).image

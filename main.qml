@@ -6,6 +6,7 @@ import "pages"
 ApplicationWindow
 {
     id: mainWindow
+
     // Signals for c++<->qml communication
     signal setHostname(string hostname);
     signal setPort(int port);
@@ -98,6 +99,10 @@ ApplicationWindow
     property bool quitbtnenabled;
     property bool connected;
     property bool playing:false;
+    property bool stopped:false;
+    property bool fastscrollenabled:false;
+
+    property list<ListModel> fileModels;
 
 
 
@@ -147,6 +152,7 @@ ApplicationWindow
         playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-m-pause" : "image://theme/icon-m-play";
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
+        stopped = (list[6]=="stop") ? true : false;
         if(currentsongpage.volumepressed===false){
             currentsongpage.volume = list[7];
         }
@@ -160,6 +166,11 @@ ApplicationWindow
             lastsongid = list[12];
             currentsongpage.makeLastFMRequestURL();
         }
+        if(stopped) {
+            coverimageurl = "";
+            artistimageurl = "";
+        }
+
         currentsongpage.audioproperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
     }
 
@@ -189,6 +200,7 @@ ApplicationWindow
     {   
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
+        playlistpage.listmodel = null;
         playlistpage.listmodel = playlistModel;
         console.debug("received new playlist and set model");
     }
@@ -222,14 +234,15 @@ ApplicationWindow
         pageStack.push(Qt.resolvedUrl("pages/SongPage.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
     }
 
-
-    function receiveFilesModel()
-    {
-    }
-
     function receiveFilesPage()
     {
-        pageStack.push(Qt.resolvedUrl("pages/FileBrowserPage.qml"), {listmodel: filesModel,filepath :lastpath});
+        pageStack.push("pages/FileBrowserPage.qml",{listmodel: filesModel,filepath :lastpath});
+        fastscrollenabled = true;
+    }
+
+    function popCleared() {
+        console.debug("POP cleared");
+        fastscrollenabled = true;
     }
 
     function formatLength(length)
@@ -270,6 +283,12 @@ ApplicationWindow
         pageStack.currentPage.listmodel = searchedTracksModel;
     }
 
+    function artistClicked(item)
+    {
+        mainWindow.artistname = item;
+        requestArtistAlbums(item);
+    }
+
     Component.onCompleted:  {
         var component = Qt.createComponent("pages/ServerListPage.qml");
         var object = component.createObject(mainWindow);
@@ -292,4 +311,5 @@ ApplicationWindow
 
     initialPage: MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
 }

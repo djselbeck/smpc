@@ -96,6 +96,9 @@ Item {
                     blendoutsecondary.start();
                     blendinprimary.start();
                 }
+                else {
+                    waitTimer.start();
+                }
             }
         }
     }
@@ -116,5 +119,13 @@ Item {
             console.debug("Disabling all");
             waitTimer.stop();
         }
+    }
+    onSourceprimaryChanged: {
+        waitTimer.stop();
+        waitTimer.start();
+    }
+    onSourcesecondaryChanged: {
+        waitTimer.stop();
+        waitTimer.start();
     }
 }

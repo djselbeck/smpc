@@ -255,6 +255,8 @@ void Controller::connectSignals()
     connect(this,SIGNAL(requestPlaylistClear()),item,SLOT(clearPlaylist()));
     connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
     connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
+
+    connect(viewer,SIGNAL(focusObjectChanged(QObject*)),this,SLOT(focusChanged(QObject*)));
 }
 
 void Controller::setPassword(QString password)
@@ -606,17 +608,18 @@ void Controller::mediaKeyReleased(int key)
 //    if(key == MediaKeysObserver::EVolIncKey&&volIncTimer.isActive())
 //        volIncTimer.stop();
 }
-void Controller::applicationActivate()
-{
-    CommonDebug("Application activate");
-    netaccess->setUpdateInterval(25000);
 
-}
 
-void Controller::applicationDeactivate()
-{
-    CommonDebug("Application deactivate");
-    netaccess->setUpdateInterval(1000);
+void Controller::focusChanged(QObject *now){
+    if(now==0)
+    {
+        CommonDebug("Focus lost");
+        emit setUpdateInterval(5000);
+    }
+    else{
+        CommonDebug("Focus gained");
+        emit setUpdateInterval(1000);
+    }
 }
 
 

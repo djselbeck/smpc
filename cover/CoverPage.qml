@@ -6,15 +6,8 @@ CoverBackground {
     id: coverpage
     anchors.fill: parent
 
-    ToggleImage{
-        id: coverimg
-        anchors.fill: parent
-        sourceprimary: coverimageurl;
-        sourcesecondary: artistimageurl;
-        fillMode: Image.PreserveAspectCrop
-    }
-    onStatusChanged: {
-        if(status === Cover.Activating || status === Cover.Active) {
+    function recheckActive() {
+        if( (status === Cover.Activating || status === Cover.Active) ) {
             coverimg.visible = true;
         }
         else {
@@ -22,6 +15,25 @@ CoverBackground {
         }
     }
 
+    ToggleImage{
+        id: coverimg
+        anchors.fill: parent
+        sourceprimary: coverimageurl;
+        sourcesecondary: artistimageurl;
+        fillMode: Image.PreserveAspectCrop
+    }
+
+    onStatusChanged: {
+        recheckActive();
+    }
+
+    Image{
+        visible: (stopped||(coverimg.sourceprimary==""&&coverimg.sourcesecondary==""))
+        anchors.centerIn: coverpage
+        source: "qrc:/images/smpc-big.png"
+        width: coverpage.width-(coverpage.width/3)
+        height: width
+    }
     
     CoverActionList {
         id: coverAction
