@@ -35,6 +35,22 @@ Page {
             bottom: volumeSlider.top
             top: parent.top
         }
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("show all tracks from album")
+                visible: album === "" ? false : true;
+                onClicked: {
+                    albumClicked("",album);
+                }
+         }
+            MenuItem {
+                text: qsTr("show albums from artist")
+                visible: artist === "" ? false : true;
+                onClicked: {
+                    artistClicked(artist);
+                }
+         }
+        }
         contentHeight: contentColumn.height
         clip: true
         Column {
