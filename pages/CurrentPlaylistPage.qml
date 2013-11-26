@@ -19,7 +19,7 @@ Page
             title: qsTr("playlist");
         }
         highlightFollowsCurrentItem: true
-        highlightMoveDuration: 300
+        highlightMoveDuration: 1200
         PullDownMenu {
             MenuItem {
                 text: qsTr("delete playlist")
@@ -37,6 +37,13 @@ Page
                 text: qsTr("open playlist")
                 onClicked: {
                     requestSavedPlaylists();
+                }
+            }
+            MenuItem {
+                text: qsTr("jump to playing song")
+                onClicked: {
+                    playlistView.currentIndex = -1;
+                    playlistView.currentIndex = lastsongid
                 }
             }
         }

@@ -7,12 +7,18 @@ Page
     id: filePage
     property string filepath;
     property alias listmodel: fileListView.model;
+    property int lastContentPosY:0
     SilicaListView {
             id : fileListView
+            highlightFollowsCurrentItem: true
             SpeedScroller{
                 id: scroller
                 listview: fileListView
                 scrollenabled: fastscrollenabled
+            }
+
+            onContentYChanged: {
+                console.debug("Y changed: "+ contentY);
             }
 
             anchors.fill: parent
@@ -73,6 +79,7 @@ Page
                 }
             onClicked: {
                 if(isDirectory){
+                    lastContentPosY = index;
                     filesClicked((prepath=="/"? "": prepath+"/")+name);
                 }
                 if(isFile) {
@@ -139,6 +146,14 @@ Page
                 }
             }
 
+        }
+    }
+
+    onStatusChanged: {
+        // Restore scroll position
+        if ( status === PageStatus.Activating && lastContentPosY) {
+            fileListView.cancelFlick();
+            fileListView.positionViewAtIndex(lastContentPosY,ListView.Center);
         }
     }
 

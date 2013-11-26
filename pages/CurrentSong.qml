@@ -340,6 +340,7 @@ Page {
                 }
             }
             if (status == XmlListModel.Error) {
+                coverimageurl = "";
                 console.debug(coverfetcherXMLModel.errorString())
             }
         }
@@ -378,6 +379,7 @@ Page {
                 }
             }
             if (status == XmlListModel.Error) {
+                artistimageurl = "";
                 console.debug(artistfetcherXMLModel.errorString())
             }
         }
