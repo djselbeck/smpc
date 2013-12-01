@@ -1,5 +1,5 @@
 # The name of your app
-TARGET = smpc
+TARGET = harbour-smpc
 
 QT += network gui
 
@@ -49,7 +49,7 @@ TRANSLATIONS += $${TARGET}_de.ts
 # The .desktop file
 desktop.files = $${TARGET}.desktop
 icon.files = $${TARGET}.png
-icon.path = /usr/share/icons/
+icon.path = /usr/share/icons/hicolor/86x86/apps
 
 INSTALLS += icon
 
