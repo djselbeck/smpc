@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=SMPC
-Icon=/usr/share/icons/smpc.png
-Exec=invoker --type=silica-qt5 -s smpc
+Icon=harbour-smpc
+Exec=harbour-smpc
 Comment=SMPC MPD remote control
+X-Nemo-Application-Type=silica-qt5
