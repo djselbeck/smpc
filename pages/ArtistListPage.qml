@@ -22,8 +22,14 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
-                    x : Theme.paddingLarge
-                    anchors.verticalCenter: parent.verticalCenter
+                    clip: true
+                    anchors {
+                        right: parent.right
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: listPadding
+                        rightMargin: listPadding
+                    }
                          Label{
                              text: (artist===""? "No Artist Tag": artist)
                         }

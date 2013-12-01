@@ -56,10 +56,18 @@ Page {
         Column {
             id: contentColumn
             PageHeader {
+                anchors.leftMargin: 0
+                anchors.rightMargin: 0
                 id: pageHeading
                 title: qsTr("current song")
             }
-            width: parent.width
+            clip: true
+            anchors {
+                right: parent.right
+                left: parent.left
+                leftMargin: listPadding
+                rightMargin: listPadding
+            }
 
             ToggleImage {
                 id: coverImage
@@ -173,22 +181,22 @@ Page {
                     right: parent.right
                 }
             }
-            Button {
-                id: showArtistBtn
-                text: qsTr("show albums from artist")
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    artistClicked(artist);
-                }
-            }
-            Button {
-                id: showAlbumBtn
-                text: qsTr("show all tracks from album")
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    albumClicked("",album);
-                }
-            }
+//            Button {
+//                id: showArtistBtn
+//                text: qsTr("show albums from artist")
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                onClicked: {
+//                    artistClicked(artist);
+//                }
+//            }
+//            Button {
+//                id: showAlbumBtn
+//                text: qsTr("show all tracks from album")
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                onClicked: {
+//                    albumClicked("",album);
+//                }
+//            }
         }
     }
     Slider {
@@ -225,7 +233,7 @@ Page {
         id: positionSlider
         stepSize: 1
         label: qsTr("position")
-        valueText: ""
+        valueText: "0:00"
         onPressedChanged: {
             if (!pressed) {
                 seek(value)
@@ -242,6 +250,7 @@ Page {
             wrapMode: "WordWrap"
             anchors {
                 right: parent.right
+                rightMargin: Theme.paddingLarge
                 bottom: parent.bottom
             }
         }

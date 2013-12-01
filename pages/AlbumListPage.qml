@@ -37,9 +37,15 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
-                    x : Theme.paddingLarge
-                    anchors.verticalCenter: parent.verticalCenter
-                         Label{
+                    clip: true
+                    anchors {
+                        right: parent.right
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: listPadding
+                        rightMargin: listPadding
+                    }
+                        Label{
                              text: (title==="" ? qsTr("no album tag") : title)
                         }
                     }

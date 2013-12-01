@@ -33,8 +33,14 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
-                    x : Theme.paddingLarge
-                    anchors.verticalCenter: parent.verticalCenter
+                    clip: true
+                    anchors {
+                        right: parent.right
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: listPadding
+                        rightMargin: listPadding
+                    }
                         Row{
                             Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
                             Label {clip: true; wrapMode: Text.WrapAnywhere; elide: Text.ElideRight; text:  (title==="" ? filename : title);anchors {verticalCenter: parent.verticalCenter}}

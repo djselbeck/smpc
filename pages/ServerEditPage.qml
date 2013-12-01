@@ -33,7 +33,14 @@ Page
         Column
         {
             id: settingsContent;
-            width: parent.width - Theme.paddingMedium
+            clip: true
+            anchors {
+                right: parent.right
+                left: parent.left
+                verticalCenter: parent.verticalCenter
+                leftMargin: listPadding
+                rightMargin: listPadding
+            }
             PageHeader {
                 title: qsTr("edit profile");
             }
@@ -116,6 +123,9 @@ Page
             else
                 changeProfile([index,name,hostname,password,port,autoconnect?1:0]);
 
+
+        } else if ( status === PageStatus.Activating ) {
+            profilenameInputField.focus = true;
         }
     }
 

@@ -37,16 +37,18 @@ CoverBackground {
     
     CoverActionList {
         id: coverAction
+
+        CoverAction {
+            iconSource: playbuttoniconsourcecover//"image://theme/icon-cover-pause"
+            onTriggered: play();
+        }
         
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
             onTriggered: next();
         }
         
-        CoverAction {
-            iconSource: playbuttoniconsourcecover//"image://theme/icon-cover-pause"
-            onTriggered: play();
-        }
+
     }
 }
 

@@ -5,7 +5,6 @@ import "../components"
 Page {
     SilicaListView {
         anchors.fill: parent
-        anchors.margins: Theme.paddingMedium
         contentWidth: width
         header: PageHeader {
             title: "SMPC"
@@ -13,7 +12,13 @@ Page {
         model: mainMenuModel
         delegate: BackgroundItem {
             Label {
-                anchors.centerIn: parent
+                clip: true
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: listPadding
+                    rightMargin: listPadding
+                }
                 text: name
             }
             onClicked: {
@@ -22,53 +27,25 @@ Page {
         }
     }
 
+    Component.onCompleted: {
+        mainMenuModel.append({"name":qsTr("song information"), "ident":"currentsong"})
+        mainMenuModel.append({"name":qsTr("artists"), "ident":"artists"})
+        mainMenuModel.append({"name":qsTr("albums"), "ident":"albums"})
+        mainMenuModel.append({"name":qsTr("files"), "ident":"files"})
+        mainMenuModel.append({"name":qsTr("playlist"), "ident":"playlist"})
+        mainMenuModel.append({"name":qsTr("search"), "ident":"search"})
+        mainMenuModel.append({"name":qsTr("connect"), "ident":"connectto"})
+        mainMenuModel.append({"name":qsTr("settings"), "ident":"settings"})
+    }
+
     ListModel {
         id: mainMenuModel
-        ListElement {
-            name: "song information"
-            ident: "currentsong"
-            icon: "icons/music.svg"
-        }
-        ListElement {
-            name: "artists"
-            ident: "artists"
-            icon: "icons/contacts.svg"
-        }
-        ListElement {
-            name: "albums"
-            ident: "albums"
-            icon: "icons/music_album.svg"
-        }
-        ListElement {
-            name: "files"
-            ident: "files"
-            icon: "icons/music_file.svg"
-        }
-        ListElement {
-            name: "playlist"
-            ident: "playlist"
-            icon: "icons/playlistlist.svg"
-        }
-        ListElement {
-            name: "search"
-            ident: "search"
-            icon: "icons/search.svg"
-        }
-        ListElement {
-            name: "connect"
-            ident: "connectto"
-            icon: "icons/connectivity.svg"
-        }
-        ListElement {
-            name: "settings"
-            ident: "settings"
-            icon: "icons/settings.svg"
-        }
+
     }
 
     Timer {
         id: showCurrentSongTimer
-        interval: 10000
+        interval: 15000
         repeat: false
         onTriggered: {
             parseClickedMainMenu("currentsong")
@@ -120,4 +97,5 @@ Page {
             pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
         }
     }
+
 }

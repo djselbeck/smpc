@@ -15,17 +15,22 @@ Page {
     property int fontsizegrey:Theme.fontSizeSmall;
 
         SilicaFlickable{
-            anchors.margins: Theme.paddingMedium
             anchors {top: parent.top;left:parent.left;right:parent.right;bottom:buttonRow.top}
             contentHeight: infocolumn.height
             clip: true
             Column {
-                //anchors.fill: parent
+                clip: true
+                anchors {
+                    right: parent.right
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: listPadding
+                    rightMargin: listPadding
+                }
                 id: infocolumn
                 PageHeader {
                     title: qsTr("current song");
                 }
-                anchors {left:parent.left; right: parent.right;}
                 Label{text: qsTr("title:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey}
                 Label{id:titleText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors {left:parent.left; right: parent.right;}}
                 Label{text: qsTr("album:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey}
@@ -40,7 +45,6 @@ Page {
                 Label{id:nrText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode: "WordWrap";anchors {left:parent.left; right: parent.right;}}
                 Label{text: qsTr("uri:");color:Theme.secondaryColor; font.pixelSize: fontsizegrey}
                 Label{id:fileText ;text: "";color:Theme.primaryColor; font.pixelSize:fontsize;wrapMode:"WrapAnywhere" ;anchors {left:parent.left; right: parent.right;}}
-                clip: true;
             }
         }
 

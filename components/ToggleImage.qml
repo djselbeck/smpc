@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import Sailfish.Silica 1.0
 
 Item {
     id: tglImg
@@ -17,6 +18,14 @@ Item {
         fillMode: primaryImg.fillMode
         anchors.fill: parent
         opacity:0.0
+    }
+
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        size: BusyIndicatorSize.Medium
+        running: (primaryImg.status === Image.Loading ||
+                  secondaryImg.status === Image.Loading )
     }
 
 
@@ -88,11 +97,11 @@ Item {
         repeat: false
         onTriggered: {
             if(tglImg.visible) {
-                if ( primaryActive && sourcesecondary != "" ) {
+                if ( primaryActive && secondaryImg.status===Image.Ready ) {
                     blendoutprimary.start();
                     blendinsecondary.start();
                 }
-                else if ( !primaryActive && sourceprimary != "" ) {
+                else if ( !primaryActive && primaryImg.status===Image.Ready ) {
                     blendoutsecondary.start();
                     blendinprimary.start();
                 }

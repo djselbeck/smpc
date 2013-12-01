@@ -17,10 +17,6 @@ Page
                 scrollenabled: fastscrollenabled
             }
 
-            onContentYChanged: {
-                console.debug("Y changed: "+ contentY);
-            }
-
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -53,14 +49,18 @@ Page
             menu: contextMenu
             id:filesDelegate
                 Image {
-                    anchors.leftMargin: Theme.paddingMedium
+                    anchors {
+                        leftMargin: listPadding
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                    }
                     id: fileicon
                     source: (isDirectory===true ? "image://theme/icon-l-storage": "image://theme/icon-m-music");
                     width: height
-                    anchors.verticalCenter: parent.verticalCenter
                 }
                 Column{
-                    anchors{left: fileicon.right;right:parent.right;verticalCenter:parent.verticalCenter; rightMargin: Theme.paddingMedium}
+                    clip: true
+                    anchors{left: fileicon.right;right:parent.right;verticalCenter:parent.verticalCenter; rightMargin: listPadding}
                 Label{
                     id:filenametext
                     text: name

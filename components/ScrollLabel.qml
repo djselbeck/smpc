@@ -6,7 +6,9 @@ Item {
     property alias text: lbl.text
     property alias font: lbl.font
     property alias color: lbl.color
+    property int minScrollTime: 5000;
     height: lbl.height
+    clip: true
 
     Label {
         id: lbl
@@ -28,8 +30,8 @@ Item {
                     var restPixels =  ( ( lbl.contentWidth - mainItm.width ) );
                     var restChars = ((lbl.text.length) / lbl.contentWidth) * restPixels;
                     animation.duration = Math.round(restChars * 500); // Around 2 Chars per Second scroll
-                    if(animation.duration < 3000 ) {
-                        animation.duration = 3000;
+                    if(animation.duration < minScrollTime ) {
+                        animation.duration = minScrollTime;
                     }
 
                     animation.to = ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width);

@@ -104,6 +104,8 @@ ApplicationWindow
 
     property list<ListModel> fileModels;
 
+    property real listPadding: Theme.paddingLarge
+
 
 
     // JS-functions
@@ -306,6 +308,7 @@ ApplicationWindow
     BusyIndicator
     {
         id:busyIndicator
+        size: BusyIndicatorSize.Large
         anchors.centerIn: parent
     }
 

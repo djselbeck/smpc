@@ -59,7 +59,7 @@ Page
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:"Licensed under GPLv3"
+            text:qsTr("Licensed under GPLv3")
             font.pixelSize: Theme.fontSizeMedium
         }
         Separator
@@ -71,7 +71,7 @@ Page
         Label
         {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:"Fetches covers from last.fm"
+            text:qsTr("Fetches covers from last.fm")
             font.pixelSize: Theme.fontSizeTiny
         }
     }

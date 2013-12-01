@@ -7,15 +7,20 @@ Page
     id: settingsPage;
     SilicaListView {
         anchors.fill: parent
-        anchors.margins: Theme.paddingMedium
         contentWidth: width
         header: PageHeader {
             title: qsTr("settings");
         }
-        model: mainMenuModel
+        model: settingsMenuModel
         delegate: BackgroundItem {
             Label {
-                anchors.centerIn: parent
+                clip: true
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: listPadding
+                    rightMargin: listPadding
+                }
                 text: name
             }
             onClicked: {
@@ -25,12 +30,15 @@ Page
     }
 
 
+    Component.onCompleted: {
+        settingsMenuModel.append({"name":qsTr("server settings"), "ident":"servers"})
+        settingsMenuModel.append({"name":qsTr("outputs"), "ident":"outputs"})
+        settingsMenuModel.append({"name":qsTr("update database"), "ident":"updatedb"})
+        settingsMenuModel.append({"name":qsTr("about"), "ident":"about"})
+    }
+
     ListModel {
-        id: mainMenuModel
-        ListElement { name: "server settings"; ident:"servers";}
-        ListElement { name: "outputs"; ident:"outputs";}
-        ListElement { name: "update database"; ident:"updatedb";}
-        ListElement { name: "about"; ident:"about";}
+        id: settingsMenuModel
     }
 
     function parseClickedSettings(ident)

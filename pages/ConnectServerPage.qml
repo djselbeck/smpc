@@ -16,7 +16,13 @@ Page
             }
             delegate: BackgroundItem {
                 Label {
-                    anchors.centerIn: parent
+                    clip: true
+                    anchors {
+                        horizontalCenter: parent.horizontalCenter
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: listPadding
+                        rightMargin: listPadding
+                    }
                     text: name
                 }
                 onClicked: {

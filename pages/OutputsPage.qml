@@ -16,8 +16,14 @@ Page
             }
             delegate: BackgroundItem {
                 Column{
-                    x : Theme.paddingLarge
-                    anchors.verticalCenter: parent.verticalCenter
+                    clip: true
+                    anchors {
+                        right: parent.right
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                        leftMargin: listPadding
+                        rightMargin: listPadding
+                    }
                          TextSwitch{
                              checked: outputenabled
                              text: outputname
