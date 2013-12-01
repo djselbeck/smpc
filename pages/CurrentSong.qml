@@ -58,6 +58,7 @@ Page {
             PageHeader {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
+                anchors.margins: 0
                 id: pageHeading
                 title: qsTr("current song")
             }

@@ -48,7 +48,7 @@ Page
             }
         }
         delegate: ListItem {
-           // menu: contextMenu
+            menu: contextMenu
             Column{
                 clip: true
                 anchors {
