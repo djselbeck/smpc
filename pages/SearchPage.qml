@@ -8,6 +8,8 @@ Page {
     property int currentindex: -1
     property string selectedsearch
 
+
+
     SilicaFlickable {
         id: mainSearchFlickable
         contentHeight: albumsongs_list_view.contentHeight + searchhead.height
@@ -36,6 +38,7 @@ Page {
                     left: parent.left
                     right: parent.right
                 }
+                placeholderText: qsTr("search value")
                 text: ""
                 inputMethodHints: Qt.ImhNoPredictiveText
             }
@@ -197,10 +200,20 @@ Page {
                                 playAlbumRemorse()
                             }
                         }
-                        onHeightChanged: {
-                            mainSearchFlickable.contentY += (height - lastHeight)
-                            lastHeight = height
+
+
+                        onYChanged: {
+                            if ( parent != null) {
+                                var menuPos = parent.y+albumsongs_list_view.currentItem.y+albumsongs_list_view.y-mainSearchFlickable.contentY;
+                                var menuMax = menuPos + parent.height;
+                                if(menuMax > mainSearchFlickable.height) {
+                                    mainSearchFlickable.contentY += menuMax-mainSearchFlickable.height;
+                                    console.debug("cy: " + mainSearchFlickable.contentY );
+                                }
+
+                            }
                         }
+
                     }
                 }
             }

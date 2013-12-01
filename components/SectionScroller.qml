@@ -42,6 +42,7 @@ Item {
                  PropertyAnimation { properties: "opacity"; easing.type: Easing.InOutQuad; duration: 500 }
         }
         //color: "#77222222"
+        color: Theme.highlightBackgroundColor
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             id: currSecText
@@ -58,7 +59,7 @@ Item {
         preventStealing: true
         onPressedChanged: {
             if ( pressed ) {
-                secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
+                secDialog.color = Theme.rgba(Theme.highlightBackgroundColor,0.5);
                 secDialog.opacity = 1.0;
                 //secDialog.visible = true;
             } else {
