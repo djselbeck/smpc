@@ -32,7 +32,7 @@ Page {
         anchors {
             right: parent.right
             left: parent.left
-            bottom: volumeSlider.top
+            bottom: positionSlider.top
             top: parent.top
         }
         PullDownMenu {
@@ -200,33 +200,100 @@ Page {
 //            }
         }
     }
-    Slider {
-        width: parent.width
+    Item {
+        id: volumeControl
         anchors {
-            bottom: positionSlider.top
+            bottom: buttonRow.top
             right: parent.right
             left: parent.left
         }
-        id: volumeSlider
-        stepSize: 1
-        maximumValue: 100
-        minimumValue: 0
-        valueText: value + "%"
-        label: qsTr("volume")
-        onPressedChanged: {
-            if (!pressed) {
-                setVolume(value)
+        height : volumeSlider.height
+        state: "sliderInvisible"
+        states: [
+            State {
+                name:"sliderVisible"
+                PropertyChanges {
+                    target: volumeSlider
+                    enabled: true
+                    opacity: 1.0
+                }
+                PropertyChanges {
+                    target: volumeButton
+                    enabled: false
+                    opacity: 0.0
+                }
+            },
+            State {
+                name:"sliderInvisible"
+                PropertyChanges {
+                    target: volumeSlider
+                    enabled: false
+                    opacity: 0.0
+                }
+                PropertyChanges {
+                    target: volumeButton
+                    enabled: true
+                    opacity: 1.0
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                NumberAnimation {
+                    properties: "opacity"
+                    duration: 500
+                }
+            }
+        ]
+
+        IconButton{
+            id: volumeButton
+            anchors.centerIn: parent
+            icon.source: "image://theme/icon-status-volume-max"
+            onClicked: {
+                volumeControl.state = "sliderVisible";
+                volumeSliderFadeOutTimer.start();
             }
         }
-        onValueChanged: {
-            setVolume(value)
-            // valueText = value+"%";
+
+        Slider {
+            anchors.fill: parent
+
+            id: volumeSlider
+            stepSize: 1
+            maximumValue: 100
+            minimumValue: 0
+            valueText: value + "%"
+            label: qsTr("volume")
+            onPressedChanged: {
+                if (!pressed) {
+                    setVolume(value)
+                    //volumeSliderFadeOutTimer.start();
+                    volumeControl.state = "sliderInvisible";
+                } else {
+                    volumeSliderFadeOutTimer.stop();
+                }
+            }
+            onValueChanged: {
+                setVolume(value)
+                // valueText = value+"%";
+            }
+        }
+
+        Timer {
+            id: volumeSliderFadeOutTimer
+            interval: 3000
+            repeat: false
+            onTriggered: {
+                volumeControl.state = "sliderInvisible"
+            }
         }
     }
 
     Slider {
         anchors {
-            bottom: buttonRow.top
+            bottom: volumeControl.top
             right: parent.right
             left: parent.left
         }
