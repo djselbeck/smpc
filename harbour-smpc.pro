@@ -58,7 +58,7 @@ INSTALLS += icon
 include(sailfishapplication/sailfishapplication.pri)
 
 
-OTHER_FILES = rpm/smpc.yaml \
+OTHER_FILES = rpm/harbour-smpc.yaml \
     smpc.png
 
 evil_hack_to_fool_lupdate {

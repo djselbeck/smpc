@@ -21,13 +21,8 @@ Requires:
 - mapplauncherd-booster-silica-qt5
 - qt5-qtdeclarative-import-xmllistmodel
 Files:
-- /usr/share/smpc/
+- /usr/share/icons/hicolor/86x86/apps
 - '%{_datadir}/applications'
-- '%{_datadir}/smpc'
+- '%{_datadir}/harbour-smpc'
 - '%{_bindir}'
-- /usr/bin
-- /usr/share/smpc
-- /usr/share/applications
-- /usr/share/icons/
-- /usr/share/smpc
 PkgBR: []
