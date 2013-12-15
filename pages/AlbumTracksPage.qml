@@ -8,6 +8,7 @@ Page
     property alias listmodel: albumTracksListView.model;
     property string albumname;
     property string artistname;
+    property int lastIndex;
     SilicaListView {
             id : albumTracksListView
             ScrollDecorator {}
@@ -33,6 +34,7 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
+                    id: mainColumn
                     clip: true
                     anchors {
                         right: parent.right
@@ -52,7 +54,14 @@ Page
                             font.pixelSize: Theme.fontSizeSmall
                         }
                     }
+
+                OpacityRampEffect {
+                    sourceItem: mainColumn
+                    slope: 3
+                    offset: 0.65
+                }
                 onClicked: {
+                    albumTracksListView.currentIndex = index;
                     albumTrackClicked(title,album,artist,lengthformated,uri,year,tracknr);
                 }
                 function playTrackRemorse() {
@@ -80,6 +89,20 @@ Page
                     }
                 }
             }
+    }
+
+    onStatusChanged: {
+        if ( status === PageStatus.Deactivating ) {
+            lastIndex = albumTracksListView.currentIndex;
+        }
+        else if ( status === PageStatus.Activating ) {
+            albumTracksListView.positionViewAtIndex(lastIndex,ListView.Center);
+        }
+    }
+
+    Component.onDestruction: {
+        albumTracksListView.model = null;
+        clearTrackList();
     }
 
 }

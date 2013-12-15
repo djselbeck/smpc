@@ -41,6 +41,11 @@ ApplicationWindow
     signal disableOutput(int nr);
     signal requestSearch(variant request);
 
+    signal clearAlbumList();
+    signal clearArtistList();
+    signal clearTrackList();
+    signal clearPlaylistTracks();
+
     // Control signals
     signal play();
     signal next();
@@ -82,6 +87,7 @@ ApplicationWindow
     property Page serverList;
     property Page artistspage;
     property Page albumspage;
+    property var playlistModelVar;
     property int listfontsize:12;
     property int liststretch:20;
     property int lastsongid:-1;
@@ -101,8 +107,6 @@ ApplicationWindow
     property bool playing:false;
     property bool stopped:false;
     property bool fastscrollenabled:false;
-
-    property list<ListModel> fileModels;
 
     property real listPadding: Theme.paddingLarge
 
@@ -144,7 +148,7 @@ ApplicationWindow
         currentsongpage.title = list[0];
         currentsongpage.album = list[1];
         currentsongpage.artist = list[2];
-        if(currentsongpage.pospressed===false) {
+        if(currentsongpage.pospressed==false) {
             currentsongpage.position = list[3];
         }
         currentsongpage.length = list[4];
@@ -155,12 +159,12 @@ ApplicationWindow
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
         stopped = (list[6]=="stop") ? true : false;
-        if(currentsongpage.volumepressed===false){
+        if(currentsongpage.volumepressed==false){
             currentsongpage.volume = list[7];
         }
         currentsongpage.repeat = (list[8]=="0" ?  false:true);
         currentsongpage.shuffle = (list[9]=="0" ?  false:true);
-        currentsongpage.nr = (list[10]===0? "":list[10]);
+        currentsongpage.nr = (list[10]==0? "":list[10]);
         currentsongpage.uri = list[11];
         if(list[12]!=lastsongid)
         {
@@ -202,10 +206,11 @@ ApplicationWindow
     {   
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
-        playlistpage.listmodel = null;
-        playlistpage.listmodel = playlistModel;
+        playlistpage.songid = -1;
+        playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }
+
 
     function clearPlaylist()
     {
@@ -303,7 +308,7 @@ ApplicationWindow
         component = Qt.createComponent("pages/CurrentSong.qml");
         object = component.createObject(mainWindow);
         currentsongpage = object;
-        console.debug("currentsong Page created");
+//        console.debug("currentsong Page created");
     }
     BusyIndicator
     {
@@ -312,7 +317,7 @@ ApplicationWindow
         anchors.centerIn: parent
     }
 
-    initialPage: MainPage { }
+    initialPage: Qt.resolvedUrl("pages/MainPage.qml") //MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
 }

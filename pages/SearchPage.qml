@@ -105,7 +105,7 @@ Page {
             contentHeight: 0
             height: contentHeight
             interactive: false
-
+            cacheBuffer: 0
             delegate: ListItem {
                 menu: contextMenu
                 Column {

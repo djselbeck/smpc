@@ -36,6 +36,8 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         return m_entries->at(index.row())->getYear();
     else if(role==playingRole)
         return m_entries->at(index.row())->getPlaying();
+
+    return 0;
 }
 
 int PlaylistModel::rowCount(const QModelIndex &parent) const{

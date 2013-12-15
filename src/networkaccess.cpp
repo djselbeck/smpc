@@ -99,7 +99,7 @@ void NetworkAccess::getAlbums()
                 {
                     name = response.right(response.length()-7);
                     name.chop(1);
-                    tempalbum = new MpdAlbum(NULL,name);
+                    tempalbum = new MpdAlbum(this,name);
                     albums->append(tempalbum);
                 }
             }
@@ -229,7 +229,9 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
                 {
                     name = response.right(response.length()-7);
                     name.chop(1);
-                    tempalbum = new MpdAlbum(NULL,name);
+                    tempalbum = new MpdAlbum(this,name);
+                    tempalbum->moveToThread(mQmlThread);
+                    QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                     albums->append(tempalbum);
                 }
             }
@@ -1319,6 +1321,8 @@ void NetworkAccess::getDirectory(QString path)
                             tempfiles->append(tempfile);
                             temptrack->moveToThread(mQmlThread);
                             tempfile->moveToThread(mQmlThread);
+                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+                            QQmlEngine::setObjectOwnership(tempfile, QQmlEngine::CppOwnership);
                             tempsplitter.clear();
                         }
                         artist= "";
@@ -1391,6 +1395,7 @@ void NetworkAccess::getDirectory(QString path)
                         tempfile = new MpdFileEntry(path,tempsplitter.last(),1,NULL);
                         tempfiles->append(tempfile);
                         tempfile->moveToThread(mQmlThread);
+                        QQmlEngine::setObjectOwnership(tempfile, QQmlEngine::CppOwnership);
                         filename = "";
                         tempsplitter.clear();
                     }
@@ -1444,6 +1449,8 @@ void NetworkAccess::getDirectory(QString path)
                 tempfiles->append(tempfile);
                 temptrack->moveToThread(mQmlThread);
                 tempfile->moveToThread(mQmlThread);
+                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+                QQmlEngine::setObjectOwnership(tempfile, QQmlEngine::CppOwnership);
                 tempsplitter.clear();
             }
         }
@@ -1562,6 +1569,7 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                             temptrack->setPlaying(false);
                             temptracks->append(temptrack);
                             temptrack->moveToThread(mQmlThread);
+                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
                         }
                         CommonDebug("add Track:");
                         temptrack=NULL;
@@ -1623,6 +1631,7 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                 temptrack->setPlaying(false);
                 temptracks->append(temptrack);
                 temptrack->moveToThread(mQmlThread);
+                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
             }            CommonDebug("add Track:");
         }
     }
@@ -1677,6 +1686,7 @@ void NetworkAccess::getOutputs()
                     MPDOutput *tmpOutput = new MPDOutput(outputname,outputenabled,outputid);
                     outputlist->append(tmpOutput);
                     tmpOutput->moveToThread(mQmlThread);
+                    QQmlEngine::setObjectOwnership(tmpOutput, QQmlEngine::CppOwnership);
                 }
 
 

@@ -5,11 +5,15 @@ import "../components"
 Page
 {
     id: playlistTracksPage
-    property alias listmodel: playlistTracksListView.model;
+    property var listmodel;
     property string playlistname;
+    property int lastIndex;
     SilicaListView {
             id : playlistTracksListView
-            ScrollDecorator {}
+            model: visible ? listmodel : null
+            SpeedScroller {
+                listview: playlistTracksListView
+            }
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -39,6 +43,7 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
+                    id: mainColumn
                     clip: true
                     anchors {
                         right: parent.right
@@ -58,7 +63,13 @@ Page
                             font.pixelSize: Theme.fontSizeSmall
                         }
                     }
+                OpacityRampEffect {
+                    sourceItem: mainColumn
+                    slope: 3
+                    offset: 0.65
+                }
                 onClicked: {
+                    playlistTracksListView.currentIndex = index;
                     albumTrackClicked(title,album,artist,lengthformated,uri,year,tracknr);
                 }
                 function playTrackRemorse() {
@@ -110,6 +121,20 @@ Page
                 pageStack.push(initialPage);
             }
         }
+    }
+
+    onStatusChanged: {
+        if ( status === PageStatus.Deactivating ) {
+            lastIndex = playlistTracksListView.currentIndex;
+        }
+        else if ( status === PageStatus.Activating ) {
+            playlistTracksListView.positionViewAtIndex(lastIndex,ListView.Center);
+        }
+    }
+
+    Component.onDestruction: {
+        playlistTracksListView.model = null;
+        clearPlaylistTracks();
     }
 
 }

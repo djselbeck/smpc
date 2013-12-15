@@ -3,91 +3,63 @@ import Sailfish.Silica 1.0
 //import harbour.smpc.components 1.0
 import "../components"
 
-Page
-{
+Page {
     id: albumslistPage
-    property alias listmodel: albumListView.model;
-    property string artistname;
+    property var listmodel;
+    property string artistname
+    property int lastIndex;
     SilicaListView {
-            id : albumListView
-            SectionScroller {
-                listview: albumListView
-            }
+        id: albumListView
+        quickScrollEnabled: false
+        anchors.fill: parent
+        highlightFollowsCurrentItem: false
+        model: visible ? listmodel : null
+        SectionScroller {
+            listview: albumListView
+        }
 
-            anchors.fill: parent
-            contentWidth: width
-            header: PageHeader {
-                title: artistname == "" ? qsTr("albums") : artistname;
-            }
-            PullDownMenu {
-                MenuItem {
-                    text: qsTr("add albums")
-                    visible: artistname === "" ? false : true;
-                    onClicked: {
-                        addArtist(artistname);
-                    }
-             }
-                MenuItem {
-                    text: qsTr("play albums")
-                    visible: artistname === "" ? false : true;
-                    onClicked: {
-                        playArtist(artistname);
-                    }
-             }
-            }
-            delegate: ListItem {
-                menu: contextMenu
-                Column{
-                    clip: true
-                    anchors {
-                        right: parent.right
-                        left: parent.left
-                        verticalCenter: parent.verticalCenter
-                        leftMargin: listPadding
-                        rightMargin: listPadding
-                    }
-                        Label{
-                             text: (title==="" ? qsTr("no album tag") : title)
-                        }
-                    }
+        header: PageHeader {
+            title: artistname === "" ? qsTr("albums") : artistname
+        }
+        PullDownMenu {
+            enabled: artistname !== ""
+            MenuItem {
+                text: qsTr("add albums")
                 onClicked: {
-                    albumClicked(artistname,title);
-                }
-                function playAlbumRemorse() {
-                    remorseAction(qsTr("playing album"), function() { playAlbum([artistname,title]); },3000)
-                }
-                function addAlbumRemorse() {
-                    remorseAction(qsTr("adding album"), function() { addAlbum([artistname,title]); },3000)
-                }
-                Component {
-                            id: contextMenu
-                            ContextMenu {
-                                MenuItem {
-                                    text: qsTr("play album");
-                                    onClicked: {
-                                        if(title !=="") {
-                                            playAlbumRemorse();
-                                        }
-                                    }
-                                }
-
-                                MenuItem {
-                                    text: qsTr("add album to list")
-                                    onClicked: {
-                                        if(title !=="") {
-                                            addAlbumRemorse();
-                                        }
-                                    }
-                                }
-                            }
+                    addArtist(artistname)
                 }
             }
-            section {
-                property: 'sectionprop'
-                delegate: SectionHeader {
+            MenuItem {
+                text: qsTr("play albums")
+                onClicked: {
+                    playArtist(artistname)
+                }
+            }
+        }
+        delegate: AlbumDelegate {
+        }
+
+        section {
+            property: 'sectionprop'
+            delegate: Component {
+                SectionHeader {
                     text: section
                 }
             }
+        }
     }
 
+    onStatusChanged: {
+        if ( status === PageStatus.Deactivating ) {
+            lastIndex = albumListView.currentIndex;
+        }
+        else if ( status === PageStatus.Activating ) {
+            albumListView.positionViewAtIndex(lastIndex,ListView.Center);
+        }
+    }
+
+    Component.onDestruction: {
+        albumsModelVar = null
+        clearAlbumList();
+    }
 }

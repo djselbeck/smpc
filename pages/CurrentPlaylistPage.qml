@@ -4,16 +4,17 @@ import "../components"
 
 Page {
     id: currentPlaylistPage
-    property alias listmodel: playlistView.model
+    //property alias listmodel: playlistView.model
     property alias songid: playlistView.currentIndex
+    property int lastIndex;
     SilicaListView {
         id: playlistView
         delegate: trackDelegate
-        cacheBuffer: 0
         anchors.fill: parent
+        model: visible ? playlistModelVar : null
 
-        //        highlightFollowsCurrentItem: true
-        //        highlightMoveDuration: 1200
+        highlightFollowsCurrentItem: true
+        highlightMoveDuration: 1200
         header: PageHeader {
             title: qsTr("playlist")
         }
@@ -48,12 +49,9 @@ Page {
         SpeedScroller {
             listview: playlistView
         }
-        onModelChanged: {
-            console.debug("New playlist model")
-        }
-
         Component {
             id: trackDelegate
+
 
             ListItem {
                 menu: contextMenu
@@ -73,6 +71,9 @@ Page {
                         }
                     }
                 }
+//                Component.onCompleted: {
+//                    console.debug("component created: " + title);
+//                }
                 Column {
                     id: mainColumn
                     clip: true
@@ -124,6 +125,7 @@ Page {
                     scale: 0.5
                 }
                 onClicked: {
+                    playlistView.currentIndex = index;
                     if (!playing) {
                         parseClickedPlaylist(index)
                     } else {
@@ -189,6 +191,15 @@ Page {
         }
         onOpened: {
             playlistNameField.focus = true
+        }
+    }
+
+    onStatusChanged: {
+        if ( status === PageStatus.Deactivating ) {
+            lastIndex = playlistView.currentIndex;
+        }
+        else if ( status === PageStatus.Activating ) {
+            playlistView.positionViewAtIndex(lastIndex,ListView.Center);
         }
     }
 

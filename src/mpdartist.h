@@ -17,7 +17,7 @@ class MpdArtist : public QObject
 public:
     explicit MpdArtist(QObject *parent = 0);
     MpdArtist(QObject *parent, QString name);
-    ~MpdArtist();
+    //~MpdArtist();
 //    void addTrack(MpdTrack *track);
 //    void addAlbum(MpdAlbum *album);
 //    void addAlbums(QList<MpdAlbum*> *albums);

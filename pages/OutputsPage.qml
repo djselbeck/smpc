@@ -16,6 +16,7 @@ Page
             }
             delegate: BackgroundItem {
                 Column{
+                    id: mainColumn
                     clip: true
                     anchors {
                         right: parent.right
@@ -29,6 +30,11 @@ Page
                              text: outputname
                         }
                     }
+                OpacityRampEffect {
+                    sourceItem: mainColumn
+                    slope: 3
+                    offset: 0.65
+                }
                 onClicked: {
                     if(outputenabled){
                         disableOutput(id);

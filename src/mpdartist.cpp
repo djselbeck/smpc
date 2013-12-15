@@ -47,7 +47,6 @@ QString MpdArtist::getName()
 //    return NULL;
 //}
 
-MpdArtist::~MpdArtist()
-{
-    CommonDebug("Artist destructed");
-}
+//MpdArtist::~MpdArtist()
+//{
+//}

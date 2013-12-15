@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QStack>
+#include <QQmlEngine>
 #include "mpdtrack.h"
 
 #include <QQuickView>
@@ -75,6 +76,8 @@ private:
     QList<MpdArtist*> *artistlist;
     ArtistModel *artistmodelold;
     AlbumModel *albumsmodelold;
+    QList<MpdTrack*> *albumTracks;
+    QList<MpdTrack*> *playlistTracks;
     QList<MpdTrack*> *trackmodel;
     PlaylistModel *playlist;
     QList<MpdTrack*> *searchedtracks;
@@ -124,6 +127,11 @@ private slots:
     void addlastsearchtoplaylist();
 
     void focusChanged(QObject *now);
+
+    void clearAlbumList();
+    void clearArtistList();
+    void clearPlaylistList();
+    void clearTrackList();
 
 
 

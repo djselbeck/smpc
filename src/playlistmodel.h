@@ -35,7 +35,7 @@ public:
 
     Q_INVOKABLE MpdTrack* get(int index) {  return m_entries->at(index); }
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE QHash<int, QByteArray> roleNames() const;
     void setPlaying(int position,bool playing);
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);

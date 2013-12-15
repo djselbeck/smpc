@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtNetwork>
+#include <QQmlEngine>
 #include "mpdalbum.h"
 #include "mpdartist.h"
 #include "mpdtrack.h"

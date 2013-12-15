@@ -86,3 +86,6 @@ RESOURCES += \
     translations.qrc \
     miscresources.qrc
 
+DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
+
+

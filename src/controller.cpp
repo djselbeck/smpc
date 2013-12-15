@@ -20,6 +20,8 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     albumlist = 0;
     artistmodelold = 0;
     albumsmodelold = 0;
+    albumTracks = 0;
+    playlistTracks = 0;
     searchedtracks = 0;
     lastplaybackstate = NetworkAccess::STOP;
     connectSignals();
@@ -53,7 +55,7 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
         playlist = 0;
     }
     currentsongid = -1;
-    playlist = new PlaylistModel((QList<MpdTrack*>*)list);
+    playlist = new PlaylistModel((QList<MpdTrack*>*)list,this);
 
     viewer->rootContext()->setContextProperty("playlistModel",playlist);
     emit playlistUpdated();
@@ -65,6 +67,7 @@ void Controller::updateFilesModel(QList<QObject*>* list)
     if(list->length()>0)
     {
         FileModel *model = new FileModel((QList<MpdFileEntry*>*)list);
+        QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
         viewer->rootContext()->setContextProperty("filesModel",model);
         filemodels->push(model);
         emit filesModelReady();
@@ -81,6 +84,15 @@ void Controller::updateSavedPlaylistsModel(QStringList *list)
 
 void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 {
+    if ( playlistTracks ) {
+        for( int i = 0; i < playlistTracks->length();i++)
+        {
+            delete(playlistTracks->at(i));
+        }
+        delete(playlistTracks);
+        playlistTracks = 0;
+    }
+    playlistTracks = (QList<MpdTrack*>*)list;
     viewer->rootContext()->setContextProperty("savedPlaylistModel",QVariant::fromValue(*list));
     emit savedPlaylistReady();
 }
@@ -91,10 +103,12 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
     if(artistmodelold!=0)
     {
         delete(artistmodelold);
+        artistmodelold = 0;
     }
     //ArtistModel *model = new ArtistModel((QList<MpdTrack*>*)list,this);
 //    artistlist = (QList<MpdArtist*>*)list;
     ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list);
+    QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     artistmodelold = model;
     viewer->rootContext()->setContextProperty("artistsModel",model);
     emit artistsReady();
@@ -112,9 +126,12 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
     CommonDebug("ALBUMS UPDATE REQUIRED");
     if(albumsmodelold!=0)
     {
+        CommonDebug("Found old album model");
         delete(albumsmodelold);
+        albumsmodelold = 0;
     }
     AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list);
+    QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     albumsmodelold = model;
 
     viewer->rootContext()->setContextProperty("albumsModel",model);
@@ -138,6 +155,15 @@ void Controller::updateOutputsModel(QList<QObject*>* list)
 void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 {
     CommonDebug("ALBUM TRACKS UPDATE REQUIRED");
+    if ( albumTracks ) {
+        for( int i = 0; i < albumTracks->length();i++)
+        {
+            delete(albumTracks->at(i));
+        }
+        delete(albumTracks);
+        albumTracks = 0;
+    }
+    albumTracks = (QList<MpdTrack*>*)list;
     viewer->rootContext()->setContextProperty("albumTracksModel",QVariant::fromValue(*list));
     emit albumTracksReady();
 }
@@ -257,6 +283,11 @@ void Controller::connectSignals()
     connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
 
     connect(viewer,SIGNAL(focusObjectChanged(QObject*)),this,SLOT(focusChanged(QObject*)));
+
+    connect(item,SIGNAL(clearAlbumList()),this,SLOT(clearAlbumList()));
+    connect(item,SIGNAL(clearArtistList()),this,SLOT(clearArtistList()));
+    connect(item,SIGNAL(clearTrackList()),this,SLOT(clearTrackList()));
+    connect(item,SIGNAL(clearPlaylistTracks()),this,SLOT(clearPlaylistList()));
 }
 
 void Controller::setPassword(QString password)
@@ -320,7 +351,8 @@ void Controller::requestAlbum(QVariant array)
 
 void Controller::connectedToServer()
 {
-    emit sendPopup(tr("Connected to: ")+ profilename);
+    QString popupString = tr("Connected to: ") + profilename;
+    emit sendPopup(popupString);
 }
 
 void Controller::disconnectedToServer()
@@ -332,8 +364,10 @@ void Controller::updateStatus(status_struct status)
 
     if(currentsongid != status.id)
     {
-        if(status.playing==NetworkAccess::PLAYING)
-            emit sendPopup(status.title+"\n"+status.album+"\n"+status.artist);
+        if(status.playing==NetworkAccess::PLAYING) {
+            QString popup = status.title+"\n"+status.album+"\n"+status.artist;
+            emit sendPopup(popup);
+        }
         if(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
                 &&status.id>=0&&currentsongid>=0){
             CommonDebug("1Changed playlist "+QString::number(status.id)+":"+QString::number(currentsongid));
@@ -571,14 +605,16 @@ void Controller::incVolume()
 {
     emit setVolume((volume+3>100 ? 100 : volume+3));
     volume =(volume+3>100 ? 100 : volume+3);
-    emit sendPopup("Volume: "+ QString::number(volume)+"%");
+    QString popup = "Volume: "+ QString::number(volume)+"%";
+    emit sendPopup(popup);
 }
 
 void Controller::decVolume()
 {
     emit setVolume((volume-3<0 ? 0 : volume-3));
     volume = (volume-3<0 ? 0 : volume-3);
-    emit sendPopup("Volume: "+ QString::number(volume)+"%");
+    QString popup = "Volume: "+ QString::number(volume)+"%";
+    emit sendPopup(popup);
 
 }
 void Controller::mediaKeyHandle(int key)
@@ -661,5 +697,47 @@ void Controller::addlastsearchtoplaylist()
         {
             emit addURIToPlaylist(searchedtracks->at(i)->getFileUri());
         }
+    }
+}
+
+void Controller::clearAlbumList()
+{
+    if(albumsmodelold!=0)
+    {
+        delete(albumsmodelold);
+        albumsmodelold = 0;
+    }
+}
+
+void Controller::clearArtistList()
+{
+    if(artistmodelold!=0)
+    {
+        delete(artistmodelold);
+        artistmodelold = 0;
+    }
+}
+
+void Controller::clearTrackList()
+{
+    if ( albumTracks ) {
+        for( int i = 0; i < albumTracks->length();i++)
+        {
+            delete(albumTracks->at(i));
+        }
+        delete(albumTracks);
+        albumTracks = 0;
+    }
+}
+
+void Controller::clearPlaylistList()
+{
+    if ( playlistTracks ) {
+        for( int i = 0; i < playlistTracks->length();i++)
+        {
+            delete(playlistTracks->at(i));
+        }
+        delete(playlistTracks);
+        playlistTracks = 0;
     }
 }
