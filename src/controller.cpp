@@ -229,8 +229,6 @@ void Controller::connectSignals()
     connect(netaccess,SIGNAL(filesReady(QList<QObject*>*)),this,SLOT(updateFilesModel(QList<QObject*>*)));
     connect(netaccess,SIGNAL(connectionestablished()),this,SLOT(connectedToServer()));
     connect(netaccess,SIGNAL(disconnected()),this,SLOT(disconnectedToServer()));
-    connect(netaccess,SIGNAL(connectionestablished()),item,SLOT(slotConnected()));
-    connect(netaccess,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
     connect(netaccess,SIGNAL(statusUpdate(status_struct)),this,SLOT(updateStatus(status_struct)));
     connect(netaccess,SIGNAL(busy()),item,SLOT(busy()));
     connect(netaccess,SIGNAL(ready()),item,SLOT(ready()));
@@ -288,6 +286,9 @@ void Controller::connectSignals()
     connect(item,SIGNAL(clearArtistList()),this,SLOT(clearArtistList()));
     connect(item,SIGNAL(clearTrackList()),this,SLOT(clearTrackList()));
     connect(item,SIGNAL(clearPlaylistTracks()),this,SLOT(clearPlaylistList()));
+
+    connect(this,SIGNAL(connected(QVariant)),item,SLOT(slotConnected(QVariant)));
+    connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
 }
 
 void Controller::setPassword(QString password)
@@ -353,10 +354,12 @@ void Controller::connectedToServer()
 {
     QString popupString = tr("Connected to: ") + profilename;
     emit sendPopup(popupString);
+    emit connected(profilename);
 }
 
 void Controller::disconnectedToServer()
 {    emit sendPopup(tr("Disconnected from server"));
+     emit disconnected();
 }
 
 void Controller::updateStatus(status_struct status)

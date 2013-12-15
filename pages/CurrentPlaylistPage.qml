@@ -95,7 +95,7 @@ Page {
                             clip: true
                             wrapMode: Text.WrapAnywhere
                             elide: Text.ElideRight
-                            text: (title === "" ? filename : title)
+                            text: (title === "" ? filename + " " : title + " ")
                             font.italic: (playing) ? true : false
                             anchors {
                                 verticalCenter: parent.verticalCenter
@@ -195,11 +195,8 @@ Page {
     }
 
     onStatusChanged: {
-        if ( status === PageStatus.Deactivating ) {
-            lastIndex = playlistView.currentIndex;
-        }
-        else if ( status === PageStatus.Activating ) {
-            playlistView.positionViewAtIndex(lastIndex,ListView.Center);
+        if ( status === PageStatus.Activating ) {
+            playlistView.positionViewAtIndex(lastsongid,ListView.Center);
         }
     }
 

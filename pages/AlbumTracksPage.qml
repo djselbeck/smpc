@@ -95,7 +95,7 @@ Page
         if ( status === PageStatus.Deactivating ) {
             lastIndex = albumTracksListView.currentIndex;
         }
-        else if ( status === PageStatus.Activating ) {
+        else if ( status === PageStatus.Activating || status === PageStatus.Active ) {
             albumTracksListView.positionViewAtIndex(lastIndex,ListView.Center);
         }
     }

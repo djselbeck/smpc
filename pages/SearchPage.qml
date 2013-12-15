@@ -225,6 +225,7 @@ Page {
         }
 
         PullDownMenu {
+            enabled: albumsongs_list_view.model !== undefined
             MenuItem {
                 text: qsTr("add all results")
                 visible: albumsongs_list_view.model !== undefined

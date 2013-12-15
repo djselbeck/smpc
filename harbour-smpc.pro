@@ -80,6 +80,7 @@ pages/ServerEditPage.qml \
 pages/ServerListPage.qml \
 pages/SettingsPage.qml \
 pages/SongPage.qml \
+components/SongDialog.qml \
 }
 
 RESOURCES += \

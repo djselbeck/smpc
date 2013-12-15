@@ -3,12 +3,34 @@ import Sailfish.Silica 1.0
 import "../components"
 
 Page {
-    SilicaListView {
-        anchors.fill: parent
-        contentWidth: width
-        header: PageHeader {
-            title: "SMPC"
+
+    PageHeader {
+        id: mainHeader
+        title: "SMPC"
+    }
+    Label {
+        id: connectedLabel
+        anchors{
+            top: mainHeader.bottom
+            horizontalCenter: parent.horizontalCenter
         }
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+        color: Theme.highlightColor
+        text: connected ? qsTr("connected to")
+                          + ": " + profilename : qsTr("disconnected")
+    }
+    SilicaListView {
+        anchors {
+            top: connectedLabel.bottom
+            bottom: parent.bottom
+            right: parent.right
+            left: parent.left
+        }
+
+        contentWidth: width
+
+
         model: mainMenuModel
         delegate: BackgroundItem {
             Label {
@@ -28,19 +50,42 @@ Page {
     }
 
     Component.onCompleted: {
-        mainMenuModel.append({"name":qsTr("song information"), "ident":"currentsong"})
-        mainMenuModel.append({"name":qsTr("artists"), "ident":"artists"})
-        mainMenuModel.append({"name":qsTr("albums"), "ident":"albums"})
-        mainMenuModel.append({"name":qsTr("files"), "ident":"files"})
-        mainMenuModel.append({"name":qsTr("playlist"), "ident":"playlist"})
-        mainMenuModel.append({"name":qsTr("search"), "ident":"search"})
-        mainMenuModel.append({"name":qsTr("connect"), "ident":"connectto"})
-        mainMenuModel.append({"name":qsTr("settings"), "ident":"settings"})
+        mainMenuModel.append({
+                                 name: qsTr("playlist"),
+                                 ident: "playlist"
+                             })
+//        mainMenuModel.append({
+//                                 name: qsTr("song information"),
+//                                 ident: "currentsong"
+//                             })
+        mainMenuModel.append({
+                                 name: qsTr("artists"),
+                                 ident: "artists"
+                             })
+        mainMenuModel.append({
+                                 name: qsTr("albums"),
+                                 ident: "albums"
+                             })
+        mainMenuModel.append({
+                                 name: qsTr("files"),
+                                 ident: "files"
+                             })
+        mainMenuModel.append({
+                                 name: qsTr("search"),
+                                 ident: "search"
+                             })
+        mainMenuModel.append({
+                                 name: qsTr("connect"),
+                                 ident: "connectto"
+                             })
+        mainMenuModel.append({
+                                 name: qsTr("settings"),
+                                 ident: "settings"
+                             })
     }
 
     ListModel {
         id: mainMenuModel
-
     }
 
     Timer {
@@ -48,7 +93,10 @@ Page {
         interval: 15000
         repeat: false
         onTriggered: {
-            parseClickedMainMenu("currentsong")
+            if (connected){
+                pageStack.push(playlistpage)
+                pageStack.pushAttached(currentsongpage);
+            }
         }
     }
 
@@ -64,15 +112,17 @@ Page {
 
     function parseClickedMainMenu(ident) {
         if (ident == "playlist") {
-            if (connected)
+            if (connected){
                 pageStack.push(playlistpage)
+                pageStack.pushAttached(currentsongpage);
+            }
         } else if (ident == "settings") {
             pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
         } else if (ident == "currentsong") {
             if (connected)
                 pageStack.push(currentsongpage)
-//                        if(connected)
-//                            pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
+            //                        if(connected)
+            //                            pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
         } else if (ident == "albums") {
             artistname = ""
             if (connected)
@@ -97,5 +147,4 @@ Page {
             pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
         }
     }
-
 }

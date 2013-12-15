@@ -56,6 +56,9 @@ signals:
     void addURIToPlaylist(QString);
     void requestPlaylistClear();
     void filePopCleared();
+    void connected(QVariant profile);
+    void disconnected();
+
 
 
 private:

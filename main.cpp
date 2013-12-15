@@ -13,7 +13,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     app->setOrganizationName("smpc");
     app->setApplicationName("smpc");
     QString locale = QLocale::system().name();
-    QString translationFile = QString(":translations/smpc_") + locale;
+    QString translationFile = QString(":translations/harbour-smpc_") + locale;
     QTranslator translator;
     CommonDebug("Trying: " + translationFile);
     translator.load(translationFile);

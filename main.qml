@@ -100,6 +100,7 @@ ApplicationWindow
     property string playlistname;
     property string coverimageurl;
     property string artistimageurl;
+    property string profilename;
     property bool repeat;
     property bool shuffle;
     property bool quitbtnenabled;
@@ -115,8 +116,9 @@ ApplicationWindow
     // JS-functions
     //TODO separation
 
-    function slotConnected()
+    function slotConnected(profile)
     {
+        profilename = profile;
         connected = true;
     }
 
@@ -238,7 +240,7 @@ ApplicationWindow
 
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
     {
-        pageStack.push(Qt.resolvedUrl("pages/SongPage.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
+        pageStack.push(Qt.resolvedUrl("components/SongDialog.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
     }
 
     function receiveFilesPage()
