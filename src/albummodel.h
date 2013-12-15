@@ -2,6 +2,7 @@
 #define ALBUMMODEL_H
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
 #include "mpdalbum.h"
 
 class AlbumModel : public QAbstractListModel
@@ -27,6 +28,8 @@ public:
     };
 
     Q_INVOKABLE MpdAlbum* get(int index) {
+        MpdAlbum *retAlbum = m_entries->at(index);
+        QQmlEngine::setObjectOwnership(retAlbum,QQmlEngine::CppOwnership);
         return m_entries->at(index);
     }
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;

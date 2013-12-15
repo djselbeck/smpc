@@ -59,7 +59,6 @@ Page {
     }
 
     Component.onDestruction: {
-        albumsModelVar = null
         clearAlbumList();
     }
 }

@@ -66,7 +66,7 @@ void Controller::updateFilesModel(QList<QObject*>* list)
     CommonDebug("FILES UPDATE REQUIRED");
     if(list->length()>0)
     {
-        FileModel *model = new FileModel((QList<MpdFileEntry*>*)list);
+        FileModel *model = new FileModel((QList<MpdFileEntry*>*)list,this);
         QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
         viewer->rootContext()->setContextProperty("filesModel",model);
         filemodels->push(model);
@@ -107,7 +107,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
     }
     //ArtistModel *model = new ArtistModel((QList<MpdTrack*>*)list,this);
 //    artistlist = (QList<MpdArtist*>*)list;
-    ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list);
+    ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     artistmodelold = model;
     viewer->rootContext()->setContextProperty("artistsModel",model);
@@ -130,7 +130,7 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
         delete(albumsmodelold);
         albumsmodelold = 0;
     }
-    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list);
+    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     albumsmodelold = model;
 

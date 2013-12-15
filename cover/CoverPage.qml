@@ -41,9 +41,9 @@ CoverBackground {
 
 
 
-    onStatusChanged: {
-        recheckActive();
-    }
+//    onStatusChanged: {
+//        recheckActive();
+//    }
 
 //    Image{
 //        visible: (stopped||(coverimg.sourceprimary==""&&coverimg.sourcesecondary==""))
