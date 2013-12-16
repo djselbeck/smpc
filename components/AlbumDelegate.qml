@@ -6,9 +6,12 @@ Component {
     id: albumDelegate
     ListItem {
         menu: contextMenu
-        Column {
-            id: mainColumn
+        property int workaroundHeight: mainRow.height
+        height:  workaroundHeight
+        Row {
+            id: mainRow
             clip: true
+            height: Theme.itemSizeSmall
             anchors {
                 right: parent.right
                 left: parent.left
@@ -17,11 +20,13 @@ Component {
                 rightMargin: listPadding
             }
             Label {
+                id: albumLabel
+                anchors.verticalCenter: parent.verticalCenter
                 text: (title === "" ? qsTr("no album tag") : title)
             }
         }
         OpacityRampEffect {
-            sourceItem: mainColumn
+            sourceItem: mainRow
             slope: 3
             offset: 0.65
         }
@@ -59,6 +64,9 @@ Component {
                             addAlbumRemorse()
                         }
                     }
+                }
+                onHeightChanged: {
+                    workaroundHeight = height + mainRow.height
                 }
             }
         }

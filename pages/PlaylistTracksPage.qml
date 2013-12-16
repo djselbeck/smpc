@@ -10,7 +10,7 @@ Page
     property int lastIndex;
     SilicaListView {
             id : playlistTracksListView
-            model: visible ? listmodel : null
+            model: listmodel
             SpeedScroller {
                 listview: playlistTracksListView
             }
@@ -42,8 +42,11 @@ Page
             }
             delegate: ListItem {
                 menu: contextMenu
+                property int workaroundHeight: mainColumn.height
+                height: workaroundHeight
                 Column{
                     id: mainColumn
+                    height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
                     clip: true
                     anchors {
                         right: parent.right
@@ -53,11 +56,13 @@ Page
                         rightMargin: listPadding
                     }
                         Row{
+                            id: trackRow
                             Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
                             Label {clip: true; wrapMode: Text.WrapAnywhere; elide: Text.ElideRight; text:  (title==="" ? filename : title);anchors {verticalCenter: parent.verticalCenter}}
                             Label { text: (length===0 ? "": " ("+lengthformated+")");anchors {verticalCenter: parent.verticalCenter}}
                         }
                         Label{
+                            id: artistLabel
                             text:(artist!=="" ? artist + " - " : "" )+(album!=="" ? album : "");
                             color: Theme.secondaryColor;
                             font.pixelSize: Theme.fontSizeSmall
@@ -93,6 +98,9 @@ Page
                             onClicked: {
                                 addTrackRemorse();
                             }
+                        }
+                        onHeightChanged: {
+                            workaroundHeight = height + mainColumn.height
                         }
                     }
                 }

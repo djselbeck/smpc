@@ -81,6 +81,9 @@ pages/ServerListPage.qml \
 pages/SettingsPage.qml \
 pages/SongPage.qml \
 components/SongDialog.qml \
+components/ArtistDelegate.qml \
+components/AlbumDelegate.qml \
+components/FileDelegate.qml \
 }
 
 RESOURCES += \

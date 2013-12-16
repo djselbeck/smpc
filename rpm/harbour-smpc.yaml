@@ -1,7 +1,7 @@
 Name: harbour-smpc
 Summary: SailfishOS Port of qmobilempd client
 URL: https://github.com/djselbeck/smpc
-Version: 1.0.2
+Version: 1.0.3
 Release: 1
 Group: Qt/Qt
 License: GPLv3
@@ -12,20 +12,20 @@ Description: |
 Configure: none
 Builder: qtc5
 PkgConfigBR:
-- qdeclarative5-boostable
-- Qt5Core
-- Qt5Qml
 - Qt5Quick
+- Qt5Qml
+- Qt5Core
+- qdeclarative5-boostable
 Requires:
-- sailfishsilica-qt5
-- mapplauncherd-booster-silica-qt5
 - qt5-qtdeclarative-import-xmllistmodel
+- mapplauncherd-booster-silica-qt5
+- sailfishsilica-qt5
 Files:
-- /usr/share/applications
-- /usr/share/harbour-smpc
-- /usr/bin
-- /usr/share/icons/hicolor/86x86/apps
-- '%{_datadir}/applications'
-- '%{_datadir}/harbour-smpc'
 - '%{_bindir}'
+- '%{_datadir}/harbour-smpc'
+- '%{_datadir}/applications'
+- /usr/share/icons/hicolor/86x86/apps
+- /usr/bin
+- /usr/share/harbour-smpc
+- /usr/share/applications
 PkgBR: []

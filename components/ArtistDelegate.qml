@@ -4,8 +4,11 @@ import Sailfish.Silica 1.0
 Component {
     ListItem {
         menu: contextMenu
-        Column {
-            id: mainColumn
+        property int workaroundHeight: mainRow.height
+        height:  workaroundHeight
+        Row {
+            id: mainRow
+            height: Theme.itemSizeSmall
             clip: true
             anchors {
                 right: parent.right
@@ -15,11 +18,12 @@ Component {
                 rightMargin: listPadding
             }
             Label {
+                anchors.verticalCenter: parent.verticalCenter
                 text: (artist === "" ? "No Artist Tag" : artist)
             }
         }
         OpacityRampEffect {
-            sourceItem: mainColumn
+            sourceItem: mainRow
             slope: 3
             offset: 0.65
         }
@@ -56,6 +60,9 @@ Component {
                             addArtistRemorse()
                         }
                     }
+                }
+                onHeightChanged: {
+                    workaroundHeight = height + mainRow.height
                 }
             }
         }

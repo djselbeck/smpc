@@ -5,19 +5,23 @@ Component {
     ListItem {
         menu: contextMenu
         id: filesDelegate
+        property int workaroundHeight:mainColumn.height
+        height: workaroundHeight
         Image {
+            height: (filenametext.height + trackLabel >= Theme.itemSizeSmall ? filenametext.height + trackLabel :Theme.itemSizeSmall  )
             anchors {
                 leftMargin: listPadding
                 left: parent.left
                 verticalCenter: parent.verticalCenter
             }
             id: fileicon
-            source: (isDirectory ? "image://theme/icon-l-storage" : "image://theme/icon-m-music")
+            source: (isDirectory ? "image://theme/icon-l-storage" : (isPlaylist ? "image://theme/icon-l-document" : "image://theme/icon-l-music") )
             width: height
         }
         Column {
             id: mainColumn
             clip: true
+            height: (filenametext.height + trackLabel >= Theme.itemSizeSmall ? filenametext.height + trackLabel :Theme.itemSizeSmall  )
             anchors {
                 left: fileicon.right
                 right: parent.right
@@ -31,10 +35,12 @@ Component {
                 anchors {
                     left: parent.left
                     right: parent.right
+                    verticalCenter: isFile ? undefined : parent.verticalCenter
                 }
                 elide: Text.ElideMiddle
             }
             Label {
+                id: trackLabel
                 visible: isFile
                 text: (!isFile ? "" : (title === "" ? "" : title + " - ")
                                  + (artist === "" ? "" : artist))
@@ -133,6 +139,9 @@ Component {
                             addPlaylistRemorse()
                         }
                     }
+                }
+                onHeightChanged: {
+                    workaroundHeight = height + mainColumn.height
                 }
             }
         }

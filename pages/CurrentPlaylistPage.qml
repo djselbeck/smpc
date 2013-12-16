@@ -6,12 +6,12 @@ Page {
     id: currentPlaylistPage
     //property alias listmodel: playlistView.model
     property alias songid: playlistView.currentIndex
-    property int lastIndex;
+    property int lastIndex
     SilicaListView {
         id: playlistView
         delegate: trackDelegate
         anchors.fill: parent
-        model: visible ? playlistModelVar : null
+        model: playlistModelVar
 
         highlightFollowsCurrentItem: true
         highlightMoveDuration: 1200
@@ -51,9 +51,9 @@ Page {
         }
         Component {
             id: trackDelegate
-
-
             ListItem {
+                property int workaroundHeight: mainColumn.height
+                height: workaroundHeight
                 menu: contextMenu
                 Component {
                     id: contextMenu
@@ -69,14 +69,18 @@ Page {
                                 remove()
                             }
                         }
+                        onHeightChanged: {
+                            workaroundHeight = height + mainColumn.height
+                        }
                     }
                 }
-//                Component.onCompleted: {
-//                    console.debug("component created: " + title);
-//                }
+                //                Component.onCompleted: {
+                //                    console.debug("component created: " + title);
+                //                }
                 Column {
                     id: mainColumn
                     clip: true
+                    height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -85,6 +89,7 @@ Page {
                         rightMargin: listPadding
                     }
                     Row {
+                        id: trackRow
                         Label {
                             text: (index + 1) + ". "
                             anchors {
@@ -109,6 +114,7 @@ Page {
                         }
                     }
                     Label {
+                        id: artistLabel
                         text: (artist !== "" ? artist + " - " : "") + (album !== "" ? album : "")
                         color: Theme.secondaryColor
                         font.pixelSize: Theme.fontSizeSmall
@@ -125,7 +131,7 @@ Page {
                     scale: 0.5
                 }
                 onClicked: {
-                    playlistView.currentIndex = index;
+                    playlistView.currentIndex = index
                     if (!playing) {
                         parseClickedPlaylist(index)
                     } else {
@@ -195,8 +201,8 @@ Page {
     }
 
     onStatusChanged: {
-        if ( status === PageStatus.Activating ) {
-            playlistView.positionViewAtIndex(lastsongid,ListView.Center);
+        if (status === PageStatus.Activating) {
+            playlistView.positionViewAtIndex(lastsongid, ListView.Center)
         }
     }
 

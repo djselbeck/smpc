@@ -8,7 +8,7 @@ Page
     property var listmodel;
     property int lastIndex;
     SilicaListView {
-        model: visible ? listmodel : null
+        model: listmodel
             id : artistListView
             SectionScroller{
                 listview: artistListView

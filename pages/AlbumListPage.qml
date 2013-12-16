@@ -13,7 +13,7 @@ Page {
         quickScrollEnabled: false
         anchors.fill: parent
         highlightFollowsCurrentItem: false
-        model: visible ? listmodel : null
+        model: listmodel
         SectionScroller {
             listview: albumListView
         }

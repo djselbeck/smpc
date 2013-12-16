@@ -10,7 +10,7 @@ Page
     property int lastContentPosY:0
     SilicaListView {
             id : fileListView
-            model: visible ? listmodel : null
+            model: listmodel
             highlightFollowsCurrentItem: true
             SpeedScroller{
                 id: scroller

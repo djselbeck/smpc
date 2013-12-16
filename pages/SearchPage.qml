@@ -8,12 +8,11 @@ Page {
     property int currentindex: -1
     property string selectedsearch
 
-
-
     SilicaFlickable {
         id: mainSearchFlickable
         contentHeight: albumsongs_list_view.contentHeight + searchhead.height
         anchors.fill: parent
+        clip: true
         ScrollDecorator {
         }
         Column {
@@ -106,10 +105,20 @@ Page {
             height: contentHeight
             interactive: false
             cacheBuffer: 0
+
+
             delegate: ListItem {
+                Component.onCompleted: {
+                    console.debug("Delegate created:" + title)
+                }
+
                 menu: contextMenu
+                property int workaroundHeight:mainColumn.height
+                height: workaroundHeight
                 Column {
+                    id: mainColumn
                     clip: true
+                    height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -118,6 +127,7 @@ Page {
                         rightMargin: listPadding
                     }
                     Row {
+                        id: trackRow
                         Label {
                             text: (index + 1) + ". "
                             anchors {
@@ -141,6 +151,7 @@ Page {
                         }
                     }
                     Label {
+                        id: artistRow
                         text: (artist !== "" ? artist + " - " : "") + (album !== "" ? album : "")
                         color: Theme.secondaryColor
                         font.pixelSize: Theme.fontSizeSmall
@@ -208,10 +219,12 @@ Page {
                                 var menuMax = menuPos + parent.height;
                                 if(menuMax > mainSearchFlickable.height) {
                                     mainSearchFlickable.contentY += menuMax-mainSearchFlickable.height;
-                                    console.debug("cy: " + mainSearchFlickable.contentY );
                                 }
 
                             }
+                        }
+                        onHeightChanged: {
+                            workaroundHeight = height + mainColumn.height
                         }
 
                     }
