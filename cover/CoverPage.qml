@@ -8,14 +8,12 @@ CoverBackground {
 
     function recheckActive() {
         if( (status === Cover.Activating || status === Cover.Active) ) {
-            coverimg.visible = true;
+            coverimg.active = true
         }
         else {
-            coverimg.visible = false;
+            coverimg.active = false
         }
     }
-
-
 
     ToggleImage{
         id: coverimg
@@ -41,13 +39,13 @@ CoverBackground {
 
 
 
-//    onStatusChanged: {
-//        recheckActive();
-//    }
+    onStatusChanged: {
+        recheckActive();
+    }
 
 //    Image{
 //        visible: (stopped||(coverimg.sourceprimary==""&&coverimg.sourcesecondary==""))
-//        anchors.centerIn: coverpage
+//        anchors.centerIn: coverrpage
 //        source: "qrc:/images/smpc-big.png"
 //        width: coverpage.width-(coverpage.width/3)
 //        height: width

@@ -204,6 +204,9 @@ Page {
         if (status === PageStatus.Activating) {
             playlistView.positionViewAtIndex(lastsongid, ListView.Center)
         }
+        else if ( status === PageStatus.Active ) {
+            pageStack.pushAttached(currentsongpage);
+        }
     }
 
     function parseClickedPlaylist(index) {

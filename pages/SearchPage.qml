@@ -39,7 +39,10 @@ Page {
                 }
                 placeholderText: qsTr("search value")
                 text: ""
-                inputMethodHints: Qt.ImhNoPredictiveText
+                //inputMethodHints: Qt.ImhNoPredictiveText
+                EnterKey.onClicked:{
+                    startSearch()
+                }
             }
             Button {
                 id: startsearchbtn
@@ -51,28 +54,7 @@ Page {
                     rightMargin: listPadding
                 }
                 onClicked: {
-                    var searchfor
-                    switch (searchforcombobox.currentIndex) {
-                    case 0:
-                        console.debug("Searching for titles")
-                        searchfor = "title"
-                        break
-                    case 1:
-                        console.debug("Searching for albums")
-                        searchfor = "album"
-                        break
-                    case 2:
-                        console.debug("Searching for artists")
-                        searchfor = "artist"
-                        break
-                    case 3:
-                        console.debug("Searching for files")
-                        searchfor = "file"
-                        break
-                    }
-
-                    requestSearch([searchfor, searchfield.text])
-                    albumsongs_list_view.forceActiveFocus()
+                    startSearch()
                 }
             }
             ComboBox {
@@ -108,10 +90,6 @@ Page {
 
 
             delegate: ListItem {
-                Component.onCompleted: {
-                    console.debug("Delegate created:" + title)
-                }
-
                 menu: contextMenu
                 property int workaroundHeight:mainColumn.height
                 height: workaroundHeight
@@ -257,5 +235,29 @@ Page {
                 }
             }
         }
+    }
+    function startSearch() {
+        var searchfor
+        switch (searchforcombobox.currentIndex) {
+        case 0:
+            console.debug("Searching for titles")
+            searchfor = "title"
+            break
+        case 1:
+            console.debug("Searching for albums")
+            searchfor = "album"
+            break
+        case 2:
+            console.debug("Searching for artists")
+            searchfor = "artist"
+            break
+        case 3:
+            console.debug("Searching for files")
+            searchfor = "file"
+            break
+        }
+
+        requestSearch([searchfor, searchfield.text])
+        albumsongs_list_view.forceActiveFocus()
     }
 }

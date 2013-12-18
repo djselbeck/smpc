@@ -307,6 +307,7 @@ ApplicationWindow
         object = component.createObject(mainWindow);
         mainWindow.playlistpage = object;
         console.debug("PlaylistPage created");
+        pageStack.pushAttached(playlistpage);
         component = Qt.createComponent("pages/CurrentSong.qml");
         object = component.createObject(mainWindow);
         currentsongpage = object;

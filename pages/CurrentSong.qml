@@ -79,6 +79,7 @@ Page {
                 fillMode: Image.PreserveAspectFit
                 sourceprimary: coverimageurl
                 sourcesecondary: artistimageurl
+                active: visible
                 Image{
                     id:fallbackImage
                     source: "qrc:/images/smpc-big.png"

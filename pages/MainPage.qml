@@ -94,19 +94,25 @@ Page {
         repeat: false
         onTriggered: {
             if (connected){
-                pageStack.push(playlistpage)
-                pageStack.pushAttached(currentsongpage);
+//                pageStack.push(playlistpage)
+//                pageStack.pushAttached(currentsongpage);
             }
         }
     }
 
     onStatusChanged: {
-        if (status == PageStatus.Active) {
+        if (status === PageStatus.Active) {
+            pageStack.pushAttached(playlistpage);
             showCurrentSongTimer.start()
-        } else if (status == PageStatus.Deactivating) {
+        } else if (status === PageStatus.Deactivating) {
             if (showCurrentSongTimer.running) {
                 showCurrentSongTimer.stop()
             }
+        }
+        else if ( status === PageStatus.Activating ) {
+
+
+            //pageStack.pushAttached(currentsongpage);
         }
     }
 
