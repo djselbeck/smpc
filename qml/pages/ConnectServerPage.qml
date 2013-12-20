@@ -14,7 +14,9 @@ Page
             header: PageHeader {
                 title: qsTr("servers");
             }
-            delegate: BackgroundItem {
+            ScrollDecorator {}
+            delegate: ListItem {
+                height: Theme.itemSizeSmall
                 Label {
                     clip: true
                     anchors {

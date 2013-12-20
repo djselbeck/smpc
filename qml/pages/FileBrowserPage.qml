@@ -17,6 +17,7 @@ Page
                 listview: fileListView
                 scrollenabled: fastscrollenabled
             }
+            ScrollDecorator {}
 
             anchors.fill: parent
             contentWidth: width

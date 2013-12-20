@@ -10,8 +10,7 @@ Page {
     property int lastIndex
     SilicaListView {
         id: albumTracksListView
-        ScrollDecorator {
-        }
+        ScrollDecorator {}
         anchors.fill: parent
         contentWidth: width
         header: PageHeader {

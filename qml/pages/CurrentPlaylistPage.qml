@@ -49,6 +49,7 @@ Page {
         SpeedScroller {
             listview: playlistView
         }
+        ScrollDecorator {}
         Component {
             id: trackDelegate
             ListItem {
@@ -59,16 +60,23 @@ Page {
                     id: contextMenu
                     ContextMenu {
                         MenuItem {
-                            text: qsTr("Play song")
+                            visible: !playing
+                            text: qsTr("play song")
                             onClicked: playPlaylistTrack(index)
                         }
-
                         MenuItem {
-                            text: qsTr("Remove")
+                            text: qsTr("remove song")
                             onClicked: {
                                 remove()
                             }
                         }
+
+                        MenuItem {
+                            visible: playing
+                            text: qsTr("show information")
+                            onClicked: pageStack.push(currentsongpage)
+                        }
+
                         onHeightChanged: {
                             workaroundHeight = height + mainColumn.height
                         }

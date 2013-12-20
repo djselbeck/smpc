@@ -13,6 +13,7 @@ Page
             SectionScroller{
                 listview: artistListView
             }
+            ScrollDecorator {}
             anchors.fill: parent
             header: PageHeader {
                 title: qsTr("artists");

@@ -10,7 +10,6 @@ Component {
         height:  workaroundHeight
         Row {
             id: mainRow
-            clip: true
             height: Theme.itemSizeSmall
             anchors {
                 right: parent.right

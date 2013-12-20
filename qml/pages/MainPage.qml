@@ -94,8 +94,7 @@ Page {
         repeat: false
         onTriggered: {
             if (connected){
-//                pageStack.push(playlistpage)
-//                pageStack.pushAttached(currentsongpage);
+                pageStack.push(playlistpage)
             }
         }
     }

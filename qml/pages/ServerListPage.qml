@@ -13,6 +13,7 @@ Page
             header: PageHeader {
                 title: qsTr("servers");
             }
+            ScrollDecorator {}
             PushUpMenu {
              MenuItem {
                  text: qsTr("Add server")
@@ -33,7 +34,6 @@ Page
             }
             delegate: BackgroundItem {
                 Label {
-                    clip: true
                     anchors {
                         horizontalCenter: parent.horizontalCenter
                         verticalCenter: parent.verticalCenter

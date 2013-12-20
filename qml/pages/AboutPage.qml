@@ -46,7 +46,14 @@ Page {
             Label {
                 id: copyLeft
                 text: "©"
-                rotation: 180
+                transform: Rotation {
+                    id: mirror
+                    origin.x:copyLeft.width/2
+                    axis.x: 0
+                    axis.y: 1
+                    axis.z: 0
+                    angle: 180
+                }
             }
 
             Label {

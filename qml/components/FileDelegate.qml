@@ -5,55 +5,55 @@ Component {
     ListItem {
         menu: contextMenu
         id: filesDelegate
-        property int workaroundHeight:mainColumn.height
+        property int workaroundHeight: fileicon.height
         height: workaroundHeight
         Image {
-            height: (filenametext.height + trackLabel >= Theme.itemSizeSmall ? filenametext.height + trackLabel :Theme.itemSizeSmall  )
+            height: (filenametext.height + trackLabel
+                     >= Theme.itemSizeSmall ? filenametext.height
+                                              + trackLabel : Theme.itemSizeSmall)
             anchors {
                 leftMargin: listPadding
-                left: parent.left
                 verticalCenter: parent.verticalCenter
+                left: parent.left
             }
             id: fileicon
-            source: (isDirectory ? "image://theme/icon-l-storage" : (isPlaylist ? "image://theme/icon-l-document" : "image://theme/icon-l-music") )
+            source: (isDirectory ? "image://theme/icon-l-storage" : (isPlaylist ? "image://theme/icon-l-document" : "image://theme/icon-l-music"))
             width: height
         }
-        Column {
-            id: mainColumn
-            clip: true
-            height: (filenametext.height + trackLabel >= Theme.itemSizeSmall ? filenametext.height + trackLabel :Theme.itemSizeSmall  )
+        Label {
+            id: filenametext
+            text: name
+            wrapMode: "NoWrap"
+            elide: Text.ElideMiddle
             anchors {
+                verticalCenter: isFile ? undefined : parent.verticalCenter
+                top: isFile ? parent.top : undefined
                 left: fileicon.right
-                right: parent.right
-                verticalCenter: parent.verticalCenter
+                right:parent.right
                 rightMargin: listPadding
             }
-            Label {
-                id: filenametext
-                text: name
-                wrapMode: "NoWrap"
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    verticalCenter: isFile ? undefined : parent.verticalCenter
-                }
-                elide: Text.ElideMiddle
-            }
-            Label {
-                id: trackLabel
-                visible: isFile
-                text: (!isFile ? "" : (title === "" ? "" : title + " - ")
-                                 + (artist === "" ? "" : artist))
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.secondaryColor
+        }
+        Label {
+            id: trackLabel
+            visible: isFile
+            text: (!isFile ? "" : (title === "" ? "" : title + " - ")
+                             + (artist === "" ? "" : artist))
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.secondaryColor
+            anchors {
+                top: filenametext.bottom
+                left: fileicon.right
+                right:parent.right
+                rightMargin: listPadding
             }
         }
         OpacityRampEffect {
-            sourceItem: mainColumn
+            sourceItem: filenametext
+            slope: 3
+            offset: 0.65
+        }
+        OpacityRampEffect {
+            sourceItem: trackLabel
             slope: 3
             offset: 0.65
         }
@@ -141,7 +141,7 @@ Component {
                     }
                 }
                 onHeightChanged: {
-                    workaroundHeight = height + mainColumn.height
+                    workaroundHeight = height + fileicon.height
                 }
             }
         }

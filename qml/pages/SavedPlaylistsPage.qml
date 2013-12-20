@@ -12,6 +12,7 @@ Page
             SpeedScroller {
                 listview: savedPlaylistsListView
             }
+            ScrollDecorator {}
 
             anchors.fill: parent
             contentWidth: width
@@ -22,7 +23,6 @@ Page
                 menu: contextMenu
                 Column{
                     id: mainColumn
-                    clip: true
                     anchors {
                         right: parent.right
                         left: parent.left

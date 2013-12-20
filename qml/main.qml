@@ -91,8 +91,8 @@ ApplicationWindow
     property int listfontsize:12;
     property int liststretch:20;
     property int lastsongid:-1;
-    property string playbuttoniconsource;
-    property string playbuttoniconsourcecover;
+    property string playbuttoniconsource:"image://theme/icon-m-play";
+    property string playbuttoniconsourcecover : "image://theme/icon-cover-play";
     property string volumebuttoniconsource;
     property string lastpath;
     property string artistname;
@@ -216,7 +216,7 @@ ApplicationWindow
 
     function clearPlaylist()
     {
-        playlistpage.listmodel = 0;
+        playlistModelVar = 0
         console.debug("playlist model cleared");
     }
 

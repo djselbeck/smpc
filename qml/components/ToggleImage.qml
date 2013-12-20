@@ -80,7 +80,6 @@ Item {
         }
     }
     onActiveChanged: {
-        console.debug("Active changed:" + active)
         // Start timer again
         if(active) {
             waitTimer.start()

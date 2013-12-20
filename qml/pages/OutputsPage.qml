@@ -14,6 +14,7 @@ Page
             header: PageHeader {
                 title: qsTr("outputs")
             }
+            ScrollDecorator {}
             delegate: BackgroundItem {
                 Column{
                     id: mainColumn

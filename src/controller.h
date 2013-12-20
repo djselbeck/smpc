@@ -66,6 +66,8 @@ private:
     NetworkAccess *netaccess;
     QString hostname,password,profilename;
     quint16 port;
+    int mLastProfileIndex;
+    QTimer mReconnectTimer;
     quint32 playlistversion;
     int currentsongid;
     int volume;
@@ -87,6 +89,7 @@ private:
     QList<MPDOutput*> *outputs;
     QStack<FileModel*> *filemodels;
     QThread *oldnetthread;
+    bool mApplicationActive;
 
 private slots:
     void requestCurrentPlaylist();
@@ -135,6 +138,8 @@ private slots:
     void clearArtistList();
     void clearPlaylistList();
     void clearTrackList();
+
+    void reconnectServer();
 
 
 

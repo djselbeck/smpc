@@ -17,6 +17,7 @@ Page {
         SectionScroller {
             listview: albumListView
         }
+        ScrollDecorator {}
 
         header: PageHeader {
             title: artistname === "" ? qsTr("albums") : artistname

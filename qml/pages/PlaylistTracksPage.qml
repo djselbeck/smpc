@@ -14,6 +14,7 @@ Page
             SpeedScroller {
                 listview: playlistTracksListView
             }
+            ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -47,7 +48,6 @@ Page
                 Column{
                     id: mainColumn
                     height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
-                    clip: true
                     anchors {
                         right: parent.right
                         left: parent.left

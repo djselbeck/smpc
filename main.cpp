@@ -5,11 +5,13 @@
 
 #include "src/controller.h"
 
-#include "sailfishapplication.h"
+//#include "sailfishapplication.h"
+
+#include <sailfishapp.h>
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
-    QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     app->setOrganizationName("smpc");
     app->setApplicationName("smpc");
     QString locale = QLocale::system().name();
@@ -18,12 +20,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     CommonDebug("Trying: " + translationFile);
     translator.load(translationFile);
     app->installTranslator(&translator);
-    QScopedPointer<QQuickView> view(Sailfish::createView("main.qml"));
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
+    view->setSource(SailfishApp::pathTo("qml/main.qml"));
     view->setDefaultAlphaBuffer(true);
-    view->showFullScreen();
 
     Controller *control = new Controller(&(*view),0);
-    Sailfish::showView(view.data());
+    view->show();
     return app->exec();
 }
 

@@ -32,6 +32,7 @@ bool NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
     {
         CommonDebug("Unable to connect");
         emit ready();
+        emit disconnected();
         return false;
     }
     CommonDebug("Connected");
@@ -60,6 +61,7 @@ bool NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
 
     }
     emit ready();
+    emit disconnected();
     return false;
 }
 

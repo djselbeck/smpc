@@ -25,16 +25,23 @@ CoverBackground {
 
     Rectangle
     {
+        visible: (coverimg.sourceprimary !="" || coverimg.sourcesecondary !="")
         anchors.fill: parent
         color: Theme.highlightBackgroundColor
         gradient: Gradient {
             GradientStop { position: 0.0; color: Theme.rgba(Theme.highlightBackgroundColor,0.4) }
-            GradientStop { position: 0.3; color:  Theme.rgba(Theme.highlightBackgroundColor,0.0) }
+            GradientStop { position: 0.4; color:  Theme.rgba(Theme.highlightColor,0.0) }
 
-            GradientStop { position: 0.7; color: Theme.rgba(Theme.highlightBackgroundColor,0.0) }
+            GradientStop { position: 0.6; color: Theme.rgba(Theme.highlightColor,0.0) }
             GradientStop { position: 1.0; color:  Theme.rgba(Theme.highlightBackgroundColor,0.4) }
         }
 
+    }
+    Image {
+        id: logo
+        visible: (coverimg.sourceprimary =="" && coverimg.sourcesecondary =="")
+        source: "qrc:images/pictogram.png"
+        anchors.centerIn: parent
     }
 
 
@@ -55,10 +62,14 @@ CoverBackground {
 
     Label {
         id: textLabel
-        anchors.centerIn: parent
-        width: parent.width-(2*listPadding)
-        height: (parent.height/3)*2
+        anchors.centerIn: coverpage
+        width: coverpage.width-(2*listPadding)
+        height: (coverpage.height/3)*2
         wrapMode: "WordWrap"
+        elide: Text.ElideRight
+        font.pixelSize: Theme.fontSizeLarge
+        style: Text.Raised
+        styleColor: Theme.secondaryColor
         horizontalAlignment: Text.AlignHCenter
         text: ( currentsongpage.title==="" ? "SMPC" : currentsongpage.title )
     }

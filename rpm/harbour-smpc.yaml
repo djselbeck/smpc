@@ -13,12 +13,11 @@ Configure: none
 Builder: qtc5
 PkgConfigBR:
 - Qt5Quick
+- sailfishapp >= 0.0.10
 - Qt5Qml
 - Qt5Core
-- qdeclarative5-boostable
 Requires:
 - qt5-qtdeclarative-import-xmllistmodel
-- mapplauncherd-booster-silica-qt5
 - sailfishsilica-qt5
 Files:
 - '%{_bindir}'
@@ -28,4 +27,3 @@ Files:
 - /usr/bin
 - /usr/share/harbour-smpc
 - /usr/share/applications
-PkgBR: []

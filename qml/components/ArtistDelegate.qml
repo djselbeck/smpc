@@ -9,7 +9,6 @@ Component {
         Row {
             id: mainRow
             height: Theme.itemSizeSmall
-            clip: true
             anchors {
                 right: parent.right
                 left: parent.left

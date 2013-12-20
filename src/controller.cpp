@@ -31,6 +31,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     qmlRegisterType<ServerProfile>();
     volIncTimer.setInterval(250);
     volDecTimer.setInterval(250);
+    mLastProfileIndex = -1;
     filemodels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
     netaccess->setQmlThread(viewer->thread());
@@ -289,6 +290,8 @@ void Controller::connectSignals()
 
     connect(this,SIGNAL(connected(QVariant)),item,SLOT(slotConnected(QVariant)));
     connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
+
+    connect(&mReconnectTimer,SIGNAL(timeout()),this,SLOT(reconnectServer()));
 }
 
 void Controller::setPassword(QString password)
@@ -352,7 +355,9 @@ void Controller::requestAlbum(QVariant array)
 
 void Controller::connectedToServer()
 {
+    mReconnectTimer.stop();
     QString popupString = tr("Connected to: ") + profilename;
+    mReconnectTimer.stop();
     emit sendPopup(popupString);
     emit connected(profilename);
 }
@@ -360,6 +365,10 @@ void Controller::connectedToServer()
 void Controller::disconnectedToServer()
 {    emit sendPopup(tr("Disconnected from server"));
      emit disconnected();
+     if(mApplicationActive) {
+        mReconnectTimer.setSingleShot(true);
+        mReconnectTimer.start();
+    }
 }
 
 void Controller::updateStatus(status_struct status)
@@ -596,6 +605,8 @@ void Controller::connectProfile(int index)
     port =  profile->getPort();
     password = profile->getPassword();
     profilename = profile->getName();
+    mLastProfileIndex = index;
+    mReconnectTimer.setInterval(5000);
     viewer->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(profilename)));
     if(netaccess->connected())
     {
@@ -653,10 +664,15 @@ void Controller::focusChanged(QObject *now){
     if(now==0)
     {
         CommonDebug("Focus lost");
+        mApplicationActive = false;
         emit setUpdateInterval(5000);
     }
     else{
         CommonDebug("Focus gained");
+        mApplicationActive = true;
+        if ( !netaccess->connected() && (mLastProfileIndex!=-1) ) {
+           reconnectServer();
+        }
         emit setUpdateInterval(1000);
     }
 }
@@ -742,5 +758,13 @@ void Controller::clearPlaylistList()
         }
         delete(playlistTracks);
         playlistTracks = 0;
+    }
+}
+
+void Controller::reconnectServer()
+{
+    if( (mLastProfileIndex>=0) && (mLastProfileIndex<serverprofiles->length()
+            && !netaccess->connected() ) ) {
+        connectProfile(mLastProfileIndex);
     }
 }
