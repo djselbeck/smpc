@@ -179,6 +179,19 @@
     </message>
 </context>
 <context>
+    <name>ControlPanel</name>
+    <message>
+        <location filename="qml/components/ControlPanel.qml" line="25"/>
+        <source>not playing</source>
+        <translation>spielt nicht</translation>
+    </message>
+    <message>
+        <location filename="qml/components/ControlPanel.qml" line="120"/>
+        <source>volume</source>
+        <translation>Lautstärke</translation>
+    </message>
+</context>
+<context>
     <name>Controller</name>
     <message>
         <location filename="src/controller.cpp" line="359"/>
@@ -194,60 +207,60 @@
 <context>
     <name>CurrentPlaylistPage</name>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="19"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="30"/>
         <source>playlist</source>
         <translation>Wiedergabeliste</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="23"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="224"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="34"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="239"/>
         <source>add url</source>
         <translation>URL hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="29"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="173"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="40"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="188"/>
         <source>delete playlist</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="35"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="193"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="46"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="208"/>
         <source>save playlist</source>
         <translation>Wiedergabeliste abspeichern</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="41"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="52"/>
         <source>open playlist</source>
         <translation>Wiedergabeliste öffnen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="47"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="58"/>
         <source>jump to playing song</source>
         <translation>springe zum aktuellen Lied</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="70"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="82"/>
         <source>play song</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="74"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="86"/>
         <source>remove song</source>
         <translation>Lied entfernen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="82"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="94"/>
         <source>show information</source>
         <translation>zeige Informationen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="227"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="242"/>
         <source>enter url:</source>
         <translation>URL eingeben:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="232"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="247"/>
         <source>input url (http://, file://, etc)</source>
         <translation>URL eingeben (http://, file://, etc)</translation>
     </message>
@@ -256,7 +269,7 @@
         <translation type="obsolete">entferne</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="157"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="170"/>
         <source>Deleting</source>
         <translation>Lösche</translation>
     </message>
@@ -269,17 +282,17 @@
         <translation type="obsolete">Löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="176"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="191"/>
         <source>really delete playlist?</source>
         <translation>Wiedergabeliste wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="196"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="211"/>
         <source>playlist name:</source>
         <translation>Wiedergabelistenname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="201"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="216"/>
         <source>input playlist name</source>
         <translation>Wiedergabelistenname eingeben</translation>
     </message>
@@ -287,17 +300,17 @@
 <context>
     <name>CurrentSong</name>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="53"/>
+        <location filename="qml/pages/CurrentSong.qml" line="52"/>
         <source>show all tracks from album</source>
         <translation>zeige alle Lieder des Albums</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="60"/>
+        <location filename="qml/pages/CurrentSong.qml" line="59"/>
         <source>show albums from artist</source>
         <translation>zeige alle Alben des Interpretens</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="80"/>
+        <location filename="qml/pages/CurrentSong.qml" line="79"/>
         <source>current song</source>
         <translation>Aktuelles Lied</translation>
     </message>
@@ -306,22 +319,22 @@
         <translation type="obsolete">Details</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="147"/>
+        <location filename="qml/pages/CurrentSong.qml" line="146"/>
         <source>nr.:</source>
         <translation>Nr.:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="163"/>
+        <location filename="qml/pages/CurrentSong.qml" line="162"/>
         <source>bitrate:</source>
         <translation>Bitrate:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="176"/>
+        <location filename="qml/pages/CurrentSong.qml" line="175"/>
         <source>properties:</source>
         <translation>Eigenschaften:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="189"/>
+        <location filename="qml/pages/CurrentSong.qml" line="188"/>
         <source>uri:</source>
         <translation>URI:</translation>
     </message>
@@ -331,7 +344,7 @@
         <translation>Lautstärke</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="328"/>
+        <location filename="qml/pages/CurrentSong.qml" line="331"/>
         <source>position</source>
         <translation>Position</translation>
     </message>
@@ -339,22 +352,22 @@
 <context>
     <name>FileBrowserPage</name>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="25"/>
+        <location filename="qml/pages/FileBrowserPage.qml" line="28"/>
         <source>filebrowser</source>
         <translation>Filebrowser</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="29"/>
+        <location filename="qml/pages/FileBrowserPage.qml" line="32"/>
         <source>home</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="36"/>
+        <location filename="qml/pages/FileBrowserPage.qml" line="39"/>
         <source>add folder</source>
         <translation>Ordner hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="42"/>
+        <location filename="qml/pages/FileBrowserPage.qml" line="45"/>
         <source>play folder</source>
         <translation>Ordner abspielen</translation>
     </message>
@@ -781,7 +794,6 @@
     </message>
     <message>
         <location filename="qml/pages/ServerListPage.qml" line="19"/>
-        <location filename="qml/pages/ServerListPage.qml" line="28"/>
         <source>Add server</source>
         <translation>Server hinzufügen</translation>
     </message>

@@ -19,6 +19,18 @@ DockedPanel {
             source: "image://theme/graphic-gradient-edge"
         }
 
+    Label {
+        id: notPlayingLabel
+        visible: (mTitle=="" && mArtist=="")
+        text: qsTr("not playing")
+        anchors.centerIn: parent
+        color: Theme.primaryColor
+        font.pixelSize: Theme.fontSizeLarge
+        font.bold: false
+        font.family: Theme.fontFamily
+
+    }
+
     Column {
         anchors {
             top: parent.top
@@ -110,12 +122,15 @@ DockedPanel {
                 if (!pressed) {
                     volumeChanging = false
                     setVolume(value)
+                    mVolume = value;
+                    value  = Qt.binding(function() {return mVolume;});
                 } else {
                     volumeChanging = true
                 }
             }
             onValueChanged: {
-                setVolume(value)
+                if(pressed)
+                    setVolume(value)
                 // valueText = value+"%";
             }
         }

@@ -292,7 +292,8 @@ Page {
                         if (!pressed) {
                             volumeChanging = false
                             setVolume(value)
-                            //volumeSliderFadeOutTimer.start();
+                            mVolume = value;
+                            value  = Qt.binding(function() {return mVolume;});
                             volumeControl.state = "sliderInvisible"
                         } else {
                             volumeChanging = true
@@ -300,7 +301,8 @@ Page {
                         }
                     }
                     onValueChanged: {
-                        setVolume(value)
+                        if(pressed)
+                            setVolume(value)
                         // valueText = value+"%";
                     }
                 }
