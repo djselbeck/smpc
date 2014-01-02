@@ -357,6 +357,8 @@ Page {
                     icon.source: "image://theme/icon-m-shuffle"
                     checked: mShuffle
                     onClicked: {
+                        mShuffle = checked
+                        checked  = Qt.binding(function() {return mShuffle;});
                         setShuffle(checked)
                     }
                 }
@@ -385,6 +387,8 @@ Page {
                     checked: mRepeat
                     icon.source: "image://theme/icon-m-repeat"
                     onClicked: {
+                        mRepeat = checked;
+                        checked  = Qt.binding(function() {return mRepeat;});
                         setRepeat(checked)
                     }
                 }

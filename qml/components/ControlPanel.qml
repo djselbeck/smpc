@@ -77,6 +77,8 @@ DockedPanel {
                 checked: mShuffle
                 onClicked: {
                     setShuffle(checked)
+                    mShuffle = checked
+                    checked  = Qt.binding(function() {return mShuffle;});
                 }
             }
             IconButton {
@@ -105,6 +107,8 @@ DockedPanel {
                 icon.source: "image://theme/icon-m-repeat"
                 onClicked: {
                     setRepeat(checked)
+                    mRepeat = checked;
+                    checked  = Qt.binding(function() {return mRepeat;});
                 }
             }
         }
