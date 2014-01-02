@@ -17,7 +17,7 @@ Component {
                 left: parent.left
             }
             id: fileicon
-            source: (isDirectory ? "image://theme/icon-l-storage" : (isPlaylist ? "image://theme/icon-l-document" : "image://theme/icon-l-music"))
+            source: (isDirectory ? "image://theme/icon-m-folder" : (isPlaylist ? "image://theme/icon-m-document" : "image://theme/icon-m-music"))
             width: height
         }
         Label {

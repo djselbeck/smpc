@@ -5,9 +5,9 @@ import "../components"
 
 Page {
     id: currentsong_page
-    property string title
-    property string album
-    property string artist
+    property string title:mTitle
+    property string album:mAlbum
+    property string artist:mArtist
     property alias length: positionSlider.maximumValue
     //property int lengthtextcurrent:lengthTextcurrent.text;
     property alias lengthtextcomplete: lengthTextcomplete.text
@@ -21,7 +21,6 @@ Page {
     property alias uri: fileText.text
     property alias audioproperties: audiopropertiesText.text
     property alias pospressed: positionSlider.pressed
-    property alias volume: volumeSlider.value
     property alias volumepressed: volumeSlider.pressed
     property bool playing
     property int fontsize: Theme.fontSizeMedium
@@ -286,14 +285,17 @@ Page {
                     stepSize: 1
                     maximumValue: 100
                     minimumValue: 0
+                    value: mVolume
                     valueText: value + "%"
                     label: qsTr("volume")
                     onPressedChanged: {
                         if (!pressed) {
+                            volumeChanging = false
                             setVolume(value)
                             //volumeSliderFadeOutTimer.start();
                             volumeControl.state = "sliderInvisible"
                         } else {
+                            volumeChanging = true
                             volumeSliderFadeOutTimer.stop()
                         }
                     }
@@ -351,15 +353,20 @@ Page {
                 Switch {
                     id: shuffleButton
                     icon.source: "image://theme/icon-m-shuffle"
-                    checked: shuffle
+                    checked: mShuffle
                     onClicked: {
                         setShuffle(checked)
                     }
                 }
                 IconButton {
                     id: prevButton
-                    icon.source: "image://theme/icon-m-previous-song"
+                    icon.source: "image://theme/icon-m-previous"
                     onClicked: prev()
+                }
+                IconButton {
+                    id: stopButton
+                    icon.source: "qrc:images/icon-m-stop.png"
+                    onClicked: stop()
                 }
                 IconButton {
                     id: playButton
@@ -368,12 +375,12 @@ Page {
                 }
                 IconButton {
                     id: nextButton
-                    icon.source: "image://theme/icon-m-next-song"
+                    icon.source: "image://theme/icon-m-next"
                     onClicked: next()
                 }
                 Switch {
                     id: repeatButton
-                    checked: repeat
+                    checked: mRepeat
                     icon.source: "image://theme/icon-m-repeat"
                     onClicked: {
                         setRepeat(checked)
@@ -485,7 +492,9 @@ Page {
         if ((status === PageStatus.Activating)
                 || (status === PageStatus.Active)) {
             pageactive = true
+            quickControlPanel.open = false
         } else {
+            quickControlPanel.open = true
             pageactive = false
         }
     }

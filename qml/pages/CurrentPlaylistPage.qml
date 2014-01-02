@@ -9,26 +9,43 @@ Page {
     property int lastIndex
     SilicaListView {
         id: playlistView
+        clip: true
         delegate: trackDelegate
-        anchors.fill: parent
+//        anchors {
+//            right:parent.right
+//            left: parent.left
+//            top: parent.top
+//            bottom: quickControlPanel.top
+//        }
+
+        anchors {
+            fill: parent
+        }
+
         model: playlistModelVar
 
         highlightFollowsCurrentItem: true
-        highlightMoveDuration: 1200
+        highlightMoveDuration: 0
         header: PageHeader {
             title: qsTr("playlist")
         }
         PullDownMenu {
             MenuItem {
+                text: qsTr("add url")
+                onClicked: {
+                    pageStack.push(urlInputDialog)
+                }
+            }
+            MenuItem {
                 text: qsTr("delete playlist")
                 onClicked: {
-                    pageStack.openDialog(deleteQuestionDialog)
+                    pageStack.push(deleteQuestionDialog)
                 }
             }
             MenuItem {
                 text: qsTr("save playlist")
                 onClicked: {
-                    pageStack.openDialog(saveplaylistDialog)
+                    pageStack.push(saveplaylistDialog)
                 }
             }
             MenuItem {
@@ -49,7 +66,8 @@ Page {
         SpeedScroller {
             listview: playlistView
         }
-        ScrollDecorator {}
+        ScrollDecorator {
+        }
         Component {
             id: trackDelegate
             ListItem {
@@ -88,7 +106,8 @@ Page {
                 Column {
                     id: mainColumn
                     clip: true
-                    height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
+                    height: (trackRow + artistLabel
+                             >= Theme.itemSizeSmall ? trackRow + artistLabel : Theme.itemSizeSmall)
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -156,6 +175,8 @@ Page {
         }
     }
 
+
+
     // Delete question
     Dialog {
         id: deleteQuestionDialog
@@ -208,12 +229,41 @@ Page {
         }
     }
 
+    Dialog {
+        id: urlInputDialog
+        Column {
+            width: parent.width
+            spacing: 10
+            anchors.margins: Theme.paddingMedium
+            DialogHeader {
+                acceptText: qsTr("add url")
+            }
+            Label {
+                text: qsTr("enter url:")
+            }
+            TextField {
+                id: urlInputField
+                width: parent.width
+                placeholderText: qsTr("input url (http://, file://, etc)")
+            }
+        }
+        onDone: {
+            if (result === DialogResult.Accepted) {
+                addSong(urlInputField.text)
+            }
+            urlInputField.text = ""
+            urlInputField.focus = false
+        }
+        onOpened: {
+            urlInputField.focus = true
+        }
+    }
+
     onStatusChanged: {
         if (status === PageStatus.Activating) {
             playlistView.positionViewAtIndex(lastsongid, ListView.Center)
-        }
-        else if ( status === PageStatus.Active ) {
-            pageStack.pushAttached(currentsongpage);
+        } else if (status === PageStatus.Active) {
+            pageStack.pushAttached(currentsongpage)
         }
     }
 

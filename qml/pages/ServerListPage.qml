@@ -14,15 +14,6 @@ Page
                 title: qsTr("servers");
             }
             ScrollDecorator {}
-            PushUpMenu {
-             MenuItem {
-                 text: qsTr("Add server")
-                 onClicked: {
-                     console.log("Clicked option add server")
-                     pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{newprofile:true});
-                 }
-             }
-            }
             PullDownMenu {
              MenuItem {
                  text: qsTr("Add server")

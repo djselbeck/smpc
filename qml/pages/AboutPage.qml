@@ -78,4 +78,12 @@ Page {
             font.pixelSize: Theme.fontSizeTiny
         }
     }
+    onStatusChanged: {
+        if ((status === PageStatus.Activating)
+                || (status === PageStatus.Active)) {
+            quickControlPanel.open = false
+        } else {
+            quickControlPanel.open = true
+        }
+    }
 }

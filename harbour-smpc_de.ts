@@ -200,47 +200,63 @@
     </message>
     <message>
         <location filename="qml/pages/CurrentPlaylistPage.qml" line="23"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="167"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="224"/>
+        <source>add url</source>
+        <translation>URL hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="29"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="173"/>
         <source>delete playlist</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="29"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="187"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="35"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="193"/>
         <source>save playlist</source>
         <translation>Wiedergabeliste abspeichern</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="35"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="41"/>
         <source>open playlist</source>
         <translation>Wiedergabeliste öffnen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="41"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="47"/>
         <source>jump to playing song</source>
         <translation>springe zum aktuellen Lied</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="64"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="70"/>
         <source>play song</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="68"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="74"/>
         <source>remove song</source>
         <translation>Lied entfernen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="76"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="82"/>
         <source>show information</source>
         <translation>zeige Informationen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="227"/>
+        <source>enter url:</source>
+        <translation>URL eingeben:</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="232"/>
+        <source>input url (http://, file://, etc)</source>
+        <translation>URL eingeben (http://, file://, etc)</translation>
     </message>
     <message>
         <source>remove</source>
         <translation type="obsolete">entferne</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="151"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="157"/>
         <source>Deleting</source>
         <translation>Lösche</translation>
     </message>
@@ -253,17 +269,17 @@
         <translation type="obsolete">Löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="170"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="176"/>
         <source>really delete playlist?</source>
         <translation>Wiedergabeliste wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="190"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="196"/>
         <source>playlist name:</source>
         <translation>Wiedergabelistenname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="195"/>
+        <location filename="qml/pages/CurrentPlaylistPage.qml" line="201"/>
         <source>input playlist name</source>
         <translation>Wiedergabelistenname eingeben</translation>
     </message>

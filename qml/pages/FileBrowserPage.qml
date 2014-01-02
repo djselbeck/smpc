@@ -17,9 +17,12 @@ Page
                 listview: fileListView
                 scrollenabled: fastscrollenabled
             }
+            clip:true
             ScrollDecorator {}
 
-            anchors.fill: parent
+            anchors {
+                fill: parent
+            }
             contentWidth: width
             header: PageHeader {
                 title: qsTr("filebrowser");//(filepath===""? "Files:" : filepath)
@@ -65,5 +68,6 @@ Page
     Component.onCompleted: {
         console.debug("filepage created: ");
     }
+
 
 }

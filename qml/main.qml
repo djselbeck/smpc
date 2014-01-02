@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
+import "components"
 
 
 ApplicationWindow
@@ -111,6 +112,16 @@ ApplicationWindow
 
     property real listPadding: Theme.paddingLarge
 
+    property bool volumeChanging:false
+
+    // current song information
+    property string mTitle
+    property string mArtist
+    property string mAlbum
+    property int mVolume
+    property bool mRepeat
+    property bool mShuffle
+
 
 
     // JS-functions
@@ -147,9 +158,9 @@ ApplicationWindow
 
     function updateCurrentPlaying(list)
     {
-        currentsongpage.title = list[0];
-        currentsongpage.album = list[1];
-        currentsongpage.artist = list[2];
+        mTitle = list[0];
+        mAlbum = list[1];
+        mArtist = list[2];
         if(currentsongpage.pospressed==false) {
             currentsongpage.position = list[3];
         }
@@ -161,11 +172,11 @@ ApplicationWindow
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
         stopped = (list[6]=="stop") ? true : false;
-        if(currentsongpage.volumepressed==false){
-            currentsongpage.volume = list[7];
+        if(!volumeChanging){
+            mVolume = list[7];
         }
-        currentsongpage.repeat = (list[8]=="0" ?  false:true);
-        currentsongpage.shuffle = (list[9]=="0" ?  false:true);
+        mRepeat = (list[8]=="0" ?  false:true);
+        mShuffle = (list[9]=="0" ?  false:true);
         currentsongpage.nr = (list[10]==0? "":list[10]);
         currentsongpage.uri = list[11];
         if(list[12]!=lastsongid)
@@ -177,6 +188,9 @@ ApplicationWindow
         if(stopped) {
             coverimageurl = "";
             artistimageurl = "";
+            mArtist=""
+            mAlbum=""
+            mTitle=""
         }
 
         currentsongpage.audioproperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
@@ -318,6 +332,12 @@ ApplicationWindow
         id:busyIndicator
         size: BusyIndicatorSize.Large
         anchors.centerIn: parent
+    }
+
+    bottomMargin: quickControlPanel.visibleSize
+
+    ControlPanel {
+        id: quickControlPanel
     }
 
     initialPage: Qt.resolvedUrl("pages/MainPage.qml") //MainPage { }
