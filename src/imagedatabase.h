@@ -29,9 +29,13 @@ public:
     bool hasAlbumArt(QString album,QString artist);
     bool hasArtistArt(MpdArtist *artist);
 
+    int imageIDFromHash(QString hashValue);
+
 public slots:
     void albumReady(AlbumInformation *albumInformation);
     void fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map);
+    void enterAlbumInformation(AlbumInformation *info);
+
 
 private:
     QSqlDatabase *mDB;

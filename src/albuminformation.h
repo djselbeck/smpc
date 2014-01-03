@@ -9,17 +9,20 @@ class AlbumInformation : public QObject
 {
     Q_OBJECT
 public:
-    explicit AlbumInformation(QString name,QString artist, QString url, QByteArray *imgData);
+    explicit AlbumInformation(QString name,QString artist, QString albumInfo, QString url, QByteArray *imgData);
     AlbumInformation(const AlbumInformation&);
 
     QString getName() { return mAlbumName; }
+    QString getArtist() { return mArtistName; }
     QString getURL() { return mImageURL; }
+    QString getAlbumInfo() { return mAlbumInfo; }
     QByteArray *getImageData() { return mImageData; }
     QString getImageHash() { return mImgHash; }
 
 private:
     QString mArtistName;
     QString mAlbumName;
+    QString mAlbumInfo;
     QString mImageURL;
     QString mImgHash;
     QByteArray *mImageData;

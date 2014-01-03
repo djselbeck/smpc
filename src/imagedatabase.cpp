@@ -20,7 +20,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
             if ( !mDB->tables().contains("albums") ) {
                 QSqlQuery createQuery;
                 if (createQuery.exec("CREATE TABLE albums"
-                                 "(id integer primary key,"
+                                 "(id integer primary key AUTOINCREMENT,"
                                  "albumname text default '',"
                                  "artistname text default '',"
                                  "url text default '',"
@@ -32,7 +32,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
             if ( !mDB->tables().contains("albumimages") ) {
                 QSqlQuery createQuery;
                 if (createQuery.exec("CREATE TABLE albumimages"
-                                 "(id integer primary key,"
+                                 "(id integer primary key AUTOINCREMENT,"
                                  "url text default '',"
                                  "basename text default '',"
                                  "imghash text default '',"
@@ -128,6 +128,7 @@ void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
         return;
     }
     mFiller = new DatabaseFillJob();
+    connect(mFiller,SIGNAL(albumReady(AlbumInformation*)),this,SLOT(enterAlbumInformation(AlbumInformation*)));
     mFiller->startFilling(map);
 }
 
@@ -135,17 +136,100 @@ bool ImageDatabase::hasAlbumArt(QString album,QString artist)
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM albums WHERE "
-                  "albumname=" + album + " AND "
-                  "artistname=" + artist);
+                  "albumname=\"" + album + "\" AND "
+                  "artistname=\"" + artist + "\"");
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+
     while ( query.next() ) {
         QString albumName = query.value("albumname").toString();
         if ( albumName == album) {
             return true;
         }
     }
+    return false;
 }
 
 bool ImageDatabase::hasArtistArt(MpdArtist *artist)
 {
     return true;
+}
+
+void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
+{
+    qDebug() << "Entering album: " << info->getName() << " from: " << info->getArtist();
+    // Check if album is already part of the database
+    if ( hasAlbumArt(info->getName(),info->getArtist()) ) {
+        qDebug() << "Album: " << info->getName() << " already part of database, skipping";
+        // TODO check if image changed
+        return;
+    }
+
+    // Check if Image has image data otherwise skip it
+    if ( !info->getImageData() ) {
+        qDebug() << "Album has no cover image, skipping";
+        return;
+    }
+
+    // Check if image with same hash value is already part of the database
+    int imgID = imageIDFromHash(info->getImageHash());
+
+    // Enter Album into SQL DB
+    if (imgID == -1 ) {
+        QSqlQuery query;
+        query.prepare("INSERT INTO albumimages ("
+                      "url, imghash, imgdata ) "
+                      "VALUES ("
+                      ":url, :imghash, :imgdata)");
+        query.bindValue(":url",info->getURL());
+        query.bindValue(":imghash", info->getImageHash());
+        if(info->getImageData()) {
+            query.bindValue(":imgdata",*info->getImageData());
+        } else {
+            query.bindValue(":imgdata",0);
+        }
+
+        qDebug() << "Inserting into IMAGE-TABLE: " << query.lastQuery();
+
+        query.exec();
+
+        imgID = imageIDFromHash(info->getImageHash());
+        qDebug() << "Image found with ID: " << imgID;
+    } else {
+        qDebug() << "Image already in database, reusing it";
+    }
+    {
+        QSqlQuery query;
+        query.prepare("INSERT INTO albums ("
+                      "id, albumname, artistname, url, albuminfo, imageID ) "
+                      "VALUES ("
+                      ":id, :albumname, :artistname, :url, :albuminfo, :imageID)");
+        query.bindValue(":albumname",info->getName());
+        query.bindValue(":artistname",info->getArtist());
+        query.bindValue(":url",info->getURL());
+        query.bindValue(":albuminfo",info->getAlbumInfo());
+        query.bindValue(":imageID",imgID);
+        qDebug() << "Inserting into ALBUM-TABLE: " << query.lastQuery();
+
+        query.exec();
+    }
+    // Cleanup the memory usage
+    info->deleteLater();
+}
+
+int ImageDatabase::imageIDFromHash(QString hashValue)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM albumimages WHERE "
+                  "imghash=\"" + hashValue + "\"" );
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+    while ( query.next() ) {
+        int imgID = query.value("id").toInt();
+        QString hash = query.value("imghash").toString();
+        if ( hash == hashValue ) {
+            return imgID;
+        }
+    }
+    return -1;
 }

@@ -1,7 +1,9 @@
 #include "albuminformation.h"
 
-AlbumInformation::AlbumInformation(QString name, QString artist,QString url, QByteArray *imgData) : QObject(0) {
+AlbumInformation::AlbumInformation(QString name, QString artist, QString albumInfo, QString url, QByteArray *imgData) : QObject(0) {
     mAlbumName = name;
+    mArtistName = artist;
+    mAlbumInfo = albumInfo;
     mImageURL = url;
     mImageData = imgData;
     if(mImageData) {

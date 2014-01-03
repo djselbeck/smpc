@@ -27,6 +27,9 @@ void DatabaseFillJob::startFilling(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
 
 void DatabaseFillJob::albumFinished(AlbumInformation *info)
 {
+    if ( info ) {
+        emit albumReady(info);
+    }
     mCurrentProvider->deleteLater();
     mCurrentProvider = 0;
     // Check if all artists albums are done, if proceed to next

@@ -17,12 +17,17 @@ public:
 public slots:
     void startFilling(QMap<MpdArtist*, QList<MpdAlbum*>* > *map);
 
+signals:
+    void albumReady(AlbumInformation *info);
+
 private:
     bool mRunning;
     QMap<MpdArtist*, QList<MpdAlbum*>* > *mMap;
     QMap<MpdArtist*, QList<MpdAlbum*>* >::iterator mCurrentArtistPosition;
     QList<MpdAlbum*>::iterator mCurrentAlbumPosition;
     LastFMAlbumProvider *mCurrentProvider;
+
+    // Imagedatabase which got data inserted
 
 private slots:
 
