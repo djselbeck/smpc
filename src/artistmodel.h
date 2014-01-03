@@ -3,7 +3,6 @@
 #include "mpdartist.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
-#include "commondebug.h"
 
 class ArtistModel : public QAbstractListModel
 {
@@ -11,7 +10,8 @@ class ArtistModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit ArtistModel(QObject *parent = 0);
-    ~ArtistModel(){CommonDebug("Artistmodel destroyed");
+    ~ArtistModel()
+    {
                    for(int i=0;i<m_entries->length();i++)
                    {
                        delete(m_entries->at(i));

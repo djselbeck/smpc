@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-#include "commondebug.h"
 #include "mpdartist.h"
 #include "mpdalbum.h"
 #include "lastfmalbumprovider.h"

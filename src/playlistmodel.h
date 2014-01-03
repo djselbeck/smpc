@@ -10,7 +10,7 @@ class PlaylistModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit PlaylistModel(QObject *parent = 0);
-    ~PlaylistModel(){CommonDebug("Artistmodel destroyed");
+        ~PlaylistModel(){
                    for(int i=0;i<m_entries->length();i++)
                    {
                        delete(m_entries->at(i));

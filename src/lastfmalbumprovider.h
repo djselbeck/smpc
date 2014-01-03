@@ -12,7 +12,7 @@
 #include "common.h"
 #include "albuminformation.h"
 
-#define COVERSIZE "extralarge"
+#define COVERSIZE "small"
 
 
 class LastFMAlbumProvider : public QObject

@@ -20,6 +20,7 @@ Requires:
 - sailfishsilica-qt5
 - qt5-qtdeclarative-import-xmllistmodel
 Files:
+- 
 - /usr/share/applications
 - /usr/share/harbour-smpc
 - /usr/bin

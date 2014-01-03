@@ -4,6 +4,7 @@
   */
 
 
+
 NetworkAccess::NetworkAccess(QObject *parent) :
     QThread(parent)
 {
@@ -29,28 +30,22 @@ bool NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
     bool success = tcpsocket->waitForConnected(10000);
     if (!success)
     {
-        CommonDebug("Unable to connect");
         emit ready();
         emit disconnected();
         return false;
     }
-    CommonDebug("Connected");
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
-        CommonDebug("Connection established\n");
         //Do host authentication
         tcpsocket->waitForReadyRead(READYREAD);
         QString response;
         while (tcpsocket->canReadLine())
         {
             response += tcpsocket->readLine();
-            CommonDebug(response+"\n");
         }
-        CommonDebug(response.toUtf8());
         QString teststring = response;
         teststring.truncate(6);
         if (teststring==QString("OK MPD"))
         {
-            CommonDebug("Valid MPD found\n");
 
         }
         authenticate(password);
@@ -174,17 +169,13 @@ bool NetworkAccess::authenticate(QString password)
         {
             response += tcpsocket->readLine();
         }
-        CommonDebug("Authentication:"+response.toUtf8()+"\n");
         QString teststring = response;
-        CommonDebug("teststring:"+teststring.toUtf8());
         teststring.truncate(2);
         if (teststring==QString("OK"))
         {
-            CommonDebug("Valid password\n");
             return true;
         }
         else {
-            CommonDebug("Invalid password sent\n");
             return false;
         }
         return false;
@@ -208,13 +199,10 @@ void NetworkAccess::getArtistsAlbums(QString artist)
 QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
 {
     QList<MpdAlbum*> *albums = new QList<MpdAlbum*>();
-    //CommonDebug("Check connection state\n");
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         //Start getting list from mpd
         //Send request
-        //CommonDebug("Send request for albums\n");
         artist = artist.replace('\"',"\\\"");
-        qDebug() << artist;
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         outstream.setAutoDetectUnicode(false);
@@ -224,7 +212,6 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         //Read all albums until OK send from mpd
         QString response ="";
         MpdAlbum *tempalbum;
-        //CommonDebug("Albums from Artist:"+artist.toUtf8());
         QString name;
         while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
         {
@@ -337,7 +324,6 @@ void NetworkAccess::getPlaylistTracks(QString name)
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         outstream << "listplaylistinfo \"" << name << "\"" << endl;
-        CommonDebug("Start reading playlist");
     }
     emit savedplaylistTracksReady((QList<QObject*>*)parseMPDTracks(""));
     emit ready();
@@ -350,9 +336,7 @@ void NetworkAccess::updateStatusInternal()
 
 status_struct NetworkAccess::getStatus()
 {
-    CommonDebug("updateStatusInternal called"); // &&!tcpsocket->canReadLine()
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
-        CommonDebug("updateStatusInternal called connect");
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         QString response ="";
@@ -393,7 +377,6 @@ status_struct NetworkAccess::getStatus()
                 if (response.left(9)==QString("bitrate: ")) {
                     bitrate = response.right(response.length()-9);
                     bitrate.chop(1);
-                    CommonDebug("Bitrate:"+bitrate);
                 }
                 if (response.left(6)==QString("time: ")) {
                     timestring = response.right(response.length()-6);
@@ -429,15 +412,12 @@ status_struct NetworkAccess::getStatus()
                         volumestring.chop(1);
                         if (volumestring == "play")
                         {
-                            CommonDebug("currently playing:"+volumestring.toUtf8());
                             playing = NetworkAccess::PLAYING;
                         }
                         else if (volumestring == "pause") {
-                            CommonDebug("currently paused:"+volumestring.toUtf8());
                             playing = NetworkAccess::PAUSE;
                         }
                         else if (volumestring == "stop") {
-                            CommonDebug("currently NOT playing:"+volumestring.toUtf8());
                             playing = NetworkAccess::STOP;
                         }
                     }
@@ -446,7 +426,6 @@ status_struct NetworkAccess::getStatus()
                     {
                         volumestring = response.right(response.length()-8);
                         volumestring.chop(1);
-                        CommonDebug("repeat:"+volumestring.toUtf8());
                         if (volumestring == "1")
                         {
                             repeat = true;
@@ -460,7 +439,6 @@ status_struct NetworkAccess::getStatus()
                     {
                         volumestring = response.right(response.length()-8);
                         volumestring.chop(1);
-                        CommonDebug("random:"+volumestring.toUtf8());
                         if (volumestring == "1")
                         {
                             random = true;
@@ -522,7 +500,6 @@ status_struct NetworkAccess::getStatus()
                     {
                         tracknr = tracknrstring.toUInt();
                     }
-                    CommonDebug("Tracks:"+QString::number(tracknr)+"/"+QString::number(albumtrackcount));
                 }
             }
         }
@@ -558,7 +535,6 @@ status_struct NetworkAccess::getStatus()
         tempstat.channelcount = channelcount;
         if(mPlaylistversion!=tempstat.playlistversion)
         {
-            CommonDebug("Playlist version change detected");
             getCurrentPlaylistTracks();
         }
         mPlaylistversion=tempstat.playlistversion;
@@ -588,7 +564,6 @@ status_struct NetworkAccess::getStatus()
     tempstat.channelcount = 0;
     if(mPlaylistversion!=tempstat.playlistversion)
     {
-        CommonDebug("Playlist version change detected");
         getCurrentPlaylistTracks();
     }
     mPlaylistversion=tempstat.playlistversion;
@@ -794,7 +769,6 @@ void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
             }
         }
     }
-    CommonDebug("ArtistAlbum added");
     emit ready();
     //     updateStatusInternal();
 }
@@ -856,7 +830,6 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
 void NetworkAccess::playFiles(QString fileuri)
 {
     clearPlaylist();
-    CommonDebug("Play request:"+fileuri.toUtf8());
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -884,7 +857,6 @@ void NetworkAccess::playFiles(QString fileuri)
 // Append track to playlist and plays it.
 void NetworkAccess::playTrack(QString fileuri)
 {
-    CommonDebug("Play request:"+fileuri.toUtf8());
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -910,7 +882,6 @@ void NetworkAccess::playTrack(QString fileuri)
 
 void NetworkAccess::playTrackByNumber(int nr)
 {
-    CommonDebug("Request playback of "+nr);
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -931,7 +902,6 @@ void NetworkAccess::playTrackByNumber(int nr)
 
 void NetworkAccess::deleteTrackByNumer(int nr)
 {
-    CommonDebug("Request deletion of "+nr);
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -1024,7 +994,6 @@ void NetworkAccess::setVolume(int volume)
         QTextStream outstream(tcpsocket);
         outstream << "setvol " << QString::number(volume).toUtf8() << endl;
         QString response ="";
-        CommonDebug("setVolume called with:"+QString::number(volume).toUtf8());
         while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
         {
             tcpsocket->waitForReadyRead(READYREAD);
@@ -1056,7 +1025,6 @@ void NetworkAccess::savePlaylist(QString name)
         }
         if (response.left(2)=="OK")
         {
-            CommonDebug("Playlist "+ name +" saved");
             emit ready();
             return;
         }
@@ -1088,7 +1056,6 @@ void NetworkAccess::deletePlaylist(QString name)
         }
         if (response.left(2)=="OK")
         {
-            CommonDebug("Playlist "+ name +" saved");
             return;
         }
         else {
@@ -1119,7 +1086,6 @@ void NetworkAccess::getSavedPlaylists()
                 if (response.left(10)==QString("playlist: ")) {
                     name = response.right(response.length()-10);
                     name.chop(1);
-                    CommonDebug("found playlist:"+name.toUtf8());
                     tempplaylists->append(name);
                 }
             }
@@ -1200,12 +1166,10 @@ void NetworkAccess::disconnectedfromServer()
     {
         statusupdater->stop();
     }
-    CommonDebug("got disconnected!");
     emit ready();
 }
 
 void NetworkAccess::connectedtoServer() {
-    CommonDebug("CONNECTED START UPDATE TIMER");
     statusupdater->start(updateinterval);
 }
 
@@ -1303,7 +1267,6 @@ void NetworkAccess::getDirectory(QString path)
                         length=0;
                         album="";
                         title="";
-                        CommonDebug("got File:"+file.toUtf8());
                         filename="";
                         nr=0;
                         datestring="";
@@ -1438,13 +1401,11 @@ void NetworkAccess::resumeUpdates()
     if (tcpsocket->state()==QTcpSocket::ConnectedState) {
         updateStatusInternal();
         statusupdater->start(updateinterval);
-        CommonDebug("resumed status updates");
     }
 }
 
 void NetworkAccess::suspendUpdates()
 {
-    CommonDebug("suspended status updates");
     if (statusupdater->isActive())
     {
         statusupdater->stop();
@@ -1527,14 +1488,11 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
         {
             if (!tcpsocket->waitForReadyRead(READYREAD))
             {
-                CommonDebug("false:waitforreadyread()");
-                CommonDebug("error:"+tcpsocket->errorString().toUtf8());
             }
 
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                CommonDebug("Response: "+response);
                 if (response.left(6)==QString("file: ")) {
                     if (temptrack!=NULL)
                     {
@@ -1544,7 +1502,6 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                             temptrack->moveToThread(mQmlThread);
                             QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
                         }
-                        CommonDebug("add Track:");
                         temptrack=NULL;
                     }
                     if (temptrack==NULL)
@@ -1607,10 +1564,10 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                 temptracks->append(temptrack);
                 temptrack->moveToThread(mQmlThread);
                 QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
-            }            CommonDebug("add Track:");
+            }
         }
+        return temptracks;
     }
-    return temptracks;
 }
 
 void NetworkAccess::exitRequest()
@@ -1621,7 +1578,6 @@ void NetworkAccess::exitRequest()
 
 void NetworkAccess::getOutputs()
 {
-    CommonDebug("Outputs request");
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         emit busy();
         QTextStream outstream(tcpsocket);
@@ -1645,7 +1601,6 @@ void NetworkAccess::getOutputs()
                     tempstring = response.right(response.length()-12);
                     tempstring.chop(1);
                     outputname = tempstring;
-                    CommonDebug(outputname.toUtf8());
                 }
                 if (response.left(10)==QString("outputid: ")) {
                     tempstring = response.right(response.length()-10);
@@ -1680,7 +1635,6 @@ void NetworkAccess::searchTracks(QVariant request)
 
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
-        CommonDebug(searchrequest.at(0)+":"+searchrequest.at(1));
         outstream << "search " << searchrequest.at(0) << " \"" << searchrequest.at(1) << "\"" << endl;
     }
     emit searchedTracksReady((QList<QObject*>*)parseMPDTracks(""));

@@ -6,11 +6,12 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),viewer(viewer),password(""),hostname(""),port(6600)
 {
-<<<<<<< HEAD
-    MpdAlbum testAlbum(0,"The Final Frontier");
-    MpdArtist testArtist(0,"Iron Maiden");
+    MpdAlbum testAlbum(0,"State of Euphoria");
+    MpdArtist testArtist(0,"Anthrax");
     LastFMAlbumProvider  *testprov = new LastFMAlbumProvider(testAlbum.getTitle(),testArtist.getName());
     testprov->startDownload();
+
+    mImgDB = new ImageDatabase();
 
     netaccess = new NetworkAccess(0);
     netaccess->setUpdateInterval(1000);
@@ -53,7 +54,6 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
 {
-    CommonDebug("PLAYLIST  UPDATE REQUIRED\n");
     emit requestPlaylistClear();
     if(playlist==0){
         currentsongid=0;
@@ -70,7 +70,6 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
 
 void Controller::updateFilesModel(QList<QObject*>* list)
 {
-    CommonDebug("FILES UPDATE REQUIRED");
     if(list->length()>0)
     {
         FileModel *model = new FileModel((QList<MpdFileEntry*>*)list,this);
@@ -106,7 +105,6 @@ void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 
 void Controller::updateArtistsModel(QList<QObject*>* list)
 {
-    CommonDebug("ARTISTS UPDATE REQUIRED");
     if(artistmodelold!=0)
     {
         delete(artistmodelold);
@@ -123,17 +121,14 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
 
 //void Controller::updateArtistAlbumsModel(QList<QObject*>* list)
 //{
-//    CommonDebug("ARTIST ALBUMS UPDATE REQUIRED");
 //    viewer->rootContext()->setContextProperty("albumsModel",QVariant::fromValue(*list));
 //    emit artistAlbumsReady();
 //}
 
 void Controller::updateAlbumsModel(QList<QObject*>* list)
 {
-    CommonDebug("ALBUMS UPDATE REQUIRED");
     if(albumsmodelold!=0)
     {
-        CommonDebug("Found old album model");
         delete(albumsmodelold);
         albumsmodelold = 0;
     }
@@ -147,7 +142,6 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
 
 void Controller::updateOutputsModel(QList<QObject*>* list)
 {
-    CommonDebug("OUTPUTS UPDATE REQUIRED");
     if(outputs!=0)
     {
         delete(outputs);
@@ -161,7 +155,6 @@ void Controller::updateOutputsModel(QList<QObject*>* list)
 
 void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 {
-    CommonDebug("ALBUM TRACKS UPDATE REQUIRED");
     if ( albumTracks ) {
         for( int i = 0; i < albumTracks->length();i++)
         {
@@ -177,7 +170,6 @@ void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 
 void Controller::updateSearchedTracks(QList<QObject*>* list)
 {
-    CommonDebug("SEARCHED TRACKS UPDATE REQUIRED");
     if(searchedtracks!=0)
     {
         delete (searchedtracks);
@@ -190,7 +182,6 @@ void Controller::updateSearchedTracks(QList<QObject*>* list)
 
 void Controller::connectSignals()
 {
-    CommonDebug("Connecting Signals with qml part");
     QObject *item = (QObject *)viewer->rootObject();
     qRegisterMetaType<status_struct>("status_struct");
     qRegisterMetaType<QList<MpdTrack*>*>("QList<MpdTrack*>*");
@@ -311,7 +302,6 @@ void Controller::setPassword(QString password)
 void Controller::setHostname(QString hostname)
 {
     this->hostname = hostname;
-    CommonDebug("Hostname set");
 }
 
 
@@ -342,7 +332,6 @@ void Controller::requestAlbums()
 void Controller::requestArtists()
 {
     netaccess->getArtists();
-    CommonDebug("RequestED artists");
 }
 
 void Controller::requestArtistAlbums(QString artist)
@@ -355,7 +344,6 @@ void Controller::requestAlbum(QVariant array)
     QStringList strings = array.toStringList();
     for(int i=0;i<strings.length();i++)
     {
-        CommonDebug("STRING: "+strings.at(i));
     }
     netaccess->getAlbumTracks(strings.at(1),strings.at(0));
 }
@@ -369,6 +357,7 @@ void Controller::connectedToServer()
     mReconnectTimer.stop();
     emit sendPopup(popupString);
     emit connected(profilename);
+    emit requestArtistAlbumMap();
 }
 
 void Controller::disconnectedToServer()
@@ -391,12 +380,10 @@ void Controller::updateStatus(status_struct status)
         }
         if(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
                 &&status.id>=0&&currentsongid>=0){
-            CommonDebug("1Changed playlist "+QString::number(status.id)+":"+QString::number(currentsongid));
             playlist->setPlaying(currentsongid,false);
             playlist->setPlaying(status.id,true);
 //            playlist->get(currentsongid)->setPlaying(false);
 //            playlist->get(status.id)->setPlaying(true);
-            CommonDebug("2Changed playlist");
 
         }
         if(currentsongid==-1&&(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
@@ -407,7 +394,6 @@ void Controller::updateStatus(status_struct status)
     }
     if(lastplaybackstate!=status.playing)
     {
-        CommonDebug("Playback state changed");
         if(status.playing==NetworkAccess::STOP&&playlist!=0&&currentsongid>=0&&currentsongid<playlist->rowCount())
         {
             playlist->setPlaying(currentsongid,false);
@@ -463,7 +449,6 @@ void Controller::seek(int pos)
 
 void Controller::requestFilePage(QString path)
 {
-    CommonDebug("Connecting Signals with qml part");
     QObject *item = (QObject *)viewer->rootObject();
     emit getFiles(path);
 }
@@ -474,7 +459,6 @@ void Controller::readSettings()
     QSettings settings;
     settings.beginGroup("server_properties");
     int size = settings.beginReadArray("profiles");
-    CommonDebug(QString::number(size).toUtf8()+" Settings found");
     QString hostname,password,name;
     int port;
     bool autoconnect;
@@ -511,11 +495,9 @@ void Controller::writeSettings()
             settings.setValue("profilename",serverprofiles->at(i)->getName());
             settings.setValue("port",serverprofiles->at(i)->getPort());
             settings.setValue("default",serverprofiles->at(i)->getAutoconnect());
-            CommonDebug("wrote setting:"+QString::number(i).toUtf8());
         }
         settings.endArray();
         settings.endGroup();
-        CommonDebug("Settings written");
 }
 
 void Controller::quit()
@@ -555,7 +537,6 @@ void Controller::newProfile(QVariant profile)
     bool autoconnect;
     if(strings.at(5).toInt()==1) {
         //Check for other autoconnects
-        CommonDebug("New auto connect profile");
         for(int j = 0; j<serverprofiles->length();j++)
         {
             serverprofiles->at(j)->setAutoconnect(false);
@@ -567,7 +548,6 @@ void Controller::newProfile(QVariant profile)
     }
     ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
     serverprofiles->append(tempprofile);
-    CommonDebug("Profiles length:"+QString::number(serverprofiles->length()));
     viewer->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)serverprofiles));
     emit serverProfilesUpdated();
     writeSettings();
@@ -583,7 +563,6 @@ void Controller::changeProfile(QVariant profile)
     serverprofiles->at(i)->setPort(strings.at(4).toInt());
     if(strings.at(5).toInt()==1) {
     //Check for other autoconnects
-        CommonDebug("New auto connect profile");
         for(int j = 0; j<serverprofiles->length();j++)
         {
             serverprofiles->at(j)->setAutoconnect(false);
@@ -642,7 +621,6 @@ void Controller::decVolume()
 }
 void Controller::mediaKeyHandle(int key)
 {
-    CommonDebug("GOT MediaKey");
 //    if(key == MediaKeysObserver::EVolDecKey)
 //        decVolume();
 //    if(key == MediaKeysObserver::EVolIncKey)
@@ -652,7 +630,6 @@ void Controller::mediaKeyHandle(int key)
 
 void Controller::mediaKeyPressed(int key)
 {
-    CommonDebug("Mediakey pressed");
 //    if(key == MediaKeysObserver::EVolDecKey)
 //        volDecTimer.start();
 //    if(key == MediaKeysObserver::EVolIncKey)
@@ -661,7 +638,6 @@ void Controller::mediaKeyPressed(int key)
 
 void Controller::mediaKeyReleased(int key)
 {
-    CommonDebug("Mediakey released");
 //    if(key == MediaKeysObserver::EVolDecKey&&volDecTimer.isActive())
 //        volDecTimer.stop();
 //    if(key == MediaKeysObserver::EVolIncKey&&volIncTimer.isActive())
@@ -672,12 +648,10 @@ void Controller::mediaKeyReleased(int key)
 void Controller::focusChanged(QObject *now){
     if(now==0)
     {
-        CommonDebug("Focus lost");
         mApplicationActive = false;
         emit setUpdateInterval(5000);
     }
-    else{
-        CommonDebug("Focus gained");
+    else if (!mApplicationActive){
         mApplicationActive = true;
         if ( !netaccess->connected() && (mLastProfileIndex!=-1) ) {
            reconnectServer();
@@ -703,7 +677,6 @@ void Controller::cleanFileStack()
     QList<MpdFileEntry*> *list;
     while(!filemodels->empty())
     {
-        CommonDebug("Cleaning file stack");
             list = (QList<MpdFileEntry*>*)filemodels->pop();
             for(int i=0;i<list->length();i++)
             {

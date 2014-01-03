@@ -1,6 +1,6 @@
 #include "albuminformation.h"
 
-AlbumInformation::AlbumInformation(QString name, QString url, QByteArray *imgData) : QObject(0) {
+AlbumInformation::AlbumInformation(QString name, QString artist,QString url, QByteArray *imgData) : QObject(0) {
     mAlbumName = name;
     mImageURL = url;
     mImageData = imgData;
@@ -20,6 +20,5 @@ QString AlbumInformation::createImageHash(QByteArray *imgData) {
     QCryptographicHash hasher(QCryptographicHash::Md5);
     hasher.addData(*imgData);
     QString hash(hasher.result().toHex());
-    CommonDebug("Image hash: " + hash);
     return hash;
 }

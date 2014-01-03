@@ -4,13 +4,12 @@
 #include <QObject>
 #include <QCryptographicHash>
 
-#include "commondebug.h"
 
 class AlbumInformation : public QObject
 {
     Q_OBJECT
 public:
-    explicit AlbumInformation(QString name, QString url, QByteArray *imgData);
+    explicit AlbumInformation(QString name,QString artist, QString url, QByteArray *imgData);
     AlbumInformation(const AlbumInformation&);
 
     QString getName() { return mAlbumName; }
@@ -19,6 +18,7 @@ public:
     QString getImageHash() { return mImgHash; }
 
 private:
+    QString mArtistName;
     QString mAlbumName;
     QString mImageURL;
     QString mImgHash;

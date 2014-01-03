@@ -14,7 +14,6 @@ SOURCES += main.cpp \
             src/mpdfileentry.cpp \
             src/mpdartist.cpp \
             src/mpdalbum.cpp \
-            src/commondebug.cpp \
             src/qthreadex.cpp \
             src/serverprofile.cpp \
             src/artistmodel.cpp \
@@ -37,7 +36,6 @@ HEADERS += \
     src/mpdfileentry.h \
     src/mpdartist.h \
     src/mpdalbum.h \
-    src/commondebug.h \
     src/common.h \
     src/qthreadex.h \
     src/serverprofile.h \

@@ -14,7 +14,6 @@ public:
     AlbumModel(QList<MpdAlbum*> *list,QObject *parent = 0);
     ~AlbumModel()
     {
-        CommonDebug("Delete Albumsmodel");
         for(int i=0;i<m_entries->length();i++)
         {
             delete(m_entries->at(i));

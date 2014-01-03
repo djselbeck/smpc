@@ -11,7 +11,6 @@
 #include <QtQml>
 
 #include "networkaccess.h"
-#include "commondebug.h"
 #include "qthreadex.h"
 #include "serverprofile.h"
 #include "artistmodel.h"
@@ -91,11 +90,8 @@ private:
     QList<MPDOutput*> *outputs;
     QStack<FileModel*> *filemodels;
     QThread *oldnetthread;
-<<<<<<< HEAD
     ImageDatabase *mImgDB;
-=======
     bool mApplicationActive;
->>>>>>> 23605d398ccfc83a3fe41cfe534648e785b5a372
 
 private slots:
     void requestCurrentPlaylist();

@@ -51,6 +51,6 @@ const QString MpdArtist::getName()
 //    return NULL;
 //}
 
-//MpdArtist::~MpdArtist()
-//{
-//}
+MpdArtist::~MpdArtist()
+{
+}

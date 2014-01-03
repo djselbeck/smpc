@@ -6,20 +6,16 @@ ImageDatabase::ImageDatabase(QObject *parent) :
     mFiller = 0;
     QStringList drivers = QSqlDatabase::drivers();
     if ( !drivers.contains("QSQLITE") ) {
-        CommonDebug("No SQLite support");
     } else {
         // Check if database exists already otherwise create on
         QDir dirAccess;
         if ( !dirAccess.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation))) {
-            CommonDebug("Cannot create application data storage folder");
             return;
         }
         QString dbLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/imgDB.sqlite3";
-        CommonDebug("Database path: " + dbLocation);
         mDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
         mDB->setDatabaseName(dbLocation);
         if ( mDB->open() ) {
-            CommonDebug("Database successfully opened");
             // Check if database contains necessary tables
             if ( !mDB->tables().contains("albums") ) {
                 QSqlQuery createQuery;
@@ -31,7 +27,6 @@ ImageDatabase::ImageDatabase(QObject *parent) :
                                  "basename text default '',"
                                  "albuminfo text default '',"
                                  "imageID text )") ) {
-                    CommonDebug("Albums table created");
                 }
             }
             if ( !mDB->tables().contains("albumimages") ) {
@@ -42,7 +37,6 @@ ImageDatabase::ImageDatabase(QObject *parent) :
                                  "basename text default '',"
                                  "imghash text default '',"
                                  "imgdata blob)") ) {
-                    CommonDebug("Albums table created");
                 }
             }
             if ( !mDB->tables().contains("artist") ) {
@@ -53,11 +47,8 @@ ImageDatabase::ImageDatabase(QObject *parent) :
                                  "url text default '',"
                                  "basename text default '',"
                                  "imgdata blob)") ) {
-                    CommonDebug("artist table created");
                 }
             }
-        } else {
-            CommonDebug("Database open failed");
         }
     }
 }
@@ -75,11 +66,9 @@ bool ImageDatabase::syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist) {
     query.prepare("SELECT * FROM albums");
     query.exec();
     QStringList albumsToRemove;
-    CommonDebug("got: " + QString(query.size()) + "rows");
     // Search orphaned albums
     while ( query.next() ) {
-        QString albumName = query.value("name").toString();
-        CommonDebug("Checking: "+ albumName + " for orphan");
+        QString albumName = query.value("albumname").toString();
         bool foundAlbum = false;
         for (QList<MpdAlbum*>::Iterator it = albums->begin();it != albums->end();it++) {
             if ( (*it)->getTitle() == albumName) {
@@ -89,16 +78,14 @@ bool ImageDatabase::syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist) {
         }
         if ( !foundAlbum ) {
             albumsToRemove.append(albumName);
-            CommonDebug("Album orphaned: " + albumName);
         }
     }
     // remove orphaned albums
     for( int i = 0; i < albumsToRemove.length();i++) {
         QSqlQuery removeQuery;
-        if ( removeQuery.exec("DELETE FROM albums where name = \"" +
+        if ( removeQuery.exec("DELETE FROM albums where albumname = \"" +
                          albumsToRemove.at(i) +
                          "\"") ) {
-            CommonDebug("Orphaned album: " + albumsToRemove.at(i) + " removed");
         }
     }
 
@@ -125,8 +112,6 @@ void ImageDatabase::albumReady(AlbumInformation *albumInformation) {
     QString albumName = albumInformation->getName();
     QString albumURL = albumInformation->getURL();
     QByteArray *imgData = albumInformation->getImageData();
-    CommonDebug("Got album: " + albumName + " with url: " + albumURL + " and " +
-                QString::number(imgData->size()) + " bytes image data");
     delete(mCurrentAlbumProvider);
     if ( mAlbumNo < mAlbums->size() ) {
         mAlbumNo++;
@@ -139,7 +124,6 @@ void ImageDatabase::albumReady(AlbumInformation *albumInformation) {
 
 void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
 {
-    CommonDebug("Fill database");
     if ( mFiller ) {
         return;
     }
@@ -147,3 +131,21 @@ void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
     mFiller->startFilling(map);
 }
 
+bool ImageDatabase::hasAlbumArt(QString album,QString artist)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM albums WHERE "
+                  "albumname=" + album + " AND "
+                  "artistname=" + artist);
+    while ( query.next() ) {
+        QString albumName = query.value("albumname").toString();
+        if ( albumName == album) {
+            return true;
+        }
+    }
+}
+
+bool ImageDatabase::hasArtistArt(MpdArtist *artist)
+{
+    return true;
+}

@@ -4,7 +4,6 @@
 #include <QObject>
 #include "mpdalbum.h"
 #include "mpdtrack.h"
-#include "commondebug.h"
 
 class MpdTrack;
 class MpdAlbum;

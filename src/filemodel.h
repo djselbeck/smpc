@@ -10,7 +10,7 @@ class FileModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit FileModel(QObject *parent = 0);
-    ~FileModel(){CommonDebug("Artistmodel destroyed");
+    ~FileModel(){
                    for(int i=0;i<m_entries->length();i++)
                    {
                        delete(m_entries->at(i));

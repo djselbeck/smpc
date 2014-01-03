@@ -8,7 +8,6 @@
 #include <QDir>
 #include <QStandardPaths>
 
-#include "commondebug.h"
 #include "mpdalbum.h"
 #include "mpdartist.h"
 #include "albuminformation.h"
@@ -27,6 +26,8 @@ public:
 
     bool syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist);
     bool syncArtists(QList<MpdAlbum*> &artists);
+    bool hasAlbumArt(QString album,QString artist);
+    bool hasArtistArt(MpdArtist *artist);
 
 public slots:
     void albumReady(AlbumInformation *albumInformation);

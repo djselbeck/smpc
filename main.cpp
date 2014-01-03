@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QDebug>
-#include <src/commondebug.h>
 
 #include "src/controller.h"
 
@@ -17,7 +16,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QString locale = QLocale::system().name();
     QString translationFile = QString(":translations/harbour-smpc_") + locale;
     QTranslator translator;
-    CommonDebug("Trying: " + translationFile);
     translator.load(translationFile);
     app->installTranslator(&translator);
     QScopedPointer<QQuickView> view(SailfishApp::createView());

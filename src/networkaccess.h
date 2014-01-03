@@ -10,7 +10,6 @@
 #include "mpdfileentry.h"
 #include "mpdoutput.h"
 #include "common.h"
-#include "commondebug.h"
 #define READYREAD 15000
 
 class MpdAlbum;
