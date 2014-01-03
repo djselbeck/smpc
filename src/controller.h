@@ -17,8 +17,9 @@
 #include "albummodel.h"
 #include "filemodel.h"
 #include "playlistmodel.h"
-
+#include "imagedatabase.h"
 #include "mpdoutput.h"
+#include "lastfmalbumprovider.h"
 
 
 
@@ -54,6 +55,7 @@ signals:
     void searchedTracksReady();
     void addURIToPlaylist(QString);
     void requestPlaylistClear();
+    void requestArtistAlbumMap();
     void filePopCleared();
 
 
@@ -81,6 +83,7 @@ private:
     QList<MPDOutput*> *outputs;
     QStack<FileModel*> *filemodels;
     QThread *oldnetthread;
+    ImageDatabase *mImgDB;
 
 private slots:
     void requestCurrentPlaylist();

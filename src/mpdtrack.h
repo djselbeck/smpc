@@ -45,6 +45,7 @@ public:
     }
 
     int getTrackNr();
+    int getAlbumTracks();
     void    setTitle(QString);
     void 	setFileUri(QString);
     void 	setLength(quint32 length);
@@ -52,6 +53,7 @@ public:
     void	setArtist(QString);
     void setYear(QString year);
     void setTrackNr(int nr);
+    void setAlbumTracks(int nr);
 
     bool getPlaying();
     void setPlaying(bool playing);
@@ -62,6 +64,7 @@ private:
     QString artist;
     QString album;
     int tracknr;
+    int mAlbumTracks;
     QString year;
     
     bool playing;

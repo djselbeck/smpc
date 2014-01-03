@@ -14,13 +14,18 @@ class MpdAlbum : public QObject
 public:
     explicit MpdAlbum(QObject *parent = 0);
     MpdAlbum(QObject *parent,QString title);
-    QString getTitle();
+
+    // Copy constructor
+    MpdAlbum(const MpdAlbum &copyObject);
+
+    const QString getTitle();
     bool operator< (const MpdAlbum& other) const { return (title.compare(other.title,Qt::CaseInsensitive)<0?1:0); }
     bool operator==(MpdAlbum & rhs) {return getTitle()==rhs.getTitle();}
     static bool lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs) {
         return *lhs<*rhs;
     }
     QString getSection(){ return (title=="" ? "" :QString(title.toUpper()[0]));}
+    QString getArtist();
 
 
 private:

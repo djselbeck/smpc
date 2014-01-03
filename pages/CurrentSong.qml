@@ -250,6 +250,8 @@ Page {
         IconButton{
             id: volumeButton
             anchors.centerIn: parent
+            height: parent.height
+            width: parent.height
             icon.source: "image://theme/icon-status-volume-max"
             onClicked: {
                 volumeControl.state = "sliderVisible";

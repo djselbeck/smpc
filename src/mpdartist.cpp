@@ -5,9 +5,13 @@ MpdArtist::MpdArtist(QObject *parent) :
 {
 }
 
-MpdArtist::MpdArtist(QObject *parent, QString name)
+MpdArtist::MpdArtist(QObject *parent, QString name) : QObject(parent)
 {
-    this->name = name;
+    this->mName = name;
+}
+
+MpdArtist::MpdArtist(const MpdArtist &copyObject) : QObject(0) {
+    this->mName = copyObject.mName;
 }
 
 //void MpdArtist::addAlbum(MpdAlbum *album)
@@ -25,9 +29,9 @@ MpdArtist::MpdArtist(QObject *parent, QString name)
 //   this->albums->append(*albums);
 //}
 
-QString MpdArtist::getName()
+const QString MpdArtist::getName()
 {
-   return this->name;
+   return this->mName;
 }
 
 //quint32 MpdArtist::albumCount()

@@ -6,40 +6,45 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),viewer(viewer),password(""),hostname(""),port(6600)
 {
-    netaccess = new NetworkAccess(0);
-    netaccess->setUpdateInterval(1000);
-    oldnetthread = netaccess->thread();
-    networkthread = new QThreadEx(this);
-    netaccess->moveToThread(networkthread);
-    networkthread->start();
-    currentsongid=0;
-    playlistversion = 0;
-    playlist = 0;
-    artistlist = 0;
-    outputs = 0;
-    albumlist = 0;
-    artistmodelold = 0;
-    albumsmodelold = 0;
-    searchedtracks = 0;
-    lastplaybackstate = NetworkAccess::STOP;
-    connectSignals();
-    readSettings();
-    qmlRegisterType<MpdArtist>();
-    qmlRegisterType<MpdAlbum>();
-    qmlRegisterType<ServerProfile>();
-    volIncTimer.setInterval(250);
-    volDecTimer.setInterval(250);
-    filemodels = new QStack<FileModel*>();
-    viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
-    netaccess->setQmlThread(viewer->thread());
-    //Start auto connect
-    for(int i = 0;i<serverprofiles->length();i++)
-    {
-        if(serverprofiles->at(i)->getAutoconnect())
-        {
-            connectProfile(i);
-        }
-    }
+    MpdAlbum testAlbum(0,"The Final Frontier");
+    MpdArtist testArtist(0,"Iron Maiden");
+    LastFMAlbumProvider  *testprov = new LastFMAlbumProvider(testAlbum.getTitle(),testArtist.getName());
+    testprov->startDownload();
+//    netaccess = new NetworkAccess(0);
+//    netaccess->setUpdateInterval(1000);
+//    oldnetthread = netaccess->thread();
+//    networkthread = new QThreadEx(this);
+//    netaccess->moveToThread(networkthread);
+//    networkthread->start();
+//    currentsongid=0;
+//    playlistversion = 0;
+//    playlist = 0;
+//    artistlist = 0;
+//    outputs = 0;
+//    albumlist = 0;
+//    artistmodelold = 0;
+//    albumsmodelold = 0;
+//    searchedtracks = 0;
+//    lastplaybackstate = NetworkAccess::STOP;
+//    mImgDB = new ImageDatabase();
+//    connectSignals();
+//    readSettings();
+//    qmlRegisterType<MpdArtist>();
+//    qmlRegisterType<MpdAlbum>();
+//    qmlRegisterType<ServerProfile>();
+//    volIncTimer.setInterval(250);
+//    volDecTimer.setInterval(250);
+//    filemodels = new QStack<FileModel*>();
+//    viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+//    netaccess->setQmlThread(viewer->thread());
+//    //Start auto connect
+//    for(int i = 0;i<serverprofiles->length();i++)
+//    {
+//        if(serverprofiles->at(i)->getAutoconnect())
+//        {
+//            connectProfile(i);
+//        }
+//    }
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -257,6 +262,10 @@ void Controller::connectSignals()
     connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
 
     connect(viewer,SIGNAL(focusObjectChanged(QObject*)),this,SLOT(focusChanged(QObject*)));
+
+
+    connect(this,SIGNAL(requestArtistAlbumMap()),netaccess,SLOT(getArtistAlbumMap()));
+    connect(netaccess,SIGNAL(artistsAlbumsMapReady(QMap<MpdArtist*,QList<MpdAlbum*>*>*)),mImgDB,SLOT(fillDatabase(QMap<MpdArtist*,QList<MpdAlbum*>*>*)));
 }
 
 void Controller::setPassword(QString password)
@@ -321,6 +330,7 @@ void Controller::requestAlbum(QVariant array)
 void Controller::connectedToServer()
 {
     emit sendPopup(tr("Connected to: ")+ profilename);
+    emit requestArtistAlbumMap();
 }
 
 void Controller::disconnectedToServer()

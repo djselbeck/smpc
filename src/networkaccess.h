@@ -59,6 +59,8 @@ signals:
     void outputsReady(QList<QObject*>*);
     void searchedTracksReady(QList<QObject*>*);
 
+    void artistsAlbumsMapReady(QMap<MpdArtist*, QList<MpdAlbum*>* > *);
+
     void startupdateplaylist();
     void finishupdateplaylist();
     void busy();
@@ -99,6 +101,9 @@ public slots:
     void getAlbumTracks(QString album, QString cartist);
     //Variant [Artist,Album]
     void getAlbumTracks(QVariant albuminfo);
+
+    void getArtistAlbumMap();
+
     void getCurrentPlaylistTracks();
     void getPlaylistTracks(QString name);
     void getDirectory(QString path);
@@ -137,9 +142,11 @@ private:
     quint16 updateinterval;
     quint32 mPlaylistversion;
     QList<MpdTrack*>* parseMPDTracks(QString cartist);
+    QList<MpdArtist*>* getArtists_prv();
     QList<MpdTrack*>* getAlbumTracks_prv(QString album);
     QList<MpdTrack*>* getAlbumTracks_prv(QString album, QString cartist);
     QList<MpdAlbum*>* getArtistsAlbums_prv(QString artist);
+    QMap<MpdArtist*, QList<MpdAlbum*>* > *getArtistsAlbumsMap_prv();
     QThread *mQmlThread;
 };
 

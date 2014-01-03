@@ -10,7 +10,7 @@ MpdTrack::MpdTrack(QObject *parent) :
   fileuri="";
   year ="";
   tracknr = 0;
-  
+  mAlbumTracks = 0;
 }
 
 MpdTrack::MpdTrack(QObject *parent,QString file, QString title, quint32 length):
@@ -21,6 +21,7 @@ MpdTrack::MpdTrack(QObject *parent,QString file, QString title, quint32 length):
     this->fileuri = file;
     year = "";
     tracknr = 0;
+    mAlbumTracks = 0;
 }
 MpdTrack::MpdTrack(QObject *parent,QString file, QString title, quint32 length,bool playing):
         QObject(parent)
@@ -31,6 +32,7 @@ MpdTrack::MpdTrack(QObject *parent,QString file, QString title, quint32 length,b
     this->playing = playing;
     year ="";
     tracknr = 0;
+    mAlbumTracks = 0;
 }
 
 MpdTrack::MpdTrack(QObject *parent, QString file, QString title, QString artist, QString album, quint32 length):
@@ -43,6 +45,7 @@ MpdTrack::MpdTrack(QObject *parent, QString file, QString title, QString artist,
     this->artist = artist;
     year ="";
     tracknr = 0;
+    mAlbumTracks = 0;
 }
 
 
@@ -107,6 +110,11 @@ int MpdTrack::getTrackNr()
     return tracknr;
 }
 
+int MpdTrack::getAlbumTracks()
+{
+    return mAlbumTracks;
+}
+
 QString MpdTrack::getYear()
 {
     return year;
@@ -150,4 +158,9 @@ void MpdTrack::setYear(QString year)
 void MpdTrack::setTrackNr(int nr)
 {
     this->tracknr = nr;
+}
+
+void MpdTrack::setAlbumTracks(int nr)
+{
+    this->mAlbumTracks = nr;
 }

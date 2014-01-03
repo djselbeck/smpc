@@ -1,7 +1,7 @@
 # The name of your app
 TARGET = harbour-smpc
 
-QT += network gui
+QT += network gui sql
 
 # C++ sources
 SOURCES += main.cpp \
@@ -18,7 +18,12 @@ SOURCES += main.cpp \
             src/mpdoutput.cpp \
             src/albummodel.cpp \
     src/filemodel.cpp \
-    src/playlistmodel.cpp
+    src/playlistmodel.cpp \
+    src/imagedatabase.cpp \
+    src/imagedownloader.cpp \
+    src/lastfmalbumprovider.cpp \
+    src/albuminformation.cpp \
+    src/databasefilljob.cpp
 
 
 # C++ headers
@@ -37,7 +42,12 @@ HEADERS += \
     src/albummodel.h \
     src/mpdoutput.h \
     src/filemodel.h \
-    src/playlistmodel.h
+    src/playlistmodel.h \
+    src/imagedatabase.h \
+    src/imagedownloader.h \
+    src/lastfmalbumprovider.h \
+    src/albuminformation.h \
+    src/databasefilljob.h
 
 # QML files and folders
 qml.files = *.qml pages cover main.qml components
