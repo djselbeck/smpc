@@ -4,7 +4,6 @@
   */
 
 
-
 NetworkAccess::NetworkAccess(QObject *parent) :
     QThread(parent)
 {
@@ -210,6 +209,8 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         //Start getting list from mpd
         //Send request
         //CommonDebug("Send request for albums\n");
+        artist = artist.replace('\"',"\\\"");
+        qDebug() << artist;
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         outstream.setAutoDetectUnicode(false);
