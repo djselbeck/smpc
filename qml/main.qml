@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
+import "components"
 
 
 ApplicationWindow
@@ -40,6 +41,11 @@ ApplicationWindow
     signal enableOutput(int nr);
     signal disableOutput(int nr);
     signal requestSearch(variant request);
+
+    signal clearAlbumList();
+    signal clearArtistList();
+    signal clearTrackList();
+    signal clearPlaylistTracks();
 
     // Control signals
     signal play();
@@ -82,11 +88,12 @@ ApplicationWindow
     property Page serverList;
     property Page artistspage;
     property Page albumspage;
+    property var playlistModelVar;
     property int listfontsize:12;
     property int liststretch:20;
     property int lastsongid:-1;
-    property string playbuttoniconsource;
-    property string playbuttoniconsourcecover;
+    property string playbuttoniconsource:"image://theme/icon-m-play";
+    property string playbuttoniconsourcecover : "image://theme/icon-cover-play";
     property string volumebuttoniconsource;
     property string lastpath;
     property string artistname;
@@ -94,6 +101,7 @@ ApplicationWindow
     property string playlistname;
     property string coverimageurl;
     property string artistimageurl;
+    property string profilename;
     property bool repeat;
     property bool shuffle;
     property bool quitbtnenabled;
@@ -102,17 +110,26 @@ ApplicationWindow
     property bool stopped:false;
     property bool fastscrollenabled:false;
 
-    property list<ListModel> fileModels;
-
     property real listPadding: Theme.paddingLarge
+
+    property bool volumeChanging:false
+
+    // current song information
+    property string mTitle
+    property string mArtist
+    property string mAlbum
+    property int mVolume
+    property bool mRepeat
+    property bool mShuffle
 
 
 
     // JS-functions
     //TODO separation
 
-    function slotConnected()
+    function slotConnected(profile)
     {
+        profilename = profile;
         connected = true;
     }
 
@@ -141,10 +158,10 @@ ApplicationWindow
 
     function updateCurrentPlaying(list)
     {
-        currentsongpage.title = list[0];
-        currentsongpage.album = list[1];
-        currentsongpage.artist = list[2];
-        if(currentsongpage.pospressed===false) {
+        mTitle = list[0];
+        mAlbum = list[1];
+        mArtist = list[2];
+        if(currentsongpage.pospressed==false) {
             currentsongpage.position = list[3];
         }
         currentsongpage.length = list[4];
@@ -155,12 +172,12 @@ ApplicationWindow
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
         stopped = (list[6]=="stop") ? true : false;
-        if(currentsongpage.volumepressed===false){
-            currentsongpage.volume = list[7];
+        if(!volumeChanging){
+            mVolume = list[7];
         }
-        currentsongpage.repeat = (list[8]=="0" ?  false:true);
-        currentsongpage.shuffle = (list[9]=="0" ?  false:true);
-        currentsongpage.nr = (list[10]===0? "":list[10]);
+        mRepeat = (list[8]=="0" ?  false:true);
+        mShuffle = (list[9]=="0" ?  false:true);
+        currentsongpage.nr = (list[10]==0? "":list[10]);
         currentsongpage.uri = list[11];
         if(list[12]!=lastsongid)
         {
@@ -171,6 +188,9 @@ ApplicationWindow
         if(stopped) {
             coverimageurl = "";
             artistimageurl = "";
+            mArtist=""
+            mAlbum=""
+            mTitle=""
         }
 
         currentsongpage.audioproperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
@@ -202,14 +222,15 @@ ApplicationWindow
     {   
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
-        playlistpage.listmodel = null;
-        playlistpage.listmodel = playlistModel;
+        playlistpage.songid = -1;
+        playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }
 
+
     function clearPlaylist()
     {
-        playlistpage.listmodel = 0;
+        playlistModelVar = 0
         console.debug("playlist model cleared");
     }
 
@@ -233,7 +254,7 @@ ApplicationWindow
 
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
     {
-        pageStack.push(Qt.resolvedUrl("pages/SongPage.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
+        pageStack.push(Qt.resolvedUrl("components/SongDialog.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
     }
 
     function receiveFilesPage()
@@ -300,10 +321,11 @@ ApplicationWindow
         object = component.createObject(mainWindow);
         mainWindow.playlistpage = object;
         console.debug("PlaylistPage created");
+        pageStack.pushAttached(playlistpage);
         component = Qt.createComponent("pages/CurrentSong.qml");
         object = component.createObject(mainWindow);
         currentsongpage = object;
-        console.debug("currentsong Page created");
+//        console.debug("currentsong Page created");
     }
     BusyIndicator
     {
@@ -312,7 +334,13 @@ ApplicationWindow
         anchors.centerIn: parent
     }
 
-    initialPage: MainPage { }
+    bottomMargin: quickControlPanel.visibleSize
+
+    ControlPanel {
+        id: quickControlPanel
+    }
+
+    initialPage: Qt.resolvedUrl("pages/MainPage.qml") //MainPage { }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
 }

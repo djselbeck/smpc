@@ -17,9 +17,8 @@ Page {
         SilicaFlickable{
             anchors {top: parent.top;left:parent.left;right:parent.right;bottom:buttonRow.top}
             contentHeight: infocolumn.height
-            clip: true
+            ScrollDecorator {}
             Column {
-                clip: true
                 anchors {
                     right: parent.right
                     left: parent.left

@@ -5,10 +5,15 @@ import "../components"
 Page
 {
     id: playlistTracksPage
-    property alias listmodel: playlistTracksListView.model;
+    property var listmodel;
     property string playlistname;
+    property int lastIndex;
     SilicaListView {
             id : playlistTracksListView
+            model: listmodel
+            SpeedScroller {
+                listview: playlistTracksListView
+            }
             ScrollDecorator {}
             anchors.fill: parent
             contentWidth: width
@@ -38,8 +43,11 @@ Page
             }
             delegate: ListItem {
                 menu: contextMenu
+                property int workaroundHeight: mainColumn.height
+                height: workaroundHeight
                 Column{
-                    clip: true
+                    id: mainColumn
+                    height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -48,17 +56,25 @@ Page
                         rightMargin: listPadding
                     }
                         Row{
+                            id: trackRow
                             Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
                             Label {clip: true; wrapMode: Text.WrapAnywhere; elide: Text.ElideRight; text:  (title==="" ? filename : title);anchors {verticalCenter: parent.verticalCenter}}
                             Label { text: (length===0 ? "": " ("+lengthformated+")");anchors {verticalCenter: parent.verticalCenter}}
                         }
                         Label{
+                            id: artistLabel
                             text:(artist!=="" ? artist + " - " : "" )+(album!=="" ? album : "");
                             color: Theme.secondaryColor;
                             font.pixelSize: Theme.fontSizeSmall
                         }
                     }
+                OpacityRampEffect {
+                    sourceItem: mainColumn
+                    slope: 3
+                    offset: 0.65
+                }
                 onClicked: {
+                    playlistTracksListView.currentIndex = index;
                     albumTrackClicked(title,album,artist,lengthformated,uri,year,tracknr);
                 }
                 function playTrackRemorse() {
@@ -82,6 +98,9 @@ Page
                             onClicked: {
                                 addTrackRemorse();
                             }
+                        }
+                        onHeightChanged: {
+                            workaroundHeight = height + mainColumn.height
                         }
                     }
                 }
@@ -110,6 +129,20 @@ Page
                 pageStack.push(initialPage);
             }
         }
+    }
+
+    onStatusChanged: {
+        if ( status === PageStatus.Deactivating ) {
+            lastIndex = playlistTracksListView.currentIndex;
+        }
+        else if ( status === PageStatus.Activating ) {
+            playlistTracksListView.positionViewAtIndex(lastIndex,ListView.Center);
+        }
+    }
+
+    Component.onDestruction: {
+        playlistTracksListView.model = null;
+        clearPlaylistTracks();
     }
 
 }

@@ -16,12 +16,9 @@ Item {
 //    }
 
     onListviewChanged: {
-        console.debug("Listview changed");
         if(listview && listview.model) {
-            console.debug("Got listview AND model, initialize section data");
             Sections.fillSections(listview);
         } else if(listview) {
-            console.debug("Got listview connecting modelChanged");
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview);
             });
@@ -64,7 +61,6 @@ Item {
                 //secDialog.visible = true;
             } else {
                 secDialog.opacity = 0.0;
-                console.debug("Not pressed");
                 //secDialog.visible = false;
             }
         }

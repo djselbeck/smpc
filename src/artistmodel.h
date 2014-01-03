@@ -2,6 +2,7 @@
 #define ARTISTMODEL_H
 #include "mpdartist.h"
 #include <QAbstractListModel>
+#include <QQmlEngine>
 #include "commondebug.h"
 
 class ArtistModel : public QAbstractListModel
@@ -24,7 +25,10 @@ public:
         SectionRole = Qt::UserRole + 2
     };
 
-    Q_INVOKABLE MpdArtist* get(int index) {  return m_entries->at(index); }
+    Q_INVOKABLE MpdArtist* get(int index) {
+        MpdArtist *retArtist = m_entries->at(index);
+        QQmlEngine::setObjectOwnership(retArtist,QQmlEngine::CppOwnership);
+        return retArtist; }
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE QHash<int, QByteArray> roleNames() const;

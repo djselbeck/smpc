@@ -9,7 +9,11 @@ Page
     property string artistname;
     SilicaListView {
             id : savedPlaylistsListView
+            SpeedScroller {
+                listview: savedPlaylistsListView
+            }
             ScrollDecorator {}
+
             anchors.fill: parent
             contentWidth: width
             header: PageHeader {
@@ -18,7 +22,7 @@ Page
             delegate: ListItem {
                 menu: contextMenu
                 Column{
-                    clip: true
+                    id: mainColumn
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -30,6 +34,11 @@ Page
                              text: modelData
                         }
                     }
+                OpacityRampEffect {
+                    sourceItem: mainColumn
+                    slope: 3
+                    offset: 0.65
+                }
                 onClicked: {
                     savedPlaylistClicked(modelData);
                 }

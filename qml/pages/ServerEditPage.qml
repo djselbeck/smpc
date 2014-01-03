@@ -84,7 +84,7 @@ Page
                 anchors.left: parent.left
                 id: portInputField
                 text: "6600"
-                inputMethodHints: Qt.ImhNoPredictiveText
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: portvalidator
             }
 

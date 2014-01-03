@@ -2,9 +2,8 @@
 var sections = [];
 
 function fillSections(listview) {
-    console.debug("fill scroller sections");
+    sections = [];
     if(!listview || !listview.model) {
-        console.debug("NO LISTMODEL");
         return;
     }
     var count = listview.model.count;

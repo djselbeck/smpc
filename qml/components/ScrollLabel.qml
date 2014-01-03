@@ -6,9 +6,26 @@ Item {
     property alias text: lbl.text
     property alias font: lbl.font
     property alias color: lbl.color
+    property alias scrolling: lbl.shouldScroll
     property int minScrollTime: 5000;
     height: lbl.height
     clip: true
+
+//    OpacityRampEffect {
+//        sourceItem: mainItm
+//        slope: 3
+//        offset: lbl.shouldScroll ? 0.65 : 1.0
+//        enabled: lbl.shouldScroll
+//    }
+
+//    OpacityRampEffect {
+//        direction: OpacityRamp.RightToLeft
+//        sourceItem: mainItm
+//        slope: 3
+//        offset: lbl.shouldScroll ? 0.65 : 1.0
+//        enabled:  lbl.shouldScroll
+//    }
+
 
     Label {
         id: lbl

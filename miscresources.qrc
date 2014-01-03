@@ -3,5 +3,7 @@
         <file>smpc.svg</file>
         <file>smpc-big.png</file>
         <file>smpc.png</file>
+        <file>pictogram.png</file>
+        <file>icon-m-stop.png</file>
     </qresource>
 </RCC>

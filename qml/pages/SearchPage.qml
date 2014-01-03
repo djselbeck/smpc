@@ -8,31 +8,21 @@ Page {
     property int currentindex: -1
     property string selectedsearch
 
-
-
-    SilicaFlickable {
-        id: mainSearchFlickable
-        contentHeight: albumsongs_list_view.contentHeight + searchhead.height
+    Drawer {
+        id: mainDrawer
         anchors.fill: parent
-        ScrollDecorator {
-        }
-        Column {
+        open: true
+        dock: Dock.Bottom
+        backgroundSize: searchhead.height
+        background: Column {
             id: searchhead
             spacing: Theme.paddingMedium
-            clip: true
             anchors {
                 top: parent.top
                 left: parent.left
                 right: parent.right
             }
-            PageHeader {
-                title: qsTr("search")
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
-            }
-            TextField {
+            SearchField {
                 id: searchfield
                 anchors {
                     left: parent.left
@@ -40,42 +30,24 @@ Page {
                 }
                 placeholderText: qsTr("search value")
                 text: ""
-                inputMethodHints: Qt.ImhNoPredictiveText
-            }
-            Button {
-                id: startsearchbtn
-                text: qsTr("Search")
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    leftMargin: listPadding
-                    rightMargin: listPadding
-                }
-                onClicked: {
-                    var searchfor
-                    switch (searchforcombobox.currentIndex) {
-                    case 0:
-                        console.debug("Searching for titles")
-                        searchfor = "title"
-                        break
-                    case 1:
-                        console.debug("Searching for albums")
-                        searchfor = "album"
-                        break
-                    case 2:
-                        console.debug("Searching for artists")
-                        searchfor = "artist"
-                        break
-                    case 3:
-                        console.debug("Searching for files")
-                        searchfor = "file"
-                        break
-                    }
-
-                    requestSearch([searchfor, searchfield.text])
-                    albumsongs_list_view.forceActiveFocus()
+                //inputMethodHints: Qt.ImhNoPredictiveText
+                EnterKey.onClicked: {
+                    startSearch()
                 }
             }
+//            Button {
+//                id: startsearchbtn
+//                text: qsTr("Search")
+//                anchors {
+//                    left: parent.left
+//                    right: parent.right
+//                    leftMargin: listPadding
+//                    rightMargin: listPadding
+//                }
+//                onClicked: {
+//                    startSearch()
+//                }
+//            }
             ComboBox {
                 id: searchforcombobox
                 label: qsTr("Search for:")
@@ -102,14 +74,54 @@ Page {
 
         SilicaListView {
             id: albumsongs_list_view
-            contentHeight: 0
-            height: contentHeight
-            interactive: false
+            anchors.fill: parent
+            ScrollDecorator {}
+
+            header: PageHeader {
+                title: qsTr("search")
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+            }
+
+            PullDownMenu {
+                enabled: albumsongs_list_view.model !== undefined
+                MenuItem {
+                    text: qsTr("new search")
+                    visible: albumsongs_list_view.model !== undefined
+                    onClicked: {
+                        newSearch()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("add all results")
+                    visible: albumsongs_list_view.model !== undefined
+                    onClicked: {
+                        deletePlaylist()
+                        addlastsearch()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("play all results")
+                    visible: albumsongs_list_view.model !== undefined
+                    onClicked: {
+                        deletePlaylist()
+                        addlastsearch()
+                        playPlaylistTrack(0)
+                    }
+                }
+            }
 
             delegate: ListItem {
                 menu: contextMenu
+                property int workaroundHeight: mainColumn.height
+                height: workaroundHeight
                 Column {
+                    id: mainColumn
                     clip: true
+                    height: (trackRow + artistRow
+                             >= Theme.itemSizeSmall ? trackRow + artistRow : Theme.itemSizeSmall)
                     anchors {
                         right: parent.right
                         left: parent.left
@@ -118,6 +130,7 @@ Page {
                         rightMargin: listPadding
                     }
                     Row {
+                        id: trackRow
                         Label {
                             text: (index + 1) + ". "
                             anchors {
@@ -125,7 +138,6 @@ Page {
                             }
                         }
                         Label {
-                            clip: true
                             wrapMode: Text.WrapAnywhere
                             elide: Text.ElideRight
                             text: (title === "" ? filename : title)
@@ -141,6 +153,7 @@ Page {
                         }
                     }
                     Label {
+                        id: artistRow
                         text: (artist !== "" ? artist + " - " : "") + (album !== "" ? album : "")
                         color: Theme.secondaryColor
                         font.pixelSize: Theme.fontSizeSmall
@@ -200,48 +213,44 @@ Page {
                                 playAlbumRemorse()
                             }
                         }
-
-
-                        onYChanged: {
-                            if ( parent != null) {
-                                var menuPos = parent.y+albumsongs_list_view.currentItem.y+albumsongs_list_view.y-mainSearchFlickable.contentY;
-                                var menuMax = menuPos + parent.height;
-                                if(menuMax > mainSearchFlickable.height) {
-                                    mainSearchFlickable.contentY += menuMax-mainSearchFlickable.height;
-                                    console.debug("cy: " + mainSearchFlickable.contentY );
-                                }
-
-                            }
+                        onHeightChanged: {
+                            workaroundHeight = height + mainColumn.height
                         }
-
                     }
                 }
             }
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: searchhead.bottom
-            } //; bottom: parent.bottom }
+        }
+    }
+    function startSearch() {
+        mainDrawer.hide()
+        var searchfor
+        switch (searchforcombobox.currentIndex) {
+        case 0:
+            console.debug("Searching for titles")
+            searchfor = "title"
+            break
+        case 1:
+            console.debug("Searching for albums")
+            searchfor = "album"
+            break
+        case 2:
+            console.debug("Searching for artists")
+            searchfor = "artist"
+            break
+        case 3:
+            console.debug("Searching for files")
+            searchfor = "file"
+            break
         }
 
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("add all results")
-                visible: albumsongs_list_view.model !== undefined
-                onClicked: {
-                    deletePlaylist()
-                    addlastsearch()
-                }
-            }
-            MenuItem {
-                text: qsTr("play all results")
-                visible: albumsongs_list_view.model !== undefined
-                onClicked: {
-                    deletePlaylist()
-                    addlastsearch()
-                    playPlaylistTrack(0)
-                }
-            }
-        }
+        requestSearch([searchfor, searchfield.text])
+        albumsongs_list_view.forceActiveFocus()
+    }
+
+    function newSearch() {
+        searchfield.text=""
+        albumsongs_list_view.model = 0;
+        cleanFileStack();
+        mainDrawer.show()
     }
 }

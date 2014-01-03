@@ -13,15 +13,7 @@ Page
             header: PageHeader {
                 title: qsTr("servers");
             }
-            PushUpMenu {
-             MenuItem {
-                 text: qsTr("Add server")
-                 onClicked: {
-                     console.log("Clicked option add server")
-                     pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{newprofile:true});
-                 }
-             }
-            }
+            ScrollDecorator {}
             PullDownMenu {
              MenuItem {
                  text: qsTr("Add server")
@@ -33,7 +25,6 @@ Page
             }
             delegate: BackgroundItem {
                 Label {
-                    clip: true
                     anchors {
                         horizontalCenter: parent.horizontalCenter
                         verticalCenter: parent.verticalCenter
