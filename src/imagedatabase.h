@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QStandardPaths>
+#include <QImage>
 
 #include "mpdalbum.h"
 #include "mpdartist.h"
@@ -30,6 +31,9 @@ public:
     bool hasArtistArt(MpdArtist *artist);
 
     int imageIDFromHash(QString hashValue);
+    int imageIDFromAlbumArtist(QString album,QString artist);
+
+    QImage getAlbumImage(QString album, QString artist);
 
 public slots:
     void albumReady(AlbumInformation *albumInformation);

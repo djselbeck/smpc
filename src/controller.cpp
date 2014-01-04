@@ -12,6 +12,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     testprov->startDownload();
 
     mImgDB = new ImageDatabase();
+    mQMLImgProvider = new QMLImageProvider(mImgDB);
 
     netaccess = new NetworkAccess(0);
     netaccess->setUpdateInterval(1000);
@@ -41,6 +42,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     mLastProfileIndex = -1;
     filemodels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+    viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     netaccess->setQmlThread(viewer->thread());
     //Start auto connect
     for(int i = 0;i<serverprofiles->length();i++)
@@ -357,7 +359,7 @@ void Controller::connectedToServer()
     mReconnectTimer.stop();
     emit sendPopup(popupString);
     emit connected(profilename);
-    emit requestArtistAlbumMap();
+   // emit requestArtistAlbumMap();
 }
 
 void Controller::disconnectedToServer()

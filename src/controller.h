@@ -20,6 +20,7 @@
 #include "imagedatabase.h"
 #include "mpdoutput.h"
 #include "lastfmalbumprovider.h"
+#include "qmlimageprovider.h"
 
 
 
@@ -91,6 +92,7 @@ private:
     QStack<FileModel*> *filemodels;
     QThread *oldnetthread;
     ImageDatabase *mImgDB;
+    QMLImageProvider *mQMLImgProvider;
     bool mApplicationActive;
 
 private slots:

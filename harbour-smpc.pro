@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     src/imagedownloader.cpp \
     src/lastfmalbumprovider.cpp \
     src/albuminformation.cpp \
-    src/databasefilljob.cpp
+    src/databasefilljob.cpp \
+    src/qmlimageprovider.cpp
 
 
 # C++ headers
@@ -48,7 +49,8 @@ HEADERS += \
     src/imagedownloader.h \
     src/lastfmalbumprovider.h \
     src/albuminformation.h \
-    src/databasefilljob.h
+    src/databasefilljob.h \
+    src/qmlimageprovider.h
 
 # QML files and folders
 #qml.files = *.qml pages cover main.qml components

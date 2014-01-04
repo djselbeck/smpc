@@ -403,10 +403,13 @@ Page {
         var url = ""
         url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key="
                 + lastfmapikey + "&artist=" + artistclean + "&album=" + albumclean
-        if (albumclean != "") {
-            coverfetcherXMLModel.source = url
-            coverfetcherXMLModel.reload()
-        }
+//        if (albumclean != "") {
+//            coverfetcherXMLModel.source = url
+//            coverfetcherXMLModel.reload()
+//        }
+
+        coverimageurl = "image://imagedbprovider/" + artist + "/" + album;
+
 
         // Fetch artist image
         url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
