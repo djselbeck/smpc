@@ -223,7 +223,7 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
                 {
                     name = response.right(response.length()-7);
                     name.chop(1);
-                    tempalbum = new MpdAlbum(this,name);
+                    tempalbum = new MpdAlbum(this,name,artist);
                     tempalbum->moveToThread(mQmlThread);
                     QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                     albums->append(tempalbum);

@@ -9,6 +9,7 @@ LastFMAlbumProvider::LastFMAlbumProvider(QString albumName,QString artistName) :
     mImageData = 0;
     mImageURL = "";
     mAlbumInfo = "";
+    mLastInformation = 0;
 }
 
 LastFMAlbumProvider::~LastFMAlbumProvider() {
@@ -21,6 +22,9 @@ LastFMAlbumProvider::~LastFMAlbumProvider() {
         disconnect(mAlbumArtAccess);
         mAlbumArtAccess->deleteLater();
         mAlbumArtAccess = 0;
+    }
+    if ( mLastInformation ) {
+        delete ( mLastInformation );
     }
 }
 
@@ -66,7 +70,13 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
     if ( mImageURL != "" ) {
         downloadImageData(mImageURL);
     } else {
-        emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0));
+        if ( mLastInformation ) {
+            delete(mLastInformation);
+            mLastInformation = 0;
+        }
+        mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0);
+        emit ready(mLastInformation);
+        emit ready();
     }
 }
 
@@ -159,9 +169,20 @@ void LastFMAlbumProvider::startDownload() {
 
 void LastFMAlbumProvider::imageDownloaded(QNetworkReply *reply) {
     QByteArray *imgData = new QByteArray(reply->readAll());
-    emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData));
+    if ( mLastInformation ) {
+        delete(mLastInformation);
+        mLastInformation = 0;
+    }
+    mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData);
+    emit ready(mLastInformation);
+    emit ready();
 }
 
 QString LastFMAlbumProvider::getImageURL() {
     return "";
+}
+
+AlbumInformation *LastFMAlbumProvider::getLastInformation()
+{
+    return new AlbumInformation(*mLastInformation);
 }

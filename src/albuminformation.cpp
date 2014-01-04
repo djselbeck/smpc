@@ -14,8 +14,15 @@ AlbumInformation::AlbumInformation(QString name, QString artist, QString albumIn
 AlbumInformation::AlbumInformation(const AlbumInformation &copyObject) {
     mAlbumName = copyObject.mAlbumName;
     mImageURL = copyObject.mImageURL;
-    mImageData = new QByteArray(*copyObject.mImageData);
+    if(copyObject.mImageData) {
+        mImageData = new QByteArray(*copyObject.mImageData);
+    }
+    else {
+        mImageData = 0;
+    }
     mImgHash = copyObject.mImgHash;
+    mAlbumInfo = copyObject.mAlbumInfo;
+    mArtistName = copyObject.mArtistName;
 }
 
 QString AlbumInformation::createImageHash(QByteArray *imgData) {

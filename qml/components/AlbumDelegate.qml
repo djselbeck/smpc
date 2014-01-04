@@ -10,7 +10,7 @@ Component {
         height:  workaroundHeight
         Row {
             id: mainRow
-            height: Theme.itemSizeSmall
+            height: Theme.itemSizeLarge
             anchors {
                 right: parent.right
                 left: parent.left
@@ -18,6 +18,12 @@ Component {
                 leftMargin: listPadding
                 rightMargin: listPadding
             }
+            Image{
+                width:mainRow.height
+                height: mainRow.height
+                source:"image://imagedbprovider/"+artist+"/"+titleClean
+            }
+
             Label {
                 id: albumLabel
                 anchors.verticalCenter: parent.verticalCenter

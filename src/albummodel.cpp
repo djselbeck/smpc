@@ -16,8 +16,20 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
     {
         return m_entries->at(index.row())->getTitle();
     }
-    if(role==SectionRole)
+    else if(role==SectionRole)
+    {
         return m_entries->at(index.row())->getSection();
+    }
+    else if(role==ArtistRole)
+    {
+        return m_entries->at(index.row())->getArtist();
+    }
+    else if(role=AlbumCleandRole)
+    {
+        QString cleanedAlbum = m_entries->at(index.row())->getTitle();
+        cleanedAlbum = cleanedAlbum.replace('/',"");
+        return cleanedAlbum;
+    }
 }
 
 int AlbumModel::rowCount(const QModelIndex &parent) const{
@@ -29,5 +41,7 @@ QHash<int, QByteArray> AlbumModel::roleNames() const {
 
     roles[AlbumRole] = "title";
     roles[SectionRole] = "sectionprop";
+    roles[ArtistRole] = "artist";
+    roles[AlbumCleandRole] = "titleClean";
     return roles;
 }

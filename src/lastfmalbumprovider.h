@@ -27,8 +27,11 @@ public:
 
     QString getImageURL();
 
+    AlbumInformation* getLastInformation();
+
 signals:
     void ready(AlbumInformation *albumInfo);
+    void ready();
 
 private:
     QString mAlbumName;
@@ -38,6 +41,7 @@ private:
     QByteArray *mImageData;
     QNetworkAccessManager *mXMLNetAccess;
     QNetworkAccessManager *mAlbumArtAccess;
+    AlbumInformation *mLastInformation;
 
     void parseAlbum(QXmlStreamReader &xmlReader);
     void parseWikiInformation(QXmlStreamReader &xmlReader);

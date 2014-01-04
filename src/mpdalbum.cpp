@@ -5,9 +5,10 @@ MpdAlbum::MpdAlbum(QObject *parent) :
 {
 }
 
-MpdAlbum::MpdAlbum(QObject *parent, QString title)
+MpdAlbum::MpdAlbum(QObject *parent, QString title, QString artist)
 {
     this->title = title;
+    mArtist = artist;
 }
 
 MpdAlbum::MpdAlbum(const MpdAlbum &copyObject) {
@@ -20,5 +21,5 @@ const QString MpdAlbum::getTitle()
 }
 
 QString MpdAlbum::getArtist() {
-    return "dummy";
+    return mArtist;
 }

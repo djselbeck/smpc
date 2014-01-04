@@ -255,6 +255,26 @@ int ImageDatabase::imageIDFromAlbumArtist(QString album, QString artist)
 }
 
 
+int ImageDatabase::imageIDFromAlbum(QString album)
+{
+    QSqlQuery query;
+    album = album.replace('\"',"\\\"");
+    query.prepare("SELECT * FROM albums WHERE "
+                  "albumname=\"" + album + "\"");
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        QString albumName = query.value("albumname").toString();
+        if ( albumName == album) {
+            qDebug() << "Found album cover ID: " << query.value("imageID").toInt();
+            return query.value("imageID").toInt();
+        }
+    }
+    qDebug() << "Found no image";
+    return -1;
+}
+
 /**
  * Returns QImage with image from database
  * if image isn't in database check online provider and insert image into db
@@ -266,7 +286,61 @@ int ImageDatabase::imageIDFromAlbumArtist(QString album, QString artist)
 QImage ImageDatabase::getAlbumImage(QString album, QString artist)
 {
     int artworkID = imageIDFromAlbumArtist(album,artist);
+//    if ( artworkID == -1 ) {
+//        return QImage();
+//    }
+    QSqlQuery query;
+    query.prepare("SELECT * FROM albumimages WHERE "
+                  "id=\"" + QString::number(artworkID) + "\"");
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        int id = query.value("id").toInt();
+        if ( id == artworkID ) {
+            QImage image;
+            const QByteArray &imgData = query.value("imgdata").toByteArray();
+            if ( image.loadFromData(imgData)) {
+                qDebug() << "Image retrieved successfully from database";
+                return image;
+            }
+        }
+    }
+
+    qDebug() << "No image found, try downloading";
+    // Not found an image in database, try retrieving it from internet now
+    // TODO ASYNC PROBLEM
+    LastFMAlbumProvider provider(album,artist);
+
+    provider.startDownload();
+    QEventLoop loop;
+
+    QObject::connect(&provider,SIGNAL(ready()),&loop,SLOT(quit()));
+
+    loop.exec();
+
+    AlbumInformation *info = provider.getLastInformation();
+    if(info) {
+        qDebug() << "Downloader new information";
+        QImage img;
+        if(info->getImageData())
+        {
+            img.loadFromData(*info->getImageData());
+            enterAlbumInformation(info);
+        }
+        return img;
+    }
+
+
+
+    return QImage();
+}
+
+QImage ImageDatabase::getAlbumImage(QString album)
+{
+    int artworkID = imageIDFromAlbum(album);
     if ( artworkID == -1 ) {
+        qDebug() << "Returning empty image";
         return QImage();
     }
     QSqlQuery query;

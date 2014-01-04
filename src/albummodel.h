@@ -23,7 +23,9 @@ public:
 
     enum EntryRoles {
         AlbumRole = Qt::UserRole + 1,
-        SectionRole = Qt::UserRole + 2
+        SectionRole = Qt::UserRole + 2,
+        ArtistRole = Qt::UserRole + 3,
+        AlbumCleandRole
     };
 
     Q_INVOKABLE MpdAlbum* get(int index) {
