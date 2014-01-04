@@ -19,19 +19,26 @@ class LastFMAlbumProvider : public QObject
 {
     Q_OBJECT
 public:
-    LastFMAlbumProvider(QString albumName,QString artistName);
+    LastFMAlbumProvider(QString albumName,QString artistName,QObject *parent=0);
     LastFMAlbumProvider(MpdArtist &artist);
     ~LastFMAlbumProvider();
 
     void startDownload();
 
+
+    void setArtistAlbum(QString album, QString artist);
+
     QString getImageURL();
 
     AlbumInformation* getLastInformation();
 
+public slots:
+    void requestDownload(MpdAlbum *album);
+
 signals:
     void ready(AlbumInformation *albumInfo);
     void ready();
+    void failed();
 
 private:
     QString mAlbumName;

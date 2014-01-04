@@ -1,6 +1,6 @@
 #include "lastfmalbumprovider.h"
 
-LastFMAlbumProvider::LastFMAlbumProvider(QString albumName,QString artistName) : QObject(0) {
+LastFMAlbumProvider::LastFMAlbumProvider(QString albumName,QString artistName,QObject *parent) : QObject(parent) {
     mAlbumName = albumName;
     mArtistName = artistName;
 
@@ -34,14 +34,18 @@ LastFMAlbumProvider::LastFMAlbumProvider(MpdArtist &artist) {
 }
 
 void LastFMAlbumProvider::downloadImageData(QUrl imageURL) {
-    mAlbumArtAccess = new QNetworkAccessManager();
+    if(!mAlbumArtAccess)
+    {
+        mAlbumArtAccess = new QNetworkAccessManager();
+        connect(mAlbumArtAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(imageDownloaded(QNetworkReply*)));
+    }
     QNetworkRequest downloadRequest(imageURL);
-    connect(mAlbumArtAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(imageDownloaded(QNetworkReply*)));
     mAlbumArtAccess->get(downloadRequest);
 }
 
 void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
     QByteArray data = reply->readAll();
+    qDebug() << "XML received";
 
     // netaccess not needed anymore
     //    delete(mXMLNetAccess);
@@ -70,13 +74,7 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
     if ( mImageURL != "" ) {
         downloadImageData(mImageURL);
     } else {
-        if ( mLastInformation ) {
-            delete(mLastInformation);
-            mLastInformation = 0;
-        }
-        mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0);
-        emit ready(mLastInformation);
-        emit ready();
+        emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0,this));
     }
 }
 
@@ -146,19 +144,31 @@ void LastFMAlbumProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
 void LastFMAlbumProvider::startDownload() {
     // Get last.fm album info
 
+    QString albumNameClean = mAlbumName;
+    albumNameClean.replace('#',"%23");
+    albumNameClean = albumNameClean.replace('&',"%26");
+
+    QString artistNameClean = mArtistName;
+    artistNameClean.replace('#',"%23");
+    artistNameClean = artistNameClean.replace('&',"%26");
     QString lastfmXMLURL = QString("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=")
-            + LASTFMAPIKEY + QString("&artist=") + mArtistName + QString("&album=") + mAlbumName;
+            + LASTFMAPIKEY + QString("&artist=") + artistNameClean + QString("&album=") + albumNameClean;
     QUrl requestURL(lastfmXMLURL);
+    qDebug() << "Start downloading album: " << mAlbumName;
 
     QNetworkRequest downloadRequest(requestURL);
-    QNetworkAccessManager *mXMLNetAccess = new QNetworkAccessManager(this);
-    if( !mXMLNetAccess->networkAccessible()) {
-    }
-    else {
+    if( !mXMLNetAccess )
+    {
+        mXMLNetAccess = new QNetworkAccessManager(this);
+        connect(mXMLNetAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(xmlDownloaded(QNetworkReply*)));
+        if( !mXMLNetAccess->networkAccessible()) {
+        }
+        else {
+        }
     }
 
-    connect(mXMLNetAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(xmlDownloaded(QNetworkReply*)));
     QNetworkReply *reply = mXMLNetAccess->get(downloadRequest);
+    qDebug() << "Netreplay get send";
 
     //    for( int i = 0; data.size();i++) {
     //        qDebug() << data.at(i);
@@ -169,13 +179,8 @@ void LastFMAlbumProvider::startDownload() {
 
 void LastFMAlbumProvider::imageDownloaded(QNetworkReply *reply) {
     QByteArray *imgData = new QByteArray(reply->readAll());
-    if ( mLastInformation ) {
-        delete(mLastInformation);
-        mLastInformation = 0;
-    }
-    mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData);
-    emit ready(mLastInformation);
-    emit ready();
+    qDebug() << "Artwork downloaded" << mAlbumName;
+    emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData,this));
 }
 
 QString LastFMAlbumProvider::getImageURL() {
@@ -184,5 +189,38 @@ QString LastFMAlbumProvider::getImageURL() {
 
 AlbumInformation *LastFMAlbumProvider::getLastInformation()
 {
-    return new AlbumInformation(*mLastInformation);
+    //return new AlbumInformation(*mLastInformation);
+    return 0;
+}
+
+void LastFMAlbumProvider::setArtistAlbum(QString album, QString artist)
+{
+    mAlbumName = album;
+    mArtistName = artist;
+}
+
+void LastFMAlbumProvider::requestDownload(MpdAlbum *album)
+{
+    mAlbumName = album->getTitle();
+    mArtistName = album->getArtist();
+    qDebug() << "Download requested: " << mAlbumName;
+    if ( mImageData ) {
+        delete (mImageData);
+        mImageData = 0;
+    }
+    if ( mImageURL != "" ) {
+        mImageURL = "";
+    }
+    if ( mAlbumInfo != "" ) {
+        mAlbumInfo = "";
+    }
+//    if ( mAlbumArtAccess ) {
+//        mAlbumArtAccess->deleteLater();
+//        mAlbumArtAccess = 0;
+//    }
+//    if ( mXMLNetAccess ) {
+//        mXMLNetAccess->deleteLater();
+//        mXMLNetAccess = 0;
+//    }
+    startDownload();
 }

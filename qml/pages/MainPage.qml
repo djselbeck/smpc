@@ -32,7 +32,7 @@ Page {
 
 
         model: mainMenuModel
-        delegate: BackgroundItem {
+        delegate: ListItem {
             Label {
                 clip: true
                 anchors {

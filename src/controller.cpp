@@ -134,7 +134,7 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
         delete(albumsmodelold);
         albumsmodelold = 0;
     }
-    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,this);
+    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,mImgDB,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     albumsmodelold = model;
 

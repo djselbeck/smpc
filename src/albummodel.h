@@ -3,7 +3,12 @@
 
 #include <QAbstractListModel>
 #include <QQmlEngine>
+
+#include "imagedatabase.h"
+#include "imagedownloader.h"
 #include "mpdalbum.h"
+
+#define DUMMY_ALBUMIMAGE "image://theme/icon-l-music"
 
 class AlbumModel : public QAbstractListModel
 {
@@ -11,7 +16,7 @@ class AlbumModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit AlbumModel(QObject *parent = 0);
-    AlbumModel(QList<MpdAlbum*> *list,QObject *parent = 0);
+    AlbumModel(QList<MpdAlbum*> *list, ImageDatabase *db, QObject *parent = 0);
     ~AlbumModel()
     {
         for(int i=0;i<m_entries->length();i++)
@@ -19,13 +24,15 @@ public:
             delete(m_entries->at(i));
         }
         delete(m_entries);
+        delete(mDownloader);
     }
 
     enum EntryRoles {
         AlbumRole = Qt::UserRole + 1,
         SectionRole = Qt::UserRole + 2,
         ArtistRole = Qt::UserRole + 3,
-        AlbumCleandRole
+        AlbumCleandRole,
+        AlbumImageRole
     };
 
     Q_INVOKABLE MpdAlbum* get(int index) {
@@ -41,9 +48,16 @@ public:
 private:
     QList<MpdAlbum*> *m_entries;
 
+    // Imagedatabase for image retrieval
+    ImageDatabase *mDB;
+    // Synchron downloader class to limit network usage
+    ImageDownloader *mDownloader;
+
 signals:
+    void requestAlbumInformation(MpdAlbum *album) const;
 
 public slots:
+    void albumInformationReady(AlbumInformation *info);
 
 };
 

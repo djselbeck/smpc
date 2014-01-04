@@ -2,6 +2,7 @@
 #define QMLIMAGEPROVIDER_H
 
 #include <QQuickImageProvider>
+#include <QMutex>
 
 #include "imagedatabase.h"
 
@@ -14,6 +15,7 @@ public:
 
 private:
     ImageDatabase *mDB;
+    QMutex mGetMutex;
 signals:
 
 public slots:

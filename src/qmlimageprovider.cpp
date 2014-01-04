@@ -16,8 +16,8 @@ QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSiz
         return QImage();
     }
     else {
-        if(idList[0]!="") {
-            QImage img = mDB->getAlbumImage(idList[1],idList[0]);
+        if(idList[0] == "album") {
+            QImage img = mDB->getAlbumImage(idList[1].toInt());
             qDebug() << "got image";
             size->setHeight(img.height());
             size->setWidth(img.width());

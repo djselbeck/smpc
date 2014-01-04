@@ -13,6 +13,7 @@ MpdAlbum::MpdAlbum(QObject *parent, QString title, QString artist)
 
 MpdAlbum::MpdAlbum(const MpdAlbum &copyObject) {
     this->title = copyObject.title;
+    this->mArtist = copyObject.mArtist;
 }
 
 const QString MpdAlbum::getTitle()

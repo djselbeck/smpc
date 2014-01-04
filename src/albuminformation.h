@@ -9,7 +9,7 @@ class AlbumInformation : public QObject
 {
     Q_OBJECT
 public:
-    explicit AlbumInformation(QString name,QString artist, QString albumInfo, QString url, QByteArray *imgData);
+    explicit AlbumInformation(QString name,QString artist, QString albumInfo, QString url, QByteArray *imgData,QObject *parent= 0);
     AlbumInformation(const AlbumInformation&);
 
     QString getName() { return mAlbumName; }

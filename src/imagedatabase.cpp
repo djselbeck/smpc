@@ -4,6 +4,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
     QObject(parent)
 {
     mFiller = 0;
+    mDownloadMutex = new QMutex();
     QStringList drivers = QSqlDatabase::drivers();
     if ( !drivers.contains("QSQLITE") ) {
     } else {
@@ -167,16 +168,16 @@ void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
     }
 
     // Check if Image has image data otherwise skip it
-    if ( !info->getImageData() ) {
-        qDebug() << "Album has no cover image, skipping";
-        return;
-    }
+//    if ( !info->getImageData() ) {
+//        qDebug() << "Album has no cover image, skipping";
+//        return;
+//    }
 
     // Check if image with same hash value is already part of the database
     int imgID = imageIDFromHash(info->getImageHash());
 
     // Enter Album into SQL DB
-    if (imgID == -1 ) {
+    if (imgID == -1 && info->getImageData() ) {
         QSqlQuery query;
         query.prepare("INSERT INTO albumimages ("
                       "url, imghash, imgdata ) "
@@ -200,6 +201,10 @@ void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
         qDebug() << "Image already in database, reusing it";
     }
     {
+        // No image for this album
+        if ( imgID == -1 ) {
+            imgID = -2;
+        }
         QSqlQuery query;
         query.prepare("INSERT INTO albums ("
                       "id, albumname, artistname, url, albuminfo, imageID ) "
@@ -285,53 +290,25 @@ int ImageDatabase::imageIDFromAlbum(QString album)
  */
 QImage ImageDatabase::getAlbumImage(QString album, QString artist)
 {
+    qDebug() << "get Image for: " << album << artist;
     int artworkID = imageIDFromAlbumArtist(album,artist);
 //    if ( artworkID == -1 ) {
 //        return QImage();
 //    }
-    QSqlQuery query;
-    query.prepare("SELECT * FROM albumimages WHERE "
-                  "id=\"" + QString::number(artworkID) + "\"");
-    qDebug() << "Check for image: " << query.lastQuery();
-    query.exec();
 
-    while ( query.next() ) {
-        int id = query.value("id").toInt();
-        if ( id == artworkID ) {
-            QImage image;
-            const QByteArray &imgData = query.value("imgdata").toByteArray();
-            if ( image.loadFromData(imgData)) {
-                qDebug() << "Image retrieved successfully from database";
-                return image;
-            }
-        }
+    if (artworkID != -1) {
+        return getAlbumImage(artworkID);
     }
 
     qDebug() << "No image found, try downloading";
     // Not found an image in database, try retrieving it from internet now
     // TODO ASYNC PROBLEM
-    LastFMAlbumProvider provider(album,artist);
-
-    provider.startDownload();
-    QEventLoop loop;
-
-    QObject::connect(&provider,SIGNAL(ready()),&loop,SLOT(quit()));
-
-    loop.exec();
-
-    AlbumInformation *info = provider.getLastInformation();
-    if(info) {
-        qDebug() << "Downloader new information";
-        QImage img;
-        if(info->getImageData())
-        {
-            img.loadFromData(*info->getImageData());
-            enterAlbumInformation(info);
-        }
-        return img;
+    qDebug() << "Mutex locked: " << album;
+    // Recheck if album art still doesn't exists
+    artworkID = imageIDFromAlbumArtist(album,artist);
+    if(artworkID != -1 ) {
+        return getAlbumImage(artworkID);
     }
-
-
 
     return QImage();
 }
@@ -366,4 +343,34 @@ QImage ImageDatabase::getAlbumImage(QString album)
 //    LastFMAlbumProvider provider(album,artist);
 
     return QImage();
+}
+
+QImage ImageDatabase::getAlbumImage(int artworkID)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM albumimages WHERE "
+                  "id=\"" + QString::number(artworkID) + "\"");
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        int id = query.value("id").toInt();
+        if ( id == artworkID ) {
+            QImage image;
+            const QByteArray &imgData = query.value("imgdata").toByteArray();
+            if ( image.loadFromData(imgData)) {
+                qDebug() << "Image retrieved successfully from database";
+                return image;
+            }
+        }
+    }
+    return QImage();
+}
+
+void ImageDatabase::cleanUPBlacklistedAlbums()
+{
+    QSqlQuery query;
+    query.prepare("REMOVE FROM albums WHERE "
+                  "imageid=\"" + QString::number(-2) + "\"");
+    query.exec();
 }

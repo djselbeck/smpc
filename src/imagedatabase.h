@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QImage>
 #include <QEventLoop>
+#include <QMutex>
 
 #include "mpdalbum.h"
 #include "mpdartist.h"
@@ -38,6 +39,10 @@ public:
 
     QImage getAlbumImage(QString album, QString artist);
     QImage getAlbumImage(QString album);
+    QImage getAlbumImage(int artworkID);
+
+    // Cleanups
+    void cleanUPBlacklistedAlbums();
 
 public slots:
     void albumReady(AlbumInformation *albumInformation);
@@ -54,6 +59,7 @@ private:
     QList<MpdAlbum*>* mAlbums;
     MpdArtist *mAlbumArtist;
     DatabaseFillJob *mFiller;
+    QMutex *mDownloadMutex;
 
 signals:
 

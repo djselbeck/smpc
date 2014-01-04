@@ -6,11 +6,10 @@ Component {
     id: albumDelegate
     ListItem {
         menu: contextMenu
-        property int workaroundHeight: mainRow.height
-        height:  workaroundHeight
+        contentHeight: Theme.itemSizeExtraLarge
         Row {
             id: mainRow
-            height: Theme.itemSizeLarge
+            height: Theme.itemSizeExtraLarge
             anchors {
                 right: parent.right
                 left: parent.left
@@ -19,9 +18,9 @@ Component {
                 rightMargin: listPadding
             }
             Image{
-                width:mainRow.height
+                width: mainRow.height
                 height: mainRow.height
-                source:"image://imagedbprovider/"+artist+"/"+titleClean
+                source: coverURL
             }
 
             Label {
@@ -69,9 +68,6 @@ Component {
                             addAlbumRemorse()
                         }
                     }
-                }
-                onHeightChanged: {
-                    workaroundHeight = height + mainRow.height
                 }
             }
         }

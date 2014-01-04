@@ -1,6 +1,6 @@
 #include "albuminformation.h"
 
-AlbumInformation::AlbumInformation(QString name, QString artist, QString albumInfo, QString url, QByteArray *imgData) : QObject(0) {
+AlbumInformation::AlbumInformation(QString name, QString artist, QString albumInfo, QString url, QByteArray *imgData, QObject *parent) : QObject(parent) {
     mAlbumName = name;
     mArtistName = artist;
     mAlbumInfo = albumInfo;
