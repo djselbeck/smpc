@@ -661,12 +661,12 @@ int ImageDatabase::getBlacklistCount()
     QSqlQuery query;
     query.prepare("SELECT count(albumname) as albumcount FROM albums"
                   " WHERE imageID=\"-2\"");
-    qDebug() << query.exec();
+    query.exec();
     while ( query.next() ) {
        int albumCount = query.value("albumcount").toInt();
        return albumCount;
     }
-    return query.size();
+    return 0;
 }
 
 int ImageDatabase::getImageCount()

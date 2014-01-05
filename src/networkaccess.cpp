@@ -9,6 +9,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     QThread(parent)
 {
     updateinterval = 5000;
+    mPlaylistversion = -1;
     //create socket later used for communication
     tcpsocket = new QTcpSocket(this);
     statusupdater = new QTimer(this);

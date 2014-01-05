@@ -53,6 +53,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
         }
     }
     mDBStatistic = 0;
+    mApplicationActive = true;
 
 
     emit requestDBStatistic();
