@@ -230,7 +230,7 @@ ApplicationWindow
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
         playlistpage.songid = -1;
-        playlistModelVar = null;
+        playlistModelVar = 0;
         playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }

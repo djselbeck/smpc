@@ -23,6 +23,13 @@ ArtistInformation::ArtistInformation(const ArtistInformation &copyObject) {
     mArtistName = copyObject.mArtistName;
 }
 
+ArtistInformation::~ArtistInformation()
+{
+    if ( mImageData ) {
+        delete(mImageData);
+    }
+}
+
 QString ArtistInformation::createImageHash(QByteArray *imgData) {
     QCryptographicHash hasher(QCryptographicHash::Md5);
     hasher.addData(*imgData);

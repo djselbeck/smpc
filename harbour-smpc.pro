@@ -99,7 +99,8 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/cover/CoverPage.qml \
     icon-m-stop.png \
     qml/components/ControlPanel.qml \
-    qml/pages/DatabaseSettings.qml
+    qml/pages/DatabaseSettings.qml \
+    qml/pages/ArtistInformationPage.qml
 
 
 RESOURCES += \

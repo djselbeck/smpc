@@ -11,6 +11,7 @@ class ArtistInformation : public QObject
 public:
     explicit ArtistInformation(QString artist, QString artistInfo, QString url, QByteArray *imgData, QObject *parent= 0);
     ArtistInformation(const ArtistInformation&);
+    ~ArtistInformation();
 
     QString getArtist() { return mArtistName; }
     QString getURL() { return mImageURL; }

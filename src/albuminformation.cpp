@@ -25,6 +25,15 @@ AlbumInformation::AlbumInformation(const AlbumInformation &copyObject) {
     mArtistName = copyObject.mArtistName;
 }
 
+AlbumInformation::~AlbumInformation()
+{
+    // Free memory of image
+    if(mImageData)
+    {
+        delete(mImageData);
+    }
+}
+
 QString AlbumInformation::createImageHash(QByteArray *imgData) {
     QCryptographicHash hasher(QCryptographicHash::Md5);
     hasher.addData(*imgData);

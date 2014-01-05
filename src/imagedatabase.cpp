@@ -137,6 +137,7 @@ void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
             if ( imageID == -1 ) {
                 emit requestAlbumDownload(MpdAlbum(this,album->getTitle(),album->getArtist()));
             }
+            delete(album);
         }
     }
 }

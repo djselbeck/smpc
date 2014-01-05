@@ -41,7 +41,10 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 }
 
 int PlaylistModel::rowCount(const QModelIndex &parent) const{
-    return m_entries->length();
+    if(m_entries)
+        return m_entries->length();
+    else
+        return 0;
 }
 
 QHash<int, QByteArray> PlaylistModel::roleNames() const {

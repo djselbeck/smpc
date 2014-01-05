@@ -11,6 +11,7 @@ class AlbumInformation : public QObject
 public:
     explicit AlbumInformation(QString name,QString artist, QString albumInfo, QString url, QByteArray *imgData,QObject *parent= 0);
     AlbumInformation(const AlbumInformation&);
+    ~AlbumInformation();
 
     QString getName() { return mAlbumName; }
     QString getArtist() { return mArtistName; }
