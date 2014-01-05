@@ -412,12 +412,12 @@ Page {
 
 
         // Fetch artist image
-        url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
-                + lastfmapikey + "&artist=" + artistclean
-        if (artistclean != "") {
-            artistfetcherXMLModel.source = url
-            artistfetcherXMLModel.reload()
-        }
+//        url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key="
+//                + lastfmapikey + "&artist=" + artistclean
+//        if (artistclean != "") {
+//            artistfetcherXMLModel.source = url
+//            artistfetcherXMLModel.reload()
+//        }
     }
 
     XmlListModel {

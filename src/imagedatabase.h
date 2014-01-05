@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QStringList>
 #include <QDir>
 #include <QStandardPaths>
@@ -15,13 +16,16 @@
 #include "mpdalbum.h"
 #include "mpdartist.h"
 #include "albuminformation.h"
+#include "artistinformation.h"
 #include "lastfmalbumprovider.h"
 #include "databasefilljob.h"
+#include "databasestatistic.h"
 #include "imagedownloader.h"
 
 class ImageDatabase : public QObject
 {
     Q_OBJECT
+
 public:
     explicit ImageDatabase(QObject *parent = 0);
     ~ImageDatabase();
@@ -31,26 +35,40 @@ public:
     bool syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist);
     bool syncArtists(QList<MpdAlbum*> &artists);
     bool hasAlbumArt(QString album,QString artist);
-    bool hasArtistArt(MpdArtist *artist);
+    bool hasArtistArt(QString artist);
 
     int imageIDFromHash(QString hashValue);
     int imageIDFromAlbumArtist(QString album,QString artist);
     int imageIDFromAlbum(QString album);
+    int imageIDFromArtist(QString artist);
 
 
     QImage getAlbumImage(QString album, QString artist, bool download=false);
     QImage getAlbumImage(QString album, bool download=false);
     QImage getAlbumImage(int artworkID);
 
-    // Cleanups
-    void cleanUPBlacklistedAlbums();
+    QImage getArtistImage(QString artist,bool download=false);
+    QImage getArtistImage(int artworkID);
+
 
 public slots:
     void albumReady(AlbumInformation *albumInformation);
     void fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map);
+    void fillDatabase(QList<MpdArtist*> *artistList);
     void enterAlbumInformation(AlbumInformation *info);
+    void enterArtistInformation(ArtistInformation *info);
 
     void requestCoverImage(MpdAlbum album);
+    void requestCoverArtistImage(MpdArtist artist);
+
+    void requestStatisticUpdate();
+
+    // Cleanups
+    void cleanUPBlacklistedAlbums();
+    void cleanupAlbums();
+    void cleanupArtists();
+
+    void cleanupDatabase();
 
 
 private:
@@ -67,10 +85,32 @@ private:
 
     // Holds the currently playing album for cover image retrieval
     MpdAlbum mCoverAlbum;
+    MpdArtist mCoverArtist;
+
+    // Statistical variables
+    int mAlbumCount;
+    int mImageCount;
+    int mArtistCount;
+    int mAlbumBlacklistCount;
+
+    int getArtistCount();
+    int getAlbumCount();
+    int getImageCount();
+    int getBlacklistCount();
+
+    DatabaseStatistic *updateStatistic();
 
 signals:
     void requestAlbumDownload(MpdAlbum album);
     void coverAlbumArtReady(QVariant url);
+
+    void requestArtistDownload(MpdArtist artist);
+    void coverArtistArtReady(QVariant url);
+
+    void albumEntered(QString name);
+
+    void newStasticReady(DatabaseStatistic *statistic);
+
 
 public slots:
 

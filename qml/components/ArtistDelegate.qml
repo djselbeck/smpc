@@ -4,11 +4,10 @@ import Sailfish.Silica 1.0
 Component {
     ListItem {
         menu: contextMenu
-        property int workaroundHeight: mainRow.height
-        height:  workaroundHeight
+        contentHeight: mainRow.height
         Row {
             id: mainRow
-            height: Theme.itemSizeSmall
+            height: Theme.itemSizeExtraLarge
             anchors {
                 right: parent.right
                 left: parent.left
@@ -16,6 +15,14 @@ Component {
                 leftMargin: listPadding
                 rightMargin: listPadding
             }
+            Image
+            {
+                width: mainRow.height
+                height: mainRow.height
+                source: imageURL
+                fillMode: Image.PreserveAspectFit
+            }
+
             Label {
                 anchors.verticalCenter: parent.verticalCenter
                 text: (artist === "" ? "No Artist Tag" : artist)

@@ -1,8 +1,13 @@
 #ifndef ARTISTMODEL_H
 #define ARTISTMODEL_H
-#include "mpdartist.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
+
+#include "mpdartist.h"
+#include "imagedatabase.h"
+
+#define DUMMY_ARTISTIMAGE "image://theme/icon-l-music"
+
 
 class ArtistModel : public QAbstractListModel
 {
@@ -19,10 +24,11 @@ public:
                    delete(m_entries);
                   }
 
-        ArtistModel(QList<MpdArtist*>* list,QObject *parent = 0);
+        ArtistModel(QList<MpdArtist*>* list, ImageDatabase *DB, QObject *parent = 0);
     enum EntryRoles {
         NameRole = Qt::UserRole + 1,
-        SectionRole = Qt::UserRole + 2
+        SectionRole = Qt::UserRole + 2,
+        ImageURLRole,
     };
 
     Q_INVOKABLE MpdArtist* get(int index) {
@@ -36,6 +42,9 @@ public:
 
 private:
     QList<MpdArtist*>* m_entries;
+
+    // Imagedatabase for image retrieval
+    ImageDatabase *mImgDB;
 
 signals:
 

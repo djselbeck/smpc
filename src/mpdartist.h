@@ -30,6 +30,11 @@ public:
     QString getSection() { return (mName=="" ? "" :QString(mName.toUpper()[0]));}
     bool operator< (const MpdArtist& other) const { return (mName.compare(other.mName,Qt::CaseInsensitive)<0?1:0); }
     bool operator==(MpdArtist & rhs) {return getName()==rhs.getName();}
+    void operator=(MpdArtist &rhs)
+    {
+       mName = rhs.mName;
+    }
+
     static bool lessThan(const MpdArtist *lhs, const MpdArtist* rhs) {
         return *lhs<*rhs;
     }

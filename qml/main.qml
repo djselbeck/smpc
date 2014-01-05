@@ -122,6 +122,13 @@ ApplicationWindow
     property bool mRepeat
     property bool mShuffle
 
+    // Database stuff
+    signal bulkDownloadArtists();
+    signal bulkDownloadAlbums();
+    signal cleanupBlacklisted();
+    signal cleanupArtists();
+    signal cleanupAlbums();
+
 
 
     // JS-functions
@@ -223,6 +230,7 @@ ApplicationWindow
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
         playlistpage.songid = -1;
+        playlistModelVar = null;
         playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }
@@ -315,6 +323,11 @@ ApplicationWindow
     function coverArtReceiver(url)
     {
         coverimageurl = url;
+    }
+
+    function coverArtistArtReceiver(url)
+    {
+        artistimageurl = url;
     }
 
     Component.onCompleted:  {

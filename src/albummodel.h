@@ -55,9 +55,11 @@ private:
 
 signals:
     void requestAlbumInformation(MpdAlbum album) const;
+    void requestDBEnter(AlbumInformation *info);
 
 public slots:
     void albumInformationReady(AlbumInformation *info);
+    void albumEntered(QString albumName);
 
 };
 

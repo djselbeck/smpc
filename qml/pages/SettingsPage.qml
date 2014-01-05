@@ -32,6 +32,7 @@ Page
 
     Component.onCompleted: {
         settingsMenuModel.append({"name":qsTr("server settings"), "ident":"servers"})
+        settingsMenuModel.append({"name":qsTr("database settings"), "ident":"database"})
         settingsMenuModel.append({"name":qsTr("outputs"), "ident":"outputs"})
         settingsMenuModel.append({"name":qsTr("update database"), "ident":"updatedb"})
         settingsMenuModel.append({"name":qsTr("about"), "ident":"about"})
@@ -55,6 +56,9 @@ Page
             break;
         case "outputs" :
             requestOutputs();
+            break;
+        case "database" :
+            pageStack.push(Qt.resolvedUrl("DatabaseSettings.qml"))
             break;
         }
     }

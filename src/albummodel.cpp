@@ -13,7 +13,8 @@ AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QObject *pare
 
        connect(this,SIGNAL(requestAlbumInformation(MpdAlbum)),mDownloader,SLOT(requestAlbumArt(MpdAlbum)),Qt::QueuedConnection);
        connect(mDownloader,SIGNAL(albumInformationReady(AlbumInformation*)),this,SLOT(albumInformationReady(AlbumInformation*)));
-
+       connect(this,SIGNAL(requestDBEnter(AlbumInformation*)),mDB,SLOT(enterAlbumInformation(AlbumInformation*)));
+       connect(mDB,SIGNAL(albumEntered(QString)),this,SLOT(albumEntered(QString)));
 //       foreach(MpdAlbum *album, *list) {
 //           emit requestAlbumInformation(album);
 //       }
@@ -106,17 +107,21 @@ void AlbumModel::albumInformationReady(AlbumInformation *info)
     if( info == 0 ) {
         return;
     }
-    QString album = info->getName();
-    QString artist = info->getArtist();
-    qDebug() << "received new information for album: " << album;
+
+    emit requestDBEnter(info);
+
+}
+
+void AlbumModel::albumEntered(QString albumName)
+{
+    qDebug() << "received new information for album: " << albumName;
+
 
     // Search for it in entries
     for ( int i = 0; i < m_entries->length(); i++ ) {
         MpdAlbum *albumObj = m_entries->at(i);
         // Found corresponding albumObj, update coverimage url
-        if (albumObj->getTitle() == album) {
-            qDebug() << "entering new album information";
-            mDB->enterAlbumInformation(info);
+        if (albumObj->getTitle() == albumName) {
             emit dataChanged(createIndex(i,0),createIndex(i,0),QVector<int>(1,AlbumImageRole));
         }
     }

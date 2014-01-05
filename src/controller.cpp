@@ -13,8 +13,11 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     netaccess->setUpdateInterval(1000);
     oldnetthread = netaccess->thread();
     networkthread = new QThreadEx(this);
+    dbThread = new QThread(this);
+    mImgDB->moveToThread(dbThread);
     netaccess->moveToThread(networkthread);
     networkthread->start();
+    dbThread->start();
     currentsongid=0;
     playlistversion = 0;
     playlist = 0;
@@ -49,9 +52,10 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
             connectProfile(i);
         }
     }
+    mDBStatistic = 0;
 
-    // Cleanup image database
-    mImgDB->cleanUPBlacklistedAlbums();
+
+    emit requestDBStatistic();
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -114,7 +118,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
     }
     //ArtistModel *model = new ArtistModel((QList<MpdTrack*>*)list,this);
 //    artistlist = (QList<MpdArtist*>*)list;
-    ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list,this);
+    ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list,mImgDB,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     artistmodelold = model;
     viewer->rootContext()->setContextProperty("artistsModel",model);
@@ -297,6 +301,21 @@ void Controller::connectSignals()
 
     connect(this,SIGNAL(requestCoverArt(MpdAlbum)),mImgDB,SLOT(requestCoverImage(MpdAlbum)));
     connect(mImgDB,SIGNAL(coverAlbumArtReady(QVariant)),item,SLOT(coverArtReceiver(QVariant)));
+
+    connect(this,SIGNAL(requestCoverArtistArt(MpdArtist)),mImgDB,SLOT(requestCoverArtistImage(MpdArtist)));
+    connect(mImgDB,SIGNAL(coverArtistArtReady(QVariant)),item,SLOT(coverArtistArtReceiver(QVariant)));
+
+    connect(this,SIGNAL(requestArtistImageFill(QList<MpdArtist*>*)),mImgDB,SLOT(fillDatabase(QList<MpdArtist*>*)));
+
+    connect(item,SIGNAL(bulkDownloadArtists()),this,SLOT(fillArtistImages()));
+    connect(item,SIGNAL(bulkDownloadAlbums()),this,SLOT(fillAlbumImages()));
+
+    connect(this, SIGNAL(requestDBStatistic()),mImgDB,SLOT(requestStatisticUpdate()));
+    connect(mImgDB,SIGNAL(newStasticReady(DatabaseStatistic*)),this,SLOT(newDBStatisticReceiver(DatabaseStatistic*)));
+
+    connect(item,SIGNAL(cleanupBlacklisted()),mImgDB,SLOT(cleanUPBlacklistedAlbums()));
+    connect(item,SIGNAL(cleanupAlbums()),mImgDB,SLOT(cleanupAlbums()));
+    connect(item,SIGNAL(cleanupArtists()),mImgDB,SLOT(cleanupArtists()));
 }
 
 void Controller::setPassword(QString password)
@@ -401,6 +420,10 @@ void Controller::updateStatus(status_struct status)
         MpdAlbum tmpAlbum(this,status.album,status.artist);
         qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
         emit requestCoverArt(tmpAlbum);
+
+        MpdArtist tmpArtist(this,status.artist);
+        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+        emit requestCoverArtistArt(tmpArtist);
 
     }
     if(lastplaybackstate!=status.playing)
@@ -761,3 +784,40 @@ void Controller::reconnectServer()
         connectProfile(mLastProfileIndex);
     }
 }
+
+void Controller::fillArtistImages()
+{
+    // Disconnect artit list signal (prevent appearing of artist lists page to UI)
+    disconnect(netaccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(updateArtistsModel(QList<QObject*>*)));
+    connect(netaccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(fillArtistImages(QList<QObject*>*)));
+
+    qDebug() << "Requested artist list for image bulk downloader";
+    emit requestArtists();
+}
+
+void Controller::fillArtistImages(QList<QObject *> *artistList)
+{
+    // Reconnect signal
+    disconnect(netaccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(fillArtistImages(QList<QObject*>*)));
+    connect(netaccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(updateArtistsModel(QList<QObject*>*)));
+    qDebug() << "Received artist list for image bulk downloader";
+
+    emit requestArtistImageFill((QList<MpdArtist*>*)artistList);
+}
+
+void Controller::newDBStatisticReceiver(DatabaseStatistic *statistic)
+{
+    viewer->rootContext()->setContextProperty("dbStatistic",statistic);
+    if ( mDBStatistic ) {
+        delete mDBStatistic;
+    }
+    mDBStatistic = statistic;
+}
+
+void Controller::fillAlbumImages()
+{
+    qDebug() << "Bulk download of albums requested";
+    emit requestArtistAlbumMap();
+}
+
+

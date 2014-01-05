@@ -26,7 +26,9 @@ SOURCES += main.cpp \
     src/lastfmalbumprovider.cpp \
     src/albuminformation.cpp \
     src/databasefilljob.cpp \
-    src/qmlimageprovider.cpp
+    src/qmlimageprovider.cpp \
+    src/lastfmartistprovider.cpp \
+    src/artistinformation.cpp
 
 
 # C++ headers
@@ -50,7 +52,10 @@ HEADERS += \
     src/lastfmalbumprovider.h \
     src/albuminformation.h \
     src/databasefilljob.h \
-    src/qmlimageprovider.h
+    src/qmlimageprovider.h \
+    src/lastfmartistprovider.h \
+    src/artistinformation.h \
+    src/databasestatistic.h
 
 # QML files and folders
 #qml.files = *.qml pages cover main.qml components
@@ -93,7 +98,8 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/components/AlbumDelegate.qml \
     qml/cover/CoverPage.qml \
     icon-m-stop.png \
-    qml/components/ControlPanel.qml
+    qml/components/ControlPanel.qml \
+    qml/pages/DatabaseSettings.qml
 
 
 RESOURCES += \

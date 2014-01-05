@@ -18,6 +18,7 @@
 #include "filemodel.h"
 #include "playlistmodel.h"
 #include "imagedatabase.h"
+#include "databasestatistic.h"
 #include "mpdoutput.h"
 #include "lastfmalbumprovider.h"
 #include "qmlimageprovider.h"
@@ -62,8 +63,12 @@ signals:
     void disconnected();
 
     void requestCoverArt(MpdAlbum album);
+    void requestCoverArtistArt(MpdArtist artist);
 
+    void requestArtistImageFill(QList<MpdArtist*>*);
+    void requestAlbumFill(QMap<MpdArtist*, QList<MpdAlbum*>* > *);
 
+    void requestDBStatistic();
 
 private:
     QQuickView *viewer;
@@ -77,6 +82,7 @@ private:
     int volume;
     int lastplaybackstate;
     QThreadEx *networkthread;
+    QThread *dbThread;
     QList<ServerProfile*> *serverprofiles;
     void readSettings();
     void writeSettings();
@@ -96,6 +102,9 @@ private:
     ImageDatabase *mImgDB;
     QMLImageProvider *mQMLImgProvider;
     bool mApplicationActive;
+
+    //DB
+    DatabaseStatistic *mDBStatistic;
 
 private slots:
     void requestCurrentPlaylist();
@@ -146,6 +155,13 @@ private slots:
     void clearTrackList();
 
     void reconnectServer();
+
+    void fillArtistImages();
+    void fillArtistImages(QList<QObject*>*);
+
+    void fillAlbumImages();
+
+    void newDBStatisticReceiver(DatabaseStatistic *statistic);
 
 };
 

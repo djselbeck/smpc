@@ -1,27 +1,26 @@
-#include "lastfmalbumprovider.h"
+#include "lastfmartistprovider.h"
 
-LastFMAlbumProvider::LastFMAlbumProvider(QString albumName,QString artistName,QObject *parent) : QObject(parent) {
-    mAlbumName = albumName;
+LastFMArtistProvider::LastFMArtistProvider(QString artistName,QObject *parent) : QObject(parent) {
     mArtistName = artistName;
 
     mXMLNetAccess = 0;
-    mAlbumArtAccess = 0;
+    mArtistArtAccess = 0;
     mImageData = 0;
     mImageURL = "";
-    mAlbumInfo = "";
+    mArtistInfo = "";
     mLastInformation = 0;
 }
 
-LastFMAlbumProvider::~LastFMAlbumProvider() {
+LastFMArtistProvider::~LastFMArtistProvider() {
     if ( mXMLNetAccess ) {
         disconnect(mXMLNetAccess);
         mXMLNetAccess->deleteLater();
         mXMLNetAccess = 0;
     }
-    if ( mAlbumArtAccess ) {
-        disconnect(mAlbumArtAccess);
-        mAlbumArtAccess->deleteLater();
-        mAlbumArtAccess = 0;
+    if ( mArtistArtAccess ) {
+        disconnect(mArtistArtAccess);
+        mArtistArtAccess->deleteLater();
+        mArtistArtAccess = 0;
     }
     if ( mLastInformation ) {
         delete ( mLastInformation );
@@ -29,23 +28,23 @@ LastFMAlbumProvider::~LastFMAlbumProvider() {
 }
 
 
-LastFMAlbumProvider::LastFMAlbumProvider(MpdArtist &artist) {
+LastFMArtistProvider::LastFMArtistProvider(MpdArtist &artist) {
 
 }
 
-void LastFMAlbumProvider::downloadImageData(QUrl imageURL) {
-    if(!mAlbumArtAccess)
+void LastFMArtistProvider::downloadImageData(QUrl imageURL) {
+    if(!mArtistArtAccess)
     {
-        mAlbumArtAccess = new QNetworkAccessManager();
-        connect(mAlbumArtAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(imageDownloaded(QNetworkReply*)));
+        mArtistArtAccess = new QNetworkAccessManager();
+        connect(mArtistArtAccess,SIGNAL(finished(QNetworkReply*)),this,SLOT(imageDownloaded(QNetworkReply*)));
     }
     QNetworkRequest downloadRequest(imageURL);
-    mAlbumArtAccess->get(downloadRequest);
+    mArtistArtAccess->get(downloadRequest);
 }
 
-void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
+void LastFMArtistProvider::xmlDownloaded(QNetworkReply *reply) {
     QByteArray data = reply->readAll();
-    if(data.size() == 0) {
+    if(data.size() == 0 ) {
         emit failed();
         return;
     }
@@ -58,6 +57,7 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
     //    QString outString(data);
 
     QXmlStreamReader xmlReader(data);
+    bool firstArtistparsed = false;
     while ( !xmlReader.atEnd() ) {
         QXmlStreamReader::TokenType token = xmlReader.readNext();
         if ( token == QXmlStreamReader::StartDocument) {
@@ -70,8 +70,9 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
                 continue;
             }
 
-            if ( xmlReader.name() == "album" ) {
-                parseAlbum(xmlReader);
+            if ( xmlReader.name() == "artist" && !firstArtistparsed ) {
+                parseArtist(xmlReader);
+                firstArtistparsed = true;
             }
         }
     }
@@ -82,25 +83,23 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
             delete mLastInformation;
             mLastInformation = 0;
         }
-        mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0,this);
+        mLastInformation = new ArtistInformation(mArtistName,mArtistInfo,mImageURL,0,this);
         emit ready(getLastInformation());
     }
 }
 
-void LastFMAlbumProvider::parseAlbum(QXmlStreamReader &xmlReader) {
-    QString albumURL;
-
+void LastFMArtistProvider::parseArtist(QXmlStreamReader &xmlReader) {
     // Security check
     if ( ( xmlReader.tokenType() != QXmlStreamReader::StartElement &&
-           xmlReader.name() == "album" )) {
+           xmlReader.name() == "artist" )) {
         return;
     }
 
-    bool foundPreferredAlbumArt = false;
+    bool foundPreferredArtistArt = false;
 
-    while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "album") ) {
+    while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "artist") ) {
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
-             xmlReader.name() == "image" && !foundPreferredAlbumArt ) {
+             xmlReader.name() == "image" && !foundPreferredArtistArt ) {
 
             // Get image size attribute
             QXmlStreamAttributes attributes = xmlReader.attributes();
@@ -109,7 +108,7 @@ void LastFMAlbumProvider::parseAlbum(QXmlStreamReader &xmlReader) {
                 xmlReader.readNext();
                 if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
                     mImageURL = xmlReader.text().toString();
-                    foundPreferredAlbumArt = true;
+                    foundPreferredArtistArt = true;
                 }
             }
             else {
@@ -121,7 +120,7 @@ void LastFMAlbumProvider::parseAlbum(QXmlStreamReader &xmlReader) {
         }
 
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
-             xmlReader.name() == "wiki" ) {
+             xmlReader.name() == "bio" ) {
             parseWikiInformation(xmlReader);
         }
 
@@ -130,19 +129,19 @@ void LastFMAlbumProvider::parseAlbum(QXmlStreamReader &xmlReader) {
 
 }
 
-void LastFMAlbumProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
+void LastFMArtistProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
     // Security check
     if ( ( xmlReader.tokenType() != QXmlStreamReader::StartElement &&
-           xmlReader.name() == "wiki" )) {
+           xmlReader.name() == "bio" )) {
         return;
     }
 
-    while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "wiki") ) {
+    while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "bio") ) {
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
              xmlReader.name() == "content") {
             xmlReader.readNext();
             if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
-                mAlbumInfo = xmlReader.text().toString();
+                mArtistInfo = xmlReader.text().toString();
             }
         }
         xmlReader.readNext();
@@ -150,14 +149,8 @@ void LastFMAlbumProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
 
 }
 
-void LastFMAlbumProvider::startDownload() {
-    // Get last.fm album info
-
-    QString albumNameClean = mAlbumName;
-    albumNameClean.replace('#',"%23");
-    albumNameClean = albumNameClean.replace('&',"%26");
-    albumNameClean = albumNameClean.replace('+',"%2B");
-    albumNameClean = albumNameClean.replace(' ',"+");
+void LastFMArtistProvider::startDownload() {
+    // Get last.fm artist info
 
     QString artistNameClean = mArtistName;
     artistNameClean.replace('#',"%23");
@@ -166,10 +159,10 @@ void LastFMAlbumProvider::startDownload() {
     artistNameClean = artistNameClean.replace(' ',"+");
 
 
-    QString lastfmXMLURL = QString("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=")
-            + LASTFMAPIKEY + QString("&artist=") + artistNameClean + QString("&album=") + albumNameClean;
+    QString lastfmXMLURL = QString("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=")
+            + LASTFMAPIKEY + QString("&artist=") + artistNameClean;
     QUrl requestURL(lastfmXMLURL);
-    qDebug() << "Start downloading album: " << requestURL.toString();
+    qDebug() << "Start downloading artist: " << requestURL.toString();
 
     QNetworkRequest downloadRequest(requestURL);
     if( !mXMLNetAccess )
@@ -186,41 +179,39 @@ void LastFMAlbumProvider::startDownload() {
     qDebug() << "Netreply get send";
 }
 
-void LastFMAlbumProvider::imageDownloaded(QNetworkReply *reply) {
+void LastFMArtistProvider::imageDownloaded(QNetworkReply *reply) {
     QByteArray *imgData = new QByteArray(reply->readAll());
     if(imgData->size() == 0) {
         emit failed();
         return;
     }
-    qDebug() << "Artwork downloaded" << mAlbumName;
+    qDebug() << "Artwork downloaded" << mArtistName;
     if ( mLastInformation ) {
         delete ( mLastInformation );
         mLastInformation = 0;
     }
-    mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData,this);
+    mLastInformation = new ArtistInformation(mArtistName,mArtistInfo,mImageURL,imgData,this);
     emit ready(getLastInformation());
 }
 
-QString LastFMAlbumProvider::getImageURL() {
+QString LastFMArtistProvider::getImageURL() {
     return "";
 }
 
-AlbumInformation *LastFMAlbumProvider::getLastInformation()
+ArtistInformation *LastFMArtistProvider::getLastInformation()
 {
-    return new AlbumInformation(*mLastInformation);
+    return new ArtistInformation(*mLastInformation);
 }
 
-void LastFMAlbumProvider::setArtistAlbum(QString album, QString artist)
+void LastFMArtistProvider::setArtist(QString artist)
 {
-    mAlbumName = album;
     mArtistName = artist;
 }
 
-void LastFMAlbumProvider::requestDownload(MpdAlbum album)
+void LastFMArtistProvider::requestDownload(MpdArtist artist)
 {
-    mAlbumName = album.getTitle();
-    mArtistName = album.getArtist();
-    qDebug() << "Download requested: " << mAlbumName;
+    mArtistName = artist.getName();
+    qDebug() << "Download requested: " << mArtistName;
     if ( mImageData ) {
         delete (mImageData);
         mImageData = 0;
@@ -228,16 +219,8 @@ void LastFMAlbumProvider::requestDownload(MpdAlbum album)
     if ( mImageURL != "" ) {
         mImageURL = "";
     }
-    if ( mAlbumInfo != "" ) {
-        mAlbumInfo = "";
+    if ( mArtistInfo != "" ) {
+        mArtistInfo = "";
     }
-//    if ( mAlbumArtAccess ) {
-//        mAlbumArtAccess->deleteLater();
-//        mAlbumArtAccess = 0;
-//    }
-//    if ( mXMLNetAccess ) {
-//        mXMLNetAccess->deleteLater();
-//        mXMLNetAccess = 0;
-//    }
     startDownload();
 }

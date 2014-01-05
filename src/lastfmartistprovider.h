@@ -1,5 +1,5 @@
-#ifndef LASTFMALBUMPROVIDER_H
-#define LASTFMALBUMPROVIDER_H
+#ifndef LastFMArtistProvider_H
+#define LastFMArtistProvider_H
 
 #include <QObject>
 #include <QNetworkRequest>
@@ -7,50 +7,48 @@
 #include <QNetworkAccessManager>
 #include <QXmlStreamReader>
 
-#include "mpdalbum.h"
 #include "mpdartist.h"
 #include "common.h"
-#include "albuminformation.h"
+#include "artistinformation.h"
 
 #define COVERSIZE "mega"
 
 
-class LastFMAlbumProvider : public QObject
+class LastFMArtistProvider : public QObject
 {
     Q_OBJECT
 public:
-    LastFMAlbumProvider(QString albumName,QString artistName,QObject *parent=0);
-    LastFMAlbumProvider(MpdArtist &artist);
-    ~LastFMAlbumProvider();
+    LastFMArtistProvider(QString artistName,QObject *parent=0);
+    LastFMArtistProvider(MpdArtist &artist);
+    ~LastFMArtistProvider();
 
     void startDownload();
 
 
-    void setArtistAlbum(QString album, QString artist);
+    void setArtist(QString artist);
 
     QString getImageURL();
 
-    AlbumInformation* getLastInformation();
+    ArtistInformation* getLastInformation();
 
 public slots:
-    void requestDownload(MpdAlbum album);
+    void requestDownload(MpdArtist artist);
 
 signals:
-    void ready(AlbumInformation *albumInfo);
+    void ready(ArtistInformation *artistInfo);
     void readyRead();
     void failed();
 
 private:
-    QString mAlbumName;
     QString mArtistName;
     QString mImageURL;
-    QString mAlbumInfo;
+    QString mArtistInfo;
     QByteArray *mImageData;
     QNetworkAccessManager *mXMLNetAccess;
-    QNetworkAccessManager *mAlbumArtAccess;
-    AlbumInformation *mLastInformation;
+    QNetworkAccessManager *mArtistArtAccess;
+    ArtistInformation *mLastInformation;
 
-    void parseAlbum(QXmlStreamReader &xmlReader);
+    void parseArtist(QXmlStreamReader &xmlReader);
     void parseWikiInformation(QXmlStreamReader &xmlReader);
     void downloadImageData(QUrl imageURL);
 
