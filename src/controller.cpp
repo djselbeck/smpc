@@ -6,11 +6,6 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),viewer(viewer),password(""),hostname(""),port(6600)
 {
-    MpdAlbum testAlbum(0,"State of Euphoria");
-    MpdArtist testArtist(0,"Anthrax");
-    LastFMAlbumProvider  *testprov = new LastFMAlbumProvider(testAlbum.getTitle(),testArtist.getName());
-    testprov->startDownload();
-
     mImgDB = new ImageDatabase();
     mQMLImgProvider = new QMLImageProvider(mImgDB);
 
@@ -37,11 +32,13 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     qmlRegisterType<MpdArtist>();
     qmlRegisterType<MpdAlbum>();
     qmlRegisterType<ServerProfile>();
+    qRegisterMetaType<MpdAlbum>("MpdAlbum");
     volIncTimer.setInterval(250);
     volDecTimer.setInterval(250);
     mLastProfileIndex = -1;
     filemodels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+    viewer->rootContext()->setContextProperty("coverstring","");
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     netaccess->setQmlThread(viewer->thread());
     //Start auto connect
@@ -52,6 +49,9 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
             connectProfile(i);
         }
     }
+
+    // Cleanup image database
+    mImgDB->cleanUPBlacklistedAlbums();
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -294,6 +294,9 @@ void Controller::connectSignals()
     connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
 
     connect(&mReconnectTimer,SIGNAL(timeout()),this,SLOT(reconnectServer()));
+
+    connect(this,SIGNAL(requestCoverArt(MpdAlbum)),mImgDB,SLOT(requestCoverImage(MpdAlbum)));
+    connect(mImgDB,SIGNAL(coverAlbumArtReady(QVariant)),item,SLOT(coverArtReceiver(QVariant)));
 }
 
 void Controller::setPassword(QString password)
@@ -393,6 +396,12 @@ void Controller::updateStatus(status_struct status)
         {
             playlist->setPlaying(status.id,true);
         }
+
+        // Check for cover and set URL if ready
+        MpdAlbum tmpAlbum(this,status.album,status.artist);
+        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+        emit requestCoverArt(tmpAlbum);
+
     }
     if(lastplaybackstate!=status.playing)
     {

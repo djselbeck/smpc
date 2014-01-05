@@ -74,7 +74,12 @@ void LastFMAlbumProvider::xmlDownloaded(QNetworkReply *reply) {
     if ( mImageURL != "" ) {
         downloadImageData(mImageURL);
     } else {
-        emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0,this));
+        if ( mLastInformation ) {
+            delete mLastInformation;
+            mLastInformation = 0;
+        }
+        mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,0,this);
+        emit ready(getLastInformation());
     }
 }
 
@@ -147,14 +152,20 @@ void LastFMAlbumProvider::startDownload() {
     QString albumNameClean = mAlbumName;
     albumNameClean.replace('#',"%23");
     albumNameClean = albumNameClean.replace('&',"%26");
+    albumNameClean = albumNameClean.replace('+',"%2B");
+    albumNameClean = albumNameClean.replace(' ',"+");
 
     QString artistNameClean = mArtistName;
     artistNameClean.replace('#',"%23");
     artistNameClean = artistNameClean.replace('&',"%26");
+    artistNameClean = artistNameClean.replace('+',"%2B");
+    artistNameClean = artistNameClean.replace(' ',"+");
+
+
     QString lastfmXMLURL = QString("http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=")
             + LASTFMAPIKEY + QString("&artist=") + artistNameClean + QString("&album=") + albumNameClean;
     QUrl requestURL(lastfmXMLURL);
-    qDebug() << "Start downloading album: " << mAlbumName;
+    qDebug() << "Start downloading album: " << requestURL.toString();
 
     QNetworkRequest downloadRequest(requestURL);
     if( !mXMLNetAccess )
@@ -168,19 +179,18 @@ void LastFMAlbumProvider::startDownload() {
     }
 
     QNetworkReply *reply = mXMLNetAccess->get(downloadRequest);
-    qDebug() << "Netreplay get send";
-
-    //    for( int i = 0; data.size();i++) {
-    //        qDebug() << data.at(i);
-    //    }
-
-
+    qDebug() << "Netreply get send";
 }
 
 void LastFMAlbumProvider::imageDownloaded(QNetworkReply *reply) {
     QByteArray *imgData = new QByteArray(reply->readAll());
     qDebug() << "Artwork downloaded" << mAlbumName;
-    emit ready(new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData,this));
+    if ( mLastInformation ) {
+        delete ( mLastInformation );
+        mLastInformation = 0;
+    }
+    mLastInformation = new AlbumInformation(mAlbumName,mArtistName,mAlbumInfo,mImageURL,imgData,this);
+    emit ready(getLastInformation());
 }
 
 QString LastFMAlbumProvider::getImageURL() {
@@ -189,8 +199,7 @@ QString LastFMAlbumProvider::getImageURL() {
 
 AlbumInformation *LastFMAlbumProvider::getLastInformation()
 {
-    //return new AlbumInformation(*mLastInformation);
-    return 0;
+    return new AlbumInformation(*mLastInformation);
 }
 
 void LastFMAlbumProvider::setArtistAlbum(QString album, QString artist)
@@ -199,10 +208,10 @@ void LastFMAlbumProvider::setArtistAlbum(QString album, QString artist)
     mArtistName = artist;
 }
 
-void LastFMAlbumProvider::requestDownload(MpdAlbum *album)
+void LastFMAlbumProvider::requestDownload(MpdAlbum album)
 {
-    mAlbumName = album->getTitle();
-    mArtistName = album->getArtist();
+    mAlbumName = album.getTitle();
+    mArtistName = album.getArtist();
     qDebug() << "Download requested: " << mAlbumName;
     if ( mImageData ) {
         delete (mImageData);

@@ -11,7 +11,7 @@ AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QObject *pare
        mDB = db;
        mDownloader = new ImageDownloader();
 
-       connect(this,SIGNAL(requestAlbumInformation(MpdAlbum*)),mDownloader,SLOT(requestAlbumArt(MpdAlbum*)),Qt::QueuedConnection);
+       connect(this,SIGNAL(requestAlbumInformation(MpdAlbum)),mDownloader,SLOT(requestAlbumArt(MpdAlbum)),Qt::QueuedConnection);
        connect(mDownloader,SIGNAL(albumInformationReady(AlbumInformation*)),this,SLOT(albumInformationReady(AlbumInformation*)));
 
 //       foreach(MpdAlbum *album, *list) {
@@ -52,7 +52,7 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
             if ( imageID == -1 ) {
                 // Start image retrieval
                 qDebug() << "returning dummy image for album: " << album->getTitle();
-                emit requestAlbumInformation(new MpdAlbum(*album));
+                emit requestAlbumInformation(*album);
                 // Return dummy for the time being
                 return DUMMY_ALBUMIMAGE;
             } else if (imageID == -2 ) {
@@ -60,7 +60,7 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
                 return DUMMY_ALBUMIMAGE;
             } else {
                 qDebug() << "returning database image for album: " << album->getTitle();
-                QString url = "image://imagedbprovider/album/" + QString::number(imageID);
+                QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
                 return url;
             }
         }
@@ -73,9 +73,13 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
                 qDebug() << "returning dummy image for album: " << album->getTitle();
                 // Return dummy for the time being
                 return DUMMY_ALBUMIMAGE;
-            } else {
+            } else if (imageID == -2 ) {
+                qDebug() << "returning dummy image for blacklisted album: " << album->getTitle();
+                return DUMMY_ALBUMIMAGE;
+            }
+            else {
                 qDebug() << "returning database image for album: " << album->getTitle();
-                QString url = "image://imagedbprovider/album/" + QString::number(imageID);
+                QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
                 return url;
             }
         }

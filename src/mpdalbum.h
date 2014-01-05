@@ -22,6 +22,12 @@ public:
 
     bool operator< (const MpdAlbum& other) const { return (title.compare(other.title,Qt::CaseInsensitive)<0?1:0); }
     bool operator==(MpdAlbum & rhs) {return getTitle()==rhs.getTitle();}
+    void operator=(MpdAlbum & rhs)
+    {
+        title = rhs.title;
+        mArtist = rhs.mArtist;
+    }
+
     static bool lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs) {
         return *lhs<*rhs;
     }

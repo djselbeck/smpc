@@ -33,11 +33,11 @@ public:
     AlbumInformation* getLastInformation();
 
 public slots:
-    void requestDownload(MpdAlbum *album);
+    void requestDownload(MpdAlbum album);
 
 signals:
     void ready(AlbumInformation *albumInfo);
-    void ready();
+    void readyRead();
     void failed();
 
 private:

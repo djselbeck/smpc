@@ -61,6 +61,8 @@ signals:
     void connected(QVariant profile);
     void disconnected();
 
+    void requestCoverArt(MpdAlbum album);
+
 
 
 private:
@@ -144,12 +146,6 @@ private slots:
     void clearTrackList();
 
     void reconnectServer();
-
-
-
-
-
-
 
 };
 

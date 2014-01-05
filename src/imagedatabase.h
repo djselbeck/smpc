@@ -11,12 +11,13 @@
 #include <QEventLoop>
 #include <QMutex>
 
+#include "common.h"
 #include "mpdalbum.h"
 #include "mpdartist.h"
 #include "albuminformation.h"
 #include "lastfmalbumprovider.h"
 #include "databasefilljob.h"
-
+#include "imagedownloader.h"
 
 class ImageDatabase : public QObject
 {
@@ -37,8 +38,8 @@ public:
     int imageIDFromAlbum(QString album);
 
 
-    QImage getAlbumImage(QString album, QString artist);
-    QImage getAlbumImage(QString album);
+    QImage getAlbumImage(QString album, QString artist, bool download=false);
+    QImage getAlbumImage(QString album, bool download=false);
     QImage getAlbumImage(int artworkID);
 
     // Cleanups
@@ -48,6 +49,8 @@ public slots:
     void albumReady(AlbumInformation *albumInformation);
     void fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map);
     void enterAlbumInformation(AlbumInformation *info);
+
+    void requestCoverImage(MpdAlbum album);
 
 
 private:
@@ -59,9 +62,15 @@ private:
     QList<MpdAlbum*>* mAlbums;
     MpdArtist *mAlbumArtist;
     DatabaseFillJob *mFiller;
-    QMutex *mDownloadMutex;
+
+    ImageDownloader *mDownloader;
+
+    // Holds the currently playing album for cover image retrieval
+    MpdAlbum mCoverAlbum;
 
 signals:
+    void requestAlbumDownload(MpdAlbum album);
+    void coverAlbumArtReady(QVariant url);
 
 public slots:
 

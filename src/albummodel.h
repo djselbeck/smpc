@@ -54,7 +54,7 @@ private:
     ImageDownloader *mDownloader;
 
 signals:
-    void requestAlbumInformation(MpdAlbum *album) const;
+    void requestAlbumInformation(MpdAlbum album) const;
 
 public slots:
     void albumInformationReady(AlbumInformation *info);

@@ -408,7 +408,7 @@ Page {
 //            coverfetcherXMLModel.reload()
 //        }
 
-        coverimageurl = "image://imagedbprovider/" + artist + "/" + album;
+//        coverimageurl = "image://imagedbprovider/album/" + artist + "/" + album;
 
 
         // Fetch artist image

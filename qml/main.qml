@@ -312,6 +312,11 @@ ApplicationWindow
         requestArtistAlbums(item);
     }
 
+    function coverArtReceiver(url)
+    {
+        coverimageurl = url;
+    }
+
     Component.onCompleted:  {
         var component = Qt.createComponent("pages/ServerListPage.qml");
         var object = component.createObject(mainWindow);

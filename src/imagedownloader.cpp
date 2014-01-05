@@ -4,7 +4,7 @@ ImageDownloader::ImageDownloader()
 {
     mRunningDownloads = 0;
     mProvider = new LastFMAlbumProvider("","",this);
-    mQueue = new QQueue<MpdAlbum*>();
+    mQueue = new QQueue<MpdAlbum>();
 //    mWorkingThread = new QThread(this);
 //    moveToThread(mWorkingThread);
 //    mWorkingThread->start();
@@ -28,9 +28,9 @@ ImageDownloader::~ImageDownloader()
 }
 
 
-void ImageDownloader::requestAlbumArt(MpdAlbum *albumObj)
+void ImageDownloader::requestAlbumArt(MpdAlbum albumObj)
 {
-    qDebug() << "Art requested for: " << albumObj->getTitle();
+    qDebug() << "Art requested for: " << albumObj.getTitle();
     // No running download, start downloading right away
     mDownloadCounterMutex.lock();
     int running = mRunningDownloads;
@@ -57,8 +57,8 @@ void ImageDownloader::albumInformationReceiver(AlbumInformation *info)
     if ( running == 0 && ( mQueue->size() >0 ) ) {
         mDownloadCounterMutex.lock();
         mRunningDownloads++;
-        MpdAlbum *albumObj = mQueue->dequeue();
-        qDebug() << "Start downloading from queue item: " << albumObj->getTitle();
+        MpdAlbum albumObj = mQueue->dequeue();
+        qDebug() << "Start downloading from queue item: " << albumObj.getTitle();
         mProvider->requestDownload(albumObj);
         mDownloadCounterMutex.unlock();
     } else {

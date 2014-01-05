@@ -4,7 +4,6 @@ ImageDatabase::ImageDatabase(QObject *parent) :
     QObject(parent)
 {
     mFiller = 0;
-    mDownloadMutex = new QMutex();
     QStringList drivers = QSqlDatabase::drivers();
     if ( !drivers.contains("QSQLITE") ) {
     } else {
@@ -52,6 +51,10 @@ ImageDatabase::ImageDatabase(QObject *parent) :
             }
         }
     }
+    mDownloader = new ImageDownloader();
+    qRegisterMetaType<MpdAlbum>("MpdAlbum");
+    connect(mDownloader,SIGNAL(albumInformationReady(AlbumInformation*)),this,SLOT(enterAlbumInformation(AlbumInformation*)));
+    connect(this,SIGNAL(requestAlbumDownload(MpdAlbum)),mDownloader,SLOT(requestAlbumArt(MpdAlbum)));
 }
 
 ImageDatabase::~ImageDatabase() {
@@ -219,6 +222,14 @@ void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
 
         query.exec();
     }
+
+    // Check if this request was for currently playing title
+    // If send ready URL
+    if ( info->getName() == mCoverAlbum.getTitle() ) {
+        QString url = "image://"  IMAGEPROVIDERNAME  "/albumid/" + QString::number(imgID);
+        emit coverAlbumArtReady(QVariant::fromValue(url));
+    }
+
     // Cleanup the memory usage
     info->deleteLater();
 }
@@ -288,7 +299,7 @@ int ImageDatabase::imageIDFromAlbum(QString album)
  * @param artist
  * @return
  */
-QImage ImageDatabase::getAlbumImage(QString album, QString artist)
+QImage ImageDatabase::getAlbumImage(QString album, QString artist, bool download)
 {
     qDebug() << "get Image for: " << album << artist;
     int artworkID = imageIDFromAlbumArtist(album,artist);
@@ -300,20 +311,35 @@ QImage ImageDatabase::getAlbumImage(QString album, QString artist)
         return getAlbumImage(artworkID);
     }
 
-    qDebug() << "No image found, try downloading";
-    // Not found an image in database, try retrieving it from internet now
-    // TODO ASYNC PROBLEM
-    qDebug() << "Mutex locked: " << album;
-    // Recheck if album art still doesn't exists
-    artworkID = imageIDFromAlbumArtist(album,artist);
-    if(artworkID != -1 ) {
-        return getAlbumImage(artworkID);
+    if ( download ) {
+        qDebug() << "No image found, try downloading";
+        MpdAlbum tempAlbum(this,album,artist);
+        emit requestAlbumDownload(tempAlbum);
     }
+
+//    if ( download ) {
+//        qDebug() << "No image found, try downloading";
+//        // Not found an image in database, try retrieving it from internet now
+//        // TODO ASYNC PROBLEM
+//        // Recheck if album art still doesn't exists
+//        LastFMAlbumProvider artProvider("","",this);
+//        QEventLoop loop;
+//        QObject::connect(&artProvider, SIGNAL(readyRead()), &loop, SLOT(quit()));
+
+//        loop.exec();
+//        qDebug() << "Albuminformation downloaded";
+
+//        AlbumInformation *info = artProvider.getLastInformation();
+//        enterAlbumInformation(info);
+//        QImage img;
+//        img.loadFromData(*info->getImageData());
+//        return img;
+//    }
 
     return QImage();
 }
 
-QImage ImageDatabase::getAlbumImage(QString album)
+QImage ImageDatabase::getAlbumImage(QString album,bool download)
 {
     int artworkID = imageIDFromAlbum(album);
     if ( artworkID == -1 ) {
@@ -370,7 +396,22 @@ QImage ImageDatabase::getAlbumImage(int artworkID)
 void ImageDatabase::cleanUPBlacklistedAlbums()
 {
     QSqlQuery query;
-    query.prepare("REMOVE FROM albums WHERE "
-                  "imageid=\"" + QString::number(-2) + "\"");
+    query.prepare("DELETE FROM albums WHERE "
+                  "imageID=\"" + QString::number(-2) + "\"");
     query.exec();
+}
+
+
+void ImageDatabase::requestCoverImage(MpdAlbum album)
+{
+    mCoverAlbum = album;
+    qDebug() << "get Image for: " << album.getTitle() << album.getArtist();
+    int artworkID = imageIDFromAlbumArtist(album.getTitle(),album.getArtist());
+
+    if (artworkID >= 0 ) {
+        QString url = "image://"  IMAGEPROVIDERNAME  "/albumid/" + QString::number(artworkID);
+        emit coverAlbumArtReady(QVariant::fromValue(url));
+        return;
+    }
+    emit requestAlbumDownload(album);
 }

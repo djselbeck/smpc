@@ -27,7 +27,7 @@ private:
     QMutex mDownloadCounterMutex;
     int mRunningDownloads;
     QThread *mWorkingThread;
-    QQueue<MpdAlbum*> *mQueue;
+    QQueue<MpdAlbum> *mQueue;
 
     LastFMAlbumProvider *mProvider;
 
@@ -36,7 +36,7 @@ signals:
     void albumInformationReady(AlbumInformation *info);
 
 public slots:
-    void requestAlbumArt(MpdAlbum *albumObj);
+    void requestAlbumArt(MpdAlbum albumObj);
     void albumInformationReceiver(AlbumInformation *info);
 
 };

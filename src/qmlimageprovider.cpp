@@ -16,13 +16,19 @@ QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSiz
         return QImage();
     }
     else {
-        if(idList[0] == "album") {
+        if(idList[0] == "albumid") {
             QImage img = mDB->getAlbumImage(idList[1].toInt());
             qDebug() << "got image";
             size->setHeight(img.height());
             size->setWidth(img.width());
             return img;
-        } else {
+        } else if (idList[0] == "album" && idList.length() == 3 ) {
+            QImage img = mDB->getAlbumImage(idList[2],idList[1],true);
+            size->setHeight(img.height());
+            size->setWidth(img.width());
+            return img;
+        }
+        else {
             QImage img = mDB->getAlbumImage(idList[1]);
             qDebug() << "got image";
             size->setHeight(img.height());
