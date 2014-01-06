@@ -25,8 +25,18 @@
 
 
 
+
 class Controller : public QObject
 {
+
+    enum LastFMDownloadSizes {
+        LASTFM_SMALL,
+        LASTFM_MEDIUM,
+        LASTFM_LARGE,
+        LASTFM_EXTRALARGE,
+        LASTFM_MEGA
+    };
+
     Q_OBJECT
 public:
     explicit Controller(QObject *parent = 0);
@@ -69,6 +79,7 @@ signals:
     void requestAlbumFill(QMap<MpdArtist*, QList<MpdAlbum*>* > *);
 
     void requestDBStatistic();
+    void newDownloadSize(QString);
 
 private:
     QQuickView *viewer;
@@ -105,6 +116,8 @@ private:
 
     //DB
     DatabaseStatistic *mDBStatistic;
+    int mDownloadSize;
+    QString getLastFMArtSize(int index);
 
 private slots:
     void requestCurrentPlaylist();
@@ -165,6 +178,8 @@ private slots:
 
     void setArtistBioInfo(QString info);
     void setAlbumWikiInfo(QString info);
+
+    void receiveDownloadSize(int);
 
 };
 

@@ -75,15 +75,19 @@ public slots:
     void cleanUPBlacklistedAlbums();
     void cleanupAlbums();
     void cleanupArtists();
-
+    void cleanupOrphans();
     void cleanupDatabase();
+
+    void setDownloadSize(QString size);
 
 
 private:
     QSqlDatabase *mDB;
+    QString mDBFilePath;
 
     bool mAlbumSyncRunning;
     int mAlbumNo;
+    QString mDownloadSize;
     LastFMAlbumProvider *mCurrentAlbumProvider;
     QList<MpdAlbum*>* mAlbums;
     MpdArtist *mAlbumArtist;
@@ -106,6 +110,7 @@ private:
     int getImageCount();
     int getBlacklistCount();
 
+    void createTables();
     DatabaseStatistic *updateStatistic();
 
 signals:

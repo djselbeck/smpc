@@ -5,11 +5,12 @@ AlbumModel::AlbumModel(QObject *parent) :
 {
 }
 
-AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QObject *parent) : QAbstractListModel(parent)
+AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QString lastfmartsize, QObject *parent) : QAbstractListModel(parent)
 {
        m_entries = list;
        mDB = db;
        mDownloader = new ImageDownloader();
+       mDownloader->setDownloadSize(lastfmartsize);
 
        connect(this,SIGNAL(requestAlbumInformation(MpdAlbum)),mDownloader,SLOT(requestAlbumArt(MpdAlbum)),Qt::QueuedConnection);
        connect(mDownloader,SIGNAL(albumInformationReady(AlbumInformation*)),this,SLOT(albumInformationReady(AlbumInformation*)));

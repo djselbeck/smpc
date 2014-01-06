@@ -63,7 +63,8 @@ Page {
             }
         }
         else if ( status === PageStatus.Active ) {
-            pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"),{artistname:artistname});
+            if(artistname!="")
+                pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"),{artistname:artistname});
         }
     }
 

@@ -100,14 +100,19 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \
     qml/components/ControlPanel.qml \
     qml/pages/DatabaseSettings.qml \
-    qml/pages/ArtistInformationPage.qml
+    qml/pages/ArtistInformationPage.qml \
+    qml/pages/ArtistInfoPage.qml \
+    qml/pages/AlbumInfoPage.qml
 
 
 RESOURCES += \
     translations.qrc \
     miscresources.qrc
 
+
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_DEBUG_OUTPUT
+
+#DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
 TRANSLATIONS += $${TARGET}_de.ts
 
@@ -144,5 +149,9 @@ SOURCES += \
     qml/components/ArtistDelegate.qml \
     qml/components/AlbumDelegate.qml \
     qml/cover/CoverPage.qml \
-    qml/components/ControlPanel.qml
+    qml/components/ControlPanel.qml \
+    qml/pages/DatabaseSettings.qml \
+    qml/pages/ArtistInformationPage.qml \
+    qml/pages/ArtistInfoPage.qml \
+    qml/pages/AlbumInfoPage.qml
 }

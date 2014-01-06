@@ -16,7 +16,7 @@ class AlbumModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit AlbumModel(QObject *parent = 0);
-    AlbumModel(QList<MpdAlbum*> *list, ImageDatabase *db, QObject *parent = 0);
+    AlbumModel(QList<MpdAlbum*> *list, ImageDatabase *db, QString lastfmArtSize, QObject *parent = 0);
     ~AlbumModel()
     {
         for(int i=0;i<m_entries->length();i++)

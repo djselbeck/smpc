@@ -133,6 +133,8 @@ ApplicationWindow
     signal requestArtistInfo(string artist);
     signal requestAlbumInfo(variant album);
 
+    signal newDownloadSize(int size)
+
 
 
     // JS-functions

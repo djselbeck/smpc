@@ -9,6 +9,7 @@ LastFMArtistProvider::LastFMArtistProvider(QString artistName,QObject *parent) :
     mImageURL = "";
     mArtistInfo = "";
     mLastInformation = 0;
+    mDownloadSize = LASTFMDEFAULTSIZE;
 }
 
 LastFMArtistProvider::~LastFMArtistProvider() {
@@ -103,7 +104,7 @@ void LastFMArtistProvider::parseArtist(QXmlStreamReader &xmlReader) {
 
             // Get image size attribute
             QXmlStreamAttributes attributes = xmlReader.attributes();
-            if ( attributes.hasAttribute("size") && attributes.value("size").toString() == COVERSIZE) {
+            if ( attributes.hasAttribute("size") && attributes.value("size").toString() == mDownloadSize) {
                 // Found desired cover size
                 xmlReader.readNext();
                 if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
@@ -237,4 +238,9 @@ void LastFMArtistProvider::requestDownload(MpdArtist artist)
         mArtistInfo = "";
     }
     startDownload();
+}
+
+void LastFMArtistProvider::setDownloadSize(QString size)
+{
+    mDownloadSize = size;
 }

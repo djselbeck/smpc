@@ -27,6 +27,8 @@ public:
     int getArtistQueueSize();
     int getAlbumQueueSize();
 
+    void setDownloadSize(QString size);
+
 
 private:
     QThread *mWorkingThread;
@@ -55,6 +57,7 @@ public slots:
     void requestArtistArt(MpdArtist artistObj);
     void artistInformationReceiver(ArtistInformation *info);
     void artistDownloadFailure();
+
 
 };
 

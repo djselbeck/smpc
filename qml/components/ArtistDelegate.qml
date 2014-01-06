@@ -57,7 +57,7 @@ Component {
             styleColor: Theme.secondaryColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignBottom
-            text: (artist === "" ? "No Artist Tag" : artist)
+            text: artist === "" ? qsTr("No Artist Tag") : artist
         }
 
         //        OpacityRampEffect {

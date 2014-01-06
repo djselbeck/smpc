@@ -12,39 +12,10 @@ ImageDatabase::ImageDatabase(QObject *parent) :
         if ( !dirAccess.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation))) {
             return;
         }
-        QString dbLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/imgDB.sqlite3";
+        mDBFilePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/imgDB.sqlite3";
         mDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-        mDB->setDatabaseName(dbLocation);
-        if ( mDB->open() ) {
-            // Check if database contains necessary tables
-            if ( !mDB->tables().contains("albums") ) {
-                QSqlQuery createQuery;
-                if (createQuery.exec("CREATE TABLE albums"
-                                 "(id integer primary key AUTOINCREMENT,"
-                                 "albumname text default '',"
-                                 "artistname text default '',"
-                                 "albuminfo blob '',"
-                                 "imageID text )") ) {
-                }
-            }
-            if ( !mDB->tables().contains("images") ) {
-                QSqlQuery createQuery;
-                if (createQuery.exec("CREATE TABLE images"
-                                 "(id integer primary key AUTOINCREMENT,"
-                                 "imghash text default '',"
-                                 "imgdata blob)") ) {
-                }
-            }
-            if ( !mDB->tables().contains("artist") ) {
-                QSqlQuery createQuery;
-                if (createQuery.exec("CREATE TABLE artists"
-                                 "(id integer primary key,"
-                                 "name text default '',"
-                                 "artistinfo blob,"
-                                 "imageID text )") ) {
-                }
-            }
-        }
+        mDB->setDatabaseName(mDBFilePath);
+        createTables();
     }
     mDownloader = new ImageDownloader();
     qRegisterMetaType<MpdAlbum>("MpdAlbum");
@@ -55,13 +26,12 @@ ImageDatabase::ImageDatabase(QObject *parent) :
 
     connect(mDownloader,SIGNAL(artistInformationReady(ArtistInformation*)),this,SLOT(enterArtistInformation(ArtistInformation*)));
     connect(this,SIGNAL(requestArtistDownload(MpdArtist)),mDownloader,SLOT(requestArtistArt(MpdArtist)));
-
-    requestArtistBioInformation("Nightwish");
 }
 
 ImageDatabase::~ImageDatabase() {
     if ( mDB->isOpen()) {
         mDB->close();
+        delete(mDB);
     }
 }
 
@@ -576,6 +546,10 @@ void ImageDatabase::cleanupAlbums()
     QSqlQuery query;
     query.prepare("DELETE FROM albums ");
     query.exec();
+    cleanupOrphans();
+    // Free up used space (mobile device)
+    query.prepare("VACUUM");
+    query.exec();
     emit newStasticReady(updateStatistic());
 }
 
@@ -584,17 +558,88 @@ void ImageDatabase::cleanupArtists()
     QSqlQuery query;
     query.prepare("DELETE FROM artists ");
     query.exec();
+    cleanupOrphans();
+    // Free up used space (mobile device)
+    query.prepare("VACUUM");
+    query.exec();
+    emit newStasticReady(updateStatistic());
+}
+
+void ImageDatabase::cleanupOrphans()
+{
+    QSqlQuery query;
+    query.prepare("DELETE FROM images WHERE NOT EXISTS "
+                  " (SELECT imageid as idartist FROM artists WHERE images.id=idartist) "
+                  " AND NOT EXISTS "
+                  " ( SELECT imageid as idalbums FROM albums WHERE images.id=idalbums) ");
+    query.exec();
+    // Free up used space (mobile device)
+    query.prepare("VACUUM");
+    query.exec();
     emit newStasticReady(updateStatistic());
 }
 
 void ImageDatabase::cleanupDatabase()
 {
-    cleanupAlbums();
-    cleanupArtists();
-    QSqlQuery query;
-    query.prepare("DELETE FROM images ");
-    query.exec();
+    qDebug() << "Clearing all tables";
+//    QSqlQuery query;
+//    query.prepare("DROP TABLE images ");
+//    query.exec();
+//    qDebug() << "Last error: drop: " << query.lastError().text();
+//    query.prepare("DROP TABLE albums ");
+//    query.exec();
+//    query.prepare("DROP TABLE artists ");
+//    query.exec();
+    if(mDB->isOpen()) {
+        mDB->close();
+        QString dbName = mDB->connectionName();
+        delete(mDB);
+        QSqlDatabase::removeDatabase(dbName);
+    }
+    // Remove database file to be sure nothing is left behind
+    QFile::remove(mDBFilePath);
+
+    // Create new database and recreate tables
+    mDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
+    mDB->setDatabaseName(mDBFilePath);
+
+    createTables();
+    cleanupOrphans();
     emit newStasticReady(updateStatistic());
+}
+
+void ImageDatabase::createTables()
+{
+    if ( mDB->open() ) {
+        // Check if database contains necessary tables
+        if ( !mDB->tables().contains("albums") ) {
+            QSqlQuery createQuery;
+            if (createQuery.exec("CREATE TABLE albums"
+                             "(id integer primary key AUTOINCREMENT,"
+                             "albumname text default '',"
+                             "artistname text default '',"
+                             "albuminfo blob '',"
+                             "imageID text )") ) {
+            }
+        }
+        if ( !mDB->tables().contains("images") ) {
+            QSqlQuery createQuery;
+            if (createQuery.exec("CREATE TABLE images"
+                             "(id integer primary key AUTOINCREMENT,"
+                             "imghash text default '',"
+                             "imgdata blob)") ) {
+            }
+        }
+        if ( !mDB->tables().contains("artist") ) {
+            QSqlQuery createQuery;
+            if (createQuery.exec("CREATE TABLE artists"
+                             "(id integer primary key,"
+                             "name text default '',"
+                             "artistinfo blob,"
+                             "imageID text )") ) {
+            }
+        }
+    }
 }
 
 
@@ -624,7 +669,7 @@ void ImageDatabase::requestCoverArtistImage(MpdArtist artist)
         emit coverArtistArtReady(QVariant::fromValue(url));
         return;
     }
-    emit coverAlbumArtReady("");
+    emit coverArtistArtReady("");
     emit requestArtistDownload(artist);
 }
 
@@ -699,8 +744,8 @@ DatabaseStatistic *ImageDatabase::updateStatistic()
     mAlbumBlacklistCount = getBlacklistCount();
     mArtistCount = getArtistCount();
     mImageCount = getImageCount();
-
-    return new DatabaseStatistic(mAlbumCount,mAlbumBlacklistCount,mArtistCount,mImageCount,mDownloader->getArtistQueueSize(),mDownloader->getAlbumQueueSize());
+    int fileSize = QFile(mDBFilePath).size();
+    return new DatabaseStatistic(mAlbumCount,mAlbumBlacklistCount,mArtistCount,mImageCount,mDownloader->getArtistQueueSize(),mDownloader->getAlbumQueueSize(),fileSize);
 }
 
 void ImageDatabase::requestStatisticUpdate()
@@ -765,4 +810,11 @@ void ImageDatabase::requestAlbumWikiInformation(QVariant album)
 void ImageDatabase::requestArtistBioInformation(QString artist)
 {
     emit artistBioInformationReady(getArtistBioInformation(artist));
+}
+
+void ImageDatabase::setDownloadSize(QString size)
+{
+    mDownloadSize = size;
+    mDownloader->setDownloadSize(size);
+    qDebug() << "Setting DL size to :" << size;
 }

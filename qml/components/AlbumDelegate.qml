@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 Component {
     id: albumDelegate
     ListItem {
-        menu: contextMenu
+        //menu: contextMenu
         width: GridView.view.cellWidth
         contentHeight: width
 
@@ -58,44 +58,44 @@ Component {
             styleColor: Theme.secondaryColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignBottom
-            text: (title === "" ? "No Album Tag" : title)
+            text: title === "" ? qsTr("No Album Tag") : title
         }
 
         onClicked: {
             albumListView.currentIndex = index
             albumClicked(artistname, title)
         }
-        function playAlbumRemorse() {
-            remorseAction(qsTr("playing album"), function () {
-                playAlbum([artistname, title])
-            }, 3000)
-        }
-        function addAlbumRemorse() {
-            remorseAction(qsTr("adding album"), function () {
-                addAlbum([artistname, title])
-            }, 3000)
-        }
-        Component {
-            id: contextMenu
-            ContextMenu {
-                MenuItem {
-                    text: qsTr("play album")
-                    onClicked: {
-                        if (title !== "") {
-                            playAlbumRemorse()
-                        }
-                    }
-                }
+//        function playAlbumRemorse() {
+//            remorseAction(qsTr("playing album"), function () {
+//                playAlbum([artistname, title])
+//            }, 3000)
+//        }
+//        function addAlbumRemorse() {
+//            remorseAction(qsTr("adding album"), function () {
+//                addAlbum([artistname, title])
+//            }, 3000)
+//        }
+//        Component {
+//            id: contextMenu
+//            ContextMenu {
+//                MenuItem {
+//                    text: qsTr("play album")
+//                    onClicked: {
+//                        if (title !== "") {
+//                            playAlbumRemorse()
+//                        }
+//                    }
+//                }
 
-                MenuItem {
-                    text: qsTr("add album to list")
-                    onClicked: {
-                        if (title !== "") {
-                            addAlbumRemorse()
-                        }
-                    }
-                }
-            }
-        }
+//                MenuItem {
+//                    text: qsTr("add album to list")
+//                    onClicked: {
+//                        if (title !== "") {
+//                            addAlbumRemorse()
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }

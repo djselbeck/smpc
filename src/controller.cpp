@@ -58,9 +58,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     mDBStatistic = 0;
     mApplicationActive = true;
 
-
     emit requestDBStatistic();
-    emit requestCoverArtistArt(MpdArtist(this,"Nightwish"));
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -130,7 +128,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
         artistmodelold = 0;
     }
     //ArtistModel *model = new ArtistModel((QList<MpdTrack*>*)list,this);
-//    artistlist = (QList<MpdArtist*>*)list;
+    //    artistlist = (QList<MpdArtist*>*)list;
     ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list,mImgDB,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     artistmodelold = model;
@@ -151,7 +149,7 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
         delete(albumsmodelold);
         albumsmodelold = 0;
     }
-    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,mImgDB,this);
+    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,mImgDB,getLastFMArtSize(mDownloadSize), this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     albumsmodelold = model;
 
@@ -216,7 +214,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(requestArtistAlbums(QString)),netaccess,SLOT(getArtistsAlbums(QString)));
     connect(item,SIGNAL(requestAlbums()),netaccess,SLOT(getAlbums()));
     connect(item,SIGNAL(requestFilesPage(QString)),this,SLOT(requestFilePage(QString)));
-  //  connect(item,SIGNAL(requestCurrentPlaylist()),this,SLOT(requestCurrentPlaylist()));
+    //  connect(item,SIGNAL(requestCurrentPlaylist()),this,SLOT(requestCurrentPlaylist()));
     connect(item,SIGNAL(playPlaylistTrack(int)),netaccess,SLOT(playTrackByNumber(int)));
     connect(item,SIGNAL(deletePlaylistTrack(int)),netaccess,SLOT(deleteTrackByNumer(int)));
     connect(item,SIGNAL(requestAlbum(QVariant)),netaccess,SLOT(getAlbumTracks(QVariant)));
@@ -293,7 +291,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(addlastsearch()),this,SLOT(addlastsearchtoplaylist()));
     connect(this,SIGNAL(addURIToPlaylist(QString)),netaccess,SLOT(addTrackToPlaylist(QString)));
 
-    connect(this,SIGNAL(requestPlaylistClear()),item,SLOT(clearPlaylist()));
+    //connect(this,SIGNAL(requestPlaylistClear()),item,SLOT(clearPlaylist()));
     connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
     connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
 
@@ -336,6 +334,10 @@ void Controller::connectSignals()
 
     connect(mImgDB,SIGNAL(albumWikiInformationReady(QString)),this,SLOT(setAlbumWikiInfo(QString)));
     connect(mImgDB,SIGNAL(artistBioInformationReady(QString)),this,SLOT(setArtistBioInfo(QString)));
+
+    // Received new Download size from database GUI settings
+    connect(item,SIGNAL(newDownloadSize(int)),this,SLOT(receiveDownloadSize(int)));
+    connect(this,SIGNAL(newDownloadSize(QString)),mImgDB,SLOT(setDownloadSize(QString)));
 }
 
 void Controller::setPassword(QString password)
@@ -401,16 +403,16 @@ void Controller::connectedToServer()
     mReconnectTimer.stop();
     emit sendPopup(popupString);
     emit connected(profilename);
-   // emit requestArtistAlbumMap();
+    // emit requestArtistAlbumMap();
 }
 
 void Controller::disconnectedToServer()
 {    emit sendPopup(tr("Disconnected from server"));
      emit disconnected();
      if(mApplicationActive) {
-        mReconnectTimer.setSingleShot(true);
-        mReconnectTimer.start();
-    }
+         mReconnectTimer.setSingleShot(true);
+         mReconnectTimer.start();
+     }
 }
 
 void Controller::updateStatus(status_struct status)
@@ -426,8 +428,8 @@ void Controller::updateStatus(status_struct status)
                 &&status.id>=0&&currentsongid>=0){
             playlist->setPlaying(currentsongid,false);
             playlist->setPlaying(status.id,true);
-//            playlist->get(currentsongid)->setPlaying(false);
-//            playlist->get(status.id)->setPlaying(true);
+            //            playlist->get(currentsongid)->setPlaying(false);
+            //            playlist->get(status.id)->setPlaying(true);
 
         }
         if(currentsongid==-1&&(playlist!=0&&playlist->rowCount()>status.id&&playlist->rowCount()>currentsongid
@@ -451,7 +453,7 @@ void Controller::updateStatus(status_struct status)
         if(status.playing==NetworkAccess::STOP&&playlist!=0&&currentsongid>=0&&currentsongid<playlist->rowCount())
         {
             playlist->setPlaying(currentsongid,false);
-//            playlist->get(currentsongid)->setPlaying(false);
+            //            playlist->get(currentsongid)->setPlaying(false);
         }
     }
     lastplaybackstate = status.playing;
@@ -528,6 +530,13 @@ void Controller::readSettings()
     }
     settings.endArray();
     settings.endGroup();
+
+    settings.beginGroup("general_properties");
+    int dlSize = settings.value("download_size",LASTFM_EXTRALARGE).toInt();
+    viewer->rootContext()->setContextProperty("downloadSize",dlSize);
+    mDownloadSize = dlSize;
+    emit newDownloadSize(getLastFMArtSize(mDownloadSize));
+    settings.endGroup();
     viewer->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)serverprofiles));
     emit serverProfilesUpdated();
     if(serverprofiles->length()==0)
@@ -539,19 +548,22 @@ void Controller::readSettings()
 void Controller::writeSettings()
 {
     QSettings settings;
-        settings.beginGroup("server_properties");
-        settings.beginWriteArray("profiles");
-        for(int i=0;i<serverprofiles->length();i++)
-        {
-            settings.setArrayIndex(i);
-            settings.setValue("hostname",serverprofiles->at(i)->getHostname());
-            settings.setValue("password",serverprofiles->at(i)->getPassword());
-            settings.setValue("profilename",serverprofiles->at(i)->getName());
-            settings.setValue("port",serverprofiles->at(i)->getPort());
-            settings.setValue("default",serverprofiles->at(i)->getAutoconnect());
-        }
-        settings.endArray();
-        settings.endGroup();
+    settings.beginGroup("server_properties");
+    settings.beginWriteArray("profiles");
+    for(int i=0;i<serverprofiles->length();i++)
+    {
+        settings.setArrayIndex(i);
+        settings.setValue("hostname",serverprofiles->at(i)->getHostname());
+        settings.setValue("password",serverprofiles->at(i)->getPassword());
+        settings.setValue("profilename",serverprofiles->at(i)->getName());
+        settings.setValue("port",serverprofiles->at(i)->getPort());
+        settings.setValue("default",serverprofiles->at(i)->getAutoconnect());
+    }
+    settings.endArray();
+    settings.endGroup();
+    settings.beginGroup("general_properties");
+    settings.setValue("download_size",mDownloadSize);
+    settings.endGroup();
 }
 
 void Controller::quit()
@@ -616,7 +628,7 @@ void Controller::changeProfile(QVariant profile)
     serverprofiles->at(i)->setPassword(strings[3]);
     serverprofiles->at(i)->setPort(strings.at(4).toInt());
     if(strings.at(5).toInt()==1) {
-    //Check for other autoconnects
+        //Check for other autoconnects
         for(int j = 0; j<serverprofiles->length();j++)
         {
             serverprofiles->at(j)->setAutoconnect(false);
@@ -675,27 +687,27 @@ void Controller::decVolume()
 }
 void Controller::mediaKeyHandle(int key)
 {
-//    if(key == MediaKeysObserver::EVolDecKey)
-//        decVolume();
-//    if(key == MediaKeysObserver::EVolIncKey)
-//        incVolume();
+    //    if(key == MediaKeysObserver::EVolDecKey)
+    //        decVolume();
+    //    if(key == MediaKeysObserver::EVolIncKey)
+    //        incVolume();
 
 }
 
 void Controller::mediaKeyPressed(int key)
 {
-//    if(key == MediaKeysObserver::EVolDecKey)
-//        volDecTimer.start();
-//    if(key == MediaKeysObserver::EVolIncKey)
-//        volIncTimer.start();
+    //    if(key == MediaKeysObserver::EVolDecKey)
+    //        volDecTimer.start();
+    //    if(key == MediaKeysObserver::EVolIncKey)
+    //        volIncTimer.start();
 }
 
 void Controller::mediaKeyReleased(int key)
 {
-//    if(key == MediaKeysObserver::EVolDecKey&&volDecTimer.isActive())
-//        volDecTimer.stop();
-//    if(key == MediaKeysObserver::EVolIncKey&&volIncTimer.isActive())
-//        volIncTimer.stop();
+    //    if(key == MediaKeysObserver::EVolDecKey&&volDecTimer.isActive())
+    //        volDecTimer.stop();
+    //    if(key == MediaKeysObserver::EVolIncKey&&volIncTimer.isActive())
+    //        volIncTimer.stop();
 }
 
 
@@ -708,7 +720,7 @@ void Controller::focusChanged(QObject *now){
     else if (!mApplicationActive){
         mApplicationActive = true;
         if ( !netaccess->connected() && (mLastProfileIndex!=-1) ) {
-           reconnectServer();
+            reconnectServer();
         }
         emit setUpdateInterval(1000);
     }
@@ -719,10 +731,10 @@ void Controller::fileStackPop()
 {
     FileModel *model = filemodels->pop();
     delete(model);
-//    if(!filemodels->empty())
-//    {
-//        viewer->rootContext()->setContextProperty("filesModel",QVariant::fromValue(*(filemodels->top())));
-//    }
+    //    if(!filemodels->empty())
+    //    {
+    //        viewer->rootContext()->setContextProperty("filesModel",QVariant::fromValue(*(filemodels->top())));
+    //    }
     emit filePopCleared();
 }
 
@@ -731,12 +743,12 @@ void Controller::cleanFileStack()
     QList<MpdFileEntry*> *list;
     while(!filemodels->empty())
     {
-            list = (QList<MpdFileEntry*>*)filemodels->pop();
-            for(int i=0;i<list->length();i++)
-            {
-                delete(list->at(i));
-            }
-            delete(list);
+        list = (QList<MpdFileEntry*>*)filemodels->pop();
+        for(int i=0;i<list->length();i++)
+        {
+            delete(list->at(i));
+        }
+        delete(list);
     }
     if(searchedtracks!=0){
         delete(searchedtracks);
@@ -800,7 +812,7 @@ void Controller::clearPlaylistList()
 void Controller::reconnectServer()
 {
     if( (mLastProfileIndex>=0) && (mLastProfileIndex<serverprofiles->length()
-            && !netaccess->connected() ) ) {
+                                   && !netaccess->connected() ) ) {
         connectProfile(mLastProfileIndex);
     }
 }
@@ -850,3 +862,37 @@ void Controller::setAlbumWikiInfo(QString info)
     viewer->rootContext()->setContextProperty("albumInfoText",info);
 }
 
+void Controller::receiveDownloadSize(int size)
+{
+    mDownloadSize = size;
+    viewer->rootContext()->setContextProperty("downloadSize",size);
+    emit newDownloadSize(getLastFMArtSize(size));
+    writeSettings();
+}
+
+QString Controller::getLastFMArtSize(int index)
+{
+    switch (index)  {
+    case 0: {
+        return "small";
+        break;
+    }
+    case 1: {
+        return "medium";
+        break;
+    }
+    case 2: {
+        return "large";
+        break;
+    }
+    case 3: {
+        return "extralarge";
+        break;
+    }
+    case 4: {
+        return "mega";
+        break;
+    }
+    }
+    return LASTFMDEFAULTSIZE;
+}

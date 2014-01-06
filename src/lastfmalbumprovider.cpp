@@ -10,6 +10,7 @@ LastFMAlbumProvider::LastFMAlbumProvider(QString albumName,QString artistName,QO
     mImageURL = "";
     mAlbumInfo = "";
     mLastInformation = 0;
+    mDownloadSize = LASTFMDEFAULTSIZE;
 }
 
 LastFMAlbumProvider::~LastFMAlbumProvider() {
@@ -104,7 +105,7 @@ void LastFMAlbumProvider::parseAlbum(QXmlStreamReader &xmlReader) {
 
             // Get image size attribute
             QXmlStreamAttributes attributes = xmlReader.attributes();
-            if ( attributes.hasAttribute("size") && attributes.value("size").toString() == COVERSIZE) {
+            if ( attributes.hasAttribute("size") && attributes.value("size").toString() == mDownloadSize) {
                 // Found desired cover size
                 xmlReader.readNext();
                 if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
@@ -244,4 +245,9 @@ void LastFMAlbumProvider::requestDownload(MpdAlbum album)
 //        mXMLNetAccess = 0;
 //    }
     startDownload();
+}
+
+void LastFMAlbumProvider::setDownloadSize(QString size)
+{
+    mDownloadSize = size;
 }

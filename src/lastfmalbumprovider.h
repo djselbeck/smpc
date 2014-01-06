@@ -12,8 +12,6 @@
 #include "common.h"
 #include "albuminformation.h"
 
-#define COVERSIZE "mega"
-
 
 class LastFMAlbumProvider : public QObject
 {
@@ -27,6 +25,8 @@ public:
 
 
     void setArtistAlbum(QString album, QString artist);
+    void setDownloadSize(QString size);
+
 
     QString getImageURL();
 
@@ -49,6 +49,8 @@ private:
     QNetworkAccessManager *mXMLNetAccess;
     QNetworkAccessManager *mAlbumArtAccess;
     AlbumInformation *mLastInformation;
+
+    QString mDownloadSize;
 
     void parseAlbum(QXmlStreamReader &xmlReader);
     void parseWikiInformation(QXmlStreamReader &xmlReader);

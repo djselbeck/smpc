@@ -162,3 +162,9 @@ int ImageDownloader::getAlbumQueueSize()
 {
     return mAlbumQueue->size();
 }
+
+void ImageDownloader::setDownloadSize(QString size)
+{
+    mAlbumProvider->setDownloadSize(size);
+    mArtistProvider->setDownloadSize(size);
+}
