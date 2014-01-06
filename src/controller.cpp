@@ -42,6 +42,9 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
     filemodels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
     viewer->rootContext()->setContextProperty("coverstring","");
+    viewer->rootContext()->setContextProperty("artistInfoText","");
+    viewer->rootContext()->setContextProperty("albumInfoText","");
+    updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     netaccess->setQmlThread(viewer->thread());
     //Start auto connect
@@ -57,22 +60,31 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),vie
 
 
     emit requestDBStatistic();
+    emit requestCoverArtistArt(MpdArtist(this,"Nightwish"));
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
 {
-    emit requestPlaylistClear();
+    qDebug() << "new playlist received";
+    PlaylistModel *model = new PlaylistModel((QList<MpdTrack*>*)list,this);
+    qDebug() << "new playlist model created";
+    QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
+    qDebug() << "new playlist model ownership set";
+    viewer->rootContext()->setContextProperty("playlistModelVar",model);
+    qDebug() << "new playlist model set in qml context";
     if(playlist==0){
+        qDebug() << "no old playlist found";
         currentsongid=0;
     } else{
+        qDebug() << "deleting old playlist";
         delete(playlist);
+        qDebug() << "old playlist deleted";
         playlist = 0;
+        qDebug() << "playlist = 0";
     }
     currentsongid = -1;
-    playlist = new PlaylistModel((QList<MpdTrack*>*)list,this);
-
-    viewer->rootContext()->setContextProperty("playlistModel",playlist);
-    emit playlistUpdated();
+    playlist = model;
+    qDebug() << "playlist = model";
 }
 
 void Controller::updateFilesModel(QList<QObject*>* list)
@@ -317,6 +329,13 @@ void Controller::connectSignals()
     connect(item,SIGNAL(cleanupBlacklisted()),mImgDB,SLOT(cleanUPBlacklistedAlbums()));
     connect(item,SIGNAL(cleanupAlbums()),mImgDB,SLOT(cleanupAlbums()));
     connect(item,SIGNAL(cleanupArtists()),mImgDB,SLOT(cleanupArtists()));
+    connect(item,SIGNAL(cleanupDB()),mImgDB,SLOT(cleanupDatabase()));
+
+    connect(item,SIGNAL(requestAlbumInfo(QVariant)),mImgDB,SLOT(requestAlbumWikiInformation(QVariant)));
+    connect(item,SIGNAL(requestArtistInfo(QString)),mImgDB,SLOT(requestArtistBioInformation(QString)));
+
+    connect(mImgDB,SIGNAL(albumWikiInformationReady(QString)),this,SLOT(setAlbumWikiInfo(QString)));
+    connect(mImgDB,SIGNAL(artistBioInformationReady(QString)),this,SLOT(setArtistBioInfo(QString)));
 }
 
 void Controller::setPassword(QString password)
@@ -821,4 +840,13 @@ void Controller::fillAlbumImages()
     emit requestArtistAlbumMap();
 }
 
+void Controller::setArtistBioInfo(QString info)
+{
+    viewer->rootContext()->setContextProperty("artistInfoText",info);
+}
+
+void Controller::setAlbumWikiInfo(QString info)
+{
+    viewer->rootContext()->setContextProperty("albumInfoText",info);
+}
 

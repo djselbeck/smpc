@@ -8,14 +8,16 @@ Page {
     property var listmodel;
     property string artistname
     property int lastIndex;
-    SilicaListView {
+    SilicaGridView {
         id: albumListView
-        quickScrollEnabled: false
         anchors.fill: parent
         highlightFollowsCurrentItem: false
         model: listmodel
+        cellWidth: width/2
+        cellHeight: cellWidth
         SectionScroller {
             listview: albumListView
+            sectionPropertyName: "sectionprop"
         }
         ScrollDecorator {}
 
@@ -40,14 +42,14 @@ Page {
         delegate: AlbumDelegate {
         }
 
-        section {
-            property: 'sectionprop'
-            delegate: Component {
-                SectionHeader {
-                    text: section
-                }
-            }
-        }
+//        section {
+//            property: 'sectionprop'
+//            delegate: Component {
+//                SectionHeader {
+//                    text: section
+//                }
+//            }
+//        }
     }
 
     onStatusChanged: {
@@ -56,6 +58,12 @@ Page {
         }
         else if ( status === PageStatus.Activating ) {
             albumListView.positionViewAtIndex(lastIndex,ListView.Center);
+            if(artistname != "") {
+                requestArtistInfo(artistname);
+            }
+        }
+        else if ( status === PageStatus.Active ) {
+            pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"),{artistname:artistname});
         }
     }
 

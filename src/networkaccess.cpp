@@ -1567,8 +1567,8 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                 QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
             }
         }
-        return temptracks;
     }
+    return temptracks;
 }
 
 void NetworkAccess::exitRequest()
@@ -1653,7 +1653,9 @@ void NetworkAccess::setQmlThread(QThread *thread)
 
 void NetworkAccess::getArtistAlbumMap()
 {
+    emit busy();
     emit artistsAlbumsMapReady(getArtistsAlbumsMap_prv());
+    emit ready();
 }
 
 QMap<MpdArtist*, QList<MpdAlbum*>* > *NetworkAccess::getArtistsAlbumsMap_prv()

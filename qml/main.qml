@@ -88,7 +88,7 @@ ApplicationWindow
     property Page serverList;
     property Page artistspage;
     property Page albumspage;
-    property var playlistModelVar;
+//    property ListModel playlistModelVar;
     property int listfontsize:12;
     property int liststretch:20;
     property int lastsongid:-1;
@@ -128,6 +128,10 @@ ApplicationWindow
     signal cleanupBlacklisted();
     signal cleanupArtists();
     signal cleanupAlbums();
+    signal cleanupDB();
+
+    signal requestArtistInfo(string artist);
+    signal requestAlbumInfo(variant album);
 
 
 
@@ -150,11 +154,13 @@ ApplicationWindow
     function busy()
     {
         busyIndicator.running = true;
+        inputBlock.enabled = true
     }
 
     function ready()
     {
         busyIndicator.running = false;
+        inputBlock.enabled = false
     }
 
     function settingsModelUpdated()
@@ -229,18 +235,10 @@ ApplicationWindow
     {   
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
-        playlistpage.songid = -1;
-        playlistModelVar = 0;
-        playlistModelVar = playlistModel;
+       // playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }
 
-
-    function clearPlaylist()
-    {
-        playlistModelVar = 0
-        console.debug("playlist model cleared");
-    }
 
     function updateAlbumsModel(){
         pageStack.push(Qt.resolvedUrl("pages/AlbumListPage.qml"),{listmodel:albumsModel,artistname:artistname});
@@ -350,6 +348,13 @@ ApplicationWindow
         id:busyIndicator
         size: BusyIndicatorSize.Large
         anchors.centerIn: parent
+    }
+
+    MouseArea
+    {
+        id: inputBlock
+        anchors.fill: parent
+        preventStealing: true
     }
 
     bottomMargin: quickControlPanel.visibleSize

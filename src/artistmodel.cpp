@@ -32,10 +32,10 @@ QVariant ArtistModel::data(const QModelIndex &index, int role) const
             qDebug() << "returning dummy image for artist: " << tmpArtist->getName();
             //emit requestAlbumInformation(*album);
             // Return dummy for the time being
-            return DUMMY_ARTISTIMAGE;
+            return "";
         } else if (imageID == -2 ) {
             qDebug() << "returning dummy image for blacklisted artist: " << tmpArtist->getName();
-            return DUMMY_ARTISTIMAGE;
+            return "";
         } else {
             qDebug() << "returning database image for album: " << tmpArtist->getName();
             QString url = "image://imagedbprovider/artistid/" + QString::number(imageID);

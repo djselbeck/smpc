@@ -163,6 +163,9 @@ private slots:
 
     void newDBStatisticReceiver(DatabaseStatistic *statistic);
 
+    void setArtistBioInfo(QString info);
+    void setAlbumWikiInfo(QString info);
+
 };
 
 #endif // CONTROLLER_H

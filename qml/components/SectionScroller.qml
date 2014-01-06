@@ -8,7 +8,8 @@ Item {
     width: parent.width/5
     x: parent.x+parent.width-width;
     z:1
-    property ListView listview;
+    property GridView listview;
+    property string sectionPropertyName
 //    Rectangle {
 //        id: testrect
 //        opacity:0.5
@@ -17,10 +18,10 @@ Item {
 
     onListviewChanged: {
         if(listview && listview.model) {
-            Sections.fillSections(listview);
+            Sections.fillSections(listview,scroller.sectionPropertyName);
         } else if(listview) {
             listview.modelChanged.connect( function() {
-                Sections.fillSections(listview);
+                Sections.fillSections(listview,scroller.sectionPropertyName);
             });
 
         }

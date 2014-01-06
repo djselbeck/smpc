@@ -40,6 +40,7 @@ Page {
                 onClicked: {
                     bulkDownloadArtists()
                 }
+                enabled: dbStatistic.getArtistQueueSize()===0
             }
             Button {
                 id: downloadAlbumImagesBtn
@@ -48,6 +49,7 @@ Page {
                 onClicked: {
                     bulkDownloadAlbums()
                 }
+                enabled: dbStatistic.getAlbumQueueSize() === 0
             }
             Button {
                 id: clearBlacklistBtn
@@ -62,7 +64,7 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("clear artist images")
                 onClicked: {
-                    clearArtists()
+                    cleanupArtists()
                 }
             }
             Button {
@@ -70,7 +72,15 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("clear album images")
                 onClicked: {
-                    clearAlbums()
+                    cleanupAlbums()
+                }
+            }
+            Button {
+                id: clearDBBtn
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: qsTr("clear complete database")
+                onClicked: {
+                    cleanupDB()
                 }
             }
         }

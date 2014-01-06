@@ -23,7 +23,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
                                  "(id integer primary key AUTOINCREMENT,"
                                  "albumname text default '',"
                                  "artistname text default '',"
-                                 "albuminfo text default '',"
+                                 "albuminfo blob '',"
                                  "imageID text )") ) {
                 }
             }
@@ -40,7 +40,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
                 if (createQuery.exec("CREATE TABLE artists"
                                  "(id integer primary key,"
                                  "name text default '',"
-                                 "artistinfo text default '',"
+                                 "artistinfo blob,"
                                  "imageID text )") ) {
                 }
             }
@@ -56,7 +56,7 @@ ImageDatabase::ImageDatabase(QObject *parent) :
     connect(mDownloader,SIGNAL(artistInformationReady(ArtistInformation*)),this,SLOT(enterArtistInformation(ArtistInformation*)));
     connect(this,SIGNAL(requestArtistDownload(MpdArtist)),mDownloader,SLOT(requestArtistArt(MpdArtist)));
 
-
+    requestArtistBioInformation("Nightwish");
 }
 
 ImageDatabase::~ImageDatabase() {
@@ -232,7 +232,11 @@ void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
                       ":albumname, :artistname, :albuminfo, :imageID)");
         query.bindValue(":albumname",info->getName());
         query.bindValue(":artistname",info->getArtist());
-        query.bindValue(":albuminfo",info->getAlbumInfo());
+        // Compress album info here
+        QByteArray infoArray;
+        infoArray.append(info->getAlbumInfo());
+        infoArray = qCompress(infoArray,9);
+        query.bindValue(":albuminfo",infoArray);
         query.bindValue(":imageID",imgID);
         qDebug() << "Inserting into ALBUM-TABLE: " << query.lastQuery();
         query.exec();
@@ -305,7 +309,11 @@ void ImageDatabase::enterArtistInformation(ArtistInformation  *info)
                       "VALUES ("
                       ":name, :artistinfo, :imageID)");
         query.bindValue(":name",info->getArtist());
-        query.bindValue(":artistinfo",info->getArtistInfo());
+        // Compress artist info here
+        QByteArray infoArray;
+        infoArray.append(info->getArtistInfo());
+        infoArray = qCompress(infoArray,9);
+        query.bindValue(":artistinfo",infoArray);
         query.bindValue(":imageID",imgID);
 
         query.exec();
@@ -584,7 +592,7 @@ void ImageDatabase::cleanupDatabase()
     cleanupAlbums();
     cleanupArtists();
     QSqlQuery query;
-    query.prepare("DELETE FROM images");
+    query.prepare("DELETE FROM images ");
     query.exec();
     emit newStasticReady(updateStatistic());
 }
@@ -601,6 +609,7 @@ void ImageDatabase::requestCoverImage(MpdAlbum album)
         emit coverAlbumArtReady(QVariant::fromValue(url));
         return;
     }
+    emit coverAlbumArtReady("");
     emit requestAlbumDownload(album);
 }
 
@@ -615,6 +624,7 @@ void ImageDatabase::requestCoverArtistImage(MpdArtist artist)
         emit coverArtistArtReady(QVariant::fromValue(url));
         return;
     }
+    emit coverAlbumArtReady("");
     emit requestArtistDownload(artist);
 }
 
@@ -696,4 +706,63 @@ DatabaseStatistic *ImageDatabase::updateStatistic()
 void ImageDatabase::requestStatisticUpdate()
 {
     emit newStasticReady(updateStatistic());
+}
+
+QString ImageDatabase::getAlbumWikiInformation(QString album, QString artist)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM albums WHERE "
+                  "albumname=\"" + album + "\" AND "
+                  "artistname=\"" + artist +"\" ");
+    qDebug() << "Check for album wiki information: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        QString retAlbum = query.value("albumname").toString();
+        if ( retAlbum == album ) {
+            QByteArray compressedBlob = query.value("albuminfo").toByteArray();
+            QByteArray uncompressedBlob = qUncompress(compressedBlob);
+            QString wikiInfo = QString(uncompressedBlob);
+            // Cleanup string for nicer visual representation
+            wikiInfo.remove(QRegExp("<[^>]*>"));
+            wikiInfo.replace("&quot;","\"");
+            return wikiInfo;
+        }
+    }
+    return "";
+}
+
+QString ImageDatabase::getArtistBioInformation(QString artist)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM artists WHERE "
+                  "name=\"" + artist +"\" ");
+    qDebug() << "Check for artist wiki information: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        QString retArtist = query.value("name").toString();
+        if ( retArtist == artist ) {
+            QByteArray compressedBlob = query.value("artistinfo").toByteArray();
+            QByteArray uncompressedBlob = qUncompress(compressedBlob);
+            QString wikiInfo = QString(uncompressedBlob);
+            // Cleanup visual representation
+            wikiInfo.remove(QRegExp("<[^>]*>"));
+            wikiInfo.replace("&quot;","\"");
+            return wikiInfo;
+        }
+    }
+    return "";
+}
+
+void ImageDatabase::requestAlbumWikiInformation(QVariant album)
+{
+    QStringList strings = album.toStringList();
+    if(strings.length()==2)
+        emit albumWikiInformationReady(getAlbumWikiInformation(strings[0],strings[1]));
+}
+
+void ImageDatabase::requestArtistBioInformation(QString artist)
+{
+    emit artistBioInformationReady(getArtistBioInformation(artist));
 }

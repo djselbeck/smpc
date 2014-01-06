@@ -7,11 +7,16 @@ Page
     id: artistlistPage
     property var listmodel;
     property int lastIndex;
-    SilicaListView {
+
+    SilicaGridView {
         model: listmodel
             id : artistListView
+            cellWidth: width/2
+            cellHeight: width/2
+
             SectionScroller{
                 listview: artistListView
+                sectionPropertyName: "sectionprop"
             }
             ScrollDecorator {}
             anchors.fill: parent
@@ -19,12 +24,13 @@ Page
                 title: qsTr("artists");
             }
             delegate: ArtistDelegate{}
-            section {
-                property: 'sectionprop'
-                delegate: SectionHeader {
-                    text: section
-                }
-            }
+
+//            section {
+//                property: 'sectionprop'
+//                delegate: SectionHeader {
+//                    text: section
+//                }
+//            }
     }
 
     onStatusChanged: {

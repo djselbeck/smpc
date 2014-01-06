@@ -2,6 +2,8 @@
 #define PLAYLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
+
 #include "mpdtrack.h"
 
 class PlaylistModel : public QAbstractListModel
@@ -11,13 +13,12 @@ class PlaylistModel : public QAbstractListModel
 public:
     explicit PlaylistModel(QObject *parent = 0);
         ~PlaylistModel(){
-                   for(int i=0;i<m_entries->length();i++)
-                   {
-                       delete(m_entries->at(i));
+        if(m_entries){
+                        qDeleteAll(*m_entries);
+                        delete(m_entries);
+                        m_entries = 0;
+        }
                    }
-                   delete(m_entries);
-                  }
-
         PlaylistModel(QList<MpdTrack*>* list,QObject *parent = 0);
     enum EntryRoles {
         NameRole = Qt::UserRole + 1,
@@ -33,7 +34,10 @@ public:
         playingRole
     };
 
-    Q_INVOKABLE MpdTrack* get(int index) {  return m_entries->at(index); }
+    Q_INVOKABLE MpdTrack* get(int index) {
+        MpdTrack *retTrack;
+        QQmlEngine::setObjectOwnership(retTrack,QQmlEngine::CppOwnership);
+        return retTrack; }
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE QHash<int, QByteArray> roleNames() const;

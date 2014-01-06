@@ -22,6 +22,8 @@
 #include "databasestatistic.h"
 #include "imagedownloader.h"
 
+#define COMPRESSION_LEVEL 9
+
 class ImageDatabase : public QObject
 {
     Q_OBJECT
@@ -50,6 +52,9 @@ public:
     QImage getArtistImage(QString artist,bool download=false);
     QImage getArtistImage(int artworkID);
 
+    QString getArtistBioInformation(QString artist);
+    QString getAlbumWikiInformation(QString album, QString artist);
+
 
 public slots:
     void albumReady(AlbumInformation *albumInformation);
@@ -62,6 +67,9 @@ public slots:
     void requestCoverArtistImage(MpdArtist artist);
 
     void requestStatisticUpdate();
+
+    void requestArtistBioInformation(QString artist);
+    void requestAlbumWikiInformation(QVariant album);
 
     // Cleanups
     void cleanUPBlacklistedAlbums();
@@ -110,6 +118,9 @@ signals:
     void albumEntered(QString name);
 
     void newStasticReady(DatabaseStatistic *statistic);
+
+    void artistBioInformationReady(QString);
+    void albumWikiInformationReady(QString);
 
 
 public slots:

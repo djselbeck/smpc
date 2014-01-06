@@ -5,9 +5,9 @@ import Sailfish.Silica 1.0
 
 Dialog {
     id: currentsong_page
-    property alias title: titleText.text
-    property alias album: albumText.text
-    property alias artist: artistText.text
+    property string title
+    property string album
+    property string artist
     property alias lengthtext: lengthText.text
     property alias nr: nrText.text
     property alias date: dateText.text
@@ -39,49 +39,39 @@ Dialog {
                 id: header
                 acceptText: qsTr("add song")
             }
-            Label {
-                text: qsTr("title:")
-                color: Theme.secondaryColor
-                font.pixelSize: fontsizegrey
+            ToggleImage{
+                height: parent.width
+                width: height
+                sourceprimary:  "image://imagedbprovider/album/" + artist +"/" + album
+                sourcesecondary: "image://imagedbprovider/artist/" + artist;
+                fillMode: Image.PreserveAspectFit
             }
-            Label {
+
+            ScrollLabel {
                 id: titleText
-                text: ""
+                text: title
                 color: Theme.primaryColor
                 font.pixelSize: fontsize
-                wrapMode: "WordWrap"
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
             }
-            Label {
-                text: qsTr("album:")
-                color: Theme.secondaryColor
-                font.pixelSize: fontsizegrey
-            }
-            Label {
+            ScrollLabel {
                 id: albumText
-                text: ""
+                text: album
                 color: Theme.primaryColor
                 font.pixelSize: fontsize
-                wrapMode: "WordWrap"
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
             }
-            Label {
-                text: qsTr("artist:")
-                color: Theme.secondaryColor
-                font.pixelSize: fontsizegrey
-            }
-            Label {
+            ScrollLabel {
                 id: artistText
-                text: ""
+                text: artist
                 color: Theme.primaryColor
                 font.pixelSize: fontsize
-                wrapMode: "WordWrap"
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -154,16 +144,16 @@ Dialog {
         }
         PullDownMenu {
             MenuItem {
+                text: qsTr("add song")
+                onClicked: {
+                    accept()
+                }
+            }
+            MenuItem {
                 text: qsTr("play song")
                 onClicked: {
                     playSong(filename)
                     pageStack.navigateBack(PageStackAction.Animated)
-                }
-            }
-            MenuItem {
-                text: qsTr("add song")
-                onClicked: {
-                    accept()
                 }
             }
         }

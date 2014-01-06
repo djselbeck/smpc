@@ -1,4 +1,5 @@
 import QtQuick 2.0
+
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -8,13 +9,42 @@ Page {
     property string albumname
     property string artistname
     property int lastIndex
+
     SilicaListView {
         id: albumTracksListView
-        ScrollDecorator {}
+        ScrollDecorator {
+        }
         anchors.fill: parent
         contentWidth: width
-        header: PageHeader {
-            title: albumname
+        header: Column {
+            height: header.height + imageRow.height
+            width: parent.width
+            PageHeader {
+                id: header
+                title: albumname
+            }
+            Row {
+                id: imageRow
+                width: parent.width
+                height: width / 2
+                Image {
+                    id: artistImage
+                    width: parent.width / 2
+                    height: width
+                    source: "image://imagedbprovider/artist/" + artistname
+                    fillMode: Image.PreserveAspectCrop
+                }
+                Image {
+                    id: albumImage
+                    width: parent.width / 2
+                    height: width
+                    source: artistname=="" ?
+                                "image://imagedbprovider/album/" + albumname :
+                                "image://imagedbprovider/album/" + artistname + "/" + albumname
+                    fillMode: Image.PreserveAspectCrop
+                }
+            }
+
         }
         PullDownMenu {
             MenuItem {
@@ -127,9 +157,13 @@ Page {
     onStatusChanged: {
         if (status === PageStatus.Deactivating) {
             lastIndex = albumTracksListView.currentIndex
-        } else if (status === PageStatus.Activating
-                   || status === PageStatus.Active) {
+        } else if (status === PageStatus.Activating ) {
             albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+        }
+        else if ( status === PageStatus.Active ) {
+            albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+            requestAlbumInfo([albumname,artistname]);
+            pageStack.pushAttached(Qt.resolvedUrl("AlbumInfoPage.qml"),{albumname:albumname});
         }
     }
 

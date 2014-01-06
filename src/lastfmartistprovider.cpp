@@ -124,13 +124,23 @@ void LastFMArtistProvider::parseArtist(QXmlStreamReader &xmlReader) {
             parseWikiInformation(xmlReader);
         }
 
+
         xmlReader.readNext();
+        // Skip similar artists
+        if( xmlReader.tokenType() == QXmlStreamReader::StartElement && xmlReader.name() == "similar")
+        {
+            while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "similar") )
+            {
+                xmlReader.readNext();
+            }
+        }
     }
 
 }
 
 void LastFMArtistProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
     // Security check
+    qDebug() << "Found wiki information";
     if ( ( xmlReader.tokenType() != QXmlStreamReader::StartElement &&
            xmlReader.name() == "bio" )) {
         return;
@@ -139,9 +149,13 @@ void LastFMArtistProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
     while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "bio") ) {
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
              xmlReader.name() == "content") {
-            xmlReader.readNext();
-            if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
-                mArtistInfo = xmlReader.text().toString();
+            while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "content") )  {
+                if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
+                    qDebug() << "Reached content block";
+                    mArtistInfo.append(xmlReader.text().toString());
+                    qDebug() << mArtistInfo;
+                }
+                xmlReader.readNext();
             }
         }
         xmlReader.readNext();

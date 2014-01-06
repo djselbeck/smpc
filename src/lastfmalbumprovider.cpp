@@ -140,9 +140,13 @@ void LastFMAlbumProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
     while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "wiki") ) {
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
              xmlReader.name() == "content") {
-            xmlReader.readNext();
-            if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
-                mAlbumInfo = xmlReader.text().toString();
+            while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "content") )  {
+                if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
+                    qDebug() << "Reached content block";
+                    mAlbumInfo.append(xmlReader.text().toString());
+                    qDebug() << mAlbumInfo;
+                }
+                xmlReader.readNext();
             }
         }
         xmlReader.readNext();
