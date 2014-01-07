@@ -5,6 +5,9 @@
 #include <QQmlEngine>
 
 #include <mpd/mpdfileentry.h>
+#include <localdb/imagedatabase.h>
+
+#define DUMMY_ALBUMIMAGE "image://theme/icon-l-music"
 
 class FileModel : public QAbstractListModel
 {
@@ -14,7 +17,7 @@ public:
     explicit FileModel(QObject *parent = 0);
     ~FileModel();
 
-    FileModel(QList<MpdFileEntry*>* list,QObject *parent = 0);
+    FileModel(QList<MpdFileEntry*>* list,ImageDatabase *db,QObject *parent = 0);
 
     Q_INVOKABLE MpdFileEntry* get(int index);
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -34,11 +37,13 @@ public:
         albumRole,
         lengthRole,
         tracknoRole,
-        yearRole
+        yearRole,
+        imageURLRole
     };
 
 private:
     QList<MpdFileEntry*>* mEntries;
+    ImageDatabase *mDB;
 
 signals:
 

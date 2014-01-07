@@ -51,6 +51,7 @@ public:
 
     QImage getArtistImage(QString artist,bool download=false);
     QImage getArtistImage(int artworkID);
+    QImage getArtistImageForAlbum(QString album);
 
     QString getArtistBioInformation(QString artist);
     QString getAlbumWikiInformation(QString album, QString artist);

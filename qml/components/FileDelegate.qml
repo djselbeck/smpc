@@ -17,11 +17,8 @@ Component {
                 left: parent.left
             }
             id: fileicon
-            source: (isDirectory ? "image://theme/icon-m-folder" : (isPlaylist ? "image://theme/icon-m-document" : "image://imagedbprovider/album/"+artist+"/"+album))
+            source: (isDirectory ? "image://theme/icon-m-folder" : (isPlaylist ? "image://theme/icon-m-document" : imageURL ) )
             width: height
-            onSourceChanged: {
-                console.debug("Source:" + source);
-            }
         }
         Label {
             id: filenametext

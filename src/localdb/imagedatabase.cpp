@@ -60,8 +60,8 @@ bool ImageDatabase::syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist) {
     for( int i = 0; i < albumsToRemove.length();i++) {
         QSqlQuery removeQuery;
         if ( removeQuery.exec("DELETE FROM albums where albumname = \"" +
-                         albumsToRemove.at(i) +
-                         "\"") ) {
+                              albumsToRemove.at(i) +
+                              "\"") ) {
         }
     }
 
@@ -159,10 +159,10 @@ void ImageDatabase::enterAlbumInformation(AlbumInformation *info)
     }
 
     // Check if Image has image data otherwise skip it
-//    if ( !info->getImageData() ) {
-//        qDebug() << "Album has no cover image, skipping";
-//        return;
-//    }
+    //    if ( !info->getImageData() ) {
+    //        qDebug() << "Album has no cover image, skipping";
+    //        return;
+    //    }
 
     // Check if image with same hash value is already part of the database
     int imgID = imageIDFromHash(info->getImageHash());
@@ -237,10 +237,10 @@ void ImageDatabase::enterArtistInformation(ArtistInformation  *info)
     }
 
     // Check if Image has image data otherwise skip it
-//    if ( !info->getImageData() ) {
-//        qDebug() << "Album has no cover image, skipping";
-//        return;
-//    }
+    //    if ( !info->getImageData() ) {
+    //        qDebug() << "Album has no cover image, skipping";
+    //        return;
+    //    }
 
     // Check if image with same hash value is already part of the database
     int imgID = imageIDFromHash(info->getImageHash());
@@ -390,9 +390,9 @@ QImage ImageDatabase::getAlbumImage(QString album, QString artist, bool download
 {
     qDebug() << "get Image for: " << album << artist;
     int artworkID = imageIDFromAlbumArtist(album,artist);
-//    if ( artworkID == -1 ) {
-//        return QImage();
-//    }
+    //    if ( artworkID == -1 ) {
+    //        return QImage();
+    //    }
 
     if (artworkID != -1) {
         return getAlbumImage(artworkID);
@@ -404,24 +404,24 @@ QImage ImageDatabase::getAlbumImage(QString album, QString artist, bool download
         emit requestAlbumDownload(tempAlbum);
     }
 
-//    if ( download ) {
-//        qDebug() << "No image found, try downloading";
-//        // Not found an image in database, try retrieving it from internet now
-//        // TODO ASYNC PROBLEM
-//        // Recheck if album art still doesn't exists
-//        LastFMAlbumProvider artProvider("","",this);
-//        QEventLoop loop;
-//        QObject::connect(&artProvider, SIGNAL(readyRead()), &loop, SLOT(quit()));
+    //    if ( download ) {
+    //        qDebug() << "No image found, try downloading";
+    //        // Not found an image in database, try retrieving it from internet now
+    //        // TODO ASYNC PROBLEM
+    //        // Recheck if album art still doesn't exists
+    //        LastFMAlbumProvider artProvider("","",this);
+    //        QEventLoop loop;
+    //        QObject::connect(&artProvider, SIGNAL(readyRead()), &loop, SLOT(quit()));
 
-//        loop.exec();
-//        qDebug() << "Albuminformation downloaded";
+    //        loop.exec();
+    //        qDebug() << "Albuminformation downloaded";
 
-//        AlbumInformation *info = artProvider.getLastInformation();
-//        enterAlbumInformation(info);
-//        QImage img;
-//        img.loadFromData(*info->getImageData());
-//        return img;
-//    }
+    //        AlbumInformation *info = artProvider.getLastInformation();
+    //        enterAlbumInformation(info);
+    //        QImage img;
+    //        img.loadFromData(*info->getImageData());
+    //        return img;
+    //    }
 
     return QImage();
 }
@@ -453,7 +453,7 @@ QImage ImageDatabase::getAlbumImage(QString album,bool download)
 
     // Not found an image in database, try retrieving it from internet now
     // TODO ASYNC PROBLEM
-//    LastFMAlbumProvider provider(album,artist);
+    //    LastFMAlbumProvider provider(album,artist);
 
     return QImage();
 }
@@ -532,6 +532,29 @@ QImage ImageDatabase::getArtistImage(int artworkID)
     return QImage();
 }
 
+QImage ImageDatabase::getArtistImageForAlbum(QString album)
+{
+    QSqlQuery query;
+    album = album.replace('\"',"\\\"");
+    query.prepare("SELECT * FROM albums WHERE "
+                  "albumname=\"" + album + "\""
+                  " AND imageid!=\"-2\"");
+    qDebug() << "Check for image: " << query.lastQuery();
+    query.exec();
+
+    while ( query.next() ) {
+        QString albumName = query.value("albumname").toString();
+        if ( albumName == album) {
+            // FIXME first fit, replace with list of artists and multiple
+            // pictures
+            QString artist = query.value("artistname").toString();
+            return getArtistImage(artist);
+        }
+    }
+    qDebug() << "Found no image";
+    return QImage();
+}
+
 void ImageDatabase::cleanUPBlacklistedAlbums()
 {
     QSqlQuery query;
@@ -582,14 +605,14 @@ void ImageDatabase::cleanupOrphans()
 void ImageDatabase::cleanupDatabase()
 {
     qDebug() << "Clearing all tables";
-//    QSqlQuery query;
-//    query.prepare("DROP TABLE images ");
-//    query.exec();
-//    qDebug() << "Last error: drop: " << query.lastError().text();
-//    query.prepare("DROP TABLE albums ");
-//    query.exec();
-//    query.prepare("DROP TABLE artists ");
-//    query.exec();
+    //    QSqlQuery query;
+    //    query.prepare("DROP TABLE images ");
+    //    query.exec();
+    //    qDebug() << "Last error: drop: " << query.lastError().text();
+    //    query.prepare("DROP TABLE albums ");
+    //    query.exec();
+    //    query.prepare("DROP TABLE artists ");
+    //    query.exec();
     if(mDB->isOpen()) {
         mDB->close();
         QString dbName = mDB->connectionName();
@@ -615,28 +638,28 @@ void ImageDatabase::createTables()
         if ( !mDB->tables().contains("albums") ) {
             QSqlQuery createQuery;
             if (createQuery.exec("CREATE TABLE albums"
-                             "(id integer primary key AUTOINCREMENT,"
-                             "albumname text default '',"
-                             "artistname text default '',"
-                             "albuminfo blob '',"
-                             "imageID text )") ) {
+                                 "(id integer primary key AUTOINCREMENT,"
+                                 "albumname text default '',"
+                                 "artistname text default '',"
+                                 "albuminfo blob '',"
+                                 "imageID text )") ) {
             }
         }
         if ( !mDB->tables().contains("images") ) {
             QSqlQuery createQuery;
             if (createQuery.exec("CREATE TABLE images"
-                             "(id integer primary key AUTOINCREMENT,"
-                             "imghash text default '',"
-                             "imgdata blob)") ) {
+                                 "(id integer primary key AUTOINCREMENT,"
+                                 "imghash text default '',"
+                                 "imgdata blob)") ) {
             }
         }
         if ( !mDB->tables().contains("artist") ) {
             QSqlQuery createQuery;
             if (createQuery.exec("CREATE TABLE artists"
-                             "(id integer primary key,"
-                             "name text default '',"
-                             "artistinfo blob,"
-                             "imageID text )") ) {
+                                 "(id integer primary key,"
+                                 "name text default '',"
+                                 "artistinfo blob,"
+                                 "imageID text )") ) {
             }
         }
     }
@@ -719,8 +742,8 @@ int ImageDatabase::getBlacklistCount()
                   " WHERE imageID=\"-2\"");
     query.exec();
     while ( query.next() ) {
-       int albumCount = query.value("albumcount").toInt();
-       return albumCount;
+        int albumCount = query.value("albumcount").toInt();
+        return albumCount;
     }
     return 0;
 }
@@ -757,9 +780,14 @@ void ImageDatabase::requestStatisticUpdate()
 QString ImageDatabase::getAlbumWikiInformation(QString album, QString artist)
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM albums WHERE "
-                  "albumname=\"" + album + "\" AND "
-                  "artistname=\"" + artist +"\" ");
+    if ( artist != "" ) {
+        query.prepare("SELECT * FROM albums WHERE "
+                      "albumname=\"" + album + "\" AND "
+                      "artistname=\"" + artist +"\" ");
+    } else {
+        query.prepare("SELECT * FROM albums WHERE "
+                      "albumname=\"" + album + "\"");
+    }
     qDebug() << "Check for album wiki information: " << query.lastQuery();
     query.exec();
 

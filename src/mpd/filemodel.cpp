@@ -6,9 +6,12 @@ FileModel::FileModel(QObject *parent) :
 }
 
 
-FileModel::FileModel(QList<MpdFileEntry *> *list,QObject *parent) : QAbstractListModel(parent)
+FileModel::FileModel(QList<MpdFileEntry *> *list,
+                     ImageDatabase *db,
+                     QObject *parent) : QAbstractListModel(parent)
 {
     mEntries = list;
+    mDB = db;
 }
 
 FileModel::~FileModel()
@@ -50,6 +53,42 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
         return mEntries->at(index.row())->getTrackNr();
     else if(role==yearRole)
         return mEntries->at(index.row())->getYear();
+    else if(role==imageURLRole) {
+        MpdFileEntry *mpdFile = mEntries->at(index.row());
+        if ( mpdFile->isFile() ) {
+            QString album = mpdFile->getAlbum();
+            QString artist = mpdFile->getArtist();
+            if ( artist != "" ) {
+                int imageID = mDB->imageIDFromAlbumArtist(album,artist);
+                // No image found return dummy url
+                if ( imageID <= -1 ) {
+                    // Start image retrieval
+                    qDebug() << "returning dummy image for album: " << album;
+                    // Return dummy for the time being
+                    return DUMMY_ALBUMIMAGE;
+                } else {
+                    qDebug() << "returning database image for album: " << album;
+                    QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                    return url;
+                }
+            }
+            else {
+                int imageID = mDB->imageIDFromAlbum(album);
+                // No image found return dummy url
+                if ( imageID <= -1 ) {
+                    // Start image retrieval
+                    qDebug() << "returning dummy image for album: " << album;
+                    // Return dummy for the time being
+                    return DUMMY_ALBUMIMAGE;
+                }
+                else {
+                    qDebug() << "returning database image for album: " << album;
+                    QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                    return url;
+                }
+            }
+        }
+    }
     return 0;
 }
 
@@ -76,6 +115,7 @@ QHash<int, QByteArray> FileModel::roleNames() const {
     roles[lengthRole] = "length";
     roles[tracknoRole] = "tracknr";
     roles[yearRole] = "year";
+    roles[imageURLRole] = "imageURL";
 
     return roles;
 }

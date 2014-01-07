@@ -16,35 +16,45 @@ Page {
         }
         anchors.fill: parent
         contentWidth: width
-        header: Column {
-            height: header.height + imageRow.height
+        header: Item {
+            height: headerColumn.height
             width: parent.width
-            PageHeader {
-                id: header
-                title: albumname
-            }
-            Row {
-                id: imageRow
+            Column {
+                id: headerColumn
+                height: header.height + imageRow.height
                 width: parent.width
-                height: width / 2
-                Image {
-                    id: artistImage
-                    width: parent.width / 2
-                    height: width
-                    source: "image://imagedbprovider/artist/" + artistname
-                    fillMode: Image.PreserveAspectCrop
+                PageHeader {
+                    id: header
+                    title: albumname
                 }
-                Image {
-                    id: albumImage
-                    width: parent.width / 2
-                    height: width
-                    source: artistname=="" ?
-                                "image://imagedbprovider/album/" + albumname :
-                                "image://imagedbprovider/album/" + artistname + "/" + albumname
-                    fillMode: Image.PreserveAspectCrop
+                Row {
+                    id: imageRow
+                    width: parent.width
+                    height: width / 2
+                    Image {
+                        id: artistImage
+                        width: parent.width / 2
+                        height: width
+                        source: artistname
+                                == "" ? "image://imagedbprovider/artistfromalbum/"
+                                        + albumname : "image://imagedbprovider/artist/" + artistname
+                        fillMode: Image.PreserveAspectCrop
+                    }
+                    Image {
+                        id: albumImage
+                        width: parent.width / 2
+                        height: width
+                        source: artistname == "" ? "image://imagedbprovider/album/"
+                                                   + albumname : "image://imagedbprovider/album/"
+                                                   + artistname + "/" + albumname
+                        fillMode: Image.PreserveAspectCrop
+                    }
                 }
             }
-
+            OpacityRampEffect {
+                sourceItem: headerColumn
+                direction: OpacityRamp.TopToBottom
+            }
         }
         PullDownMenu {
             MenuItem {
@@ -157,13 +167,14 @@ Page {
     onStatusChanged: {
         if (status === PageStatus.Deactivating) {
             lastIndex = albumTracksListView.currentIndex
-        } else if (status === PageStatus.Activating ) {
+        } else if (status === PageStatus.Activating) {
             albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
-        }
-        else if ( status === PageStatus.Active ) {
+        } else if (status === PageStatus.Active) {
             albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
-            requestAlbumInfo([albumname,artistname]);
-            pageStack.pushAttached(Qt.resolvedUrl("AlbumInfoPage.qml"),{albumname:albumname});
+            requestAlbumInfo([albumname, artistname])
+            pageStack.pushAttached(Qt.resolvedUrl("AlbumInfoPage.qml"), {
+                                       albumname: albumname
+                                   })
         }
     }
 

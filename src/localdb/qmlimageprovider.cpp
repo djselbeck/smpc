@@ -33,6 +33,11 @@ QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSiz
             size->setHeight(img.height());
             size->setWidth(img.width());
             return img;
+        } else if (idList[0] == "artistfromalbum" ) {
+            QImage img = mDB->getArtistImageForAlbum(idList[1]);
+            size->setHeight(img.height());
+            size->setWidth(img.width());
+            return img;
         } else if (idList[0] == "artist" ) {
             QImage img = mDB->getArtistImage(idList[1]);
             size->setHeight(img.height());

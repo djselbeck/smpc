@@ -1328,7 +1328,7 @@ void NetworkAccess::getDirectory(QString path)
                             }
 
                         }
-                        tempfile = new MpdFileEntry(path,tempsplitter.last(),1,NULL,this);
+                        tempfile = new MpdFileEntry(path,tempsplitter.last(),1,NULL,NULL);
                         tempfiles->append(tempfile);
                         tempfile->moveToThread(mQmlThread);
                         QQmlEngine::setObjectOwnership(tempfile, QQmlEngine::CppOwnership);
@@ -1354,7 +1354,7 @@ void NetworkAccess::getDirectory(QString path)
                             }
 
                         }
-                        tempfile = new MpdFileEntry(path,tempsplitter.last(),MpdFileEntry::MpdFileType_Playlist,NULL,this);
+                        tempfile = new MpdFileEntry(path,tempsplitter.last(),MpdFileEntry::MpdFileType_Playlist,NULL,NULL);
                         tempfiles->append(tempfile);
                         tempfile->moveToThread(mQmlThread);
                         filename = "";
@@ -1370,7 +1370,10 @@ void NetworkAccess::getDirectory(QString path)
             tempsplitter = file.split("/");
             if (tempsplitter.length()>0)
             {
-                temptrack = new MpdTrack(NULL,file,title,artist,albumstring,length);
+                temptrack = new MpdTrack(NULL,file,title,artist,album,length);
+                temptrack->setTrackNr(nr);
+                temptrack->setAlbumTracks(albumnrs);
+                temptrack->setYear(datestring);
                 prepath ="";
                 for (int j=0;j<tempsplitter.length()-1;j++)
                 {
@@ -1381,6 +1384,7 @@ void NetworkAccess::getDirectory(QString path)
                     }
 
                 }
+                qDebug() << "Last album: " << albumstring;
                 tempfile = new MpdFileEntry(prepath,tempsplitter.last(),MpdFileEntry::MpdFileType_File,temptrack,NULL);
                 tempfiles->append(tempfile);
                 temptrack->moveToThread(mQmlThread);

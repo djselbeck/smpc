@@ -87,7 +87,7 @@ void Controller::updateFilesModel(QList<QObject*>* list)
 {
     if(list->length()>0)
     {
-        FileModel *model = new FileModel((QList<MpdFileEntry*>*)list,this);
+        FileModel *model = new FileModel((QList<MpdFileEntry*>*)list,mImgDB,this);
         QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
         mQuickView->rootContext()->setContextProperty("filesModel",model);
         mFileModels->push(model);
