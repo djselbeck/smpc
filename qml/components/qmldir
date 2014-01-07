@@ -1,0 +1,12 @@
+module components
+AlbumDelegate 1.0 AlbumDelegate.qml
+ArtistDelegate 1.0 ArtistDelegate.qml
+ControlPanel 1.0 ControlPanel.qml
+FileDelegate 1.0 FileDelegate.qml
+Heading 1.0 Heading.qml
+MainGridItem 1.0 MainGridItem.qml
+ScrollLabel 1.0 ScrollLabel.qml
+SectionScroller 1.0 SectionScroller.qml
+SongDialog 1.0 SongDialog.qml
+SpeedScroller 1.0 SpeedScroller.qml
+ToggleImage 1.0 ToggleImage.qml

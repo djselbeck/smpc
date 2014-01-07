@@ -11,54 +11,54 @@ Component {
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
             color: Theme.rgba(Theme.highlightColor, 0.1)
-        }
-
-        Image {
-            id: artistImage
-            anchors.fill: parent
-            anchors.margins: Theme.paddingSmall
-            source: imageURL
-            cache: false
-            fillMode: Image.PreserveAspectCrop
-        }
-        Rectangle {
-            id: gradientRect
-            visible: true //artistImage.source!=""
-            anchors {
-                bottom: parent.bottom
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
+            Image {
+                id: artistImage
+                anchors.fill: parent
+                source: imageURL
+                cache: false
+                fillMode: Image.PreserveAspectCrop
             }
-            width: parent.width
-
-            color: Theme.highlightBackgroundColor
-            gradient: Gradient {
-                GradientStop {
-                    position: 0.5
-                    color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            Rectangle {
+                id: gradientRect
+                visible: true //artistImage.source!=""
+                anchors {
+                    bottom: parent.bottom
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
                 }
-                GradientStop {
-                    position: 1.0
-                    color: Qt.rgba(0.0, 0.0, 0.0, 0.8)
+                width: parent.width
+
+                color: Theme.highlightBackgroundColor
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0.5
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.8)
+                    }
                 }
             }
-        }
-        Label {
-            anchors {
-                bottom: artistImage.bottom
-                horizontalCenter: artistImage.horizontalCenter
+            Label {
+                anchors {
+                    bottom: artistImage.bottom
+                    horizontalCenter: artistImage.horizontalCenter
+                }
+                height: parent.height * 0.5
+                width: parent.width
+                wrapMode: "WordWrap"
+                elide: Text.ElideRight
+                font.pixelSize: Theme.fontSizeSmall
+                style: Text.Raised
+                styleColor: Theme.secondaryColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignBottom
+                text: artist === "" ? qsTr("No Artist Tag") : artist
             }
-            height: parent.height * 0.5
-            width: parent.width
-            wrapMode: "WordWrap"
-            elide: Text.ElideRight
-            font.pixelSize: Theme.fontSizeSmall
-            style: Text.Raised
-            styleColor: Theme.secondaryColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignBottom
-            text: artist === "" ? qsTr("No Artist Tag") : artist
         }
+
+
 
         //        OpacityRampEffect {
         //            sourceItem: mainRow

@@ -122,7 +122,7 @@ Page {
                 pageStack.pushAttached(currentsongpage);
             }
         } else if (ident == "settings") {
-            pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+            pageStack.push(Qt.resolvedUrl("settings/SettingsPage.qml"))
         } else if (ident == "currentsong") {
             if (connected)
                 pageStack.push(currentsongpage)
@@ -139,7 +139,7 @@ Page {
             if (connected)
                 filesClicked("/")
         } else if (ident == "connectto") {
-            pageStack.push(Qt.resolvedUrl("ConnectServerPage.qml"), {
+            pageStack.push(Qt.resolvedUrl("settings/ConnectServerPage.qml"), {
                                listmodel: settingsModel
                            })
         } else if (ident == "about") {
@@ -149,7 +149,7 @@ Page {
         } else if (ident == "updatedb") {
             updateDB()
         } else if (ident == "search") {
-            pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
+            pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
         }
     }
 }

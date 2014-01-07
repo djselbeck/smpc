@@ -5,7 +5,7 @@ import "SectionScroller.js" as Sections
 Item {
     id: scroller
     height: parent.height
-    width: parent.width/5
+    width: parent.width/7
     x: parent.x+parent.width-width;
     z:1
     property GridView listview;

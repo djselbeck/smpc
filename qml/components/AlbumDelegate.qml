@@ -12,54 +12,54 @@ Component {
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
             color: Theme.rgba(Theme.highlightColor, 0.1)
-        }
-
-        Image {
-            id: albumImage
-            anchors.fill: parent
-            anchors.margins: Theme.paddingSmall
-            source: coverURL
-            cache: false
-            fillMode: Image.PreserveAspectCrop
-        }
-        Rectangle {
-            id: gradientRect
-            visible: true //artistImage.source!=""
-            anchors {
-                bottom: parent.bottom
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
+            Image {
+                id: albumImage
+                anchors.fill: parent
+                source: coverURL
+                cache: false
+                fillMode: Image.PreserveAspectCrop
             }
-            width: parent.width
-
-            color: Theme.highlightBackgroundColor
-            gradient: Gradient {
-                GradientStop {
-                    position: 0.5
-                    color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            Rectangle {
+                id: gradientRect
+                visible: true //artistImage.source!=""
+                anchors {
+                    bottom: parent.bottom
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
                 }
-                GradientStop {
-                    position: 1.0
-                    color: Qt.rgba(0.0, 0.0, 0.0, 0.8)
+                width: parent.width
+
+                color: Theme.highlightBackgroundColor
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0.5
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.8)
+                    }
                 }
             }
-        }
-        Label {
-            anchors {
-                bottom: albumImage.bottom
-                horizontalCenter: albumImage.horizontalCenter
+            Label {
+                anchors {
+                    bottom: albumImage.bottom
+                    horizontalCenter: albumImage.horizontalCenter
+                }
+                height: parent.height * 0.5
+                width: parent.width
+                wrapMode: "WordWrap"
+                elide: Text.ElideRight
+                font.pixelSize: Theme.fontSizeSmall
+                style: Text.Raised
+                styleColor: Theme.secondaryColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignBottom
+                text: title === "" ? qsTr("No Album Tag") : title
             }
-            height: parent.height * 0.5
-            width: parent.width
-            wrapMode: "WordWrap"
-            elide: Text.ElideRight
-            font.pixelSize: Theme.fontSizeSmall
-            style: Text.Raised
-            styleColor: Theme.secondaryColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignBottom
-            text: title === "" ? qsTr("No Album Tag") : title
         }
+
+
 
         onClicked: {
             albumListView.currentIndex = index
