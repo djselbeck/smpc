@@ -264,7 +264,7 @@ ApplicationWindow
 
     function updateOutputsModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/database/OutputsPage.qml"),{listmodel:outputsModel});
+        pageStack.push(Qt.resolvedUrl("pages/settings/OutputsPage.qml"),{listmodel:outputsModel});
     }
 
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)

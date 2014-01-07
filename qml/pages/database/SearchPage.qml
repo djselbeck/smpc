@@ -146,7 +146,7 @@ Page {
                             }
                         }
                         Label {
-                            text: (length === 0 ? "" : " (" + lengthformated + ")")
+                            text: (length === 0 ? "" : " (" + lengthformatted + ")")
                             anchors {
                                 verticalCenter: parent.verticalCenter
                             }
@@ -160,7 +160,7 @@ Page {
                     }
                 }
                 onClicked: {
-                    albumTrackClicked(title, album, artist, lengthformated,
+                    albumTrackClicked(title, album, artist, lengthformatted,
                                       uri, year, tracknr)
                 }
                 function playTrackRemorse() {

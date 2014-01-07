@@ -62,6 +62,12 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
                 // Return dummy for the time being
                 return DUMMY_ALBUMIMAGE;
             } else if (imageID == -2 ) {
+                // Try getting album art for album with out artist (think samplers)
+                imageID = mDB->imageIDFromAlbum(album->getTitle());
+                if ( imageID >= 0 ) {
+                    QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                    return url;
+                }
                 qDebug() << "returning dummy image for blacklisted album: " << album->getTitle();
                 return DUMMY_ALBUMIMAGE;
             } else {

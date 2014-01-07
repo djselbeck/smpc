@@ -343,7 +343,8 @@ int ImageDatabase::imageIDFromAlbum(QString album)
     QSqlQuery query;
     album = album.replace('\"',"\\\"");
     query.prepare("SELECT * FROM albums WHERE "
-                  "albumname=\"" + album + "\"");
+                  "albumname=\"" + album + "\" "
+                  " AND imageid>=\"0\"");
     qDebug() << "Check for image: " << query.lastQuery();
     query.exec();
 

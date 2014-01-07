@@ -15,7 +15,8 @@ Page
                 title: qsTr("outputs")
             }
             ScrollDecorator {}
-            delegate: BackgroundItem {
+            delegate: ListItem {
+                contentHeight: mainColumn.height
                 Column{
                     id: mainColumn
                     clip: true
@@ -29,6 +30,18 @@ Page
                          TextSwitch{
                              checked: outputenabled
                              text: outputname
+                             onClicked: {
+                                 if(outputenabled){
+                                     console.debug("disabling output:" + id)
+                                     disableOutput(id);
+                                     outputenabled = false;
+                                 }
+                                 else {
+                                     console.debug("enabling output:" + id)
+                                     enableOutput(id);
+                                     outputenabled = true;
+                                 }
+                             }
                         }
                     }
                 OpacityRampEffect {
@@ -36,16 +49,7 @@ Page
                     slope: 3
                     offset: 0.65
                 }
-                onClicked: {
-                    if(outputenabled){
-                        disableOutput(id);
-                        outputenabled = false;
-                    }
-                    else {
-                        enableOutput(id);
-                        outputenabled = true;
-                    }
-                }
+
             }
     }
 

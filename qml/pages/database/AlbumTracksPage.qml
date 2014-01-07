@@ -12,8 +12,6 @@ Page {
 
     SilicaListView {
         id: albumTracksListView
-        ScrollDecorator {
-        }
         anchors.fill: parent
         contentWidth: width
         header: Item {
