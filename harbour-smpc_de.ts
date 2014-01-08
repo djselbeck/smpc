@@ -4,22 +4,22 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="qml/pages/AboutPage.qml" line="11"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="11"/>
         <source>about</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location filename="qml/pages/AboutPage.qml" line="29"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="29"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="qml/pages/AboutPage.qml" line="67"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="67"/>
         <source>Licensed under GPLv3</source>
         <translation>Lizenziert unter GPLv3</translation>
     </message>
     <message>
-        <location filename="qml/pages/AboutPage.qml" line="77"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="77"/>
         <source>Fetches covers from last.fm</source>
         <translation>Lädt Coverbilder von last.fm</translation>
     </message>
@@ -27,45 +27,45 @@
 <context>
     <name>AlbumDelegate</name>
     <message>
-        <location filename="qml/components/AlbumDelegate.qml" line="24"/>
         <source>no album tag</source>
-        <translation>kein Albumtag vorhanden</translation>
+        <translation type="obsolete">kein Albumtag vorhanden</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumDelegate.qml" line="38"/>
         <source>playing album</source>
-        <translation>spiele Album</translation>
+        <translation type="obsolete">spiele Album</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumDelegate.qml" line="43"/>
         <source>adding album</source>
-        <translation>füge Album hinzu</translation>
+        <translation type="obsolete">füge Album hinzu</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumDelegate.qml" line="51"/>
         <source>play album</source>
-        <translation>Album abspielen</translation>
+        <translation type="obsolete">Album abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumDelegate.qml" line="60"/>
         <source>add album to list</source>
-        <translation>Album hinzufügen</translation>
+        <translation type="obsolete">Album hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="qml/components/AlbumDelegate.qml" line="58"/>
+        <source>No Album Tag</source>
+        <translation>Kein Album Tag</translation>
     </message>
 </context>
 <context>
     <name>AlbumListPage</name>
     <message>
-        <location filename="qml/pages/AlbumListPage.qml" line="23"/>
+        <location filename="qml/pages/database/AlbumListPage.qml" line="24"/>
         <source>albums</source>
         <translation>Alben</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumListPage.qml" line="28"/>
+        <location filename="qml/pages/database/AlbumListPage.qml" line="29"/>
         <source>add albums</source>
         <translation>Alben hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumListPage.qml" line="34"/>
+        <location filename="qml/pages/database/AlbumListPage.qml" line="35"/>
         <source>play albums</source>
         <translation>Alben abspielen</translation>
     </message>
@@ -93,32 +93,32 @@
 <context>
     <name>AlbumTracksPage</name>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="21"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="71"/>
         <source>add album</source>
         <translation>Album hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="27"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="77"/>
         <source>play album</source>
         <translation>Album abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="94"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="144"/>
         <source>playing track</source>
         <translation>spiele Lied ab</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="99"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="149"/>
         <source>adding track</source>
         <translation>füge Lied hinzu</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="107"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="157"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/AlbumTracksPage.qml" line="114"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="164"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
@@ -126,30 +126,31 @@
 <context>
     <name>ArtistDelegate</name>
     <message>
-        <location filename="qml/components/ArtistDelegate.qml" line="34"/>
         <source>playing artist</source>
-        <translation>spiele Interpret</translation>
+        <translation type="obsolete">spiele Interpret</translation>
     </message>
     <message>
-        <location filename="qml/components/ArtistDelegate.qml" line="39"/>
         <source>adding artist</source>
-        <translation>füge Interpret hinzu</translation>
+        <translation type="obsolete">füge Interpret hinzu</translation>
     </message>
     <message>
-        <location filename="qml/components/ArtistDelegate.qml" line="47"/>
         <source>play artist</source>
-        <translation>Interpret abspielen</translation>
+        <translation type="obsolete">Interpret abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/ArtistDelegate.qml" line="56"/>
         <source>add artist to list</source>
-        <translation>Interpret hinzufügen</translation>
+        <translation type="obsolete">Interpret hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="qml/components/ArtistDelegate.qml" line="57"/>
+        <source>No Artist Tag</source>
+        <translation>Kein Interpreten Tag</translation>
     </message>
 </context>
 <context>
     <name>ArtistListPage</name>
     <message>
-        <location filename="qml/pages/ArtistListPage.qml" line="19"/>
+        <location filename="qml/pages/database/ArtistListPage.qml" line="25"/>
         <source>artists</source>
         <translation>Interpreten</translation>
     </message>
@@ -173,7 +174,7 @@
 <context>
     <name>ConnectServerPage</name>
     <message>
-        <location filename="qml/pages/ConnectServerPage.qml" line="15"/>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="15"/>
         <source>servers</source>
         <translation>Server</translation>
     </message>
@@ -186,7 +187,7 @@
         <translation>spielt nicht</translation>
     </message>
     <message>
-        <location filename="qml/components/ControlPanel.qml" line="120"/>
+        <location filename="qml/components/ControlPanel.qml" line="124"/>
         <source>volume</source>
         <translation>Lautstärke</translation>
     </message>
@@ -194,12 +195,12 @@
 <context>
     <name>Controller</name>
     <message>
-        <location filename="src/controller.cpp" line="359"/>
+        <location filename="src/controller.cpp" line="399"/>
         <source>Connected to: </source>
         <translation>Verbunden zu: </translation>
     </message>
     <message>
-        <location filename="src/controller.cpp" line="366"/>
+        <location filename="src/controller.cpp" line="407"/>
         <source>Disconnected from server</source>
         <translation>Getrennt von Server</translation>
     </message>
@@ -207,60 +208,60 @@
 <context>
     <name>CurrentPlaylistPage</name>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="30"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="30"/>
         <source>playlist</source>
         <translation>Wiedergabeliste</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="34"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="239"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="34"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="240"/>
         <source>add url</source>
         <translation>URL hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="40"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="188"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="40"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="189"/>
         <source>delete playlist</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="46"/>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="208"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="46"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="209"/>
         <source>save playlist</source>
         <translation>Wiedergabeliste abspeichern</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="52"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="52"/>
         <source>open playlist</source>
         <translation>Wiedergabeliste öffnen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="58"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="58"/>
         <source>jump to playing song</source>
         <translation>springe zum aktuellen Lied</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="82"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="82"/>
         <source>play song</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="86"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="86"/>
         <source>remove song</source>
         <translation>Lied entfernen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="94"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="94"/>
         <source>show information</source>
         <translation>zeige Informationen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="242"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="243"/>
         <source>enter url:</source>
         <translation>URL eingeben:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="247"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="248"/>
         <source>input url (http://, file://, etc)</source>
         <translation>URL eingeben (http://, file://, etc)</translation>
     </message>
@@ -269,7 +270,7 @@
         <translation type="obsolete">entferne</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="170"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="171"/>
         <source>Deleting</source>
         <translation>Lösche</translation>
     </message>
@@ -282,17 +283,17 @@
         <translation type="obsolete">Löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="191"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="192"/>
         <source>really delete playlist?</source>
         <translation>Wiedergabeliste wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="211"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="212"/>
         <source>playlist name:</source>
         <translation>Wiedergabelistenname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentPlaylistPage.qml" line="216"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="217"/>
         <source>input playlist name</source>
         <translation>Wiedergabelistenname eingeben</translation>
     </message>
@@ -300,17 +301,17 @@
 <context>
     <name>CurrentSong</name>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="52"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="51"/>
         <source>show all tracks from album</source>
         <translation>zeige alle Lieder des Albums</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="59"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="58"/>
         <source>show albums from artist</source>
         <translation>zeige alle Alben des Interpretens</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="79"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="78"/>
         <source>current song</source>
         <translation>Aktuelles Lied</translation>
     </message>
@@ -319,55 +320,203 @@
         <translation type="obsolete">Details</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="146"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="145"/>
         <source>nr.:</source>
         <translation>Nr.:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="162"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="161"/>
         <source>bitrate:</source>
         <translation>Bitrate:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="175"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="174"/>
         <source>properties:</source>
         <translation>Eigenschaften:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="188"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="187"/>
         <source>uri:</source>
         <translation>URI:</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="290"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="289"/>
         <source>volume</source>
         <translation>Lautstärke</translation>
     </message>
     <message>
-        <location filename="qml/pages/CurrentSong.qml" line="331"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="331"/>
         <source>position</source>
         <translation>Position</translation>
     </message>
 </context>
 <context>
+    <name>DatabaseSettings</name>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="7"/>
+        <source>database</source>
+        <translation>Datenbank</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="27"/>
+        <source>albums: </source>
+        <translation>Alben: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="30"/>
+        <source>blacklisted albums: </source>
+        <translation>blockierte Alben: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="33"/>
+        <source>artists: </source>
+        <translation>Interpreten: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="36"/>
+        <source>images: </source>
+        <translation>Bilder: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="38"/>
+        <source>filesize: </source>
+        <translation>Dateigröße: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="41"/>
+        <source>artist downloads remaining: </source>
+        <translation>Downloads Interpreten: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="44"/>
+        <source>album downloads remaining: </source>
+        <translation>Downloads Alben: </translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="48"/>
+        <source>download size:</source>
+        <translation>Download-Größe:</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="78"/>
+        <source>Although the setting &quot;mega&quot; will look the best, it will require huge amount of local data cached.</source>
+        <translation>Bitte beachten sie, dass die Einstellung &quot;mega&quot; am besten aussieht, jedoch sehr viel Speicherplatz auf dem Mobilgerät in Anspruch nimmt.</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="85"/>
+        <source>download artist images</source>
+        <translation>Interpreteninformationen laden</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="96"/>
+        <source>download album images</source>
+        <translation>Albuminformationen laden</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="107"/>
+        <source>clear blacklisted albums</source>
+        <translation>Bereinige blockierte Alben</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="118"/>
+        <source>clear artist images</source>
+        <translation>Bereinige Interpretendaten</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="129"/>
+        <source>clear album images</source>
+        <translation>Bereinige Albumdaten</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="139"/>
+        <source>clear complete database</source>
+        <translation>Bereinige komplette Datenbank</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="159"/>
+        <source>clear</source>
+        <translation>bereinige</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="178"/>
+        <source>clear blacklist albums</source>
+        <translation>Bereinige blockierte Alben</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="180"/>
+        <source>Do you really want to delete all albums which are blacklisted from local database cache? There is no turning back!</source>
+        <translation>Möchten sie wirklich alle Albumdaten, die blockiert sind, aus der lokalen Datenbank entfernen? Diese Aktion ist nicht rückgängig zu machen!</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="185"/>
+        <source>clear artists</source>
+        <translation>bereinige Interpreten</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="186"/>
+        <source>Do you really want to delete all artists from local database cache? There is no turning back!</source>
+        <translation>Möchten sie wirklich alle Interpretendaten aus der lokalen Datenbank entfernen? Diese Aktion ist nicht rückgängig zu machen!</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="191"/>
+        <source>clear albums</source>
+        <translation>bereinige Alben</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="192"/>
+        <source>Do you really want to delete all albums from local database cache? There is no turning back!</source>
+        <translation>Möchten sie wirklich alle Albendaten aus der lokalen Datenbank entfernen? Diese Aktion ist nicht rückgängig zu machen!</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="197"/>
+        <source>clear database</source>
+        <translation>bereinige Datenbank</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="198"/>
+        <source>Do you really want to delete the complete local database cache? There is no turning back!</source>
+        <translation>Möchten sie wirklich die gesamte lokale Datenbank entfernen? Diese Aktion ist nicht rückgängig zu machen!</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="202"/>
+        <source>download artists</source>
+        <translation>Interpreten herunterladen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="203"/>
+        <source>This will download metadata information for all your artists in your MPD database. This action will run in the background but take some time.</source>
+        <translation>Diese Aktion lädt für alle Interpreten in ihrer MPD-Datenbank die Metadaten herunter. Diese Aktion wird im Hintergrund ausgeführt und benötigt einige Zeit.</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="208"/>
+        <source>download albums</source>
+        <translation>Alben herunterladen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/DatabaseSettings.qml" line="209"/>
+        <source>This will download metadata information for all your albums in your MPD database. This action will run in the background but take some time.</source>
+        <translation>Diese Aktion lädt für alle Alben in ihrer MPD-Datenbank die Metadaten herunter. Diese Aktion wird im Hintergrund ausgeführt und benötigt einige Zeit.</translation>
+    </message>
+</context>
+<context>
     <name>FileBrowserPage</name>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="28"/>
+        <location filename="qml/pages/database/FileBrowserPage.qml" line="28"/>
         <source>filebrowser</source>
         <translation>Filebrowser</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="32"/>
+        <location filename="qml/pages/database/FileBrowserPage.qml" line="32"/>
         <source>home</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="39"/>
+        <location filename="qml/pages/database/FileBrowserPage.qml" line="39"/>
         <source>add folder</source>
         <translation>Ordner hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/FileBrowserPage.qml" line="45"/>
+        <location filename="qml/pages/database/FileBrowserPage.qml" line="45"/>
         <source>play folder</source>
         <translation>Ordner abspielen</translation>
     </message>
@@ -543,7 +692,7 @@
 <context>
     <name>OutputsPage</name>
     <message>
-        <location filename="qml/pages/OutputsPage.qml" line="15"/>
+        <location filename="qml/pages/settings/OutputsPage.qml" line="15"/>
         <source>outputs</source>
         <translation>Ausgänge</translation>
     </message>
@@ -551,47 +700,47 @@
 <context>
     <name>PlaylistTracksPage</name>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="25"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="25"/>
         <source>delete list</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="32"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="32"/>
         <source>add list</source>
         <translation>Wiedergabeliste hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="38"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="38"/>
         <source>play list</source>
         <translation>Wiedergabeliste abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="81"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="81"/>
         <source>playing track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="84"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="84"/>
         <source>adding track</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="90"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="90"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="97"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="97"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="118"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="118"/>
         <source>delete playlist</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/PlaylistTracksPage.qml" line="121"/>
+        <location filename="qml/pages/database/PlaylistTracksPage.qml" line="121"/>
         <source>really delete playlist?</source>
         <translation>Wiedergabeliste wirklich löschen?</translation>
     </message>
@@ -599,27 +748,27 @@
 <context>
     <name>SavedPlaylistsPage</name>
     <message>
-        <location filename="qml/pages/SavedPlaylistsPage.qml" line="20"/>
+        <location filename="qml/pages/database/SavedPlaylistsPage.qml" line="20"/>
         <source>playlists</source>
         <translation>Wiedergabelisten</translation>
     </message>
     <message>
-        <location filename="qml/pages/SavedPlaylistsPage.qml" line="46"/>
+        <location filename="qml/pages/database/SavedPlaylistsPage.qml" line="46"/>
         <source>playing list</source>
         <translation>Wiedergabeliste abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SavedPlaylistsPage.qml" line="49"/>
+        <location filename="qml/pages/database/SavedPlaylistsPage.qml" line="49"/>
         <source>adding list</source>
         <translation>Wiedergabeliste hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SavedPlaylistsPage.qml" line="56"/>
+        <location filename="qml/pages/database/SavedPlaylistsPage.qml" line="56"/>
         <source>play playlist</source>
         <translation>Wiedergabeliste abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SavedPlaylistsPage.qml" line="63"/>
+        <location filename="qml/pages/database/SavedPlaylistsPage.qml" line="63"/>
         <source>add list</source>
         <translation>Wiedergabeliste hinzufügen</translation>
     </message>
@@ -627,12 +776,12 @@
 <context>
     <name>SearchPage</name>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="81"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="81"/>
         <source>search</source>
         <translation>Suchen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="31"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="31"/>
         <source>search value</source>
         <translation>Suchwort</translation>
     </message>
@@ -641,7 +790,7 @@
         <translation type="obsolete">Suchen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="53"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="53"/>
         <source>Search for:</source>
         <translation>Suche nach:</translation>
     </message>
@@ -662,77 +811,77 @@
         <translation type="obsolete">Dateien</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="60"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="60"/>
         <source>titles</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="63"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="63"/>
         <source>albums</source>
         <translation>Alben</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="66"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="66"/>
         <source>artists</source>
         <translation>Interpreten</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="69"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="69"/>
         <source>files</source>
         <translation>Dateien</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="91"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="91"/>
         <source>new search</source>
         <translation>neue Suche</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="167"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="167"/>
         <source>playing track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="172"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="172"/>
         <source>adding track</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="178"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="178"/>
         <source>playing album</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="183"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="183"/>
         <source>adding album</source>
         <translation>Album hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="192"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="192"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="199"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="199"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="205"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="205"/>
         <source>add album to list</source>
         <translation>Album hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="211"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="211"/>
         <source>play album</source>
         <translation>Album abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="98"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="98"/>
         <source>add all results</source>
         <translation>Alle Ergebnisse hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SearchPage.qml" line="106"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="106"/>
         <source>play all results</source>
         <translation>Alle Ergebnisse abspielen</translation>
     </message>
@@ -740,47 +889,47 @@
 <context>
     <name>ServerEditPage</name>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="23"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="23"/>
         <source>remove server profile</source>
         <translation>Serverprofil löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="45"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="45"/>
         <source>edit profile</source>
         <translation>Serverprofil bearbeiten</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="51"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="51"/>
         <source>profilename:</source>
         <translation>Serverprofilname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="58"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="58"/>
         <source>input profilename</source>
         <translation>Profilnamen eingeben</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="66"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="66"/>
         <source>hostname:</source>
         <translation>Hostname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="73"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="73"/>
         <source>input hostname or ip</source>
         <translation>Hostname oder IP-Adresse eingeben</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="79"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="79"/>
         <source>port:</source>
         <translation>Port:</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="95"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="95"/>
         <source>password:</source>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerEditPage.qml" line="110"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="110"/>
         <source>autoconnect</source>
         <translation>Automatisch verbinden</translation>
     </message>
@@ -788,12 +937,12 @@
 <context>
     <name>ServerListPage</name>
     <message>
-        <location filename="qml/pages/ServerListPage.qml" line="14"/>
+        <location filename="qml/pages/settings/ServerListPage.qml" line="14"/>
         <source>servers</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="qml/pages/ServerListPage.qml" line="19"/>
+        <location filename="qml/pages/settings/ServerListPage.qml" line="19"/>
         <source>Add server</source>
         <translation>Server hinzufügen</translation>
     </message>
@@ -801,27 +950,32 @@
 <context>
     <name>SettingsPage</name>
     <message>
-        <location filename="qml/pages/SettingsPage.qml" line="12"/>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="12"/>
         <source>settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SettingsPage.qml" line="34"/>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="34"/>
         <source>server settings</source>
         <translation>Servereinstellungen</translation>
     </message>
     <message>
-        <location filename="qml/pages/SettingsPage.qml" line="35"/>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="35"/>
+        <source>database settings</source>
+        <translation>Datenbankeinstellungen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="36"/>
         <source>outputs</source>
         <translation>Ausgänge</translation>
     </message>
     <message>
-        <location filename="qml/pages/SettingsPage.qml" line="36"/>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="37"/>
         <source>update database</source>
         <translation>Datenbank aktualisieren</translation>
     </message>
     <message>
-        <location filename="qml/pages/SettingsPage.qml" line="37"/>
+        <location filename="qml/pages/settings/SettingsPage.qml" line="38"/>
         <source>about</source>
         <translation>über</translation>
     </message>
@@ -830,47 +984,44 @@
     <name>SongDialog</name>
     <message>
         <location filename="qml/components/SongDialog.qml" line="40"/>
-        <location filename="qml/components/SongDialog.qml" line="164"/>
+        <location filename="qml/components/SongDialog.qml" line="147"/>
         <source>add song</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="43"/>
         <source>title:</source>
-        <translation>Titel:</translation>
+        <translation type="obsolete">Titel:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="59"/>
         <source>album:</source>
-        <translation>Album:</translation>
+        <translation type="obsolete">Album:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="75"/>
         <source>artist:</source>
-        <translation>Interpret:</translation>
+        <translation type="obsolete">Interpret:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="91"/>
+        <location filename="qml/components/SongDialog.qml" line="81"/>
         <source>length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="107"/>
+        <location filename="qml/components/SongDialog.qml" line="97"/>
         <source>date:</source>
         <translation>Datum:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="123"/>
+        <location filename="qml/components/SongDialog.qml" line="113"/>
         <source>nr.:</source>
         <translation>Nr.:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="139"/>
+        <location filename="qml/components/SongDialog.qml" line="129"/>
         <source>uri:</source>
         <translation>URI:</translation>
     </message>
     <message>
-        <location filename="qml/components/SongDialog.qml" line="157"/>
+        <location filename="qml/components/SongDialog.qml" line="153"/>
         <source>play song</source>
         <translation>Lied abspielen</translation>
     </message>
@@ -878,44 +1029,36 @@
 <context>
     <name>SongPage</name>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="31"/>
         <source>current song</source>
-        <translation>Aktuelles Lied</translation>
+        <translation type="obsolete">Aktuelles Lied</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="33"/>
         <source>title:</source>
-        <translation>Titel:</translation>
+        <translation type="obsolete">Titel:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="35"/>
         <source>album:</source>
-        <translation>Album:</translation>
+        <translation type="obsolete">Album:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="37"/>
         <source>artist:</source>
-        <translation>Interpret:</translation>
+        <translation type="obsolete">Interpret:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="39"/>
         <source>length:</source>
-        <translation>Länge:</translation>
+        <translation type="obsolete">Länge:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="41"/>
         <source>date:</source>
-        <translation>Datum:</translation>
+        <translation type="obsolete">Datum:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="43"/>
         <source>nr.:</source>
-        <translation>Nr.:</translation>
+        <translation type="obsolete">Nr.:</translation>
     </message>
     <message>
-        <location filename="qml/pages/SongPage.qml" line="45"/>
         <source>uri:</source>
-        <translation>URI:</translation>
+        <translation type="obsolete">URI:</translation>
     </message>
 </context>
 </TS>

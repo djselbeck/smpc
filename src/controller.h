@@ -5,30 +5,43 @@
 #include <QString>
 #include <QStack>
 #include <QQmlEngine>
-#include "mpdtrack.h"
 
 #include <QQuickView>
 #include <QtQml>
 
-#include "networkaccess.h"
-#include "commondebug.h"
-#include "qthreadex.h"
-#include "serverprofile.h"
-#include "artistmodel.h"
-#include "albummodel.h"
-#include "filemodel.h"
-#include "playlistmodel.h"
+// Local Metadata Database
+#include <localdb/imagedatabase.h>
+#include <localdb/databasestatistic.h>
+#include <localdb/lastfmalbumprovider.h>
+#include <localdb/qmlimageprovider.h>
 
-#include "mpdoutput.h"
+// MPD Connection
+#include <mpd/mpdoutput.h>
+#include <mpd/mpdtrack.h>
+#include <mpd/networkaccess.h>
+#include <mpd/serverprofile.h>
+#include <mpd/artistmodel.h>
+#include <mpd/albummodel.h>
+#include <mpd/filemodel.h>
+#include <mpd/playlistmodel.h>
 
 
 
 class Controller : public QObject
 {
+
+    enum LastFMDownloadSizes {
+        LASTFM_SMALL,
+        LASTFM_MEDIUM,
+        LASTFM_LARGE,
+        LASTFM_EXTRALARGE,
+        LASTFM_MEGA
+    };
+
     Q_OBJECT
 public:
     explicit Controller(QObject *parent = 0);
-    Controller(QQuickView *viewer,QObject *parent = 0);
+    Controller(QQuickView *mQuickView,QObject *parent = 0);
     void connectSignals();
 public slots:
 
@@ -55,41 +68,55 @@ signals:
     void searchedTracksReady();
     void addURIToPlaylist(QString);
     void requestPlaylistClear();
+    void requestArtistAlbumMap();
     void filePopCleared();
     void connected(QVariant profile);
     void disconnected();
 
+    void requestCoverArt(MpdAlbum album);
+    void requestCoverArtistArt(MpdArtist artist);
 
+    void requestArtistImageFill(QList<MpdArtist*>*);
+    void requestAlbumFill(QMap<MpdArtist*, QList<MpdAlbum*>* > *);
+
+    void requestDBStatistic();
+    void newDownloadSize(QString);
 
 private:
-    QQuickView *viewer;
-    NetworkAccess *netaccess;
-    QString hostname,password,profilename;
-    quint16 port;
-    int mLastProfileIndex;
+    QQuickView *mQuickView;
+    NetworkAccess *mNetAccess;
+    QString mHostname,mPassword,mProfilename;
+    quint16 mPort;
+    bool mWasConnected;
     QTimer mReconnectTimer;
-    quint32 playlistversion;
-    int currentsongid;
-    int volume;
-    int lastplaybackstate;
-    QThreadEx *networkthread;
-    QList<ServerProfile*> *serverprofiles;
+    quint32 mPlaylistVersion;
+    int mCurrentSongID;
+    int mVolume;
+    int mLastPlaybackState;
+    QThread *mNetworkThread;
+    QThread *mDBThread;
+    QList<ServerProfile*> *mServerProfiles;
+    QTimer volDecTimer,volIncTimer;
+    ArtistModel *mOldArtistModel;
+    AlbumModel *mOldAlbumModel;
+    QList<MpdTrack*> *mAlbumTracks;
+    QList<MpdTrack*> *mPlaylistTracks;
+    QList<MpdTrack*> *mTrackModel;
+    PlaylistModel *mPlaylist;
+    QList<MpdTrack*> *mSearchedTracks;
+    QList<MPDOutput*> *mOutputs;
+    QStack<FileModel*> *mFileModels;
+    ImageDatabase *mImgDB;
+    QMLImageProvider *mQMLImgProvider;
+    bool mApplicationActive;
+
+    //DB
+    DatabaseStatistic *mDBStatistic;
+    int mDownloadSize;
+    QString getLastFMArtSize(int index);
+
     void readSettings();
     void writeSettings();
-    QTimer volDecTimer,volIncTimer;
-    QList<MpdAlbum*> *albumlist;
-    QList<MpdArtist*> *artistlist;
-    ArtistModel *artistmodelold;
-    AlbumModel *albumsmodelold;
-    QList<MpdTrack*> *albumTracks;
-    QList<MpdTrack*> *playlistTracks;
-    QList<MpdTrack*> *trackmodel;
-    PlaylistModel *playlist;
-    QList<MpdTrack*> *searchedtracks;
-    QList<MPDOutput*> *outputs;
-    QStack<FileModel*> *filemodels;
-    QThread *oldnetthread;
-    bool mApplicationActive;
 
 private slots:
     void requestCurrentPlaylist();
@@ -116,9 +143,9 @@ private slots:
     void updateAlbumTracksModel(QList<QObject*>* list);
     void updateOutputsModel(QList<QObject*>* list);
     void updateSearchedTracks(QList<QObject*>* list);
-    void setHostname(QString hostname);
-    void setPassword(QString password);
-    void setPort(int port);
+    void setHostname(QString mHostname);
+    void setPassword(QString mPassword);
+    void setPort(int mPort);
     void connectToServer();
     void quit();
     void newProfile(QVariant profile);
@@ -141,11 +168,17 @@ private slots:
 
     void reconnectServer();
 
+    void fillArtistImages();
+    void fillArtistImages(QList<QObject*>*);
 
+    void fillAlbumImages();
 
+    void newDBStatisticReceiver(DatabaseStatistic *statistic);
 
+    void setArtistBioInfo(QString info);
+    void setAlbumWikiInfo(QString info);
 
-
+    void receiveDownloadSize(int);
 
 };
 

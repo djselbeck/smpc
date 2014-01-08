@@ -7,88 +7,94 @@ CoverBackground {
     anchors.fill: parent
 
     function recheckActive() {
-        if( (status === Cover.Activating || status === Cover.Active) ) {
+        if ((status === Cover.Activating || status === Cover.Active)) {
             coverimg.active = true
-        }
-        else {
+        } else {
             coverimg.active = false
         }
     }
 
-    ToggleImage{
-        id: coverimg
-        anchors.fill: parent
-        sourceprimary: coverimageurl;
-        sourcesecondary: artistimageurl;
-        fillMode: Image.PreserveAspectCrop
+    OpacityRampEffect {
+        sourceItem: toggleImage
+        direction: OpacityRamp.BottomToTop
+        visible: (coverimg.sourceprimary != ""
+                  || coverimg.sourcesecondary != "")
     }
 
-    Rectangle
-    {
-        visible: (coverimg.sourceprimary !="" || coverimg.sourcesecondary !="")
+    Item {
+        id: toggleImage
+        anchors.fill: parent
+        ToggleImage {
+            id: coverimg
+            anchors.fill: parent
+            sourceprimary: coverimageurl
+            sourcesecondary: artistimageurl
+            fillMode: Image.PreserveAspectCrop
+        }
+    }
+
+    Rectangle {
+        visible: (coverimg.sourceprimary != ""
+                  || coverimg.sourcesecondary != "")
         anchors.fill: parent
         color: Theme.highlightBackgroundColor
         gradient: Gradient {
-            GradientStop { position: 0.0; color: Theme.rgba(Theme.highlightBackgroundColor,0.4) }
-            GradientStop { position: 0.4; color:  Theme.rgba(Theme.highlightColor,0.0) }
-
-            GradientStop { position: 0.6; color: Theme.rgba(Theme.highlightColor,0.0) }
-            GradientStop { position: 1.0; color:  Theme.rgba(Theme.highlightBackgroundColor,0.4) }
+            GradientStop {
+                position: 0.7
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            }
+            GradientStop {
+                position: 1.0
+                color: Theme.rgba(Theme.highlightBackgroundColor, 0.6)
+            }
         }
-
     }
     Image {
         id: logo
-        visible: (coverimg.sourceprimary =="" && coverimg.sourcesecondary =="")
+        visible: (coverimg.sourceprimary == "" && coverimg.sourcesecondary == ""
+                  && (mTitle == ""))
         source: "qrc:images/pictogram.png"
         anchors.centerIn: parent
     }
 
-
-
     onStatusChanged: {
-        recheckActive();
+        recheckActive()
     }
 
-//    Image{
-//        visible: (stopped||(coverimg.sourceprimary==""&&coverimg.sourcesecondary==""))
-//        anchors.centerIn: coverrpage
-//        source: "qrc:/images/smpc-big.png"
-//        width: coverpage.width-(coverpage.width/3)
-//        height: width
-//        smooth: true
-//        opacity: 0.8
-//    }
-
+    //    Image{
+    //        visible: (stopped||(coverimg.sourceprimary==""&&coverimg.sourcesecondary==""))
+    //        anchors.centerIn: coverrpage
+    //        source: "qrc:/images/smpc-big.png"
+    //        width: coverpage.width-(coverpage.width/3)
+    //        height: width
+    //        smooth: true
+    //        opacity: 0.8
+    //    }
     Label {
         id: textLabel
         anchors.centerIn: coverpage
-        width: coverpage.width-(2*listPadding)
-        height: (coverpage.height/3)*2
+        width: coverpage.width - (2 * listPadding)
+        height: (coverpage.height / 3) * 2
         wrapMode: "WordWrap"
         elide: Text.ElideRight
         font.pixelSize: Theme.fontSizeLarge
         style: Text.Raised
         styleColor: Theme.secondaryColor
         horizontalAlignment: Text.AlignHCenter
-        text: ( currentsongpage.title==="" ? "SMPC" : currentsongpage.title )
+        text: (mTitle == "" ? "SMPC" : mTitle)
     }
-    
+
     CoverActionList {
         id: coverAction
 
         CoverAction {
-            iconSource: playbuttoniconsourcecover//"image://theme/icon-cover-pause"
-            onTriggered: play();
+            iconSource: playbuttoniconsourcecover //"image://theme/icon-cover-pause"
+            onTriggered: play()
         }
-        
+
         CoverAction {
             iconSource: "image://theme/icon-cover-next-song"
-            onTriggered: next();
+            onTriggered: next()
         }
-        
-
     }
 }
-
-

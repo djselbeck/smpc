@@ -1,7 +1,7 @@
 
 var sections = [];
 
-function fillSections(listview) {
+function fillSections(listview,sectionProperty) {
     sections = [];
     if(!listview || !listview.model) {
         return;
@@ -10,7 +10,6 @@ function fillSections(listview) {
 
     var currentSection = "";
     var currentItem;
-    var sectionProperty = listview.section.property
     for(var i = 0; i < count; i++) {
         currentItem = listview.model.get(i);
         if(currentItem[sectionProperty] !== currentSection ) {

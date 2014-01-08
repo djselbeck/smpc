@@ -1,7 +1,10 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
+
+// FIXME to harbour.smpc.components.whatever import
 import "components"
+
 
 
 ApplicationWindow
@@ -15,6 +18,8 @@ ApplicationWindow
     signal setVolume(int volume);
     signal setCurrentArtist(string artist);
     signal connectToServer();
+
+    // Signals for database requests to networkaccess
     //Variant in format [artistname,albumname]
     signal addAlbum(variant album);
     signal addArtist(string artist);
@@ -24,8 +29,11 @@ ApplicationWindow
     signal playPlaylist(string name);
     signal playAlbum(variant album);
     signal playArtist(string artist);
-
-
+    signal playFiles(string uri);
+    //appends song to playlist
+    signal playSong(string uri);
+    // Adds all tracks from last search result to playlist
+    signal addlastsearch();
     signal requestSavedPlaylists();
     signal requestSavedPlaylist(string name);
     signal requestAlbums();
@@ -36,16 +44,24 @@ ApplicationWindow
     signal requestFilesModel(string files);
     signal requestCurrentPlaylist();
     signal requestOutputs();
+    signal requestSearch(variant request);
+    // Request an MPD database update (remote mpd db)
+    signal updateDB();
+
+
+    // Signals controller that stack of filemodels can be wiped
     signal popfilemodelstack();
     signal cleanFileStack();
-    signal enableOutput(int nr);
-    signal disableOutput(int nr);
-    signal requestSearch(variant request);
 
+    // Controller model clear signals (memory cleanup)
     signal clearAlbumList();
     signal clearArtistList();
     signal clearTrackList();
     signal clearPlaylistTracks();
+
+    // MPD Output controls
+    signal enableOutput(int nr);
+    signal disableOutput(int nr);
 
     // Control signals
     signal play();
@@ -55,7 +71,6 @@ ApplicationWindow
     signal seek(int position);
     signal setRepeat(bool rep);
     signal setShuffle(bool shfl);
-    signal updateDB();
 
     //Playlist signals
     signal savePlaylist(string name);
@@ -63,23 +78,31 @@ ApplicationWindow
     signal deleteSavedPlaylist(string name);
     signal playPlaylistTrack(int index);
     signal deletePlaylistTrack(int index);
+
+    // Changes server profile or creates new one
     signal changeProfile(variant profile);
     signal newProfile(variant profile);
     signal deleteProfile(int index);
+    // Requests controller to connect to MPD host
     signal connectProfile(int index);
-    //appends song to playlist
-    signal playSong(string uri);
-    //Clears playlist before adding
-    signal playFiles(string uri);
-    signal addlastsearch();
 
-    signal quit();
+    // Database stuff (local-metadata DB)
+    signal bulkDownloadArtists();
+    signal bulkDownloadAlbums();
+    signal cleanupBlacklisted();
+    signal cleanupArtists();
+    signal cleanupAlbums();
+    signal cleanupDB();
+
+    // Wiki/Biography information requests for sqlDB
+    signal requestArtistInfo(string artist);
+    signal requestAlbumInfo(variant album);
+
+    // Signals change in download-size preference
+    signal newDownloadSize(int size)
 
     // Propertys of application
     property string hostname;
-
-    // ONLY FOR USE WITH JOLLAMPC
-    property string lastfmapikey : "1c728df8f626849518971eaae29e01a1";
 
     property int port;
     property string password;
@@ -88,11 +111,10 @@ ApplicationWindow
     property Page serverList;
     property Page artistspage;
     property Page albumspage;
-    property var playlistModelVar;
-    property int listfontsize:12;
-    property int liststretch:20;
-    property int lastsongid:-1;
-    property string playbuttoniconsource:"image://theme/icon-m-play";
+    property int listfontsize : 12;
+    property int liststretch : 20;
+    property int lastsongid : -1;
+    property string playbuttoniconsource : "image://theme/icon-m-play";
     property string playbuttoniconsourcecover : "image://theme/icon-cover-play";
     property string volumebuttoniconsource;
     property string lastpath;
@@ -106,11 +128,11 @@ ApplicationWindow
     property bool shuffle;
     property bool quitbtnenabled;
     property bool connected;
-    property bool playing:false;
-    property bool stopped:false;
-    property bool fastscrollenabled:false;
+    property bool playing : false;
+    property bool stopped : false;
+    property bool fastscrollenabled : false;
 
-    property real listPadding: Theme.paddingLarge
+    property real listPadding : Theme.paddingLarge
 
     property bool volumeChanging:false
 
@@ -121,7 +143,6 @@ ApplicationWindow
     property int mVolume
     property bool mRepeat
     property bool mShuffle
-
 
 
     // JS-functions
@@ -143,11 +164,13 @@ ApplicationWindow
     function busy()
     {
         busyIndicator.running = true;
+        inputBlock.enabled = true
     }
 
     function ready()
     {
         busyIndicator.running = false;
+        inputBlock.enabled = false
     }
 
     function settingsModelUpdated()
@@ -183,7 +206,6 @@ ApplicationWindow
         {
             playlistpage.songid = list[12];
             lastsongid = list[12];
-            currentsongpage.makeLastFMRequestURL();
         }
         if(stopped) {
             coverimageurl = "";
@@ -204,12 +226,12 @@ ApplicationWindow
 
     function updateSavedPlaylistModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/PlaylistTracksPage.qml"),{listmodel:savedPlaylistModel,playlistname:playlistname});
+        pageStack.push(Qt.resolvedUrl("pages/database/PlaylistTracksPage.qml"),{listmodel:savedPlaylistModel,playlistname:playlistname});
     }
 
     function updateSavedPlaylistsModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/SavedPlaylistsPage.qml"),{listmodel:savedPlaylistsModel});
+        pageStack.push(Qt.resolvedUrl("pages/database/SavedPlaylistsPage.qml"),{listmodel:savedPlaylistsModel});
     }
 
     function filesClicked(path)
@@ -219,37 +241,30 @@ ApplicationWindow
     }
 
     function updatePlaylist()
-    {   
+    {
         //  blockinteraction.enabled=false;
         console.debug("setting new playlist");
-        playlistpage.songid = -1;
-        playlistModelVar = playlistModel;
+        // playlistModelVar = playlistModel;
         console.debug("received new playlist and set model");
     }
 
 
-    function clearPlaylist()
-    {
-        playlistModelVar = 0
-        console.debug("playlist model cleared");
-    }
-
     function updateAlbumsModel(){
-        pageStack.push(Qt.resolvedUrl("pages/AlbumListPage.qml"),{listmodel:albumsModel,artistname:artistname});
+        pageStack.push(Qt.resolvedUrl("pages/database/AlbumListPage.qml"),{listmodel:albumsModel,artistname:artistname});
     }
 
     function updateArtistModel(){
-        pageStack.push(Qt.resolvedUrl("pages/ArtistListPage.qml"),{listmodel:artistsModel});
+        pageStack.push(Qt.resolvedUrl("pages/database/ArtistListPage.qml"),{listmodel:artistsModel});
     }
 
     function updateAlbumModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
+        pageStack.push(Qt.resolvedUrl("pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
     }
 
     function updateOutputsModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/OutputsPage.qml"),{listmodel:outputsModel});
+        pageStack.push(Qt.resolvedUrl("pages/settings/OutputsPage.qml"),{listmodel:outputsModel});
     }
 
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
@@ -259,7 +274,7 @@ ApplicationWindow
 
     function receiveFilesPage()
     {
-        pageStack.push("pages/FileBrowserPage.qml",{listmodel: filesModel,filepath :lastpath});
+        pageStack.push("pages/database/FileBrowserPage.qml",{listmodel: filesModel,filepath :lastpath});
         fastscrollenabled = true;
     }
 
@@ -268,6 +283,7 @@ ApplicationWindow
         fastscrollenabled = true;
     }
 
+    // Nicely formats length values to string
     function formatLength(length)
     {
         var temphours = Math.floor(length/3600);
@@ -312,21 +328,31 @@ ApplicationWindow
         requestArtistAlbums(item);
     }
 
+    function coverArtReceiver(url)
+    {
+        coverimageurl = url;
+    }
+
+    function coverArtistArtReceiver(url)
+    {
+        artistimageurl = url;
+    }
+
+    // Create some permanent pages which should reside in memory for all the time
     Component.onCompleted:  {
-        var component = Qt.createComponent("pages/ServerListPage.qml");
+        var component = Qt.createComponent("pages/settings/ServerListPage.qml");
         var object = component.createObject(mainWindow);
         mainWindow.serverList = object;
-        console.debug("ServerListPage created");
-        component = Qt.createComponent("pages/CurrentPlaylistPage.qml");
+        component = Qt.createComponent("pages/database/CurrentPlaylistPage.qml");
         object = component.createObject(mainWindow);
         mainWindow.playlistpage = object;
-        console.debug("PlaylistPage created");
         pageStack.pushAttached(playlistpage);
-        component = Qt.createComponent("pages/CurrentSong.qml");
+        component = Qt.createComponent("pages/database/CurrentSong.qml");
         object = component.createObject(mainWindow);
         currentsongpage = object;
-//        console.debug("currentsong Page created");
     }
+
+    // Notifies user about ongoing action in netaccess
     BusyIndicator
     {
         id:busyIndicator
@@ -334,13 +360,21 @@ ApplicationWindow
         anchors.centerIn: parent
     }
 
-    bottomMargin: quickControlPanel.visibleSize
+    // Prevents clicking if active request is running
+    MouseArea
+    {
+        id: inputBlock
+        anchors.fill: parent
+        preventStealing: true
+        enabled: false
+    }
+
 
     ControlPanel {
         id: quickControlPanel
     }
+    bottomMargin: quickControlPanel.visibleSize
 
-    initialPage: Qt.resolvedUrl("pages/MainPage.qml") //MainPage { }
+    initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
-
 }

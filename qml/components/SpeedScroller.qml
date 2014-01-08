@@ -5,7 +5,7 @@ import "SpeedScroller.js" as Sections
 Item {
     id: scroller
     height: parent.height
-    width: parent.width/5
+    width: parent.width/7
     property alias scrollenabled: inputArea.enabled
     x: parent.x+parent.width-width;
     z:1
