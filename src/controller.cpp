@@ -36,7 +36,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     qRegisterMetaType<MpdArtist>("MpdArtist");
     volIncTimer.setInterval(250);
     volDecTimer.setInterval(250);
-    mLastProfileIndex = -1;
+    mWasConnected = false;
     mFileModels = new QStack<FileModel*>();
     viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
     viewer->rootContext()->setContextProperty("coverstring","");
@@ -51,6 +51,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
         if(mServerProfiles->at(i)->getAutoconnect())
         {
             connectProfile(i);
+            break;
         }
     }
     mDBStatistic = 0;
@@ -398,6 +399,7 @@ void Controller::connectedToServer()
     mReconnectTimer.stop();
     QString popupString = tr("Connected to: ") + mProfilename;
     mReconnectTimer.stop();
+    mWasConnected = true;
     emit sendPopup(popupString);
     emit connected(mProfilename);
     // emit requestArtistAlbumMap();
@@ -655,7 +657,6 @@ void Controller::connectProfile(int index)
     mPort =  profile->getPort();
     mPassword = profile->getPassword();
     mProfilename = profile->getName();
-    mLastProfileIndex = index;
     mReconnectTimer.setInterval(5000);
     mQuickView->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(mProfilename)));
     if(mNetAccess->connected())
@@ -715,7 +716,7 @@ void Controller::focusChanged(QObject *now){
     }
     else if (!mApplicationActive){
         mApplicationActive = true;
-        if ( !mNetAccess->connected() && (mLastProfileIndex!=-1) ) {
+        if ( !mNetAccess->connected() ) {
             reconnectServer();
         }
         emit setUpdateInterval(1000);
@@ -807,9 +808,9 @@ void Controller::clearPlaylistList()
 
 void Controller::reconnectServer()
 {
-    if( (mLastProfileIndex>=0) && (mLastProfileIndex<mServerProfiles->length()
-                                   && !mNetAccess->connected() ) ) {
-        connectProfile(mLastProfileIndex);
+    if( mWasConnected && !mNetAccess->connected() ) {
+        // Reconnect last profile
+        connectToServer();
     }
 }
 

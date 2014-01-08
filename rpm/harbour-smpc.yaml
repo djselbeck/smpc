@@ -12,20 +12,20 @@ Description: |
 Configure: none
 Builder: qtc5
 PkgConfigBR:
-- Qt5Quick
-- sailfishapp >= 0.0.10
-- Qt5Qml
 - Qt5Core
+- Qt5Qml
+- sailfishapp >= 0.0.10
+- Qt5Quick
 Requires:
-- qt5-qtdeclarative-import-xmllistmodel
 - sailfishsilica-qt5
+- qt5-qtdeclarative-import-xmllistmodel
 Files:
-- '%{_bindir}'
-- '%{_datadir}/harbour-smpc'
-- '%{_datadir}/applications'
-- /usr/share/icons/hicolor/86x86/apps
-- /usr/bin
-- /usr/share/harbour-smpc
-- /usr/share/applications
 - 
+- /usr/share/applications
+- /usr/share/harbour-smpc
+- /usr/bin
+- /usr/share/icons/hicolor/86x86/apps
+- '%{_datadir}/applications'
+- '%{_datadir}/harbour-smpc'
+- '%{_bindir}'
 PkgBR: []

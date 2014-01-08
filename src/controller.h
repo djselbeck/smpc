@@ -87,7 +87,7 @@ private:
     NetworkAccess *mNetAccess;
     QString mHostname,mPassword,mProfilename;
     quint16 mPort;
-    int mLastProfileIndex;
+    bool mWasConnected;
     QTimer mReconnectTimer;
     quint32 mPlaylistVersion;
     int mCurrentSongID;
