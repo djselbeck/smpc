@@ -7,6 +7,7 @@ Item {
     property alias sourcesecondary: secondaryImg.source
     property alias fillMode: primaryImg.fillMode
     property bool active: true
+    property bool ready
 
     state: "primaryImageActive"
     states: [
@@ -48,7 +49,12 @@ Item {
         anchors.fill: parent
         onStatusChanged: {
             if (status == Image.Ready) {
-                setActiveImage()
+                setActiveImage();
+                tglImg.ready = true;
+            } else {
+                if ( secondaryImg.status != Image.Ready ) {
+                    ready = false;
+                }
             }
         }
     }
@@ -59,6 +65,11 @@ Item {
         onStatusChanged: {
             if (status == Image.Ready) {
                 setActiveImage()
+                tglImg.ready = true;
+            } else {
+                if ( primaryImg.status != Image.Ready ) {
+                    ready = false;
+                }
             }
         }
     }

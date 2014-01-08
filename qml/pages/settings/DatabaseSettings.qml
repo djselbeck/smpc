@@ -84,7 +84,9 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("download artist images")
                 onClicked: {
-                    bulkDownloadArtists()
+                    pageStack.push(dialogComponent, {
+                                       confirmationRole: 4
+                                   })
                 }
                 enabled: dbStatistic.getArtistQueueSize() === 0
             }
@@ -93,7 +95,9 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("download album images")
                 onClicked: {
-                    bulkDownloadAlbums()
+                    pageStack.push(dialogComponent, {
+                                       confirmationRole: 5
+                                   })
                 }
                 enabled: dbStatistic.getAlbumQueueSize() === 0
             }
@@ -106,6 +110,7 @@ Page {
                                        confirmationRole: 0
                                    })
                 }
+                enabled : ( dbStatistic.getArtistQueueSize() === 0 && dbStatistic.getAlbumQueueSize() === 0)
             }
             Button {
                 id: clearArtistBtn
@@ -116,6 +121,7 @@ Page {
                                        confirmationRole: 1
                                    })
                 }
+                enabled : ( dbStatistic.getArtistQueueSize() === 0 && dbStatistic.getAlbumQueueSize() === 0)
             }
             Button {
                 id: clearAlbumBtn
@@ -136,6 +142,7 @@ Page {
                                        confirmationRole: 3
                                    })
                 }
+                enabled : ( dbStatistic.getArtistQueueSize() === 0 && dbStatistic.getAlbumQueueSize() === 0)
             }
         }
     }
@@ -191,6 +198,18 @@ Page {
                     confirmationDialog.questionText = qsTr(
                                 "Do you really want to delete the complete local database cache? There is no turning back!")
                     break
+                case 4:
+                    confirmationDialog.headerText = qsTr("download artists")
+                    confirmationDialog.questionText = qsTr(
+                                "This will download metadata information for all your artists in your MPD database. " +
+                                "This action will run in the background but take some time.");
+                    break
+                case 5:
+                    confirmationDialog.headerText = qsTr("download albums")
+                    confirmationDialog.questionText = qsTr(
+                                "This will download metadata information for all your albums in your MPD database. " +
+                                "This action will run in the background but take some time.");
+                    break
                 }
             }
             onAccepted: {
@@ -207,7 +226,14 @@ Page {
                 case 3:
                     cleanupDB()
                     break
+                case 4:
+                    bulkDownloadArtists()
+                    break
+                case 5:
+                    bulkDownloadAlbums()
+                    break
                 }
+
             }
         }
     }

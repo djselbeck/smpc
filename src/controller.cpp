@@ -414,7 +414,6 @@ void Controller::disconnectedToServer()
 
 void Controller::updateStatus(status_struct status)
 {
-
     if(mCurrentSongID != status.id)
     {
         if(status.playing==NetworkAccess::PLAYING) {
@@ -451,6 +450,14 @@ void Controller::updateStatus(status_struct status)
         {
             mPlaylist->setPlaying(mCurrentSongID,false);
         }
+        // Check for cover and set URL if ready
+        MpdAlbum tmpAlbum(this,status.album,status.artist);
+        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+        emit requestCoverArt(tmpAlbum);
+
+        MpdArtist tmpArtist(this,status.artist);
+        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+        emit requestCoverArtistArt(tmpArtist);
     }
     mLastPlaybackState = status.playing;
     mCurrentSongID = status.id;

@@ -40,7 +40,7 @@ Dialog {
                 acceptText: qsTr("add song")
             }
             ToggleImage{
-                height: parent.width
+                height: ready ? parent.width : 0
                 width: height
                 sourceprimary:  "image://imagedbprovider/album/" + artist +"/" + album
                 sourcesecondary: "image://imagedbprovider/artist/" + artist;

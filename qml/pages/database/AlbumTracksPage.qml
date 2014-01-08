@@ -8,7 +8,7 @@ Page {
     property alias listmodel: albumTracksListView.model
     property string albumname
     property string artistname
-    property int lastIndex
+    property int lastIndex:0
 
     SilicaListView {
         id: albumTracksListView
@@ -32,20 +32,32 @@ Page {
                     Image {
                         id: artistImage
                         width: parent.width / 2
-                        height: width
+                        height: imageRow.height
                         source: artistname
                                 == "" ? "image://imagedbprovider/artistfromalbum/"
                                         + albumname : "image://imagedbprovider/artist/" + artistname
                         fillMode: Image.PreserveAspectCrop
+                        onStatusChanged: {
+                            if ( status == Image.Error && artistImage.status == Image.Error ) {
+                                // Disable image and set imageRow height to 0
+                                imageRow.height = 0;
+                            }
+                        }
                     }
                     Image {
                         id: albumImage
                         width: parent.width / 2
-                        height: width
+                        height: imageRow.height
                         source: artistname == "" ? "image://imagedbprovider/album/"
                                                    + albumname : "image://imagedbprovider/album/"
                                                    + artistname + "/" + albumname
                         fillMode: Image.PreserveAspectCrop
+                        onStatusChanged: {
+                            if ( status == Image.Error && artistImage.status == Image.Error ) {
+                                // Disable image and set imageRow height to 0
+                                imageRow.height = 0;
+                            }
+                        }
                     }
                 }
             }
@@ -166,9 +178,13 @@ Page {
         if (status === PageStatus.Deactivating) {
             lastIndex = albumTracksListView.currentIndex
         } else if (status === PageStatus.Activating) {
-            albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+            if ( lastIndex > 0 ) {
+                albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+            }
         } else if (status === PageStatus.Active) {
-            albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+            if ( lastIndex > 0 ) {
+                albumTracksListView.positionViewAtIndex(lastIndex, ListView.Center)
+            }
             requestAlbumInfo([albumname, artistname])
             pageStack.pushAttached(Qt.resolvedUrl("AlbumInfoPage.qml"), {
                                        albumname: albumname

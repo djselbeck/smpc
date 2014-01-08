@@ -366,6 +366,7 @@ ApplicationWindow
         id: inputBlock
         anchors.fill: parent
         preventStealing: true
+        enabled: false
     }
 
 
