@@ -7,6 +7,7 @@ Item {
     property alias font: lbl.font
     property alias color: lbl.color
     property alias scrolling: lbl.shouldScroll
+    property bool active: (Qt.application.active)
     property int minScrollTime: 5000
     height: lbl.height
     clip: true
@@ -28,7 +29,7 @@ Item {
     function checkAnimation() {
         if (lbl.contentWidth > parent.width) {
             lbl.anchors.horizontalCenter = undefined
-            if (lbl.visible) {
+            if (lbl.visible && active) {
                 lbl.shouldScroll = false
                 lbl.running = false
                 lbl.blendingout = false
@@ -128,6 +129,12 @@ Item {
         }
     }
     onWidthChanged: {
+        checkAnimation()
+    }
+    onVisibleChanged: {
+        checkAnimation()
+    }
+    onActiveChanged: {
         checkAnimation()
     }
 }
