@@ -70,5 +70,9 @@ Page
                 }
             }
     }
+    Component.onDestruction: {
+        clearPlaylists();
+        console.debug("Clearing playlists");
+    }
 
 }

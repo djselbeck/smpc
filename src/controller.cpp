@@ -28,6 +28,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mOldAlbumModel = 0;
     mAlbumTracks = 0;
     mPlaylistTracks = 0;
+    mSavedPlaylists = 0;
     mSearchedTracks = 0;
     mServerProfiles = 0;
     mLastPlaybackState = NetworkAccess::STOP;
@@ -157,7 +158,12 @@ void Controller::updateFilesModel(QList<QObject*>* list)
 
 void Controller::updateSavedPlaylistsModel(QStringList *list)
 {
+    if ( mSavedPlaylists ) {
+        delete(mSavedPlaylists);
+        mSavedPlaylists = 0;
+    }
     mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",QVariant::fromValue(*list));
+    mSavedPlaylists = list;
     emit savedPlaylistsReady();
 
 }
@@ -363,6 +369,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(clearArtistList()),this,SLOT(clearArtistList()));
     connect(item,SIGNAL(clearTrackList()),this,SLOT(clearTrackList()));
     connect(item,SIGNAL(clearPlaylistTracks()),this,SLOT(clearPlaylistList()));
+    connect(item,SIGNAL(clearPlaylists()),this,SLOT(clearPlaylists()));
 
     connect(this,SIGNAL(connected(QVariant)),item,SLOT(slotConnected(QVariant)));
     connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
@@ -854,6 +861,15 @@ void Controller::clearTrackList()
         }
         delete(mAlbumTracks);
         mAlbumTracks = 0;
+    }
+}
+
+void Controller::clearPlaylists()
+{
+    if(mSavedPlaylists)
+    {
+        delete(mSavedPlaylists);
+        mSavedPlaylists = 0;
     }
 }
 

@@ -58,6 +58,7 @@ ApplicationWindow
     signal clearArtistList();
     signal clearTrackList();
     signal clearPlaylistTracks();
+    signal clearPlaylists();
 
     // MPD Output controls
     signal enableOutput(int nr);

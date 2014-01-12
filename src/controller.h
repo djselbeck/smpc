@@ -106,6 +106,7 @@ private:
     PlaylistModel *mPlaylist;
     QList<MpdTrack*> *mAlbumTracks;
     QList<MpdTrack*> *mPlaylistTracks;
+    QStringList *mSavedPlaylists;
     QList<MpdTrack*> *mSearchedTracks;
     QList<MPDOutput*> *mOutputs;
     QStack<FileModel*> *mFileModels;
@@ -168,6 +169,7 @@ private slots:
     void clearAlbumList();
     void clearArtistList();
     void clearPlaylistList();
+    void clearPlaylists();
     void clearTrackList();
 
     void reconnectServer();
