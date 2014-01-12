@@ -11,6 +11,7 @@ Page {
         anchors {
             fill: parent
             topMargin: header.height
+            bottomMargin: quickControlPanel.visibleSize
         }
         contentHeight: mainColumn.height
         clip: true

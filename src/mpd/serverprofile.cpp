@@ -64,6 +64,16 @@ int ServerProfile::getPort()
     return mPort;
 }
 
+int ServerProfile::getStreamingPort()
+{
+    return mStreamingPort;
+}
+
+void ServerProfile::setStreamingPort(int port)
+{
+    mStreamingPort = port;
+}
+
 bool ServerProfile::getAutoconnect()
 {
     return mAutoconnect;

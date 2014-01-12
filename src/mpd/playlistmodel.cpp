@@ -89,7 +89,11 @@ bool PlaylistModel::setData(const QModelIndex & index, const QVariant & value, i
 }
 
 MpdTrack* PlaylistModel::get(int index) {
-    MpdTrack *retTrack;
-    QQmlEngine::setObjectOwnership(retTrack,QQmlEngine::CppOwnership);
-    return retTrack;
+    if ( mEntries && (mEntries->size() > index) ) {
+        MpdTrack *retTrack = mEntries->at(index);
+        QQmlEngine::setObjectOwnership(retTrack,QQmlEngine::CppOwnership);
+        return retTrack;
+    } else {
+        return 0;
+    }
 }

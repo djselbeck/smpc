@@ -10,6 +10,7 @@ Page
             id : connectListView
             anchors.fill: parent
             anchors.margins: Theme.paddingLarge
+            anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width
             header: PageHeader {
                 title: qsTr("servers");

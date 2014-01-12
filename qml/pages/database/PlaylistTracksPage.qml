@@ -16,6 +16,7 @@ Page
             }
             ScrollDecorator {}
             anchors.fill: parent
+            anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width
             header: PageHeader {
                 title: playlistname;

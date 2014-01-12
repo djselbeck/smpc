@@ -7,6 +7,8 @@ Page
     id: settingsPage;
     SilicaListView {
         anchors.fill: parent
+        anchors.bottomMargin: quickControlPanel.visibleSize
+        clip: true
         contentWidth: width
         header: PageHeader {
             title: qsTr("settings");

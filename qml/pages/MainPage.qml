@@ -21,9 +21,11 @@ Page {
                           + ": " + profilename : qsTr("disconnected")
     }
     SilicaListView {
+        clip: true
         anchors {
             top: connectedLabel.bottom
             bottom: parent.bottom
+            bottomMargin: quickControlPanel.visibleSize
             right: parent.right
             left: parent.left
         }

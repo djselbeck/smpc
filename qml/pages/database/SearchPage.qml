@@ -11,6 +11,7 @@ Page {
     Drawer {
         id: mainDrawer
         anchors.fill: parent
+        anchors.bottomMargin: quickControlPanel.visibleSize
         open: true
         dock: Dock.Bottom
         backgroundSize: searchhead.height

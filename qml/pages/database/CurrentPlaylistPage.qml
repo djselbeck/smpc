@@ -20,6 +20,7 @@ Page {
 
         anchors {
             fill: parent
+            bottomMargin: quickControlPanel.visibleSize
         }
 
         model: playlistModelVar

@@ -22,6 +22,7 @@ Page
 
             anchors {
                 fill: parent
+                bottomMargin: quickControlPanel.visibleSize
             }
             contentWidth: width
             header: PageHeader {

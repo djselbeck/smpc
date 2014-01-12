@@ -4,12 +4,13 @@ import "SectionScroller.js" as Sections
 
 Item {
     id: scroller
-    height: parent.height
-    width: parent.width/7
-    x: parent.x+parent.width-width;
+//    height: parent.height
+//    width: parent.width/7
+//    x: parent.x+parent.width-width;
     z:1
     property GridView listview;
     property string sectionPropertyName
+    property bool landscape:false
 //    Rectangle {
 //        id: testrect
 //        opacity:0.5
@@ -30,8 +31,8 @@ Item {
     Rectangle {
         id: secDialog
         property alias text: currSecText.text
-        anchors.right:  parent.left
-        y:inputArea.mouseY-(height/2) > (parent.height-height) ? (parent.height-height) : (inputArea.mouseY-(height/2) < 0 ? 0 : inputArea.mouseY-(height/2))
+        y: landscape ? 0 : (inputArea.mouseY-(height/2) > (parent.height-height) ? (parent.height-height) : (inputArea.mouseY-(height/2) < 0 ? 0 : inputArea.mouseY-(height/2)) )
+        x: landscape ?  (inputArea.mouseX-(width/2) > (parent.width-width) ? (parent.width-width) : (inputArea.mouseX-(width/2) < 0 ? 0 : inputArea.mouseX-(width/2)) ) : 0
         height: currSecText.height
         width: currSecText.width+(Theme.paddingMedium*2)
         visible:true
@@ -66,16 +67,73 @@ Item {
             }
         }
         onMouseYChanged: {
-            if(pressed) {
+            if(pressed && !landscape) {
                // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
                 var relPos = (mouseY/height)*100;
                 var item = Sections.getSectionNameAtRelativePos(relPos);
-                secDialog.text = item.value;
-
-                listview.positionViewAtIndex(item.index,ListView.Beginning);
+                if ( item) {
+                    secDialog.text = item.value;
+                        listview.positionViewAtIndex(item.index,GridView.Beginning);
+                }
+            }
+        }
+        onMouseXChanged: {
+            if(pressed && landscape) {
+               // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
+                var relPos = (mouseX/width)*100;
+                var item = Sections.getSectionNameAtRelativePos(relPos);
+                if ( item) {
+                    secDialog.text = item.value;
+                    listview.positionViewAtIndex(item.index,GridView.Center);
+                }
             }
         }
     }
 
+    states: [
+        State {
+            name: "landscape"
+            PropertyChanges {
+                target: scroller
+                width: parent.width
+                height: parent.height/7
+                x:0
+                y: parent.y+parent.height-height;
+                landscape: true
+            }
+            PropertyChanges {
+                target: secDialog
+                anchors {
+                    right : undefined
+                    bottom: parent.top
+                }
+            }
+        },
+        State {
+            name: "portrait"
+            PropertyChanges {
+                target: scroller
+                height: parent.height
+                width: parent.width/7
+                x: parent.x+parent.width-width;
+                y: 0
+                landscape: false
+            }
+            PropertyChanges {
+                target: secDialog
+                anchors {
+                    right : parent.left
+                    bottom: undefined
+                }
+            }
+        }
+    ]
+    state: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted  ) ? "portrait" : "landscape"
 
+//    Rectangle
+//    {
+//        color: "red"
+//        opacity: 0.5
+//        anchors.fill: parent
+//    }
 }

@@ -13,7 +13,9 @@ Page {
     SilicaListView {
         id: albumTracksListView
         anchors.fill: parent
+        anchors.bottomMargin: quickControlPanel.visibleSize
         contentWidth: width
+        clip: true
         header: Item {
             height: headerColumn.height
             width: parent.width

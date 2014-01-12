@@ -5,16 +5,19 @@ import "../../components"
 Page
 {
     id: serverEditPage
-    property alias name: profilenameInputField.text;
+    property alias name: profilenameInputField.text
     property alias hostname: hostnameInputField.text
     property alias password: passwordInputField.text
-    property alias port: portInputField.text;
-    property alias autoconnect: autoconnectSwitch.checked;
-    property int index;
-    property bool newprofile;
+    property alias port: portInputField.text
+    property alias streamingport: streamingPortInputField.text
+    property alias autoconnect: autoconnectSwitch.checked
+    property int index
+    property bool newprofile
     SilicaFlickable
     {
         anchors.fill: parent
+        anchors.bottomMargin: quickControlPanel.visibleSize
+        clip: true
 //        anchors.margins: Theme.paddingLarge;
         contentHeight: settingsContent.height + 20;
         VerticalScrollDecorator {}
@@ -101,6 +104,20 @@ Page
                 id: passwordInputField
                 inputMethodHints: Qt.ImhNoPredictiveText
                 echoMode: TextInput.Password
+            }
+            Label{
+                anchors.right: parent.right
+                anchors.left: parent.left
+                text:qsTr("streaming port:")
+            }
+            TextField
+            {
+                anchors.right: parent.right
+                anchors.left: parent.left
+                id: streamingPortInputField
+                text: "8081"
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                validator: portvalidator
             }
             TextSwitch
             {

@@ -14,8 +14,6 @@ Page {
     property alias bitrate: bitrateText.text
     property bool shuffle
     property bool repeat
-    //    property alias shuffle: shuffleButton.checked
-    //    property alias repeat: repeatButton.checked
     property alias nr: nrText.text
     property alias uri: fileText.text
     property alias audioproperties: audiopropertiesText.text
@@ -27,9 +25,12 @@ Page {
     property bool detailsvisible: true
     property bool pageactive: false
 
+
+    allowedOrientations: Orientation.All
+
     Drawer {
         id: mainDrawer
-        dock: Dock.Bottom
+        dock: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted) ? Dock.Bottom : Dock.Right
         anchors.fill: parent
         open: true
 
@@ -37,12 +38,15 @@ Page {
             id: infoFlickable
             anchors.fill: parent
             BackgroundItem {
+                id: drawerOpenBackgroundItem
                 anchors.fill: parent
                 onClicked: {
-                    if (mainDrawer.open) {
+                    if ( currentsong_page.state=="landscape" && mainDrawer.open) {
                         mainDrawer.hide()
-                    } else {
+                    } else if ( currentsong_page.state=="landscape" && !mainDrawer.open )  {
                         mainDrawer.show()
+//                        volumeControl.state = "slideVisible"
+                        drawerCloseTimer.start()
                     }
                 }
             }
@@ -77,7 +81,18 @@ Page {
                     id: pageHeading
                     title: qsTr("current song")
                 }
+                // Spacing hack
+                Rectangle
+                {
+                    opacity:0.0
+                    // Center landscapeimages
+                    height: (currentsong_page.height-landscapeImageRow.height)/2
+                    width: parent.width
+                    visible: landscapeImageRow.visible
+                }
+
                 Column {
+                    id: subColumn
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -108,6 +123,113 @@ Page {
                             visible: (coverImage.sourceprimary == ""
                                       && coverImage.sourcesecondary == "")
                         }
+                    }
+                    Item
+                    {
+                        id: landscapeImageRow
+                        width: parent.width
+                        height: albumImgLandscape.height
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        Image
+                        {
+                            id: albumImgLandscape
+                            source: coverimageurl
+                            width : (parent.width/2)
+                            height: width
+                            anchors {
+                                top: parent.top
+                                left: parent.left
+                            }
+
+                            fillMode: Image.PreserveAspectCrop
+                        }
+                        Image
+                        {
+                            id: artistImgLandscape
+                            source: artistimageurl
+                            width : (parent.width/2)
+                            height: width
+                            anchors {
+                                top: parent.top
+                                left: albumImgLandscape.right
+                                leftMargin: Theme.paddingSmall
+                            }
+                            fillMode: Image.PreserveAspectCrop
+                        }
+                        Rectangle
+                        {
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                GradientStop {
+                                    position: 0.5
+                                    color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                                }
+                                GradientStop {
+                                    position: 0.7
+                                    color: Qt.rgba(0.0, 0.0, 0.0, 0.3)
+                                }
+                                GradientStop {
+                                    position: 1.0
+                                    color: Qt.rgba(0.0, 0.0, 0.0, 1.0)
+                                }
+                            }
+                        }
+
+
+                        Column
+                        {
+                            id: landscapeTextScrollColumn
+                            anchors {
+                                bottom: parent.bottom
+                            }
+                            width: landscapeImageRow.width
+
+
+                            ScrollLabel {
+                                id: titleTextLC
+                                text: title
+                                color: Theme.primaryColor
+                                font.pixelSize: fontsize
+                                width: parent.width
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                }
+                            }
+                            ScrollLabel {
+                                id: albumTextLC
+                                text: album
+                                color: Theme.primaryColor
+                                font.pixelSize: fontsize
+                                width: parent.width
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                }
+                            }
+                            ScrollLabel {
+                                id: artistTextLC
+                                text: artist
+                                color: Theme.primaryColor
+                                font.pixelSize: fontsize
+                                width: parent.width
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                }
+                            }
+                        }
+
+
+                    }
+                    // Spacing hack
+                    Rectangle
+                    {
+                        opacity:0.0
+                        // Center landscapeimages
+                        height: (currentsong_page.height-landscapeImageRow.height)/2
+                        width: parent.width
+                        visible: landscapeImageRow.visible
                     }
 
                     ScrollLabel {
@@ -201,24 +323,10 @@ Page {
                         }
                     }
                 }
-                //            Button {
-                //                id: showArtistBtn
-                //                text: qsTr("show albums from artist")
-                //                anchors.horizontalCenter: parent.horizontalCenter
-                //                onClicked: {
-                //                    artistClicked(artist);
-                //                }
-                //            }
-                //            Button {
-                //                id: showAlbumBtn
-                //                text: qsTr("show all tracks from album")
-                //                anchors.horizontalCenter: parent.horizontalCenter
-                //                onClicked: {
-                //                    albumClicked("",album);
-                //                }
-                //            }
             }
         }
+
+
 
         backgroundSize: volumeControl.height + positionSlider.height + buttonRow.height
         background: Column {
@@ -326,6 +434,7 @@ Page {
                 minimumValue: 0
                 enabled: true
                 maximumValue: length
+                handleVisible: true
                 value: position
                 valueText: formatLength(value)
                 label: qsTr("position")
@@ -404,6 +513,111 @@ Page {
         } else {
             quickControlPanel.open = true
             pageactive = false
+        }
+    }
+
+    states: [
+        State
+        {
+            name: "portrait"
+            PropertyChanges {
+                target: coverImage
+                visible: true
+            }
+            PropertyChanges {
+                target: titleText
+                visible: true
+            }
+            PropertyChanges {
+                target: artistText
+                visible: true
+            }
+            PropertyChanges {
+                target: albumText
+                visible: true
+            }
+            PropertyChanges {
+                target: mainDrawer
+                open: true
+            }
+            PropertyChanges {
+                target: pageHeading
+                visible: true
+            }
+            PropertyChanges {
+                target: landscapeImageRow
+                visible: false
+            }
+            PropertyChanges {
+                target: drawerCloseTimer
+                running: false
+            }
+            PropertyChanges {
+                target: drawerOpenBackgroundItem
+                enabled: false
+            }
+            PropertyChanges {
+                target: shuffleButton
+                visible: true
+            }
+            PropertyChanges {
+                target: repeatButton
+                visible: true
+            }
+        },
+        State
+        {
+            name: "landscape"
+            PropertyChanges {
+                target: coverImage
+                visible: false
+            }
+            PropertyChanges {
+                target: titleText
+                visible: false
+            }
+            PropertyChanges {
+                target: artistText
+                visible: false
+            }
+            PropertyChanges {
+                target: albumText
+                visible: false
+            }
+            PropertyChanges {
+                target: mainDrawer
+                open: false
+            }
+            PropertyChanges {
+                target: pageHeading
+                visible: false
+            }
+            PropertyChanges {
+                target: landscapeImageRow
+                visible: true
+            }
+            PropertyChanges {
+                target: drawerOpenBackgroundItem
+                enabled: true
+            }
+            PropertyChanges {
+                target: shuffleButton
+                visible: false
+            }
+            PropertyChanges {
+                target: repeatButton
+                visible: false
+            }
+        }
+    ]
+    state : (orientation === Orientation.Portrait ) ? "portrait" : "landscape"
+
+    Timer{
+        id: drawerCloseTimer
+        interval: 5000
+        repeat: false
+        onTriggered: {
+            mainDrawer.hide()
         }
     }
 }

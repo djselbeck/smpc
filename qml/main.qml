@@ -373,7 +373,8 @@ ApplicationWindow
     ControlPanel {
         id: quickControlPanel
     }
-    bottomMargin: quickControlPanel.visibleSize
+    //bottomMargin: (orientation===Orientation.Portrait ? quickControlPanel.visibleSize : 0 )
+
 
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")

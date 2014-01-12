@@ -1,7 +1,7 @@
 # The name of your app
 TARGET = harbour-smpc
 
-QT += network gui sql
+QT += network gui sql multimedia
 
 CONFIG += sailfishapp
 
@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     src/mpd/filemodel.cpp \
     src/mpd/artistmodel.cpp \
     src/mpd/albummodel.cpp \
-    src/controller.cpp
+    src/controller.cpp \
+    src/streamplayer.cpp
 
 
 # C++ headers
@@ -53,7 +54,8 @@ HEADERS += \
     src/mpd/filemodel.h \
     src/mpd/artistmodel.h \
     src/mpd/albummodel.h \
-    src/common.h
+    src/common.h \
+    src/streamplayer.h
 
 
 # QML files and folders

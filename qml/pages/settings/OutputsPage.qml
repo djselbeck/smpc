@@ -10,10 +10,13 @@ Page
     SilicaListView {
             id : outputsListView
             anchors.fill: parent
+            anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width
             header: PageHeader {
                 title: qsTr("outputs")
             }
+            clip: true
+
             ScrollDecorator {}
             delegate: ListItem {
                 contentHeight: mainColumn.height

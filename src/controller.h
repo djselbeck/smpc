@@ -25,6 +25,8 @@
 #include <mpd/filemodel.h>
 #include <mpd/playlistmodel.h>
 
+#include <streamplayer.h>
+
 
 
 class Controller : public QObject
@@ -114,6 +116,10 @@ private:
     DatabaseStatistic *mDBStatistic;
     int mDownloadSize;
     QString getLastFMArtSize(int index);
+
+    // Streaming playback
+    //StreamPlayer *mStreamPlayer;
+
 
     void readSettings();
     void writeSettings();

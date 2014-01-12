@@ -7,72 +7,76 @@ Item {
     property alias font: lbl.font
     property alias color: lbl.color
     property alias scrolling: lbl.shouldScroll
-    property int minScrollTime: 5000;
+    property int minScrollTime: 5000
     height: lbl.height
     clip: true
 
-//    OpacityRampEffect {
-//        sourceItem: mainItm
-//        slope: 3
-//        offset: lbl.shouldScroll ? 0.65 : 1.0
-//        enabled: lbl.shouldScroll
-//    }
+    //    OpacityRampEffect {
+    //        sourceItem: mainItm
+    //        slope: 3
+    //        offset: lbl.shouldScroll ? 0.65 : 1.0
+    //        enabled: lbl.shouldScroll
+    //    }
 
-//    OpacityRampEffect {
-//        direction: OpacityRamp.RightToLeft
-//        sourceItem: mainItm
-//        slope: 3
-//        offset: lbl.shouldScroll ? 0.65 : 1.0
-//        enabled:  lbl.shouldScroll
-//    }
+    //    OpacityRampEffect {
+    //        direction: OpacityRamp.RightToLeft
+    //        sourceItem: mainItm
+    //        slope: 3
+    //        offset: lbl.shouldScroll ? 0.65 : 1.0
+    //        enabled:  lbl.shouldScroll
+    //    }
+    function checkAnimation() {
+        if (lbl.contentWidth > parent.width) {
+            lbl.anchors.horizontalCenter = undefined
+            if (lbl.visible) {
+                lbl.shouldScroll = false
+                lbl.running = false
+                lbl.blendingout = false
+                lbl.blendingin = false
+                lbl.shouldScroll = true
+                lbl.x = x
+                lbl.opacity = 1.0
+                var restPixels = ((lbl.contentWidth - mainItm.width))
+                var restChars = ((lbl.text.length) / lbl.contentWidth) * restPixels
+                lbl.duration = Math.round(
+                            restChars * 500) // Around 2 Chars per Second scroll
+                if (lbl.duration < minScrollTime) {
+                    lbl.duration = minScrollTime
+                }
 
+                animation.to = ((mainItm.x) - lbl.contentWidth) + (mainItm.x + mainItm.width)
+                animation.running = true
+            } else {
+                lbl.shouldScroll = false
+                lbl.running = false
+                lbl.blendingout = false
+                lbl.blendingin = false
+            }
+        } else {
+            lbl.shouldScroll = false
+            lbl.running = false
+            lbl.blendingout = false
+            lbl.blendingin = false
+            lbl.x = parent.x
+            lbl.opacity = 1.0
+            lbl.anchors.horizontalCenter = mainItm.horizontalCenter
+        }
+    }
 
     Label {
         id: lbl
         width: contentWidth
         height: contentHeight
-        property bool shouldScroll:false
-
-        function checkAnimation() {
-            if (contentWidth > parent.width) {
-                anchors.horizontalCenter = undefined
-                if (lbl.visible) {
-                    shouldScroll = false;
-                    animation.running = false
-                    blendout.running = false
-                    blendin.running = false
-                    shouldScroll = true;
-                    x = parent.x
-                    lbl.opacity = 1.0
-                    var restPixels =  ( ( lbl.contentWidth - mainItm.width ) );
-                    var restChars = ((lbl.text.length) / lbl.contentWidth) * restPixels;
-                    animation.duration = Math.round(restChars * 500); // Around 2 Chars per Second scroll
-                    if(animation.duration < minScrollTime ) {
-                        animation.duration = minScrollTime;
-                    }
-
-                    animation.to = ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width);
-                    animation.running = true
-                } else {
-                    shouldScroll = false;
-                    animation.running = false
-                    blendout.running = false
-                    blendin.running = false
-                }
-            } else {
-                shouldScroll = false;
-                animation.running = false;
-                blendout.running = false
-                blendin.running = false;
-                lbl.x = parent.x
-                lbl.opacity = 1.0
-                anchors.horizontalCenter = parent.horizontalCenter
-            }
-        }
+        property bool shouldScroll: false
+        property alias running: animation.running
+        property alias blendingout: blendout.running
+        property alias blendingin: blendin.running
+        property alias duration: animation.duration
 
         onContentWidthChanged: {
             checkAnimation()
         }
+
         onVisibleChanged: {
             lbl.x = parent.x
             lbl.opacity = 1.0
@@ -84,10 +88,9 @@ Item {
             target: lbl
             property: "x"
             from: mainItm.x
-            to: ((mainItm.x) - lbl.contentWidth) + (mainItm.x+mainItm.width)
+            to: ((mainItm.x) - lbl.contentWidth) + (mainItm.x + mainItm.width)
             duration: 500
             easing.type: Easing.InOutQuad
-
 
             onStopped: {
                 if (lbl.visible && lbl.shouldScroll)
@@ -123,5 +126,8 @@ Item {
                     animation.running = true
             }
         }
+    }
+    onWidthChanged: {
+        checkAnimation()
     }
 }

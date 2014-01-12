@@ -164,6 +164,7 @@ Dialog {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors {
             bottom: parent.bottom /*right:parent.right;left:parent.left*/
+            bottomMargin: quickControlPanel.visibleSize
         }
         IconButton {
             id: playButton

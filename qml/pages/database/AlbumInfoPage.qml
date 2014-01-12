@@ -13,6 +13,7 @@ Page {
         width: parent.width
         anchors.top: header.bottom
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: quickControlPanel.visibleSize
         contentHeight: albumText.implicitHeight
         clip: true
 

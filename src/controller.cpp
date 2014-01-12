@@ -17,6 +17,9 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mNetAccess->moveToThread(mNetworkThread);
     mNetworkThread->start();
     mDBThread->start();
+
+//    mStreamPlayer = new StreamPlayer(this);
+
     mCurrentSongID=0;
     mPlaylistVersion = 0;
     mPlaylist = 0;
@@ -402,6 +405,15 @@ void Controller::connectedToServer()
     mWasConnected = true;
     emit sendPopup(popupString);
     emit connected(mProfilename);
+
+//    QUrl streamurl("http://"+mHostname + ":" + "8081");
+//    //QUrl streamurl("http://uwstream2.somafm.com:2666");
+//    //QUrl streamurl = QUrl::fromLocalFile("/usr/share/sounds/jolla-ringtones/stereo/jolla-ringtone.wav");
+//    qDebug() << "start playback of url: " << streamurl.toString();
+
+//    mStreamPlayer->setURL(streamurl);
+//    mStreamPlayer->startPlayback();
+
     // emit requestArtistAlbumMap();
 }
 
