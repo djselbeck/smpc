@@ -57,10 +57,12 @@ Item {
                 }
             }
         }
+        cache: false
     }
     Image {
         id: secondaryImg
         fillMode: primaryImg.fillMode
+        cache: false
         anchors.fill: parent
         onStatusChanged: {
             if (status == Image.Ready) {

@@ -68,27 +68,26 @@ Page {
             name: "landscape"
             PropertyChanges {
                 target: albumListView
-                flow: GridView.TopToBottom
-                cellHeight: albumListView.height / 1
-                cellWidth: cellHeight
                 anchors.rightMargin: quickControlPanel.visibleSize
                 anchors.bottomMargin: 0
                 anchors.leftMargin: 0
                 anchors.topMargin: 0
+                cellHeight: albumListView.height / 1
+                cellWidth: albumListView.height / 1
+                flow: GridView.TopToBottom
             }
         },
         State {
             name: "portrait"
             PropertyChanges {
                 target: albumListView
-                flow: GridView.LeftToRight
-                cellWidth: albumListView.width / 2
-                cellHeight: cellWidth
-                //                header: headerComponent
                 anchors.rightMargin: 0
                 anchors.leftMargin: 0
                 anchors.topMargin: 0
                 anchors.bottomMargin: quickControlPanel.visibleSize
+                cellHeight: albumListView.width / 2
+                cellWidth: albumListView.width / 2
+                flow: GridView.LeftToRight
             }
         },
         State {
@@ -97,7 +96,7 @@ Page {
                 target: albumListView
                 flow: GridView.LeftToRight
                 cellWidth: albumListView.width / 2
-                cellHeight: cellWidth
+                cellHeight: albumListView.width / 2
                 //                header: headerComponent
                 anchors.rightMargin: 0
                 anchors.bottomMargin: 0
@@ -111,7 +110,7 @@ Page {
                 target: albumListView
                 flow: GridView.TopToBottom
                 cellHeight: albumListView.height / 1
-                cellWidth: cellHeight
+                cellWidth: albumListView.height / 1
                 anchors.leftMargin: quickControlPanel.visibleSize
                 anchors.bottomMargin: 0
                 anchors.rightMargin: 0
@@ -120,6 +119,10 @@ Page {
         }
     ]
     onOrientationChanged: {
+        // Scroll to first element, otherwise GridView starts creating
+        // delegates like a maniac
+        albumListView.currentIndex = -1
+        albumListView.positionViewAtIndex(0,GridView.Beginning)
         switch ( orientation ) {
         case Orientation.Portrait :
             state = "portrait"

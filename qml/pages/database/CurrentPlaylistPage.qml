@@ -11,13 +11,13 @@ Page {
         id: playlistView
         clip: true
         delegate: trackDelegate
-//        anchors {
-//            right:parent.right
-//            left: parent.left
-//            top: parent.top
-//            bottom: quickControlPanel.top
-//        }
 
+        //        anchors {
+        //            right:parent.right
+        //            left: parent.left
+        //            top: parent.top
+        //            bottom: quickControlPanel.top
+        //        }
         anchors {
             fill: parent
             bottomMargin: quickControlPanel.visibleSize
@@ -154,11 +154,11 @@ Page {
                     offset: 0.65
                 }
                 // Disabled until offically supported
-//                GlassItem {
-//                    anchors.fill: parent
-//                    visible: playing
-//                    scale: 0.5
-//                }
+                //                GlassItem {
+                //                    anchors.fill: parent
+                //                    visible: playing
+                //                    scale: 0.5
+                //                }
                 onClicked: {
                     playlistView.currentIndex = index
                     if (!playing) {
@@ -175,9 +175,63 @@ Page {
                 }
             }
         }
+
+        section {
+            delegate: Item {
+                height: Theme.itemSizeMedium
+                width: parent.width
+                Rectangle {
+                    id: sectionFillRect
+                    color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+                    anchors {
+                        fill: parent
+                    }
+                }
+
+                Label {
+                    id: sectionLabel
+                    text: section
+                    height: parent.height
+                    anchors {
+                        left: parent.left
+                        leftMargin: listPadding
+                        right: sectionImage.left
+                        rightMargin: Theme.paddingSmall
+                    }
+
+                    font.pixelSize: Theme.fontSizeLarge
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignRight
+                    maximumLineCount: 1
+                    elide: Text.ElideRight
+                }
+                Image {
+                    id: sectionImage
+                    height: parent.height
+                    width: height
+                    anchors {
+                        right:parent.right
+                        rightMargin: listPadding
+                    }
+                    cache: false
+                    asynchronous: true
+                    source: "image://imagedbprovider/album/" + section
+                    Image
+                    {
+                        id: dummyImage
+                        anchors.fill: parent
+                        visible: (parent.status !== Image.Ready)
+                        source : "image://theme/icon-l-music"
+                    }
+                }
+                OpacityRampEffect {
+                    sourceItem: sectionImage
+                    direction: OpacityRamp.TopToBottom
+                }
+            }
+            property: "section"
+        }
     }
-
-
 
     // Delete question
     Dialog {

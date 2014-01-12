@@ -57,15 +57,6 @@ HEADERS += \
     src/common.h \
     src/streamplayer.h
 
-
-# QML files and folders
-#qml.files = *.qml pages cover main.qml components
-
-
-# Please do not modify the following line.
-#include(sailfishapplication/sailfishapplication.pri)
-
-
 OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \ 
     qml/components/qmldir \

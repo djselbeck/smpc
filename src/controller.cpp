@@ -66,7 +66,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
 void Controller::updatePlaylistModel(QList<QObject*>* list)
 {
     qDebug() << "new playlist received";
-    PlaylistModel *model = new PlaylistModel((QList<MpdTrack*>*)list,this);
+    PlaylistModel *model = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
     qDebug() << "new playlist model created";
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     qDebug() << "new playlist model ownership set";
@@ -778,6 +778,7 @@ void Controller::addlastsearchtoplaylist()
 
 void Controller::clearAlbumList()
 {
+    mQuickView->rootContext()->setContextProperty("albumsModel",0);
     if(mOldAlbumModel!=0)
     {
         delete(mOldAlbumModel);
@@ -787,6 +788,7 @@ void Controller::clearAlbumList()
 
 void Controller::clearArtistList()
 {
+    mQuickView->rootContext()->setContextProperty("artistsModel",0);
     if(mOldArtistModel!=0)
     {
         delete(mOldArtistModel);

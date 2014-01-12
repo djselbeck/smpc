@@ -8,7 +8,6 @@
 #include <localdb/imagedownloader.h>
 #include <mpd/mpdalbum.h>
 
-#define DUMMY_ALBUMIMAGE "image://theme/icon-l-music"
 
 class AlbumModel : public QAbstractListModel
 {

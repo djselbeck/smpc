@@ -130,6 +130,7 @@ Page {
                         width: parent.width
                         height: albumImgLandscape.height
                         anchors.horizontalCenter: parent.horizontalCenter
+                        clip:true
                         Image
                         {
                             id: albumImgLandscape
@@ -140,7 +141,7 @@ Page {
                                 top: parent.top
                                 left: parent.left
                             }
-
+                            cache: false
                             fillMode: Image.PreserveAspectCrop
                         }
                         Image
@@ -154,6 +155,7 @@ Page {
                                 left: albumImgLandscape.right
                                 leftMargin: Theme.paddingSmall
                             }
+                            cache: false
                             fillMode: Image.PreserveAspectCrop
                         }
                         Rectangle

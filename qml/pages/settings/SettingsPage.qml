@@ -38,6 +38,8 @@ Page
         settingsMenuModel.append({"name":qsTr("outputs"), "ident":"outputs"})
         settingsMenuModel.append({"name":qsTr("update database"), "ident":"updatedb"})
         settingsMenuModel.append({"name":qsTr("about"), "ident":"about"})
+        // Debug-only
+        settingsMenuModel.append({"name":qsTr("garbage collection"), "ident":"gc"})
     }
 
     ListModel {
@@ -61,6 +63,11 @@ Page
             break;
         case "database" :
             pageStack.push(Qt.resolvedUrl("DatabaseSettings.qml"))
+            break;
+        case "gc" :
+            console.debug("Calling garbage collection")
+            gc();
+            console.debug("Called garbage collection")
             break;
         }
     }

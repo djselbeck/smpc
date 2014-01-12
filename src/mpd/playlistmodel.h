@@ -6,13 +6,15 @@
 
 #include <mpd/mpdtrack.h>
 
+#include <localdb/imagedatabase.h>
+
 class PlaylistModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit PlaylistModel(QObject *parent = 0);
-    PlaylistModel(QList<MpdTrack*>* list,QObject *parent = 0);
+    PlaylistModel(QList<MpdTrack*>* list,ImageDatabase *db, QObject *parent = 0);
     ~PlaylistModel();
 
     Q_INVOKABLE MpdTrack* get(int index);
@@ -33,11 +35,14 @@ public:
         lengthFormatedRole,
         tracknoRole,
         yearRole,
-        playingRole
+        playingRole,
+        sectionRole,
+        sectionImageURLRole
     };
 
 private:
     QList<MpdTrack*>* mEntries;
+    ImageDatabase *mDB;
 
 signals:
 

@@ -101,6 +101,10 @@ Page {
         }
     ]
     onOrientationChanged: {
+        // Scroll to first element, otherwise GridView starts creating
+        // delegates like a maniac
+        artistListView.currentIndex = -1
+        artistListView.positionViewAtIndex(0,GridView.Beginning)
         switch ( orientation ) {
         case Orientation.Portrait :
             state = "portrait"

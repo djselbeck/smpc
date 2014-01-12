@@ -50,6 +50,7 @@ DockedPanel {
                 left: parent.left
                 right: parent.right
             }
+             active: controlPanel.open && Qt.application.active
         }
         ScrollLabel {
             id: artistText
@@ -62,6 +63,7 @@ DockedPanel {
                 left: parent.left
                 right: parent.right
             }
+            active: controlPanel.open && Qt.application.active
         }
     }
 

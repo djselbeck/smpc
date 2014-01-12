@@ -107,9 +107,20 @@ void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
             if ( imageID == -1 ) {
                 emit requestAlbumDownload(MpdAlbum(this,album->getTitle(),album->getArtist()));
             }
-            delete(album);
         }
     }
+    // Cleanup memory
+    QMap<MpdArtist*, QList<MpdAlbum*>* >::iterator  iterator = map->begin();
+    while ( iterator != map->end() ) {
+        // Clear album list
+        qDeleteAll(*iterator.value());
+        delete(iterator.value());
+        // Clear Artist itselfs
+        delete ( iterator.key());
+        iterator++;
+    }
+    // delete the map
+    delete(map);
 }
 
 bool ImageDatabase::hasAlbumArt(QString album,QString artist)
@@ -707,6 +718,8 @@ void ImageDatabase::fillDatabase(QList<MpdArtist *> *artistList)
             emit requestArtistDownload(MpdArtist(*artist));
         }
     }
+    qDeleteAll(*artistList);
+    delete(artistList);
 }
 
 int ImageDatabase::getAlbumCount()

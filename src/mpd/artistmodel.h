@@ -6,7 +6,7 @@
 #include <mpd/mpdartist.h>
 #include <localdb/imagedatabase.h>
 
-#define DUMMY_ARTISTIMAGE "image://theme/icon-l-music"
+
 
 
 class ArtistModel : public QAbstractListModel

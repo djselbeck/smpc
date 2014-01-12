@@ -16,6 +16,7 @@ Component {
                 anchors.fill: parent
                 source: imageURL
                 cache: false
+                asynchronous: true
                 fillMode: Image.PreserveAspectCrop
             }
             Rectangle {

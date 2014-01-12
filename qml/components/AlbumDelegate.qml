@@ -6,7 +6,7 @@ Component {
     ListItem {
         //menu: contextMenu
         width: GridView.view.cellWidth
-        contentHeight: width
+        contentHeight: GridView.view.cellHeight
 
         Rectangle {
             anchors.fill: parent
@@ -17,6 +17,7 @@ Component {
                 anchors.fill: parent
                 source: coverURL
                 cache: false
+                asynchronous: true
                 fillMode: Image.PreserveAspectCrop
             }
             Rectangle {
@@ -65,6 +66,11 @@ Component {
             albumListView.currentIndex = index
             albumClicked(artistname, title)
         }
+//        Component.onCompleted: {
+//            console.debug("Album created: " + title)
+////            console.debug("contentheight: " + contentHeight+ " height: " +height + " width: " + width)
+//        }
+
 //        function playAlbumRemorse() {
 //            remorseAction(qsTr("playing album"), function () {
 //                playAlbum([artistname, title])

@@ -35,6 +35,8 @@ Page {
                         id: artistImage
                         width: parent.width / 2
                         height: imageRow.height
+                        cache: false
+                        asynchronous: true
                         source: artistname
                                 == "" ? "image://imagedbprovider/artistfromalbum/"
                                         + albumname : "image://imagedbprovider/artist/" + artistname
@@ -50,6 +52,8 @@ Page {
                         id: albumImage
                         width: parent.width / 2
                         height: imageRow.height
+                        cache: false
+                        asynchronous: true
                         source: artistname == "" ? "image://imagedbprovider/album/"
                                                    + albumname : "image://imagedbprovider/album/"
                                                    + artistname + "/" + albumname

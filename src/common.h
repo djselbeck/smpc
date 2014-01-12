@@ -7,9 +7,11 @@
 // ONLY FOR USE WITH JOLLAMPC
 #define LASTFMAPIKEY "1c728df8f626849518971eaae29e01a1"
 #define LASTFMDEFAULTSIZE "mega"
-#define VERSION "1.1.0"
+#define VERSION "1.1.1"
 
 #define IMAGEPROVIDERNAME "imagedbprovider"
+#define DUMMY_ALBUMIMAGE "image://theme/icon-l-music"
+#define DUMMY_ARTISTIMAGE "image://theme/icon-l-music"
 
 #include <QString>
 

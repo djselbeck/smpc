@@ -5,9 +5,10 @@ PlaylistModel::PlaylistModel(QObject *parent) :
 {
 }
 
-PlaylistModel::PlaylistModel(QList<MpdTrack *> *list,QObject *parent) : QAbstractListModel(parent)
+PlaylistModel::PlaylistModel(QList<MpdTrack *> *list, ImageDatabase *db, QObject *parent) : QAbstractListModel(parent)
 {
     mEntries = list;
+    mDB = db;
 }
 
 PlaylistModel::~PlaylistModel(){
@@ -44,6 +45,56 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         return mEntries->at(index.row())->getYear();
     else if(role==playingRole)
         return mEntries->at(index.row())->getPlaying();
+    else if(role==sectionRole)
+        return mEntries->at(index.row())->getAlbum();
+    else if ( role== sectionImageURLRole ) {
+        MpdTrack *track = mEntries->at(index.row());
+        QString album = track->getAlbum();
+        QString artist = track->getArtist();
+        if ( artist != "" ) {
+            int imageID = mDB->imageIDFromAlbumArtist(album,artist);
+            // No image found return dummy url
+            if ( imageID == -1 ) {
+                // Start image retrieval
+                qDebug() << "returning dummy image for album: " << album;
+                //emit requestAlbumInformation(*album);
+                // Return dummy for the time being
+                return DUMMY_ALBUMIMAGE;
+            } else if (imageID == -2 ) {
+                // Try getting album art for album with out artist (think samplers)
+                imageID = mDB->imageIDFromAlbum(album);
+                if ( imageID >= 0 ) {
+                    QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                    return url;
+                }
+                qDebug() << "returning dummy image for blacklisted album: " << album;
+                return DUMMY_ALBUMIMAGE;
+            } else {
+                qDebug() << "returning database image for album: " << album;
+                QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                return url;
+            }
+        }
+        else {
+            int imageID = mDB->imageIDFromAlbum(album);
+
+            // No image found return dummy url
+            if ( imageID == -1 ) {
+                // Start image retrieval
+                qDebug() << "returning dummy image for album: " << album;
+                // Return dummy for the time being
+                return DUMMY_ALBUMIMAGE;
+            } else if (imageID == -2 ) {
+                qDebug() << "returning dummy image for blacklisted album: " << album;
+                return DUMMY_ALBUMIMAGE;
+            }
+            else {
+                qDebug() << "returning database image for album: " << album;
+                QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                return url;
+            }
+        }
+    }
 
     return 0;
 }
@@ -69,6 +120,8 @@ QHash<int, QByteArray> PlaylistModel::roleNames() const {
     roles[tracknoRole] = "tracknr";
     roles[yearRole] = "year";
     roles[playingRole] = "playing";
+    roles[sectionRole] = "section";
+    roles[sectionImageURLRole] = "sectionImageURL";
 
     return roles;
 }

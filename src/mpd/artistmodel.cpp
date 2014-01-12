@@ -13,11 +13,10 @@ ArtistModel::ArtistModel(QList<MpdArtist *> *list, ImageDatabase *DB, QObject *p
 
 ArtistModel::~ArtistModel()
 {
-    for(int i=0;i<mEntries->length();i++)
-    {
-        delete(mEntries->at(i));
+    if( mEntries ) {
+        qDeleteAll(*mEntries);
+        delete(mEntries);
     }
-    delete(mEntries);
 }
 
 int ArtistModel::rowCount(const QModelIndex &parent) const
