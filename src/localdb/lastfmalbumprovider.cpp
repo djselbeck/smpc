@@ -30,10 +30,6 @@ LastFMAlbumProvider::~LastFMAlbumProvider() {
 }
 
 
-LastFMAlbumProvider::LastFMAlbumProvider(MpdArtist &artist) {
-
-}
-
 void LastFMAlbumProvider::downloadImageData(QUrl imageURL) {
     if(!mAlbumArtAccess)
     {
@@ -187,7 +183,7 @@ void LastFMAlbumProvider::startDownload() {
         }
     }
 
-    QNetworkReply *reply = mXMLNetAccess->get(downloadRequest);
+    mXMLNetAccess->get(downloadRequest);
     qDebug() << "Netreply get send";
 }
 

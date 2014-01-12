@@ -75,7 +75,10 @@ Page {
 
         SilicaListView {
             id: albumsongs_list_view
-            anchors.fill: parent
+            anchors{
+                fill: parent
+                //bottomMargin: mainDrawer.open ? undefined : quickControlPanel.visibleSize
+            }
             ScrollDecorator {}
 
             header: PageHeader {
@@ -85,6 +88,7 @@ Page {
                     right: parent.right
                 }
             }
+            clip: true
 
             PullDownMenu {
                 enabled: albumsongs_list_view.model !== undefined

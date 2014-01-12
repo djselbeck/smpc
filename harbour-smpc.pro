@@ -109,10 +109,6 @@ DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_DEBUG_OUTPU
 
 TRANSLATIONS += $${TARGET}_de.ts
 
-evil_hack_to_fool_lupdate {
-SOURCES += \
-}
-
 INCLUDEPATH += src
 
 evil_hack_to_fool_lupdate {

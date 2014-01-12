@@ -129,7 +129,7 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
 
         //Read all albums until OK send from mpd
         QString response ="";
-        MpdArtist *tempartist;
+        MpdArtist *tempartist=NULL;
         QString name;
         while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
         {
@@ -1213,8 +1213,8 @@ void NetworkAccess::getDirectory(QString path)
         outstream << "lsinfo \"" << path << "\"" << endl;
         QString response ="";
 
-        MpdTrack *temptrack;
-        MpdFileEntry *tempfile;
+        MpdTrack *temptrack=NULL;
+        MpdFileEntry *tempfile=NULL;
         QString title="";
         QString artist="";
         QString album="";
@@ -1505,6 +1505,8 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                             temptracks->append(temptrack);
                             temptrack->moveToThread(mQmlThread);
                             QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+                        } else {
+                            delete(temptrack);
                         }
                         temptrack=NULL;
                     }
@@ -1568,6 +1570,10 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                 temptracks->append(temptrack);
                 temptrack->moveToThread(mQmlThread);
                 QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+            }
+            else {
+                delete(temptrack);
+                temptrack = NULL;
             }
         }
     }

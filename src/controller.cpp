@@ -29,6 +29,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mAlbumTracks = 0;
     mPlaylistTracks = 0;
     mSearchedTracks = 0;
+    mServerProfiles = 0;
     mLastPlaybackState = NetworkAccess::STOP;
     connectSignals();
     readSettings();
@@ -61,6 +62,60 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mApplicationActive = true;
 
     emit requestDBStatistic();
+}
+
+Controller::~Controller()
+{
+    qDebug() << "clearing controller";
+    // Clear up the mess
+    mNetworkThread->quit();
+    mNetworkThread->wait();
+    delete(mNetworkThread);
+    delete(mNetAccess);
+
+    // Close local database
+    mDBThread->quit();
+    mDBThread->wait();
+    delete(mDBThread);
+    delete(mImgDB);
+    delete(mQMLImgProvider);
+
+    if (mServerProfiles)
+        delete(mServerProfiles);
+
+    if (mOldAlbumModel)
+        delete(mOldAlbumModel);
+    if(mOldArtistModel)
+        delete(mOldArtistModel);
+    if(mPlaylist)
+        delete(mPlaylist);
+    if(mAlbumTracks)
+    {
+        qDeleteAll(*mAlbumTracks);
+        delete(mAlbumTracks);
+    }
+    if(mPlaylistTracks)
+    {
+        qDeleteAll(*mPlaylistTracks);
+        delete(mPlaylistTracks);
+    }
+    if(mSearchedTracks) {
+        qDeleteAll(*mSearchedTracks);
+        delete(mSearchedTracks);
+    }
+    if(mOutputs) {
+        qDeleteAll(*mOutputs);
+        delete(mOutputs);
+    }
+    if(mFileModels) {
+        qDeleteAll(*mFileModels);
+        delete(mFileModels);
+    }
+    if(mDBStatistic)
+        delete(mDBStatistic);
+
+    qDebug() << "everything cleared up nicely";
+
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -213,6 +268,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(connectToServer()),this,SLOT(connectToServer()));
     connect(item,SIGNAL(requestCurrentPlaylist()),mNetAccess,SLOT(getCurrentPlaylistTracks()));
     connect(item,SIGNAL(requestArtists()),mNetAccess,SLOT(getArtists()));
+
     connect(item,SIGNAL(requestArtistAlbums(QString)),mNetAccess,SLOT(getArtistsAlbums(QString)));
     connect(item,SIGNAL(requestAlbums()),mNetAccess,SLOT(getAlbums()));
     connect(item,SIGNAL(requestFilesPage(QString)),this,SLOT(requestFilePage(QString)));
@@ -300,6 +356,8 @@ void Controller::connectSignals()
 
 
     connect(this,SIGNAL(requestArtistAlbumMap()),mNetAccess,SLOT(getArtistAlbumMap()));
+    connect(this,SIGNAL(requestArtists()),mNetAccess,SLOT(getArtists()));
+
     connect(mNetAccess,SIGNAL(artistsAlbumsMapReady(QMap<MpdArtist*,QList<MpdAlbum*>*>*)),mImgDB,SLOT(fillDatabase(QMap<MpdArtist*,QList<MpdAlbum*>*>*)));
     connect(item,SIGNAL(clearAlbumList()),this,SLOT(clearAlbumList()));
     connect(item,SIGNAL(clearArtistList()),this,SLOT(clearArtistList()));
@@ -371,20 +429,6 @@ void Controller::requestCurrentPlaylist()
     //netaccess->getCurrentPlaylistTracks();
 }
 
-void Controller::requestAlbums()
-{
-    mNetAccess->getAlbums();
-}
-
-void Controller::requestArtists()
-{
-    mNetAccess->getArtists();
-}
-
-void Controller::requestArtistAlbums(QString artist)
-{
-    mNetAccess->getArtistsAlbums(artist);
-}
 
 void Controller::requestAlbum(QVariant array)
 {
@@ -528,6 +572,11 @@ void Controller::requestFilePage(QString path)
 
 void Controller::readSettings()
 {
+    if ( mServerProfiles ) {
+        qDeleteAll(*mServerProfiles);
+        delete(mServerProfiles);
+        mServerProfiles = 0;
+    }
     mServerProfiles = new QList< ServerProfile*> ();
     QSettings settings;
     settings.beginGroup("server_properties");

@@ -44,6 +44,7 @@ class Controller : public QObject
 public:
     explicit Controller(QObject *parent = 0);
     Controller(QQuickView *mQuickView,QObject *parent = 0);
+    ~Controller();
     void connectSignals();
 public slots:
 
@@ -71,6 +72,7 @@ signals:
     void addURIToPlaylist(QString);
     void requestPlaylistClear();
     void requestArtistAlbumMap();
+    void requestArtists();
     void filePopCleared();
     void connected(QVariant profile);
     void disconnected();
@@ -99,12 +101,11 @@ private:
     QThread *mDBThread;
     QList<ServerProfile*> *mServerProfiles;
     QTimer volDecTimer,volIncTimer;
-    ArtistModel *mOldArtistModel;
     AlbumModel *mOldAlbumModel;
+    ArtistModel *mOldArtistModel;
+    PlaylistModel *mPlaylist;
     QList<MpdTrack*> *mAlbumTracks;
     QList<MpdTrack*> *mPlaylistTracks;
-    QList<MpdTrack*> *mTrackModel;
-    PlaylistModel *mPlaylist;
     QList<MpdTrack*> *mSearchedTracks;
     QList<MPDOutput*> *mOutputs;
     QStack<FileModel*> *mFileModels;
@@ -126,9 +127,6 @@ private:
 
 private slots:
     void requestCurrentPlaylist();
-    void requestAlbums();
-    void requestArtists();
-    void requestArtistAlbums(QString artist);
     void requestAlbum(QVariant array);
     void requestFilePage(QString);
     void seek(int);

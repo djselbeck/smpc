@@ -18,7 +18,6 @@ class LastFMAlbumProvider : public QObject
     Q_OBJECT
 public:
     LastFMAlbumProvider(QString albumName,QString artistName,QObject *parent=0);
-    LastFMAlbumProvider(MpdArtist &artist);
     ~LastFMAlbumProvider();
 
     void startDownload();
