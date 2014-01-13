@@ -786,6 +786,8 @@ void NetworkAccess::playArtistAlbum(QVariant albuminfo)
     clearPlaylist();
     addArtistAlbumToPlaylist(albuminfo);
     playTrackByNumber(0);
+    setRandom(false);
+    setRepeat(false);
 }
 
 void NetworkAccess::playArtistAlbum(QString artist, QString album)
@@ -793,6 +795,8 @@ void NetworkAccess::playArtistAlbum(QString artist, QString album)
     clearPlaylist();
     addArtistAlbumToPlaylist(artist,album);
     playTrackByNumber(0);
+    setRandom(false);
+    setRepeat(false);
 }
 
 void NetworkAccess::playAlbum(QString album)
@@ -800,6 +804,8 @@ void NetworkAccess::playAlbum(QString album)
     clearPlaylist();
     addAlbumToPlaylist(album);
     playTrackByNumber(0);
+    setRandom(false);
+    setRepeat(false);
 }
 
 
@@ -1482,6 +1488,7 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
         MpdTrack *temptrack=NULL;
         QString title;
         QString artist;
+        QString albumartist;
         QString albumstring;
         QString datestring;
         int nr,albumnrs;
@@ -1527,6 +1534,11 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                     artist = response.right(response.length()-8);
                     artist.chop(1);
                     temptrack->setArtist(artist);
+                }
+                if (response.left(13)==QString("AlbumArtist: ")) {
+                    albumartist = response.right(response.length()-13);
+                    albumartist.chop(1);
+                    temptrack->setAlbumArtist(albumartist);
                 }
                 if (response.left(7)==QString("Album: ")) {
                     albumstring = response.right(response.length()-7);

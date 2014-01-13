@@ -180,6 +180,8 @@ Page {
             delegate: Item {
                 height: Theme.itemSizeMedium
                 width: parent.width
+                property string album : section.split('|')[1]
+                property string artist : section.split('|')[0]
                 Rectangle {
                     id: sectionFillRect
                     color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
@@ -190,8 +192,8 @@ Page {
 
                 Label {
                     id: sectionLabel
-                    text: section
                     height: parent.height
+                    text: album
                     anchors {
                         left: parent.left
                         leftMargin: listPadding
@@ -215,7 +217,7 @@ Page {
                     }
                     cache: false
                     asynchronous: true
-                    source: "image://imagedbprovider/album/" + section
+                    source: "image://imagedbprovider/album/" + artist + "/" + album
                     Image
                     {
                         id: dummyImage
@@ -227,6 +229,13 @@ Page {
                 OpacityRampEffect {
                     sourceItem: sectionImage
                     direction: OpacityRamp.TopToBottom
+                }
+
+                Component.onCompleted: {
+                    console.debug("section created: " + section);
+//                    var splitString = section.split('|');
+//                    sectionImage.source = "image://imagedbprovider/" + splitString[0] + "/" + splitString[1]
+//                    sectionLabel.text = splitString[1]
                 }
             }
             property: "section"

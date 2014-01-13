@@ -17,6 +17,16 @@ Page {
             width: aboutPage.width - Theme.paddingLarge * 2
             height: width
             cache: false
+            BackgroundItem {
+                id: debugEnabled
+                property int clickcount:0
+                onClicked: {
+                    if(clickcount++ >= 5) {
+                        mDebugEnabled = true;
+                    }
+                }
+                anchors.fill: parent
+            }
         }
 
         Label {

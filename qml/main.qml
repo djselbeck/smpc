@@ -144,6 +144,7 @@ ApplicationWindow
     property int mVolume
     property bool mRepeat
     property bool mShuffle
+    property bool mDebugEnabled
 
 
     // JS-functions

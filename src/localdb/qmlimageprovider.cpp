@@ -36,6 +36,10 @@ QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSiz
             }
         } else if (idList[0] == "album" && idList.length() == 3 ) {
             QImage img = mDB->getAlbumImage(idList[2],idList[1],true);
+            if ( img.size().height() == 0 || img.size().width()== 0) {
+                // Try searching for album without artist (samplers,etc)
+                img = mDB->getAlbumImage(idList[2]);
+            }
             if ( requestedSize.isValid()) {
                 size->setHeight(requestedSize.height());
                 size->setWidth(requestedSize.width());

@@ -141,6 +141,7 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
     mCurrentSongID = -1;
     mPlaylist = model;
     qDebug() << "playlist = model";
+    trimCache();
 }
 
 void Controller::updateFilesModel(QList<QObject*>* list)
@@ -971,4 +972,10 @@ QString Controller::getLastFMArtSize(int index)
     }
     }
     return LASTFMDEFAULTSIZE;
+}
+
+void Controller::trimCache()
+{
+//    mQuickView->engine()->clearComponentCache();
+//    mQuickView->engine()->collectGarbage();
 }

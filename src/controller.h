@@ -185,6 +185,7 @@ private slots:
     void setAlbumWikiInfo(QString info);
 
     void receiveDownloadSize(int);
+    void trimCache();
 
 };
 

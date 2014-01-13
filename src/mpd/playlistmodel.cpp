@@ -13,7 +13,9 @@ PlaylistModel::PlaylistModel(QList<MpdTrack *> *list, ImageDatabase *db, QObject
 
 PlaylistModel::~PlaylistModel(){
     if(mEntries){
+        qDebug() << "freeing " << mEntries->size() << " elements with size of: " << sizeof(MpdTrack)*mEntries->size() << " bytes";
         qDeleteAll(*mEntries);
+        mEntries->clear();
         delete(mEntries);
         mEntries = 0;
     }
@@ -45,8 +47,20 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         return mEntries->at(index.row())->getYear();
     else if(role==playingRole)
         return mEntries->at(index.row())->getPlaying();
-    else if(role==sectionRole)
-        return mEntries->at(index.row())->getAlbum();
+    else if(role==sectionRole) {
+        MpdTrack  *tmpTrack = mEntries->at(index.row());
+        QString album = tmpTrack->getAlbum();
+        QString albumartist = tmpTrack->getAlbumArtist();
+        QString artist = tmpTrack->getArtist();
+
+        QString sectionString;
+        if ( albumartist == "" ) {
+            sectionString = artist + '|' + album;
+        } else {
+            sectionString = albumartist + '|' + album;
+        }
+        return sectionString;
+    }
     else if ( role== sectionImageURLRole ) {
         MpdTrack *track = mEntries->at(index.row());
         QString album = track->getAlbum();

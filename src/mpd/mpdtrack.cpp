@@ -72,6 +72,11 @@ QString MpdTrack::getArtist()
     return mArtist;
 }
 
+QString MpdTrack::getAlbumArtist()
+{
+    return mAlbumArtist;
+}
+
 bool MpdTrack::getPlaying()
 {
     return mPlaying;
@@ -138,6 +143,11 @@ void MpdTrack::setFileUri(QString uri)
 void MpdTrack::setArtist(QString art)
 {
   this->mArtist = art;
+}
+
+void MpdTrack::setAlbumArtist(QString artist)
+{
+    mAlbumArtist = artist;
 }
 
 void MpdTrack::setLength(quint32 length)

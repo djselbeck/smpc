@@ -36,6 +36,7 @@ public:
     quint32 getLength();
     QString getAlbum();
     QString getArtist();
+    QString getAlbumArtist();
     QString getLengthFormated();
     QString getYear();
     QString getFileName();
@@ -47,6 +48,7 @@ public:
     void setLength(quint32 mLength);
     void setAlbum(QString);
     void setArtist(QString);
+    void setAlbumArtist(QString);
     void setYear(QString mYear);
     void setTrackNr(int nr);
     void setAlbumTracks(int nr);
@@ -58,6 +60,7 @@ private:
     QString mFileURI;
     quint32 mLength;
     QString mArtist;
+    QString mAlbumArtist;
     QString mAlbum;
     int mTrackNR;
     int mAlbumTracks;

@@ -39,7 +39,9 @@ Page
         settingsMenuModel.append({"name":qsTr("update database"), "ident":"updatedb"})
         settingsMenuModel.append({"name":qsTr("about"), "ident":"about"})
         // Debug-only
-        settingsMenuModel.append({"name":qsTr("garbage collection"), "ident":"gc"})
+        if(mDebugEnabled) {
+            settingsMenuModel.append({"name":qsTr("garbage collection"), "ident":"gc"})
+        }
     }
 
     ListModel {

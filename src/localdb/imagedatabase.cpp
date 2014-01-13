@@ -688,6 +688,14 @@ void ImageDatabase::requestCoverImage(MpdAlbum album)
         QString url = "image://"  IMAGEPROVIDERNAME  "/albumid/" + QString::number(artworkID);
         emit coverAlbumArtReady(QVariant::fromValue(url));
         return;
+    } else if ( artworkID == -2 ) {
+        // Blacklisted, try album with out artist (for example samplers)
+        artworkID = imageIDFromAlbum(album.getTitle());
+        if ( artworkID >= 0 ) {
+            QString url = "image://"  IMAGEPROVIDERNAME  "/albumid/" + QString::number(artworkID);
+            emit coverAlbumArtReady(QVariant::fromValue(url));
+        }
+        return;
     }
     emit coverAlbumArtReady("");
     emit requestAlbumDownload(album);
