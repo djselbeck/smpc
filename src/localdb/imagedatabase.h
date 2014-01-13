@@ -45,13 +45,13 @@ public:
     int imageIDFromArtist(QString artist);
 
 
-    QImage getAlbumImage(QString album, QString artist, bool download=false);
-    QImage getAlbumImage(QString album, bool download=false);
-    QImage getAlbumImage(int artworkID);
+    QImage* getAlbumImage(QString album, QString artist, bool download=false);
+    QImage* getAlbumImage(QString album, bool download=false);
+    QImage* getAlbumImage(int artworkID);
 
-    QImage getArtistImage(QString artist,bool download=false);
-    QImage getArtistImage(int artworkID);
-    QImage getArtistImageForAlbum(QString album);
+    QImage* getArtistImage(QString artist,bool download=false);
+    QImage* getArtistImage(int artworkID);
+    QImage* getArtistImageForAlbum(QString album);
 
     QString getArtistBioInformation(QString artist);
     QString getAlbumWikiInformation(QString album, QString artist);

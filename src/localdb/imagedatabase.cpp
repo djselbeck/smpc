@@ -398,7 +398,7 @@ int ImageDatabase::imageIDFromArtist(QString artist)
  * @param artist
  * @return
  */
-QImage ImageDatabase::getAlbumImage(QString album, QString artist, bool download)
+QImage* ImageDatabase::getAlbumImage(QString album, QString artist, bool download)
 {
     qDebug() << "get Image for: " << album << artist;
     int artworkID = imageIDFromAlbumArtist(album,artist);
@@ -435,15 +435,15 @@ QImage ImageDatabase::getAlbumImage(QString album, QString artist, bool download
     //        return img;
     //    }
 
-    return QImage();
+    return new QImage();
 }
 
-QImage ImageDatabase::getAlbumImage(QString album,bool download)
+QImage* ImageDatabase::getAlbumImage(QString album,bool download)
 {
     int artworkID = imageIDFromAlbum(album);
     if ( artworkID == -1 ) {
         qDebug() << "Returning empty image";
-        return QImage();
+        return new QImage();
     }
     QSqlQuery query;
     query.prepare("SELECT * FROM images WHERE "
@@ -454,9 +454,9 @@ QImage ImageDatabase::getAlbumImage(QString album,bool download)
     while ( query.next() ) {
         int id = query.value("id").toInt();
         if ( id == artworkID ) {
-            QImage image;
+            QImage *image = new QImage();
             const QByteArray &imgData = query.value("imgdata").toByteArray();
-            if ( image.loadFromData(imgData)) {
+            if ( image->loadFromData(imgData)) {
                 qDebug() << "Image retrieved successfully from database";
                 return image;
             }
@@ -467,15 +467,15 @@ QImage ImageDatabase::getAlbumImage(QString album,bool download)
     // TODO ASYNC PROBLEM
     //    LastFMAlbumProvider provider(album,artist);
 
-    return QImage();
+    return new QImage();
 }
 
-QImage ImageDatabase::getArtistImage(QString artist,bool download)
+QImage* ImageDatabase::getArtistImage(QString artist,bool download)
 {
     int artworkID = imageIDFromArtist(artist);
     if ( artworkID == -1 ) {
         qDebug() << "Returning empty image";
-        return QImage();
+        return new QImage();
     }
     QSqlQuery query;
     query.prepare("SELECT * FROM images WHERE "
@@ -486,9 +486,9 @@ QImage ImageDatabase::getArtistImage(QString artist,bool download)
     while ( query.next() ) {
         int id = query.value("id").toInt();
         if ( id == artworkID ) {
-            QImage image;
+            QImage *image = new QImage();
             const QByteArray &imgData = query.value("imgdata").toByteArray();
-            if ( image.loadFromData(imgData)) {
+            if ( image->loadFromData(imgData)) {
                 qDebug() << "Image retrieved successfully from database";
                 return image;
             }
@@ -497,10 +497,10 @@ QImage ImageDatabase::getArtistImage(QString artist,bool download)
 
 
 
-    return QImage();
+    return new QImage();
 }
 
-QImage ImageDatabase::getAlbumImage(int artworkID)
+QImage* ImageDatabase::getAlbumImage(int artworkID)
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM images WHERE "
@@ -511,18 +511,18 @@ QImage ImageDatabase::getAlbumImage(int artworkID)
     while ( query.next() ) {
         int id = query.value("id").toInt();
         if ( id == artworkID ) {
-            QImage image;
+            QImage *image = new QImage();
             const QByteArray &imgData = query.value("imgdata").toByteArray();
-            if ( image.loadFromData(imgData)) {
+            if ( image->loadFromData(imgData)) {
                 qDebug() << "Image retrieved successfully from database";
                 return image;
             }
         }
     }
-    return QImage();
+    return new QImage();
 }
 
-QImage ImageDatabase::getArtistImage(int artworkID)
+QImage* ImageDatabase::getArtistImage(int artworkID)
 {
     QSqlQuery query;
     query.prepare("SELECT * FROM images WHERE "
@@ -533,18 +533,18 @@ QImage ImageDatabase::getArtistImage(int artworkID)
     while ( query.next() ) {
         int id = query.value("id").toInt();
         if ( id == artworkID ) {
-            QImage image;
+            QImage *image = new QImage();
             const QByteArray &imgData = query.value("imgdata").toByteArray();
-            if ( image.loadFromData(imgData)) {
+            if ( image->loadFromData(imgData)) {
                 qDebug() << "Image retrieved successfully from database";
                 return image;
             }
         }
     }
-    return QImage();
+    return new QImage();
 }
 
-QImage ImageDatabase::getArtistImageForAlbum(QString album)
+QImage* ImageDatabase::getArtistImageForAlbum(QString album)
 {
     QSqlQuery query;
     album = album.replace('\"',"\\\"");
@@ -564,7 +564,7 @@ QImage ImageDatabase::getArtistImageForAlbum(QString album)
         }
     }
     qDebug() << "Found no image";
-    return QImage();
+    return new QImage();
 }
 
 void ImageDatabase::cleanUPBlacklistedAlbums()

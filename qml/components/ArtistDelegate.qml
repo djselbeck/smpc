@@ -14,6 +14,8 @@ Component {
             Image {
                 id: artistImage
                 anchors.fill: parent
+                sourceSize.width: width
+                sourceSize.height: height
                 source: imageURL
                 cache: false
                 asynchronous: true

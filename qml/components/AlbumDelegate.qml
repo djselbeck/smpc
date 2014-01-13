@@ -15,6 +15,8 @@ Component {
             Image {
                 id: albumImage
                 anchors.fill: parent
+                sourceSize.width: width
+                sourceSize.height: height
                 source: coverURL
                 cache: false
                 asynchronous: true

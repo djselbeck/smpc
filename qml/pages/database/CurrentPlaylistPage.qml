@@ -217,6 +217,9 @@ Page {
                     }
                     cache: false
                     asynchronous: true
+                    sourceSize.height: height
+                    sourceSize.width: width
+
                     source: "image://imagedbprovider/album/" + artist + "/" + album
                     Image
                     {
@@ -229,13 +232,6 @@ Page {
                 OpacityRampEffect {
                     sourceItem: sectionImage
                     direction: OpacityRamp.TopToBottom
-                }
-
-                Component.onCompleted: {
-                    console.debug("section created: " + section);
-//                    var splitString = section.split('|');
-//                    sectionImage.source = "image://imagedbprovider/" + splitString[0] + "/" + splitString[1]
-//                    sectionLabel.text = splitString[1]
                 }
             }
             property: "section"

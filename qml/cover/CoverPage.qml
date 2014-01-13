@@ -44,8 +44,13 @@ CoverBackground {
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
             }
             GradientStop {
+                position: 0.8
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.3)
+            }
+            GradientStop {
                 position: 1.0
-                color: Theme.rgba(Theme.highlightBackgroundColor, 0.6)
+                //color: Theme.rgba(Theme.highlightBackgroundColor, 0.6)
+                color: Qt.rgba(0.0,0.0,0.0, 1.0)
             }
         }
     }

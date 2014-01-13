@@ -7,7 +7,7 @@ QMLImageProvider::QMLImageProvider(ImageDatabase *db) : QQuickImageProvider(QQui
 
 QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    qDebug() << "Image request: " << id;
+    qDebug() << "Image request: " << id << "requestedSize: " << requestedSize;
     // Format is artist/album
     QStringList idList = id.split('/');
     if(id.length()<2) {
@@ -17,72 +17,90 @@ QImage QMLImageProvider::requestImage(const QString &id, QSize *size, const QSiz
     }
     else {
         if(idList[0] == "albumid") {
-            QImage img = mDB->getAlbumImage(idList[1].toInt());
+            QImage *tmpImg = mDB->getAlbumImage(idList[1].toInt());
+            QImage retImg;
+            if ( requestedSize.isValid()) {
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
+            } else {
+                retImg = QImage(*tmpImg);
+            }
+            delete(tmpImg);
             qDebug() << "got image";
-            size->setHeight(img.height());
-            size->setWidth(img.width());
-            return img;
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         } else if (idList[0] == "artistid") {
-            QImage img = mDB->getArtistImage(idList[1].toInt());
+            QImage *tmpImg = mDB->getArtistImage(idList[1].toInt());
+            QImage retImg;
+            if ( requestedSize.isValid()) {
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
+            } else {
+                retImg = QImage(*tmpImg);
+            }
+            delete(tmpImg);
             qDebug() << "got image";
-            if ( requestedSize.isValid()) {
-                size->setHeight(requestedSize.height());
-                size->setWidth(requestedSize.width());
-                return img.scaled(requestedSize);
-            } else {
-                size->setHeight(img.height());
-                size->setWidth(img.width());
-                return img;
-            }
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         } else if (idList[0] == "album" && idList.length() == 3 ) {
-            QImage img = mDB->getAlbumImage(idList[2],idList[1],true);
-            if ( img.size().height() == 0 || img.size().width()== 0) {
+            QImage *tmpImg = mDB->getAlbumImage(idList[2],idList[1],false);
+            QImage retImg;
+            if ( tmpImg->size().height() == 0 || tmpImg->size().width()== 0) {
+                delete(tmpImg);
                 // Try searching for album without artist (samplers,etc)
-                img = mDB->getAlbumImage(idList[2]);
+                tmpImg = mDB->getAlbumImage(idList[2]);
             }
             if ( requestedSize.isValid()) {
-                size->setHeight(requestedSize.height());
-                size->setWidth(requestedSize.width());
-                return img.scaled(requestedSize);
-            } else {
-                size->setHeight(img.height());
-                size->setWidth(img.width());
-                return img;
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
             }
+            else {
+                retImg = QImage(*tmpImg);
+            }
+            delete(tmpImg);
+            qDebug() << "got image";
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         } else if (idList[0] == "artistfromalbum" ) {
-            QImage img = mDB->getArtistImageForAlbum(idList[1]);
+            QImage *tmpImg = mDB->getArtistImageForAlbum(idList[1]);
+            QImage retImg;
             if ( requestedSize.isValid()) {
-                size->setHeight(requestedSize.height());
-                size->setWidth(requestedSize.width());
-                return img.scaled(requestedSize);
-            } else {
-                size->setHeight(img.height());
-                size->setWidth(img.width());
-                return img;
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
+            }else {
+                retImg = QImage(*tmpImg);
             }
+            delete(tmpImg);
+            qDebug() << "got image";
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         } else if (idList[0] == "artist" ) {
-            QImage img = mDB->getArtistImage(idList[1]);
+            QImage *tmpImg = mDB->getArtistImage(idList[1]);
+            QImage retImg;
             if ( requestedSize.isValid()) {
-                size->setHeight(requestedSize.height());
-                size->setWidth(requestedSize.width());
-                return img.scaled(requestedSize);
-            } else {
-                size->setHeight(img.height());
-                size->setWidth(img.width());
-                return img;
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
+            }else {
+                retImg = QImage(*tmpImg);
             }
+            delete(tmpImg);
+            qDebug() << "got image";
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         }
         else {
-            QImage img = mDB->getAlbumImage(idList[1]);
+            QImage *tmpImg = mDB->getAlbumImage(idList[1]);
+            QImage retImg;
             if ( requestedSize.isValid()) {
-                size->setHeight(requestedSize.height());
-                size->setWidth(requestedSize.width());
-                return img.scaled(requestedSize);
-            } else {
-                size->setHeight(img.height());
-                size->setWidth(img.width());
-                return img;
+                retImg = tmpImg->scaled(requestedSize, Qt::KeepAspectRatio);
+            }else {
+                retImg = QImage(*tmpImg);
             }
+            delete(tmpImg);
+            qDebug() << "got image";
+            size->setHeight(retImg.height());
+            size->setWidth(retImg.width());
+            return retImg;
         }
     }
     size->setHeight(0);
