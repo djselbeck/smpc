@@ -72,13 +72,25 @@ Page {
                 onWidthChanged: {
                     console.debug("width: " + width)
                 }
-
                 model: listmodel
+
+                SectionScroller {
+                    pathview: showView
+                    sectionPropertyName: "sectionprop"
+                    z: 120
+                    interactive: showView.interactive
+                }
+
+
+
                 cacheItemCount: pathItemCount * 2
                 pathItemCount: 12 // width/itemWidth
                 delegate: AlbumShowDelegate {
                 }
                 snapMode: PathView.NoSnap
+
+                preferredHighlightBegin: 0.5
+                preferredHighlightEnd: 0.5
                 clip: true
                 path: Path {
                     startX: 0
@@ -181,6 +193,20 @@ Page {
                 showViewLoader.active = false
                 // Deactivating components
             }
+        }
+        if (status === PageStatus.Deactivating && typeof(gridViewLoader.item) != undefined  && gridViewLoader.item ) {
+            lastIndex = gridViewLoader.item.currentIndex
+        } else if (status === PageStatus.Activating) {
+            if (typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
+                gridViewLoader.item.positionViewAtIndex(lastIndex, GridView.Center)
+            }
+            requestArtistInfo(artistname)
+        }
+        else if (status === PageStatus.Active) {
+                            if (artistname != "")
+                                pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"), {
+                                                           artistname: artistname
+                                                       })
         }
 
         //        if (status === PageStatus.Deactivating) {

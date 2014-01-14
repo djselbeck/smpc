@@ -7,15 +7,17 @@ Item {
 //    height: parent.height
 //    width: parent.width/7
 //    x: parent.x+parent.width-width;
-    z:1
     property GridView listview;
+    property PathView pathview;
+    property bool interactive:true
     property string sectionPropertyName
     property bool landscape:false
-//    Rectangle {
-//        id: testrect
-//        opacity:0.5
-//        anchors.fill:parent
-//    }
+    Rectangle {
+        id: testrect
+        visible: mDebugEnabled
+        opacity:0.5
+        anchors.fill:parent
+    }
 
     onListviewChanged: {
         if(listview && listview.model) {
@@ -23,6 +25,17 @@ Item {
         } else if(listview) {
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview,scroller.sectionPropertyName);
+            });
+
+        }
+    }
+
+    onPathviewChanged: {
+        if(pathview && pathview.model) {
+            Sections.fillSections(pathview,scroller.sectionPropertyName);
+        } else if(pathview) {
+            pathview.modelChanged.connect( function() {
+                Sections.fillSections(pathview,scroller.sectionPropertyName);
             });
 
         }
@@ -55,9 +68,10 @@ Item {
     MouseArea {
         id: inputArea
         anchors.fill:parent
-        preventStealing: true
+        preventStealing: interactive
+        enabled: interactive
         onPressedChanged: {
-            if ( pressed ) {
+            if ( interactive && pressed ) {
                 secDialog.color = Theme.rgba(Theme.highlightBackgroundColor,0.5);
                 secDialog.opacity = 1.0;
                 //secDialog.visible = true;
@@ -67,24 +81,32 @@ Item {
             }
         }
         onMouseYChanged: {
-            if(pressed && !landscape) {
+            if(interactive && pressed && !landscape) {
                // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
                 var relPos = (mouseY/height)*100;
                 var item = Sections.getSectionNameAtRelativePos(relPos);
                 if ( item) {
                     secDialog.text = item.value;
+                    if ( listview )
                         listview.positionViewAtIndex(item.index,GridView.Beginning);
+                    if ( pathview )
+                        pathview.positionViewAtIndex(item.index,PathView.Center);
                 }
             }
         }
         onMouseXChanged: {
-            if(pressed && landscape) {
+            if(interactive && pressed && landscape) {
                // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
                 var relPos = (mouseX/width)*100;
                 var item = Sections.getSectionNameAtRelativePos(relPos);
-                if ( item) {
+                if ( item ) {
                     secDialog.text = item.value;
-                    listview.positionViewAtIndex(item.index,GridView.Center);
+                    if ( listview )
+                        listview.positionViewAtIndex(item.index,GridView.Beginning);
+                    if ( pathview ) {
+                        console.debug("positioning view at: " + item.index)
+                        pathview.positionViewAtIndex(item.index,PathView.Center);
+                    }
                 }
             }
         }
@@ -130,10 +152,4 @@ Item {
     ]
     state: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted  ) ? "portrait" : "landscape"
 
-//    Rectangle
-//    {
-//        color: "red"
-//        opacity: 0.5
-//        anchors.fill: parent
-//    }
 }

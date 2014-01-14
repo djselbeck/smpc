@@ -19,6 +19,7 @@ function fillSections(listview,sectionProperty) {
     }
 }
 
+
 function getSectionNameAtRelativePos(position) {
     var index = Math.ceil(((sections.length)*position)/100);
     return sections[index-1];

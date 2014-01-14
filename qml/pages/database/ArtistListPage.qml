@@ -6,136 +6,205 @@ Page {
     id: artistlistPage
     property var listmodel
     property int lastIndex
+    property int lastOrientation
     allowedOrientations: Orientation.All
 
-    SilicaGridView {
-        id: artistListView
+    Loader {
+        id: gridViewLoader
         anchors.fill: parent
-        model: listmodel
-        clip: true
+        anchors.bottomMargin: quickControlPanel.visibleSize
+        active: false
 
-        SectionScroller {
-            listview: artistListView
-            sectionPropertyName: "sectionprop"
+        sourceComponent: Component {
+            SilicaGridView {
+                id: artistListView
+
+                model: listmodel
+                clip: true
+                cellWidth: width/2
+                cellHeight: cellWidth
+
+                SectionScroller {
+                    listview: artistListView
+                    sectionPropertyName: "sectionprop"
+                }
+                ScrollDecorator {
+                }
+
+                header: Heading {
+                    text: qsTr("artists")
+                }
+
+                delegate: ArtistDelegate {
+                }
+            }
         }
-        ScrollDecorator {}
+    }
+
+    Loader {
+        id: showViewLoader
+        active: false
+        anchors.fill: parent
+        anchors.rightMargin: quickControlPanel.visibleSize
+        sourceComponent: Component {
+            PathView {
+                id: showView
+                property int itemHeight: height / (1.5)
+                property int itemWidth: itemHeight
+                onHeightChanged: {
+                    console.debug("height: "+height)
+                }
+                onWidthChanged: {
+                    console.debug("width: " + width)
+                }
+                model: listmodel
+
+                SectionScroller {
+                    pathview: showView
+                    sectionPropertyName: "sectionprop"
+                    z: 120
+                    interactive: showView.interactive
+                }
 
 
-        header: Heading {
-            text: qsTr("artists")
+
+                cacheItemCount: pathItemCount * 2
+                pathItemCount: 12 // width/itemWidth
+                delegate: ArtistShowDelegate {
+                }
+                snapMode: PathView.NoSnap
+                preferredHighlightBegin: 0.5
+                preferredHighlightEnd: 0.5
+                clip: true
+                path: Path {
+                    startX: 0
+                    startY: showView.height / 2
+                    // Left out
+                    PathAttribute {
+                        name: "z"
+                        value: 0
+                    }
+                    PathAttribute {
+                        name: "delegateRotation"
+                        value: 80
+                    }
+
+                    // Left flip (bottom)
+                    PathLine {
+                        x: (showView.width / 2) - (showView.itemWidth / 2)
+                        y: showView.height - showView.itemHeight / 2
+                    }
+                    PathAttribute {
+                        name: "z"
+                        value: 50
+                    }
+                    PathAttribute {
+                        name: "delegateRotation"
+                        value: 70
+                    }
+                    PathPercent {
+                        value: 0.45
+                    }
+
+                    // Center (bottom)
+                    PathLine {
+                        x: (showView.width / 2)
+                        y: showView.height - showView.itemHeight / 2
+                    }
+                    PathAttribute {
+                        name: "z"
+                        value: 100
+                    }
+                    PathAttribute {
+                        name: "delegateRotation"
+                        value: 0
+                    }
+                    PathPercent {
+                        value: 0.5
+                    }
+
+                    // Right Flip (bottom)
+                    PathLine {
+                        x: (showView.width / 2) + (showView.itemWidth / 2)
+                        y: showView.height - showView.itemHeight / 2
+                    }
+                    PathAttribute {
+                        name: "z"
+                        value: 50
+                    }
+                    PathAttribute {
+                        name: "delegateRotation"
+                        value: -70
+                    }
+                    PathPercent {
+                        value: 0.55
+                    }
+
+                    // Right out
+                    PathLine {
+                        x: showView.width
+                        y: showView.height / 2
+                    }
+                    PathAttribute {
+                        name: "z"
+                        value: 0
+                    }
+                    PathAttribute {
+                        name: "delegateRotation"
+                        value: -80
+                    }
+                    PathPercent {
+                        value: 1.0
+                    }
+                }
+            }
         }
-
-
-        delegate: ArtistDelegate {
-        }
-
     }
 
     onStatusChanged: {
-        if (status === PageStatus.Deactivating) {
-            lastIndex = artistListView.currentIndex
-        } else if (status === PageStatus.Activating) {
-            artistListView.positionViewAtIndex(lastIndex, ListView.Center)
+        if ( status === PageStatus.Activating ) {
+            if (!orientationTransitionRunning && orientation != lastOrientation) {
+                gridViewLoader.active = false;
+                showViewLoader.active = false;
+                if (orientation === Orientation.Portrait) {
+                    console.debug("activating page with portrait grid view")
+                    gridViewLoader.active = true
+                } else if (orientation === Orientation.Landscape) {
+                    console.debug("activating page landscape showview")
+                    showViewLoader.active = true
+                }
+            }
+        }
+        if (status === PageStatus.Deactivating ) {
+            if (typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
+                lastIndex = gridViewLoader.item.currentIndex
+            }
+            lastOrientation  = orientation
+        } else if (status === PageStatus.Activating && typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
+            gridViewLoader.item.positionViewAtIndex(lastIndex, GridView.Center)
+        }
+    }
+
+    onOrientationTransitionRunningChanged: {
+        if (!orientationTransitionRunning) {
+            if (orientation === Orientation.Portrait) {
+                console.debug("activating portrait grid view")
+                gridViewLoader.active = true
+            } else if (orientation === Orientation.Landscape) {
+                console.debug("activating landscape showview")
+                showViewLoader.active = true
+            }
+        } else {
+            console.debug("deactivating loaders")
+            gridViewLoader.active = false
+            showViewLoader.active = false
+            // Deactivating components
         }
     }
 
     Component.onDestruction: {
-        artistListView.model = null
+        //artistListView.model = null
         clearArtistList()
     }
-
-    states: [
-        State {
-            name: "landscape"
-            PropertyChanges {
-                target: artistListView
-                flow: GridView.TopToBottom
-                cellHeight: artistListView.height / 1
-                cellWidth: cellHeight
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        },
-        State {
-            name: "portrait"
-            PropertyChanges {
-                target: artistListView
-                flow: GridView.LeftToRight
-                cellWidth: artistListView.width / 2
-                cellHeight: cellWidth
-                //                header: headerComponent
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-                anchors.bottomMargin: quickControlPanel.visibleSize
-            }
-        },
-        State {
-            name: "portraitinverted"
-            PropertyChanges {
-                target: artistListView
-                flow: GridView.LeftToRight
-                cellWidth: artistListView.width / 2
-                cellHeight: cellWidth
-                //                header: headerComponent
-                anchors.rightMargin: 0
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: quickControlPanel.visibleSize
-            }
-        },
-        State {
-            name: "landscapeinverted"
-            PropertyChanges {
-                target: artistListView
-                flow: GridView.TopToBottom
-                cellHeight: artistListView.height / 1
-                cellWidth: cellHeight
-                anchors.leftMargin: quickControlPanel.visibleSize
-                anchors.bottomMargin: 0
-                anchors.rightMargin: 0
-                anchors.topMargin: 0
-            }
-        }
-    ]
-    onOrientationChanged: {
-        // Scroll to first element, otherwise GridView starts creating
-        // delegates like a maniac
-        artistListView.currentIndex = -1
-        artistListView.positionViewAtIndex(0,GridView.Beginning)
-        switch ( orientation ) {
-        case Orientation.Portrait :
-            state = "portrait"
-            break
-        case Orientation.Landscape :
-            state = "landscape"
-            break
-        case Orientation.PortraitInverted :
-            state = "portraitinverted"
-            break
-        case Orientation.LandscapeInverted:
-            state = "landscapeinverted"
-            break
-        }
-    }
-    Component.onCompleted: {
-        switch ( orientation ) {
-        case Orientation.Portrait :
-            state = "portrait"
-            break
-        case Orientation.Landscape :
-            state = "landscape"
-            break
-        case Orientation.PortraitInverted :
-            state = "portraitinverted"
-            break
-        case Orientation.LandscapeInverted:
-            state = "landscapeinverted"
-            break
-        }
-    }
-
 
 }

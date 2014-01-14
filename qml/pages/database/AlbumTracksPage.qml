@@ -5,7 +5,7 @@ import "../../components"
 
 Page {
     id: albumTracksPage
-    property alias listmodel: albumTracksListView.model
+//    property alias listmodel: albumTracksModel
     property string albumname
     property string artistname
     property int lastIndex:0
@@ -15,6 +15,7 @@ Page {
         anchors.fill: parent
         anchors.bottomMargin: quickControlPanel.visibleSize
         contentWidth: width
+        model: albumTracksModel
         clip: true
         header: Item {
             height: headerColumn.height
