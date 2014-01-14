@@ -1,11 +1,11 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-ListItem {
+BackgroundItem {
     id: albumShowDelegate
     //menu: contextMenu
     width: showView.itemWidth
-    contentHeight: showView.itemHeight
+    height: showView.itemHeight
     z: PathView.z
     //        scale: PathView.delegateScale
     property int coverRotation: PathView.delegateRotation
@@ -18,7 +18,6 @@ ListItem {
         axis.z: 0
         angle: albumShowDelegate.coverRotation
     }
-
     Rectangle {
         id: frontPage
         anchors.fill: parent
@@ -89,10 +88,13 @@ ListItem {
         sourceComponent: Component {
             Rectangle {
                 id: delegateBackside
-                color: Theme.rgba(Theme.highlightColor, 0.3)
+                color: Qt.rgba(0,0,0, 0.5)
+                opacity: 0.0
                 anchors {
                     fill: parent
+                    margins: Theme.paddingSmall
                 }
+                clip: true
 
                 property int animationDuration: 750
                 transform: Rotation {
@@ -102,8 +104,84 @@ ListItem {
                     axis.z: 0
                     angle: 180
                 }
+
+                // Rotate OUT
                 PropertyAnimation {
                     id: rotateOut
+                    target: albumShowDelegate
+                    property: "coverRotation"
+                    from: 180.0
+                    to: 0.0
+                    duration: animationDuration
+                    easing.type: Easing.InQuad
+                    onStopped: {
+                        // Cleanup the mess
+                        backsideLoader.active = false
+                    }
+                }
+//                PropertyAnimation {
+//                    id: scaleOutW
+//                    target: albumShowDelegate
+//                    running: rotateOut.running
+//                    property: "width"
+//                    from: showView.height
+//                    to: showView.itemWidth
+//                    duration: animationDuration
+//                    easing.type: Easing.InQuad
+//                }
+//                PropertyAnimation {
+//                    id: scaleOutH
+//                    target: albumShowDelegate
+//                    running: rotateOut.running
+//                    property: "width"
+//                    from: showView.height
+//                    to: showView.itemHeight
+//                    duration: animationDuration
+//                    easing.type: Easing.InQuad
+//                }
+                PropertyAnimation {
+                    id: blendcolumnOut
+                    target: delegateButtons
+                    property: "opacity"
+                    running: rotateOut.running
+                    from: 1.0
+                    to: 0.0
+                    duration: animationDuration
+                    easing.type: Easing.InQuad
+                    onStopped: {
+
+                    }
+                }
+                PropertyAnimation {
+                    id: blendBackgroundOut
+                    target: delegateBackside
+                    property: "opacity"
+                    running: rotateOut.running
+                    from: 1.0
+                    to: 0.0
+                    duration: animationDuration
+                    easing.type: Easing.InQuad
+                    onStopped: {
+
+                    }
+                }
+                PropertyAnimation {
+                    id: blendlistOut
+                    target: albumTracksListView
+                    property: "opacity"
+                    running: rotateOut.running
+                    from: 1.0
+                    to: 0.0
+                    duration: animationDuration
+                    easing.type: Easing.InQuad
+                    onStopped: {
+
+                    }
+                }
+
+                // Rotate IN
+                PropertyAnimation {
+                    id: rotateIn
                     target: albumShowDelegate
                     property: "coverRotation"
                     from: 0.0
@@ -114,10 +192,31 @@ ListItem {
 
                     }
                 }
+//                PropertyAnimation {
+//                    id: scaleInW
+//                    target: albumShowDelegate
+//                    running: rotateIn.running
+//                    property: "width"
+//                    from: showView.itemWidth
+//                    to: showView.height
+//                    duration: animationDuration
+//                    easing.type: Easing.InQuad
+//                }
+//                PropertyAnimation {
+//                    id: scaleInH
+//                    target: albumShowDelegate
+//                    running: rotateIn.running
+//                    property: "width"
+//                    from: showView.itemHeight
+//                    to: showView.height
+//                    duration: animationDuration
+//                    easing.type: Easing.InQuad
+//                }
                 PropertyAnimation {
                     id: blendcolumnIn
                     target: delegateButtons
                     property: "opacity"
+                    running: rotateIn.running
                     from: 0.0
                     to: 1.0
                     duration: animationDuration
@@ -127,11 +226,25 @@ ListItem {
                     }
                 }
                 PropertyAnimation {
-                    id: fadeCoverOut
-                    target: frontPage
+                    id: blendBackgroundIn
+                    target: delegateBackside
                     property: "opacity"
-                    from: 1.0
-                    to: 0.0
+                    running: rotateIn.running
+                    from: 0.0
+                    to: 1.0
+                    duration: animationDuration
+                    easing.type: Easing.InQuad
+                    onStopped: {
+
+                    }
+                }
+                PropertyAnimation {
+                    id: blendlistIn
+                    target: albumTracksListView
+                    property: "opacity"
+                    running: rotateIn.running
+                    from: 0.0
+                    to: 1.0
                     duration: animationDuration
                     easing.type: Easing.InQuad
                     onStopped: {
@@ -139,27 +252,61 @@ ListItem {
                     }
                 }
 
+//                PropertyAnimation {
+//                    id: fadeCoverOut
+//                    target: frontPage
+//                    running: rotateOut.running
+//                    property: "opacity"
+//                    from: 1.0
+//                    to: 0.3
+//                    duration: animationDuration
+//                    easing.type: Easing.InQuad
+//                    onStopped: {
+
+//                    }
+//                }
+
                     Row {
                         id: delegateButtons
+                        anchors.horizontalCenter: parent.horizontalCenter
                         visible: false
                         opacity: 0.0
                         anchors {
                             top: parent.top
-                            left: parent.left
-                            right: parent.right
+                        }
+                        IconButton {
+                            id: backButton
+                            icon.source: "image://theme/icon-m-back"
+                            onClicked: {
+                                if ( flipped ) {
+                                    rotateOut.running = true
+                                    flipped = false
+                                    showView.interactive = true
+                                }
+                            }
                         }
                         IconButton {
                             id: playButton
                             icon.source: "image://theme/icon-m-play"
                             onClicked: {
-
+                                playAlbum([artistname, title])
+                                if ( flipped ) {
+                                    rotateOut.running = true
+                                    flipped = false
+                                    showView.interactive = true
+                                }
                             }
                         }
                         IconButton {
                             id: addButton
                             icon.source: "image://theme/icon-m-add"
                             onClicked: {
-
+                                addAlbum([artistname, title])
+                                if ( flipped ) {
+                                    rotateOut.running = true
+                                    flipped = false
+                                    showView.interactive = true
+                                }
                             }
                         }
                     }
@@ -167,6 +314,8 @@ ListItem {
                     {
                         id: albumTracksListView
                         clip: true
+                        visible: false
+                        opacity: 0.0
                         anchors {
                             left:parent.left
                             right: parent.right
@@ -269,10 +418,17 @@ ListItem {
                     }
 
                 Component.onCompleted: {
-                    rotateOut.start()
-                    blendcolumnIn.start()
-                    fadeCoverOut.start()
+                    rotateIn.running = true
+//                    blendcolumnIn.start()
+//                    fadeCoverOut.start()
                     delegateButtons.visible = true
+                    albumTracksListView.visible = true
+                    showView.interactive = false
+                    console.debug("Album backpage created")
+                }
+                Component.onDestruction: {
+                    clearTrackList()
+                    console.debug("Album backpage destroyed")
                 }
             }
         }
@@ -280,9 +436,16 @@ ListItem {
     }
 
     onClicked: {
-        albumClicked(artistname, title)
-        if (!flipped)
-            backsideLoader.active = true
+        console.debug("index: " + index + " currentindex: " + showView.currentIndex)
+        // Only flip front cover
+        if ( coverRotation == 0 ) {
+            albumClicked(artistname, title)
+            if (!flipped) {
+                backsideLoader.active = true
+                flipped = true
+            }
+        }
+
         //            albumGridView.currentIndex = index
         //            albumClicked(artistname, title)
     }

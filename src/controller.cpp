@@ -237,6 +237,7 @@ void Controller::updateOutputsModel(QList<QObject*>* list)
 
 void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
         for( int i = 0; i < mAlbumTracks->length();i++)
         {
@@ -856,6 +857,7 @@ void Controller::clearArtistList()
 
 void Controller::clearTrackList()
 {
+    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
         for( int i = 0; i < mAlbumTracks->length();i++)
         {
