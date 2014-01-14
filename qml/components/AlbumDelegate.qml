@@ -1,12 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-Component {
-    id: albumDelegate
-    ListItem {
+ListItem {
         //menu: contextMenu
-        width: GridView.view.cellWidth
-        contentHeight: GridView.view.cellHeight
+        width: 150
+        contentHeight: 150
 
         Rectangle {
             anchors.fill: parent
@@ -21,6 +19,12 @@ Component {
                 cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
+//                onWidthChanged: {
+//                    console.debug("new W: " + width)
+//                }
+//                onHeightChanged: {
+//                    console.debug("new H: " + height)
+//                }
             }
             Rectangle {
                 id: gradientRect
@@ -65,13 +69,15 @@ Component {
 
 
         onClicked: {
-            albumListView.currentIndex = index
+            albumGridView.currentIndex = index
             albumClicked(artistname, title)
         }
-//        Component.onCompleted: {
-//            console.debug("Album created: " + title)
-////            console.debug("contentheight: " + contentHeight+ " height: " +height + " width: " + width)
-//        }
+        Component.onCompleted: {
+            console.debug("Album created: " + title)
+        }
+        Component.onDestruction: {
+            console.debug("Album destroyed:" + title)
+        }
 
 //        function playAlbumRemorse() {
 //            remorseAction(qsTr("playing album"), function () {
@@ -106,4 +112,3 @@ Component {
 //            }
 //        }
     }
-}

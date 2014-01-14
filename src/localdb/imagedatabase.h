@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QStandardPaths>
-#include <QImage>
+#include <QPixmap>
 #include <QEventLoop>
 #include <QMutex>
 
@@ -45,13 +45,12 @@ public:
     int imageIDFromArtist(QString artist);
 
 
-    QImage* getAlbumImage(QString album, QString artist, bool download=false);
-    QImage* getAlbumImage(QString album, bool download=false);
-    QImage* getAlbumImage(int artworkID);
-
-    QImage* getArtistImage(QString artist,bool download=false);
-    QImage* getArtistImage(int artworkID);
-    QImage* getArtistImageForAlbum(QString album);
+    QPixmap getAlbumImage(QString album, QString artist, bool download=false);
+    QPixmap getAlbumImage(QString album, bool download=false);
+    QPixmap getAlbumImage(int artworkID);
+    QPixmap getArtistImage(QString artist,bool download=false);
+    QPixmap getArtistImage(int artworkID);
+    QPixmap getArtistImageForAlbum(QString album);
 
     QString getArtistBioInformation(QString artist);
     QString getAlbumWikiInformation(QString album, QString artist);

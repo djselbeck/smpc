@@ -261,7 +261,7 @@ ApplicationWindow
 
     function updateAlbumModel()
     {
-        pageStack.push(Qt.resolvedUrl("pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
+        //pageStack.push(Qt.resolvedUrl("pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
     }
 
     function updateOutputsModel()

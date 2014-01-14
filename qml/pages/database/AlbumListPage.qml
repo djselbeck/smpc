@@ -7,16 +7,16 @@ Page {
     id: albumslistPage
     allowedOrientations: Orientation.All
     property var listmodel;
+    property var tempModel;
     property string artistname
     property int lastIndex;
     SilicaGridView {
-        id: albumListView
+        id: albumGridView
         anchors.fill: parent
-        model: listmodel
         clip: true
 
         SectionScroller {
-            listview: albumListView
+            listview: albumGridView
             sectionPropertyName: "sectionprop"
         }
         ScrollDecorator {}
@@ -40,16 +40,60 @@ Page {
                 }
             }
         }
-        delegate: AlbumDelegate {
+        delegate: AlbumDelegate{}
+    }
+
+    PathView {
+        id: showView
+        property int itemHeight: parent.height/(1.5)
+        property int itemWidth: itemHeight
+        anchors.fill: parent
+        model: listmodel
+        cacheItemCount: pathItemCount*2
+        pathItemCount: 12 // width/itemWidth
+        delegate: AlbumShowDelegate {}
+        snapMode: PathView.NoSnap
+        path: Path {
+            startX: 0
+            startY: showView.height/2
+            // Left out
+            PathAttribute { name: "z"; value: 0 }
+            PathAttribute { name: "delegateRotation"; value: 80 }
+
+            // Left flip (bottom)
+            PathLine { x: (showView.width / 2) - (showView.itemWidth /2); y: showView.height-showView.itemHeight/2;  }
+            PathAttribute { name: "z"; value: 50 }
+            PathAttribute { name: "delegateRotation"; value: 70 }
+            PathPercent { value: 0.45 }
+
+            // Center (bottom)
+            PathLine { x: (showView.width / 2); y: showView.height-showView.itemHeight/2;  }
+            PathAttribute { name: "z"; value: 100 }
+            PathAttribute { name: "delegateRotation"; value: 0 }
+            PathPercent { value: 0.5 }
+
+
+            // Right Flip (bottom)
+            PathLine { x: (showView.width / 2) + (showView.itemWidth /2); y: showView.height-showView.itemHeight/2;  }
+            PathAttribute { name: "z"; value: 50 }
+            PathAttribute { name: "delegateRotation"; value: -70 }
+            PathPercent { value: 0.55 }
+
+            // Right out
+            PathLine { x: showView.width; y: showView.height/2; }
+            PathAttribute { name: "z"; value: 0 }
+            PathAttribute { name: "delegateRotation"; value: -80 }
+            PathPercent { value: 1.0 }
+
         }
     }
 
     onStatusChanged: {
         if ( status === PageStatus.Deactivating ) {
-            lastIndex = albumListView.currentIndex;
+            lastIndex = albumGridView.currentIndex;
         }
         else if ( status === PageStatus.Activating ) {
-            albumListView.positionViewAtIndex(lastIndex,ListView.Center);
+            albumGridView.positionViewAtIndex(lastIndex,ListView.Center);
             if(artistname != "") {
                 requestArtistInfo(artistname);
             }
@@ -63,95 +107,150 @@ Page {
     Component.onDestruction: {
         clearAlbumList();
     }
+
+
+    // New version
     states: [
         State {
             name: "landscape"
+            when: orientation === Orientation.Landscape
             PropertyChanges {
-                target: albumListView
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-                cellHeight: albumListView.height / 1
-                cellWidth: albumListView.height / 1
-                flow: GridView.TopToBottom
+                target: albumGridView
+                visible: false
+            }
+            PropertyChanges {
+                target: showView
+                visible: true
             }
         },
         State {
             name: "portrait"
+            when: orientation === Orientation.Portrait
             PropertyChanges {
-                target: albumListView
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                cellHeight: albumListView.width / 2
-                cellWidth: albumListView.width / 2
-                flow: GridView.LeftToRight
+                target: albumGridView
+                visible: false
+            }
+            PropertyChanges {
+                target: showView
+                visible: false
             }
         },
         State {
             name: "portraitinverted"
+            when: orientation === Orientation.PortraitInverted
             PropertyChanges {
-                target: albumListView
-                flow: GridView.LeftToRight
-                cellWidth: albumListView.width / 2
-                cellHeight: albumListView.width / 2
-                //                header: headerComponent
-                anchors.rightMargin: 0
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: quickControlPanel.visibleSize
+                target: albumGridView
+                visible: true
+            }
+            PropertyChanges {
+                target: showView
+                visible: false
             }
         },
         State {
             name: "landscapeinverted"
+            when: orientation === Orientation.LandscapeInverted
             PropertyChanges {
-                target: albumListView
-                flow: GridView.TopToBottom
-                cellHeight: albumListView.height / 1
-                cellWidth: albumListView.height / 1
-                anchors.leftMargin: quickControlPanel.visibleSize
-                anchors.bottomMargin: 0
-                anchors.rightMargin: 0
-                anchors.topMargin: 0
+                target: albumGridView
+                visible: false
+            }
+            PropertyChanges {
+                target: showView
+                visible: true
             }
         }
     ]
-    onOrientationChanged: {
-        // Scroll to first element, otherwise GridView starts creating
-        // delegates like a maniac
-        albumListView.currentIndex = -1
-        albumListView.positionViewAtIndex(0,GridView.Beginning)
-        switch ( orientation ) {
-        case Orientation.Portrait :
-            state = "portrait"
-            break
-        case Orientation.Landscape :
-            state = "landscape"
-            break
-        case Orientation.PortraitInverted :
-            state = "portraitinverted"
-            break
-        case Orientation.LandscapeInverted:
-            state = "landscapeinverted"
-            break
-        }
-    }
-    Component.onCompleted: {
-        switch ( orientation ) {
-        case Orientation.Portrait :
-            state = "portrait"
-            break
-        case Orientation.Landscape :
-            state = "landscape"
-            break
-        case Orientation.PortraitInverted :
-            state = "portraitinverted"
-            break
-        case Orientation.LandscapeInverted:
-            state = "landscapeinverted"
-            break
-        }
-    }
+
+    // UNSTABLE CREATES MEMORY LEAK AS IT CREATES DELEGATES LIKE A MANIAC
+//    states: [
+//        State {
+//            name: "landscape"
+//            when: orientation === Orientation.Landscape
+//            PropertyChanges {
+//                target: albumGridView
+//                currentIndex: -1
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.bottomMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//                cellHeight: albumGridView.height
+//                cellWidth: cellHeight
+//                flow: GridView.TopToBottom
+//            }
+//        },
+//        State {
+//            name: "portrait"
+//            when: orientation === Orientation.Portrait
+//            PropertyChanges {
+//                target: albumGridView
+//                currentIndex: -1
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                cellWidth: albumGridView.width / 2
+//                cellHeight: cellWidth
+//                flow: GridView.LeftToRight
+//            }
+//        },
+//        State {
+//            name: "portraitinverted"
+//            when: orientation === Orientation.PortraitInverted
+//            PropertyChanges {
+//                target: albumGridView
+//                flow: GridView.LeftToRight
+//                cellWidth: albumGridView.width / 2
+//                cellHeight: cellWidth
+//                //                header: headerComponent
+//                anchors.rightMargin: 0
+//                anchors.bottomMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: quickControlPanel.visibleSize
+//            }
+//        },
+//        State {
+//            name: "landscapeinverted"
+//            when: orientation === Orientation.LandscapeInverted
+//            PropertyChanges {
+//                target: albumGridView
+//                flow: GridView.TopToBottom
+//                cellHeight: albumGridView.height / 1
+//                cellWidth: cellHeight
+//                anchors.leftMargin: quickControlPanel.visibleSize
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        }
+//    ]
+//    onOrientationChanged: {
+//        if ( orientation === Orientation.Landscape ) {
+//            // Sets new Gridview parameters
+//            // Remove model otherwise GridView goes crazy and creates delegates
+//            tempModel = listmodel
+//            listmodel = undefined
+//            albumListView.cellHeight = albumListView.width
+//            albumListView.cellWidth = albumListView.cellHeight
+//            albumListView.anchors.leftMargin = 0
+//            albumListView.anchors.rightMargin = Qt.binding(function() {return quickControlPanel.visibleSize;})
+//            albumListView.anchors.bottomMargin = 0
+//            albumListView.anchors.topMargin = 0
+//            albumListView.flow = GridView.TopToBottom
+//            // Re-set model
+//            listmodel = tempModel
+//        } else if ( orientation === Orientation.Portrait ) {
+//            // Remove model otherwise GridView goes crazy and creates delegates
+//            tempModel = listmodel
+//            listmodel = undefined
+//            albumListView.cellHeight = albumListView.height/2
+//            albumListView.cellWidth = albumListView.cellHeight
+//            albumListView.anchors.leftMargin = 0
+//            albumListView.anchors.rightMargin = 0
+//            albumListView.anchors.bottomMargin = Qt.binding(function() {return quickControlPanel.visibleSize;})
+//            albumListView.anchors.topMargin = 0
+//            albumListView.flow = GridView.LeftToRight
+//            // Re-set model
+//            listmodel = tempModel
+//        }
+//    }
 }

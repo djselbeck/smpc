@@ -47,6 +47,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     viewer->rootContext()->setContextProperty("coverstring","");
     viewer->rootContext()->setContextProperty("artistInfoText","");
     viewer->rootContext()->setContextProperty("albumInfoText","");
+    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     mNetAccess->setQmlThread(viewer->thread());
