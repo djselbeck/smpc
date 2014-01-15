@@ -21,7 +21,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;
@@ -30,7 +30,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;
@@ -43,7 +43,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;
@@ -52,7 +52,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;
@@ -61,7 +61,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;
@@ -71,7 +71,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
             if ( requestedSize.isValid()) {
-                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio);
+                tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             qDebug() << "got image";
             return tmpImg;

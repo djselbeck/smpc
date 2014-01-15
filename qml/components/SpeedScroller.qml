@@ -7,6 +7,7 @@ Item {
     height: parent.height
     width: parent.width/7
     property alias scrollenabled: inputArea.enabled
+    property int listviewCache
     x: parent.x+parent.width-width;
     z:1
     property ListView listview;
@@ -35,6 +36,8 @@ Item {
         preventStealing: true
         onMouseYChanged: {
             if(pressed) {
+                listviewCache = listview.cacheBuffer
+                listview.cacheBuffer = 0
                 var relPos = (mouseY/height)*100;
                 var item = Sections.getItemPositionFromRelative(relPos);
                 if(listview && listview.model) {
@@ -42,6 +45,9 @@ Item {
                     if ( item < count )
                         listview.positionViewAtIndex(item,ListView.Beginning);
                 }
+            } else {
+                // Restore cacheBuffer
+                listview.cacheBuffer = cacheBuffer
             }
         }
     }

@@ -171,6 +171,7 @@ private slots:
     void clearPlaylistList();
     void clearPlaylists();
     void clearTrackList();
+    void clearSearchTracks();
 
     void reconnectServer();
 

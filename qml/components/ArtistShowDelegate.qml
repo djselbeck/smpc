@@ -113,29 +113,9 @@ BackgroundItem {
                         backsideLoader.active = false
                     }
                 }
-//                PropertyAnimation {
-//                    id: scaleOutW
-//                    target: albumShowDelegate
-//                    running: rotateOut.running
-//                    property: "width"
-//                    from: showView.height
-//                    to: showView.itemWidth
-//                    duration: animationDuration
-//                    easing.type: Easing.InQuad
-//                }
-//                PropertyAnimation {
-//                    id: scaleOutH
-//                    target: albumShowDelegate
-//                    running: rotateOut.running
-//                    property: "width"
-//                    from: showView.height
-//                    to: showView.itemHeight
-//                    duration: animationDuration
-//                    easing.type: Easing.InQuad
-//                }
                 PropertyAnimation {
                     id: blendcolumnOut
-                    target: delegateButtons
+                    targets: [delegateButtons,delegateBackside]
                     property: "opacity"
                     running: rotateOut.running
                     from: 1.0
@@ -146,19 +126,7 @@ BackgroundItem {
 
                     }
                 }
-                PropertyAnimation {
-                    id: blendBackgroundOut
-                    target: delegateBackside
-                    property: "opacity"
-                    running: rotateOut.running
-                    from: 1.0
-                    to: 0.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
 
-                    }
-                }
 
                 // Rotate IN
                 PropertyAnimation {
@@ -175,20 +143,7 @@ BackgroundItem {
                 }
                 PropertyAnimation {
                     id: blendcolumnIn
-                    target: delegateButtons
-                    property: "opacity"
-                    running: rotateIn.running
-                    from: 0.0
-                    to: 1.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
-
-                    }
-                }
-                PropertyAnimation {
-                    id: blendBackgroundIn
-                    target: delegateBackside
+                    targets: [delegateButtons,delegateBackside]
                     property: "opacity"
                     running: rotateIn.running
                     from: 0.0
@@ -249,6 +204,7 @@ BackgroundItem {
                             icon.source: "image://theme/icon-m-other"
                             onClicked: {
                                 artistClicked(artist)
+                                pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});
                                 if ( flipped ) {
                                     rotateOut.running = true
                                     flipped = false

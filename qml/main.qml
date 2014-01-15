@@ -59,6 +59,7 @@ ApplicationWindow
     signal clearTrackList();
     signal clearPlaylistTracks();
     signal clearPlaylists();
+    signal clearSearchTracks();
 
     // MPD Output controls
     signal enableOutput(int nr);
@@ -134,6 +135,7 @@ ApplicationWindow
     property bool fastscrollenabled : false;
 
     property real listPadding : Theme.paddingLarge
+    property int populateDuration: 500
 
     property bool volumeChanging:false
 
@@ -226,15 +228,6 @@ ApplicationWindow
         requestSavedPlaylist(modelData);
     }
 
-    function updateSavedPlaylistModel()
-    {
-        pageStack.push(Qt.resolvedUrl("pages/database/PlaylistTracksPage.qml"),{listmodel:savedPlaylistModel,playlistname:playlistname});
-    }
-
-    function updateSavedPlaylistsModel()
-    {
-        pageStack.push(Qt.resolvedUrl("pages/database/SavedPlaylistsPage.qml"),{listmodel:savedPlaylistsModel});
-    }
 
     function filesClicked(path)
     {
@@ -250,24 +243,6 @@ ApplicationWindow
         console.debug("received new playlist and set model");
     }
 
-
-    function updateAlbumsModel(){
-        pageStack.push(Qt.resolvedUrl("pages/database/AlbumListPage.qml"),{listmodel:albumsModel,artistname:artistname});
-    }
-
-    function updateArtistModel(){
-        pageStack.push(Qt.resolvedUrl("pages/database/ArtistListPage.qml"),{listmodel:artistsModel});
-    }
-
-    function updateAlbumModel()
-    {
-        //pageStack.push(Qt.resolvedUrl("pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:albumname,listmodel:albumTracksModel});
-    }
-
-    function updateOutputsModel()
-    {
-        pageStack.push(Qt.resolvedUrl("pages/settings/OutputsPage.qml"),{listmodel:outputsModel});
-    }
 
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
     {
@@ -316,12 +291,6 @@ ApplicationWindow
         requestAlbum([artist,albumstring]);
         artistname = artist;
         albumname = albumstring;
-    }
-
-
-    function updateSearchedModel()
-    {
-        pageStack.currentPage.listmodel = searchedTracksModel;
     }
 
     function artistClicked(item)

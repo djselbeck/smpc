@@ -5,7 +5,6 @@ import "../../components"
 Page
 {
     id: savedPlaylistPage
-    property alias listmodel: savedPlaylistsListView.model;
     property string artistname;
     SilicaListView {
             id : savedPlaylistsListView
@@ -20,6 +19,7 @@ Page
             header: PageHeader {
                 title: qsTr("playlists")
             }
+            model: savedPlaylistsModel
             delegate: ListItem {
                 menu: contextMenu
                 Column{
@@ -42,6 +42,7 @@ Page
                 }
                 onClicked: {
                     savedPlaylistClicked(modelData);
+                    pageStack.push(Qt.resolvedUrl("PlaylistTracksPage.qml"),{playlistname:modelData})
                 }
                 function playListRemorse() {
                     remorseAction(qsTr("playing list"), function() { playPlaylist(modelData); },3000)

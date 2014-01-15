@@ -17,6 +17,9 @@ Page {
         contentWidth: width
         model: albumTracksModel
         clip: true
+        populate: Transition {
+            NumberAnimation { properties: "x"; from:albumTracksListView.width*2 ;duration: populateDuration }
+        }
         header: Item {
             height: headerColumn.height
             width: parent.width
@@ -93,8 +96,8 @@ Page {
         }
         delegate: ListItem {
             menu: contextMenu
-            property int workaroundHeight: mainColumn.height
-            height: workaroundHeight
+            contentHeight: Theme.itemSizeSmall
+            width: parent.width
             Column {
                 id: mainColumn
                 clip: true
@@ -177,9 +180,6 @@ Page {
                             addTrackRemorse()
                         }
                     }
-                    onHeightChanged: {
-                        workaroundHeight = height + mainColumn.height
-                    }
                 }
             }
         }
@@ -204,7 +204,6 @@ Page {
     }
 
     Component.onDestruction: {
-        albumTracksListView.model = null
         clearTrackList()
     }
 }

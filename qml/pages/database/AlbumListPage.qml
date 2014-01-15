@@ -6,8 +6,6 @@ import "../../components"
 Page {
     id: albumslistPage
     allowedOrientations: Orientation.All
-    property var listmodel
-    property var tempModel
     property string artistname
     property int lastIndex
     Loader {
@@ -20,21 +18,24 @@ Page {
             SilicaGridView {
                 id: albumGridView
                 clip: true
-                model: listmodel
+                model: albumsModel
                 cellWidth: width / 2
                 cellHeight: cellWidth
                 SectionScroller {
                     listview: albumGridView
                     sectionPropertyName: "sectionprop"
                 }
+                populate: Transition {
+                    NumberAnimation { properties: "x"; from:albumGridView.width*2 ;duration: populateDuration }
+                }
                 ScrollDecorator {
                 }
 
-                //                header: Heading {
-                //                    text: qsTr("albums")
-                //                    width: parent.width
-                //                    height: Theme.itemSizeMedium
-                //                }
+                                header: Heading {
+                                    text: artistname !== "" ? artistname : qsTr("albums")
+                                    width: parent.width
+                                    height: Theme.itemSizeMedium
+                                }
                 PullDownMenu {
                     enabled: artistname !== ""
                     MenuItem {
@@ -66,13 +67,7 @@ Page {
                 id: showView
                 property int itemHeight: height / (1.5)
                 property int itemWidth: itemHeight
-                onHeightChanged: {
-                    console.debug("height: "+height)
-                }
-                onWidthChanged: {
-                    console.debug("width: " + width)
-                }
-                model: listmodel
+                model: albumsModel
 
                 SectionScroller {
                     pathview: showView
@@ -80,6 +75,7 @@ Page {
                     z: 120
                     interactive: showView.interactive
                 }
+
 
 
 

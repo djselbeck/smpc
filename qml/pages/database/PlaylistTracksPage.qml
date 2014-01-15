@@ -5,12 +5,11 @@ import "../../components"
 Page
 {
     id: playlistTracksPage
-    property var listmodel;
     property string playlistname;
     property int lastIndex;
     SilicaListView {
             id : playlistTracksListView
-            model: listmodel
+            model: savedPlaylistModel
             SpeedScroller {
                 listview: playlistTracksListView
             }
@@ -18,8 +17,12 @@ Page
             anchors.fill: parent
             anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width
+            clip:true
             header: PageHeader {
                 title: playlistname;
+            }
+            populate: Transition {
+                NumberAnimation { properties: "x"; from:playlistTracksListView.width*2 ;duration: populateDuration }
             }
             PullDownMenu {
                 MenuItem {
@@ -142,7 +145,6 @@ Page
     }
 
     Component.onDestruction: {
-        playlistTracksListView.model = null;
         clearPlaylistTracks();
     }
 

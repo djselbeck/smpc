@@ -4,7 +4,6 @@ import "../../components"
 
 Page {
     id: artistlistPage
-    property var listmodel
     property int lastIndex
     property int lastOrientation
     allowedOrientations: Orientation.All
@@ -19,10 +18,13 @@ Page {
             SilicaGridView {
                 id: artistListView
 
-                model: listmodel
+                model: artistsModel
                 clip: true
                 cellWidth: width/2
                 cellHeight: cellWidth
+                populate: Transition {
+                    NumberAnimation { properties: "x"; from:artistListView.width*2 ;duration: populateDuration }
+                }
 
                 SectionScroller {
                     listview: artistListView
@@ -33,6 +35,8 @@ Page {
 
                 header: Heading {
                     text: qsTr("artists")
+                    width: parent.width
+                    height: Theme.itemSizeMedium
                 }
 
                 delegate: ArtistDelegate {
@@ -57,7 +61,7 @@ Page {
                 onWidthChanged: {
                     console.debug("width: " + width)
                 }
-                model: listmodel
+                model: artistsModel
 
                 SectionScroller {
                     pathview: showView

@@ -30,6 +30,9 @@ Page {
         header: PageHeader {
             title: qsTr("playlist")
         }
+//        populate: Transition {
+//            NumberAnimation { properties: "x"; from:playlistView.width*2 ;duration: populateDuration }
+//        }
         PullDownMenu {
             MenuItem {
                 text: qsTr("add url")
@@ -53,6 +56,7 @@ Page {
                 text: qsTr("open playlist")
                 onClicked: {
                     requestSavedPlaylists()
+                    pageStack.push(Qt.resolvedUrl("SavedPlaylistsPage.qml"))
                 }
             }
             MenuItem {

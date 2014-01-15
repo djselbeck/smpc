@@ -132,11 +132,15 @@ Page {
             //                            pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
         } else if (ident == "albums") {
             artistname = ""
-            if (connected)
+            if (connected) {
                 requestAlbums()
+                pageStack.push(Qt.resolvedUrl("database/AlbumListPage.qml"),{artistname:artistname});
+            }
         } else if (ident == "artists") {
-            if (connected)
+            if (connected) {
                 requestArtists()
+                pageStack.push(Qt.resolvedUrl("database/ArtistListPage.qml"));
+            }
         } else if (ident == "files") {
             if (connected)
                 filesClicked("/")

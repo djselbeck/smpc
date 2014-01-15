@@ -135,33 +135,7 @@ BackgroundItem {
 //                }
                 PropertyAnimation {
                     id: blendcolumnOut
-                    target: delegateButtons
-                    property: "opacity"
-                    running: rotateOut.running
-                    from: 1.0
-                    to: 0.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
-
-                    }
-                }
-                PropertyAnimation {
-                    id: blendBackgroundOut
-                    target: delegateBackside
-                    property: "opacity"
-                    running: rotateOut.running
-                    from: 1.0
-                    to: 0.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
-
-                    }
-                }
-                PropertyAnimation {
-                    id: blendlistOut
-                    target: albumTracksListView
+                    targets: [delegateButtons,delegateBackside,albumTracksListView]
                     property: "opacity"
                     running: rotateOut.running
                     from: 1.0
@@ -188,7 +162,7 @@ BackgroundItem {
                 }
                 PropertyAnimation {
                     id: blendcolumnIn
-                    target: delegateButtons
+                    targets: [delegateButtons,delegateBackside,albumTracksListView]
                     property: "opacity"
                     running: rotateIn.running
                     from: 0.0
@@ -199,32 +173,7 @@ BackgroundItem {
 
                     }
                 }
-                PropertyAnimation {
-                    id: blendBackgroundIn
-                    target: delegateBackside
-                    property: "opacity"
-                    running: rotateIn.running
-                    from: 0.0
-                    to: 1.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
 
-                    }
-                }
-                PropertyAnimation {
-                    id: blendlistIn
-                    target: albumTracksListView
-                    property: "opacity"
-                    running: rotateIn.running
-                    from: 0.0
-                    to: 1.0
-                    duration: animationDuration
-                    easing.type: Easing.InQuad
-                    onStopped: {
-
-                    }
-                }
 
 
                     Row {

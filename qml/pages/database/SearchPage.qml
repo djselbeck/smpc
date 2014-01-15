@@ -4,7 +4,6 @@ import "../../components"
 
 Page {
     id: searchpage
-    property alias listmodel: albumsongs_list_view.model
     property int currentindex: -1
     property string selectedsearch
 
@@ -74,12 +73,15 @@ Page {
         }
 
         SilicaListView {
-            id: albumsongs_list_view
+            id: searchsongListView
             anchors{
                 fill: parent
                 //bottomMargin: mainDrawer.open ? undefined : quickControlPanel.visibleSize
             }
             ScrollDecorator {}
+            SpeedScroller {
+                listview: searchsongListView
+            }
 
             header: PageHeader {
                 title: qsTr("search")
@@ -88,20 +90,24 @@ Page {
                     right: parent.right
                 }
             }
+//            populate: Transition {
+//                NumberAnimation { properties: "x"; from:albumsongs_list_view.width*2 ;duration: populateDuration }
+//            }
             clip: true
+            model: searchedTracksModel
 
             PullDownMenu {
-                enabled: albumsongs_list_view.model !== undefined
+                enabled: searchsongListView.model !== undefined
                 MenuItem {
                     text: qsTr("new search")
-                    visible: albumsongs_list_view.model !== undefined
+                    visible: searchsongListView.model !== undefined
                     onClicked: {
                         newSearch()
                     }
                 }
                 MenuItem {
                     text: qsTr("add all results")
-                    visible: albumsongs_list_view.model !== undefined
+                    visible: searchsongListView.model !== undefined
                     onClicked: {
                         deletePlaylist()
                         addlastsearch()
@@ -109,7 +115,7 @@ Page {
                 }
                 MenuItem {
                     text: qsTr("play all results")
-                    visible: albumsongs_list_view.model !== undefined
+                    visible: searchsongListView.model !== undefined
                     onClicked: {
                         deletePlaylist()
                         addlastsearch()
@@ -120,8 +126,7 @@ Page {
 
             delegate: ListItem {
                 menu: contextMenu
-                property int workaroundHeight: mainColumn.height
-                height: workaroundHeight
+                contentHeight: Theme.itemSizeSmall
                 Column {
                     id: mainColumn
                     clip: true
@@ -218,9 +223,6 @@ Page {
                                 playAlbumRemorse()
                             }
                         }
-                        onHeightChanged: {
-                            workaroundHeight = height + mainColumn.height
-                        }
                     }
                 }
             }
@@ -249,13 +251,16 @@ Page {
         }
 
         requestSearch([searchfor, searchfield.text])
-        albumsongs_list_view.forceActiveFocus()
+        searchsongListView.forceActiveFocus()
     }
 
     function newSearch() {
         searchfield.text=""
-        albumsongs_list_view.model = 0;
-        cleanFileStack();
+        clearSearchTracks();
         mainDrawer.show()
+    }
+
+    Component.onDestruction: {
+        clearSearchTracks();
     }
 }

@@ -18,7 +18,7 @@ Item {
 
         font {
             family: Theme.fontFamilyHeading
-            pixelSize: Theme.fontSizeExtraLarge
+            pixelSize: Theme.fontSizeLarge
         }
         color: Theme.highlightColor
     }
@@ -27,7 +27,7 @@ Item {
         text: mainItm.text
         font {
             family: Theme.fontFamilyHeading
-            pixelSize: Theme.fontSizeExtraLarge
+            pixelSize: Theme.fontSizeLarge
         }
         color: Theme.highlightColor
         anchors {

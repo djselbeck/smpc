@@ -43,11 +43,18 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     volDecTimer.setInterval(250);
     mWasConnected = false;
     mFileModels = new QStack<FileModel*>();
-    viewer->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
-    viewer->rootContext()->setContextProperty("coverstring","");
-    viewer->rootContext()->setContextProperty("artistInfoText","");
-    viewer->rootContext()->setContextProperty("albumInfoText","");
+    // Set empty qml properties for later usage
+    mQuickView->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+    mQuickView->rootContext()->setContextProperty("coverstring","");
+    mQuickView->rootContext()->setContextProperty("artistInfoText","");
+    mQuickView->rootContext()->setContextProperty("albumInfoText","");
     mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
+    mQuickView->rootContext()->setContextProperty("artistsModel",0);
+    mQuickView->rootContext()->setContextProperty("albumsModel",0);
+    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
+    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
+    mQuickView->rootContext()->setContextProperty("outputsModel",0);
+    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
     updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     mNetAccess->setQmlThread(viewer->thread());
@@ -160,6 +167,7 @@ void Controller::updateFilesModel(QList<QObject*>* list)
 
 void Controller::updateSavedPlaylistsModel(QStringList *list)
 {
+    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
     if ( mSavedPlaylists ) {
         delete(mSavedPlaylists);
         mSavedPlaylists = 0;
@@ -172,6 +180,7 @@ void Controller::updateSavedPlaylistsModel(QStringList *list)
 
 void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
         for( int i = 0; i < mPlaylistTracks->length();i++)
         {
@@ -187,6 +196,7 @@ void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 
 void Controller::updateArtistsModel(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("artistsModel",0);
     if(mOldArtistModel!=0)
     {
         delete(mOldArtistModel);
@@ -209,6 +219,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
 
 void Controller::updateAlbumsModel(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("albumsModel",0);
     if(mOldAlbumModel!=0)
     {
         delete(mOldAlbumModel);
@@ -224,6 +235,7 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
 
 void Controller::updateOutputsModel(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("outputsModel",0);
     if(mOutputs!=0)
     {
         delete(mOutputs);
@@ -253,6 +265,7 @@ void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 
 void Controller::updateSearchedTracks(QList<QObject*>* list)
 {
+    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
     if(mSearchedTracks!=0)
     {
         delete (mSearchedTracks);
@@ -331,11 +344,7 @@ void Controller::connectSignals()
     connect(&volDecTimer,SIGNAL(timeout()),this,SLOT(decVolume()));
     connect(&volIncTimer,SIGNAL(timeout()),this,SLOT(incVolume()));
     //connect(QApplication::instance(),SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(focusChanged(QWidget*,QWidget*)));
-    connect(this,SIGNAL(albumsReady()),item,SLOT(updateAlbumsModel()));
-    connect(this,SIGNAL(artistsReady()),item,SLOT(updateArtistModel()));
-    connect(this,SIGNAL(albumTracksReady()),item,SLOT(updateAlbumModel()));
-    connect(this,SIGNAL(savedPlaylistsReady()),item,SLOT(updateSavedPlaylistsModel()));
-    connect(this,SIGNAL(savedPlaylistReady()),item,SLOT(updateSavedPlaylistModel()));
+
     connect(this,SIGNAL(sendStatus(QVariant)),item,SLOT(updateCurrentPlaying(QVariant)));
     connect(this,SIGNAL(playlistUpdated()),item,SLOT(updatePlaylist()));
     connect(this,SIGNAL(getFiles(QString)),mNetAccess,SLOT(getDirectory(QString)));
@@ -346,14 +355,12 @@ void Controller::connectSignals()
     connect(this,SIGNAL(setUpdateInterval(int)),mNetAccess,SLOT(setUpdateInterval(int)));
 
     connect(mNetAccess,SIGNAL(outputsReady(QList<QObject*>*)),this,SLOT(updateOutputsModel(QList<QObject*>*)));
-    connect(this,SIGNAL(outputsReady()),item,SLOT(updateOutputsModel()));
     connect(item,SIGNAL(requestOutputs()),mNetAccess,SLOT(getOutputs()));
     connect(item,SIGNAL(enableOutput(int)),mNetAccess,SLOT(enableOutput(int)));
     connect(item,SIGNAL(disableOutput(int)),mNetAccess,SLOT(disableOutput(int)));
 
     connect(item,SIGNAL(requestSearch(QVariant)),mNetAccess,SLOT(searchTracks(QVariant)));
     connect(mNetAccess,SIGNAL(searchedTracksReady(QList<QObject*>*)),this,SLOT(updateSearchedTracks(QList<QObject*>*)));
-    connect(this,SIGNAL(searchedTracksReady()),item,SLOT(updateSearchedModel()));
     connect(item,SIGNAL(addlastsearch()),this,SLOT(addlastsearchtoplaylist()));
     connect(this,SIGNAL(addURIToPlaylist(QString)),mNetAccess,SLOT(addTrackToPlaylist(QString)));
 
@@ -373,6 +380,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(clearTrackList()),this,SLOT(clearTrackList()));
     connect(item,SIGNAL(clearPlaylistTracks()),this,SLOT(clearPlaylistList()));
     connect(item,SIGNAL(clearPlaylists()),this,SLOT(clearPlaylists()));
+    connect(item,SIGNAL(clearSearchTracks()),this,SLOT(clearSearchTracks()));
 
     connect(this,SIGNAL(connected(QVariant)),item,SLOT(slotConnected(QVariant)));
     connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
@@ -818,6 +826,7 @@ void Controller::cleanFileStack()
         }
         delete(list);
     }
+    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
     if(mSearchedTracks!=0){
         delete(mSearchedTracks);
         mSearchedTracks = 0;
@@ -870,6 +879,7 @@ void Controller::clearTrackList()
 
 void Controller::clearPlaylists()
 {
+    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
     if(mSavedPlaylists)
     {
         delete(mSavedPlaylists);
@@ -879,6 +889,7 @@ void Controller::clearPlaylists()
 
 void Controller::clearPlaylistList()
 {
+    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
         for( int i = 0; i < mPlaylistTracks->length();i++)
         {
@@ -975,6 +986,15 @@ QString Controller::getLastFMArtSize(int index)
     }
     }
     return LASTFMDEFAULTSIZE;
+}
+
+void Controller::clearSearchTracks()
+{
+    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    if(mSearchedTracks!=0){
+        delete(mSearchedTracks);
+        mSearchedTracks = 0;
+    }
 }
 
 void Controller::trimCache()

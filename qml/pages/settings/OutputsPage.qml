@@ -5,7 +5,6 @@ import "../../components"
 Page
 {
     id: outputsPage
-    property alias listmodel: outputsListView.model;
     property string artistname;
     SilicaListView {
             id : outputsListView
@@ -16,6 +15,7 @@ Page
                 title: qsTr("outputs")
             }
             clip: true
+            model: outputsModel
 
             ScrollDecorator {}
             delegate: ListItem {

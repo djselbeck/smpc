@@ -71,6 +71,7 @@ Component {
         onClicked: {
             artistListView.currentIndex = index
             artistClicked(artist)
+            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});
         }
         //        function playArtistRemorse() {
         //            remorseAction(qsTr("playing artist"), function () {

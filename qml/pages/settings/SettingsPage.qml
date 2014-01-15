@@ -62,6 +62,7 @@ Page
             break;
         case "outputs" :
             requestOutputs();
+            pageStack.push(Qt.resolvedUrl("OutputsPage.qml"))
             break;
         case "database" :
             pageStack.push(Qt.resolvedUrl("DatabaseSettings.qml"))

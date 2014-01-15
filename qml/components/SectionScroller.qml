@@ -10,6 +10,7 @@ Item {
     property GridView listview;
     property PathView pathview;
     property bool interactive:true
+    property int listviewCache
     property string sectionPropertyName
     property bool landscape:false
     Rectangle {
@@ -75,9 +76,21 @@ Item {
                 secDialog.color = Theme.rgba(Theme.highlightBackgroundColor,0.5);
                 secDialog.opacity = 1.0;
                 //secDialog.visible = true;
+                if ( typeof( listview ) != undefined) {
+                    listviewCache = listview.cacheBuffer
+                    listview.cacheBuffer = 0
+                } else if ( typeof( pathview ) != undefined) {
+                    listviewCache = pathview.cacheBuffer
+                    pathview.cacheBuffer = 0
+                }
             } else {
                 secDialog.opacity = 0.0;
                 //secDialog.visible = false;
+                if ( typeof( listview ) != undefined) {
+                    listview.cacheBuffer = listviewCache
+                } else if ( typeof( pathview ) != undefined) {
+                    pathview.cacheBuffer = listviewCache
+                }
             }
         }
         onMouseYChanged: {
@@ -104,7 +117,6 @@ Item {
                     if ( listview )
                         listview.positionViewAtIndex(item.index,GridView.Beginning);
                     if ( pathview ) {
-                        console.debug("positioning view at: " + item.index)
                         pathview.positionViewAtIndex(item.index,PathView.Center);
                     }
                 }

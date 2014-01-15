@@ -56,6 +56,8 @@ Page {
                     visible: album === "" ? false : true
                     onClicked: {
                         albumClicked("", album)
+                        pageStack.push(Qt.resolvedUrl("AlbumTracksPage.qml"),{artistname:"",albumname:mAlbum});
+
                     }
                 }
                 MenuItem {
@@ -63,6 +65,7 @@ Page {
                     visible: artist === "" ? false : true
                     onClicked: {
                         artistClicked(artist)
+                        pageStack.push(Qt.resolvedUrl("AlbumListPage.qml"),{artistname:mArtist});
                     }
                 }
             }
@@ -566,6 +569,10 @@ Page {
                 target: repeatButton
                 visible: true
             }
+            PropertyChanges {
+                target: positionSlider
+                handleVisible: true
+            }
         },
         State
         {
@@ -609,6 +616,10 @@ Page {
             PropertyChanges {
                 target: repeatButton
                 visible: false
+            }
+            PropertyChanges {
+                target: positionSlider
+                handleVisible: true
             }
         }
     ]
