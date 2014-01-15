@@ -144,6 +144,8 @@ ApplicationWindow
     property string mArtist
     property string mAlbum
     property int mVolume
+    property int mLength:0.0
+    property int mPosition:0
     property bool mRepeat
     property bool mShuffle
     property bool mDebugEnabled
@@ -189,9 +191,9 @@ ApplicationWindow
         mAlbum = list[1];
         mArtist = list[2];
         if(currentsongpage.pospressed==false) {
-            currentsongpage.position = list[3];
+            mPosition = list[3];
         }
-        currentsongpage.length = list[4];
+        mLength = list[4];
         //currentsongpage.lengthtextcurrent = formatLength(list[3]);
         currentsongpage.lengthtextcomplete = list[4]==0 ? "": formatLength(list[4]);
         currentsongpage.bitrate = list[5]+"kbps";
@@ -263,6 +265,10 @@ ApplicationWindow
     // Nicely formats length values to string
     function formatLength(length)
     {
+        if ( length === 0 ) {
+            return "0:00"
+        }
+
         var temphours = Math.floor(length/3600);
         var min = 0;
         var sec = 0;

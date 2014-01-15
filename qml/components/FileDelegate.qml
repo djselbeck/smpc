@@ -72,6 +72,7 @@ Component {
                             "Playlist:" + (prepath == "/" ? "" : prepath + "/") + name)
                 savedPlaylistClicked(
                             (prepath == "/" ? "" : prepath + "/") + name)
+                pageStack.push(Qt.resolvedUrl("../pages/database/PlaylistTracksPage.qml"),{playlistname:name})
             }
         }
 

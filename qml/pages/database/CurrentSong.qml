@@ -7,10 +7,8 @@ Page {
     property string title:mTitle
     property string album:mAlbum
     property string artist:mArtist
-    property alias length: positionSlider.maximumValue
     //property int lengthtextcurrent:lengthTextcurrent.text;
     property alias lengthtextcomplete: lengthTextcomplete.text
-    property alias position: positionSlider.value
     property alias bitrate: bitrateText.text
     property bool shuffle
     property bool repeat
@@ -430,17 +428,12 @@ Page {
             }
 
             Slider {
-                anchors {
-                    right: parent.right
-                    left: parent.left
-                }
                 id: positionSlider
-                stepSize: 1
-                minimumValue: 0
-                enabled: true
-                maximumValue: length
-                handleVisible: true
-                value: position
+                width: parent.width
+                stepSize: 1.0
+                maximumValue: ( mLength > 0 ) ? mLength : 1.0
+                minimumValue: 0.0
+                value: mPosition
                 valueText: formatLength(value)
                 label: qsTr("position")
                 Label {
@@ -458,6 +451,7 @@ Page {
                 onPressedChanged: {
                     if (!pressed) {
                         seek(value)
+                        value  = Qt.binding(function() {return mPosition;});
                     }
                 }
             }
@@ -514,6 +508,9 @@ Page {
         if ((status === PageStatus.Activating)
                 || (status === PageStatus.Active)) {
             pageactive = true
+//            positionSlider.handleVisible = false;
+//            positionSlider.handleVisible = true;
+//            positionSlider.valueText = Qt.binding(function () {return formatLength(positionSlider.value);})
             quickControlPanel.open = false
         } else {
             quickControlPanel.open = true
@@ -569,10 +566,6 @@ Page {
                 target: repeatButton
                 visible: true
             }
-            PropertyChanges {
-                target: positionSlider
-                handleVisible: true
-            }
         },
         State
         {
@@ -616,10 +609,6 @@ Page {
             PropertyChanges {
                 target: repeatButton
                 visible: false
-            }
-            PropertyChanges {
-                target: positionSlider
-                handleVisible: true
             }
         }
     ]
