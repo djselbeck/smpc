@@ -121,8 +121,7 @@ Page {
                             id: fallbackImage
                             source: "qrc:/images/smpc-big.png"
                             anchors.fill: parent
-                            visible: (coverImage.sourceprimary == ""
-                                      && coverImage.sourcesecondary == "")
+                            visible: ( !coverImage.ready )
                         }
                     }
                     Item

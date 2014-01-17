@@ -34,30 +34,28 @@ CoverBackground {
     }
 
     Rectangle {
-        visible: (coverimg.sourceprimary != ""
-                  || coverimg.sourcesecondary != "")
+        visible: ( coverimg.ready  )
         anchors.fill: parent
         color: Theme.highlightBackgroundColor
         gradient: Gradient {
             GradientStop {
-                position: 0.7
+                position: 0.6
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
             }
             GradientStop {
-                position: 0.8
+                position: 0.7
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.3)
             }
             GradientStop {
                 position: 1.0
                 //color: Theme.rgba(Theme.highlightBackgroundColor, 0.6)
-                color: Qt.rgba(0.0,0.0,0.0, 1.0)
+                color: Qt.rgba(0.0,0.0,0.0, 0.8)
             }
         }
     }
     Image {
         id: logo
-        visible: (coverimg.sourceprimary == "" && coverimg.sourcesecondary == ""
-                  && (mTitle == ""))
+        visible: ( (!coverimg.ready) && (mTitle == ""))
         source: "qrc:images/pictogram.png"
         anchors.centerIn: parent
     }
