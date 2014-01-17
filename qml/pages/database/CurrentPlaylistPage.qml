@@ -95,6 +95,25 @@ Page {
                         }
 
                         MenuItem {
+                            text: qsTr("show artist")
+                            onClicked: {
+                                artistClicked(artist)
+                                pageStack.push(Qt.resolvedUrl("AlbumListPage.qml"),{artistname:artist});
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("show album")
+                            onClicked: {
+                                onClicked: {
+                                    albumClicked("", album)
+                                    pageStack.push(Qt.resolvedUrl("AlbumTracksPage.qml"),{artistname:"",albumname:album});
+
+                                }
+                            }
+                        }
+
+                        MenuItem {
                             visible: playing
                             text: qsTr("show information")
                             onClicked: pageStack.push(currentsongpage)

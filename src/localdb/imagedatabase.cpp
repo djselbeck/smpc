@@ -525,8 +525,8 @@ QPixmap ImageDatabase::getArtistImageForAlbum(QString album)
     QSqlQuery query;
     album = album.replace('\"',"\\\"");
     query.prepare("SELECT * FROM albums WHERE "
-                  "albumname=\"" + album + "\""
-                  " AND imageid!=\"-2\"");
+                  "albumname=\"" + album + "\" " );
+                  //" AND imageid!=\"-2\"");
     qDebug() << "Check for image: " << query.lastQuery();
     query.exec();
 
@@ -536,7 +536,10 @@ QPixmap ImageDatabase::getArtistImageForAlbum(QString album)
             // FIXME first fit, replace with list of artists and multiple
             // pictures
             QString artist = query.value("artistname").toString();
-            return getArtistImage(artist);
+            QPixmap tmpImg = getArtistImage(artist);
+            if( !tmpImg.size().isEmpty() ) {
+                return tmpImg;
+            }
         }
     }
     qDebug() << "Found no image";
