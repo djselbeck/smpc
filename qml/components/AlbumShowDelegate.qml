@@ -113,26 +113,7 @@ BackgroundItem {
                         backsideLoader.active = false
                     }
                 }
-//                PropertyAnimation {
-//                    id: scaleOutW
-//                    target: albumShowDelegate
-//                    running: rotateOut.running
-//                    property: "width"
-//                    from: showView.height
-//                    to: showView.itemWidth
-//                    duration: animationDuration
-//                    easing.type: Easing.InQuad
-//                }
-//                PropertyAnimation {
-//                    id: scaleOutH
-//                    target: albumShowDelegate
-//                    running: rotateOut.running
-//                    property: "width"
-//                    from: showView.height
-//                    to: showView.itemHeight
-//                    duration: animationDuration
-//                    easing.type: Easing.InQuad
-//                }
+
                 PropertyAnimation {
                     id: blendcolumnOut
                     targets: [delegateButtons,delegateBackside,albumTracksListView]
@@ -283,14 +264,19 @@ BackgroundItem {
                                 }
                             }
 
-//                            OpacityRampEffect {
-//                                sourceItem: mainColumn
-//                                slope: 3
-//                                offset: 0.65
-//                            }
                             onClicked: {
                                 playAlbum([albumslistPage.artistname, album]);
                                 playPlaylistTrack(index);
+                            }
+                            function playTrackRemorse() {
+                                remorseAction(qsTr("playing track"), function () {
+                                    playSong(uri)
+                                }, 3000)
+                            }
+                            function addTrackRemorse() {
+                                remorseAction(qsTr("adding track"), function () {
+                                    addSong(uri)
+                                }, 3000)
                             }
                         }
                     }
@@ -321,47 +307,5 @@ BackgroundItem {
                 flipped = true
             }
         }
-
-        //            albumGridView.currentIndex = index
-        //            albumClicked(artistname, title)
     }
-    //        Component.onCompleted: {
-    //            console.debug("Album created: " + title)
-    //        }
-    //        Component.onDestruction: {
-    //            console.debug("Album destroyed:" + title)
-    //        }
-
-    //        function playAlbumRemorse() {
-    //            remorseAction(qsTr("playing album"), function () {
-    //                playAlbum([artistname, title])
-    //            }, 3000)
-    //        }
-    //        function addAlbumRemorse() {
-    //            remorseAction(qsTr("adding album"), function () {
-    //                addAlbum([artistname, title])
-    //            }, 3000)
-    //        }
-    //        Component {
-    //            id: contextMenu
-    //            ContextMenu {
-    //                MenuItem {
-    //                    text: qsTr("play album")
-    //                    onClicked: {
-    //                        if (title !== "") {
-    //                            playAlbumRemorse()
-    //                        }
-    //                    }
-    //                }
-
-    //                MenuItem {
-    //                    text: qsTr("add album to list")
-    //                    onClicked: {
-    //                        if (title !== "") {
-    //                            addAlbumRemorse()
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
 }

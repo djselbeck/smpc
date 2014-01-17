@@ -19,12 +19,6 @@ ListItem {
                 cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
-//                onWidthChanged: {
-//                    console.debug("new W: " + width)
-//                }
-//                onHeightChanged: {
-//                    console.debug("new H: " + height)
-//                }
             }
             Rectangle {
                 id: gradientRect

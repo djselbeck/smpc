@@ -673,6 +673,7 @@ void ImageDatabase::requestCoverImage(MpdAlbum album)
         if ( artworkID >= 0 ) {
             QString url = "image://"  IMAGEPROVIDERNAME  "/albumid/" + QString::number(artworkID);
             emit coverAlbumArtReady(QVariant::fromValue(url));
+            return;
         }
         emit coverAlbumArtReady("");
         return;

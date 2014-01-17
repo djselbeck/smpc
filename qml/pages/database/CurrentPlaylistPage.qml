@@ -180,8 +180,11 @@ Page {
                 GlassItem {
                     anchors.fill: parent
                     color: Theme.highlightColor
-                    visible: playing
+                    visible: opacity != 0.0
                     scale: 0.8
+                    opacity: playing ? 1.0 : 0.0
+                    Behavior on opacity { PropertyAnimation {duration: 750} }
+
                 }
                 onClicked: {
                     playlistView.currentIndex = index
