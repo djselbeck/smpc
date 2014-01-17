@@ -157,12 +157,13 @@ Page {
                     slope: 3
                     offset: 0.65
                 }
-                // Disabled until offically supported
-                //                GlassItem {
-                //                    anchors.fill: parent
-                //                    visible: playing
-                //                    scale: 0.5
-                //                }
+//                 Disabled until offically supported
+                GlassItem {
+                    anchors.fill: parent
+                    color: Theme.highlightColor
+                    visible: playing
+                    scale: 0.8
+                }
                 onClicked: {
                     playlistView.currentIndex = index
                     if (!playing) {
@@ -188,9 +189,20 @@ Page {
                 property string artist : section.split('|')[0]
                 Rectangle {
                     id: sectionFillRect
-                    color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+                    color: Theme.rgba(Theme.highlightBackgroundColor,0.2) //Qt.rgba(0.0, 0.0, 0.0, 0.2)
                     anchors {
                         fill: parent
+                    }
+                    gradient: Gradient {
+                        GradientStop {
+                        position: 0.0
+                        color: Theme.rgba(Theme.highlightBackgroundColor,0.0)
+                        }
+                        GradientStop {
+                            position: 1.0
+                            //color: Theme.rgba(Theme.highlightBackgroundColor, 0.6)
+                            color: Theme.rgba(Theme.highlightBackgroundColor,0.3)
+                        }
                     }
                 }
 

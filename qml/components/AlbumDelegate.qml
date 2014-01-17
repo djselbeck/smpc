@@ -9,7 +9,7 @@ ListItem {
         Rectangle {
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
-            color: Theme.rgba(Theme.highlightColor, 0.1)
+            color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
             Image {
                 id: albumImage
                 anchors.fill: parent
