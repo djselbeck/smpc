@@ -490,55 +490,108 @@ void Controller::disconnectedToServer()
 
 void Controller::updateStatus(status_struct status)
 {
-    if(mCurrentSongID != status.id)
+    if( (status.playing == NetworkAccess::PLAYING) || (status.playing == NetworkAccess::PAUSE) )
     {
-        if(status.playing==NetworkAccess::PLAYING) {
-            QString popup = status.title+"\n"+status.album+"\n"+status.artist;
-            emit sendPopup(popup);
-        }
-        if(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
-                &&status.id>=0&&mCurrentSongID>=0){
-            mPlaylist->setPlaying(mCurrentSongID,false);
-            mPlaylist->setPlaying(status.id,true);
-            //            playlist->get(currentsongid)->setPlaying(false);
-            //            playlist->get(status.id)->setPlaying(true);
+        // check for old playing track and set false
+        if (mCurrentSongID != status.id) {
+            if (mCurrentSongID != -1) {
+                mPlaylist->setPlaying(mCurrentSongID,false);
+            }
 
+            // Request cover/artist art if song has changed
+            MpdAlbum tmpAlbum(this,status.album,status.artist);
+            qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+            emit requestCoverArt(tmpAlbum);
+
+            MpdArtist tmpArtist(this,status.artist);
+            qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+            emit requestCoverArtistArt(tmpArtist);
         }
-        if(mCurrentSongID==-1&&(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
-                               &&status.id>=0))
+
+        // Set current playing attribute
+        if ( mPlaylist && (mPlaylist->rowCount() > status.id) )
         {
             mPlaylist->setPlaying(status.id,true);
         }
 
-        // Check for cover and set URL if ready
-        MpdAlbum tmpAlbum(this,status.album,status.artist);
-        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
-        emit requestCoverArt(tmpAlbum);
 
-        MpdArtist tmpArtist(this,status.artist);
-        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
-        emit requestCoverArtistArt(tmpArtist);
-
-    }
-    if(mLastPlaybackState!=status.playing)
+        // Set current playing song id
+        mCurrentSongID = status.id;
+    } else if ( status.playing == NetworkAccess::STOP )
     {
-        if(status.playing==NetworkAccess::STOP&&mPlaylist!=0&&mCurrentSongID>=0&&mCurrentSongID<mPlaylist->rowCount())
-        {
-            mPlaylist->setPlaying(mCurrentSongID,false);
-        }
-        // Check for cover and set URL if ready
-        MpdAlbum tmpAlbum(this,status.album,status.artist);
-        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
-        emit requestCoverArt(tmpAlbum);
+        // Just stopped
+        if ( mLastPlaybackState != NetworkAccess::STOP ) {
+            // Disable playing attribute for last song
+            if ( mPlaylist && (mPlaylist->rowCount() > mCurrentSongID)
+                 && (mCurrentSongID >= 0) ) {
+                mPlaylist->setPlaying(mCurrentSongID,false);
+            }
+            // Set last playing to -1 for nothing
+            mCurrentSongID = -1;
 
-        MpdArtist tmpArtist(this,status.artist);
-        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
-        emit requestCoverArtistArt(tmpArtist);
+            // Clear cover/artist image by requesting empty images
+            MpdAlbum tmpAlbum(this,"","");
+            emit requestCoverArt(tmpAlbum);
+
+            MpdArtist tmpArtist(this,"");
+            emit requestCoverArtistArt(tmpArtist);
+        }
     }
     mLastPlaybackState = status.playing;
-    mCurrentSongID = status.id;
-    if(mPlaylist==0)
-        mCurrentSongID = -1;
+
+
+    // OLD
+//    if(mCurrentSongID != status.id && (status.playing == NetworkAccess::PLAYING) )
+//    {
+//        if(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
+//                &&status.id>=0&&mCurrentSongID>=0){
+//            mPlaylist->setPlaying(mCurrentSongID,false);
+//            mPlaylist->setPlaying(status.id,true);
+//            //            playlist->get(currentsongid)->setPlaying(false);
+//            //            playlist->get(status.id)->setPlaying(true);
+
+//        }
+//        if(mCurrentSongID==-1&&(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
+//                               &&status.id>=0))
+//        {
+//            mPlaylist->setPlaying(status.id,true);
+//        }
+
+//        // Check for cover and set URL if ready
+//        MpdAlbum tmpAlbum(this,status.album,status.artist);
+//        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+//        emit requestCoverArt(tmpAlbum);
+
+//        MpdArtist tmpArtist(this,status.artist);
+//        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+//        emit requestCoverArtistArt(tmpArtist);
+
+//    }
+//    if(mLastPlaybackState!=status.playing)
+//    {
+//        if(status.playing==NetworkAccess::STOP&&mPlaylist!=0&&mCurrentSongID>=0&&mCurrentSongID<mPlaylist->rowCount())
+//        {
+//            mPlaylist->setPlaying(mCurrentSongID,false);
+//            mCurrentSongID = -1;
+//        }
+//        // Check for cover and set URL if ready
+//        MpdAlbum tmpAlbum(this,status.album,status.artist);
+//        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+//        emit requestCoverArt(tmpAlbum);
+
+//        MpdArtist tmpArtist(this,status.artist);
+//        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+//        emit requestCoverArtistArt(tmpArtist);
+//    }
+//    mLastPlaybackState = status.playing;
+//    mCurrentSongID = status.id;
+//    if(mPlaylist==0)
+//        mCurrentSongID = -1;
+//    mVolume = status.volume;
+
+
+
+    //FIXME clear up with status object or qml properties set through c++
     QStringList strings;
     strings.append(status.title);
     strings.append(status.album);
@@ -573,7 +626,6 @@ void Controller::updateStatus(status_struct status)
     strings.append(QString::number(status.samplerate));
     strings.append(QString::number(status.bitdepth));
     strings.append(QString::number(status.channelcount));
-    mVolume = status.volume;
     emit sendStatus(strings);
 }
 
@@ -584,7 +636,6 @@ void Controller::seek(int pos)
 
 void Controller::requestFilePage(QString path)
 {
-    QObject *item = (QObject *)mQuickView->rootObject();
     emit getFiles(path);
 }
 
