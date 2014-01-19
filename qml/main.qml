@@ -136,6 +136,7 @@ ApplicationWindow
 
     property real listPadding : Theme.paddingLarge
     property int populateDuration: 500
+    property int bothOrientation: Orientation.Landscape + Orientation.Portrait
 
     property bool volumeChanging:false
 

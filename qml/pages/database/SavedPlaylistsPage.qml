@@ -5,6 +5,7 @@ import "../../components"
 Page
 {
     id: savedPlaylistPage
+    allowedOrientations: bothOrientation
     property string artistname;
     SilicaListView {
             id : savedPlaylistsListView
@@ -75,5 +76,27 @@ Page
         clearPlaylists();
         console.debug("Clearing playlists");
     }
+    states: [
+        State {
+            name: "portrait"
+            when: orientation === Orientation.Portrait
+            PropertyChanges {
+                target: savedPlaylistsListView
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        },State {
+            name: "landscape"
+            when: orientation === Orientation.Landscape
+            PropertyChanges {
+                target: savedPlaylistsListView
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        }]
 
 }

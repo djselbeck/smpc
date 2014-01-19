@@ -6,7 +6,7 @@ Page {
     id: artistlistPage
     property int lastIndex
     property int lastOrientation
-    allowedOrientations: Orientation.All
+    allowedOrientations: bothOrientation
 
     Loader {
         id: gridViewLoader
@@ -72,7 +72,7 @@ Page {
 
 
 
-                cacheItemCount: pathItemCount * 2
+                cacheItemCount: pathItemCount + 2
                 pathItemCount: 12 // width/itemWidth
                 delegate: ArtistShowDelegate {
                 }

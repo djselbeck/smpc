@@ -5,9 +5,10 @@ import "../../components"
 
 Page {
     id: albumslistPage
-    allowedOrientations: Orientation.All
+    allowedOrientations: bothOrientation
     property string artistname
     property int lastIndex
+    property int lastOrientation
     Loader {
         id: gridViewLoader
         active: false
@@ -79,7 +80,7 @@ Page {
 
 
 
-                cacheItemCount: pathItemCount * 2
+                cacheItemCount: pathItemCount + 2
                 pathItemCount: 12 // width/itemWidth
                 delegate: AlbumShowDelegate {
                 }
@@ -175,21 +176,22 @@ Page {
 
     onStatusChanged: {
         if ( status === PageStatus.Activating ) {
-            if (!orientationTransitionRunning) {
+            if (!orientationTransitionRunning && orientation != lastOrientation) {
+                gridViewLoader.active = false;
+                showViewLoader.active = false;
                 if (orientation === Orientation.Portrait) {
-                    console.debug("activating portrait grid view")
+                    console.debug("activating page with portrait grid view")
                     gridViewLoader.active = true
                 } else if (orientation === Orientation.Landscape) {
-                    console.debug("activating landscape showview")
+                    console.debug("activating page landscape showview")
                     showViewLoader.active = true
                 }
-            } else {
-                console.debug("deactivating loaders")
-                gridViewLoader.active = false
-                showViewLoader.active = false
-                // Deactivating components
             }
         }
+        if ( status === PageStatus.Deactivating ) {
+            lastOrientation  = orientation
+        }
+
         if (status === PageStatus.Deactivating && typeof(gridViewLoader.item) != undefined  && gridViewLoader.item ) {
             lastIndex = gridViewLoader.item.currentIndex
         } else if (status === PageStatus.Activating) {
@@ -205,19 +207,6 @@ Page {
                                                        })
         }
 
-        //        if (status === PageStatus.Deactivating) {
-        //            lastIndex = albumGridView.currentIndex
-        //        } else if (status === PageStatus.Activating) {
-        //            albumGridView.positionViewAtIndex(lastIndex, ListView.Center)
-        //            if (artistname != "") {
-        //                requestArtistInfo(artistname)
-        //            }
-        //        } else if (status === PageStatus.Active) {
-        //            if (artistname != "")
-        //                pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"), {
-        //                                           artistname: artistname
-        //                                       })
-        //        }
     }
 
 
@@ -238,6 +227,7 @@ Page {
             // Deactivating components
         }
     }
+
 
     Component.onDestruction: {
         clearAlbumList()

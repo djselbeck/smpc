@@ -19,11 +19,13 @@ Item {
 
     onListviewChanged: {
         if(listview && listview.model) {
+            listviewCache = listview.cacheBuffer
             Sections.fillSections(listview);
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview);
             });
         } else if(listview) {
+            listviewCache = listview.cacheBuffer
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview);
             });
@@ -37,7 +39,7 @@ Item {
         onMouseYChanged: {
             if(pressed) {
                 listviewCache = listview.cacheBuffer
-                listview.cacheBuffer = 0
+                listview.cacheBuffer = -1
                 var relPos = (mouseY/height)*100;
                 var item = Sections.getItemPositionFromRelative(relPos);
                 if(listview && listview.model) {

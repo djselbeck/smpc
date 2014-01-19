@@ -24,7 +24,7 @@ Page {
     property bool pageactive: false
 
 
-    allowedOrientations: Orientation.All
+    allowedOrientations: bothOrientation
 
     Drawer {
         id: mainDrawer

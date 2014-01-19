@@ -22,8 +22,10 @@ Item {
 
     onListviewChanged: {
         if(listview && listview.model) {
+            listviewCache = listview.cacheBuffer
             Sections.fillSections(listview,scroller.sectionPropertyName);
         } else if(listview) {
+            listviewCache = listview.cacheBuffer
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview,scroller.sectionPropertyName);
             });
@@ -78,10 +80,9 @@ Item {
                 //secDialog.visible = true;
                 if ( typeof( listview ) != undefined) {
                     listviewCache = listview.cacheBuffer
-                    listview.cacheBuffer = 0
+                    listview.cacheBuffer = -1
                 } else if ( typeof( pathview ) != undefined) {
                     listviewCache = pathview.cacheBuffer
-                    pathview.cacheBuffer = 0
                 }
             } else {
                 secDialog.opacity = 0.0;
@@ -89,7 +90,6 @@ Item {
                 if ( typeof( listview ) != undefined) {
                     listview.cacheBuffer = listviewCache
                 } else if ( typeof( pathview ) != undefined) {
-                    pathview.cacheBuffer = listviewCache
                 }
             }
         }

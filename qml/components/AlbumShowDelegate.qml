@@ -215,7 +215,7 @@ BackgroundItem {
                         }
                         model: albumTracksModel
                         delegate: ListItem {
-//                            menu: contextMenu
+                            menu: contextMenu
                             contentHeight: mainColumn.height
                             Column {
                                 id: mainColumn
@@ -277,6 +277,29 @@ BackgroundItem {
                                 remorseAction(qsTr("adding track"), function () {
                                     addSong(uri)
                                 }, 3000)
+                            }
+                            Component {
+                                id: contextMenu
+                                ContextMenu {
+                                    anchors{
+                                        right: parent.right
+                                        left: parent.left
+                                    }
+
+                                    MenuItem {
+                                        text: qsTr("play track")
+                                        onClicked: {
+                                            playTrackRemorse()
+                                        }
+                                    }
+
+                                    MenuItem {
+                                        text: qsTr("add track to list")
+                                        onClicked: {
+                                            addTrackRemorse()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

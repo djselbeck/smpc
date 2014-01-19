@@ -6,6 +6,7 @@ Page {
     id: currentPlaylistPage
     //property alias listmodel: playlistView.model
     property alias songid: playlistView.currentIndex
+    allowedOrientations: Orientation.Portrait + Orientation.Landscape
     property int lastIndex
     SilicaListView {
         id: playlistView
@@ -299,6 +300,7 @@ Page {
 
     Dialog {
         id: saveplaylistDialog
+        allowedOrientations: bothOrientation
         Column {
             width: parent.width
             spacing: 10
@@ -326,10 +328,19 @@ Page {
         onOpened: {
             playlistNameField.focus = true
         }
+        onStatusChanged: {
+            if ((status === PageStatus.Activating)
+                    || (status === PageStatus.Active)) {
+                quickControlPanel.open = false
+            } else {
+                quickControlPanel.open = true
+            }
+        }
     }
 
     Dialog {
         id: urlInputDialog
+        allowedOrientations: bothOrientation
         Column {
             width: parent.width
             spacing: 10
@@ -356,6 +367,14 @@ Page {
         onOpened: {
             urlInputField.focus = true
         }
+        onStatusChanged: {
+            if ((status === PageStatus.Activating)
+                    || (status === PageStatus.Active)) {
+                quickControlPanel.open = false
+            } else {
+                quickControlPanel.open = true
+            }
+        }
     }
 
     onStatusChanged: {
@@ -369,4 +388,27 @@ Page {
     function parseClickedPlaylist(index) {
         playPlaylistTrack(index)
     }
+
+    states: [
+        State {
+            name: "portrait"
+            when: orientation === Orientation.Portrait
+            PropertyChanges {
+                target: playlistView
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        },State {
+            name: "landscape"
+            when: orientation === Orientation.Landscape
+            PropertyChanges {
+                target: playlistView
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        }]
 }

@@ -4,7 +4,8 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Dialog {
-    id: currentsong_page
+    id: songDialog
+    allowedOrientations: bothOrientation
     property string title
     property string album
     property string artist
@@ -17,6 +18,7 @@ Dialog {
 
     SilicaFlickable {
 
+        id: songFlickable
         anchors {
             top: parent.top
             left: parent.left
@@ -40,8 +42,12 @@ Dialog {
                 acceptText: qsTr("add song")
             }
             ToggleImage{
-                height: ready ? parent.width : 0
+                height: ready ? ( orientation === Orientation.Portrait ? parent.width : (songDialog.height-header.height-buttonRow.height ) ) : 0
                 width: height
+                anchors{
+                    horizontalCenter: parent.horizontalCenter
+                }
+
                 sourceprimary:  "image://imagedbprovider/album/" + artist +"/" + album
                 sourcesecondary: "image://imagedbprovider/artist/" + artist;
                 fillMode: Image.PreserveAspectFit
@@ -186,4 +192,40 @@ Dialog {
     onAccepted: {
         addSong(filename)
     }
+    states: [
+        State {
+            name: "portrait"
+            when: orientation === Orientation.Portrait
+            PropertyChanges {
+                target: buttonRow
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: songFlickable
+                anchors.bottomMargin: 0
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        },State {
+            name: "landscape"
+            when: orientation === Orientation.Landscape
+            PropertyChanges {
+                target: buttonRow
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: songFlickable
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        }]
 }

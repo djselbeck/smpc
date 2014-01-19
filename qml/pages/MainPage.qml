@@ -3,24 +3,31 @@ import Sailfish.Silica 1.0
 import "../components"
 
 Page {
-
+    id: mainPage
+    allowedOrientations: Orientation.Portrait + Orientation.Landscape
     PageHeader {
         id: mainHeader
         title: "SMPC"
+        anchors{
+            top: parent.top
+            right: parent.right
+            left: parent.left
+        }
     }
     Label {
         id: connectedLabel
         anchors{
             top: mainHeader.bottom
-            horizontalCenter: parent.horizontalCenter
+            right: parent.right
+            left: parent.left
         }
-        width: parent.width
         horizontalAlignment: Text.AlignHCenter
         color: Theme.highlightColor
         text: connected ? qsTr("connected to")
                           + ": " + profilename : qsTr("disconnected")
     }
     SilicaListView {
+        id: mainList
         clip: true
         anchors {
             top: connectedLabel.bottom
@@ -158,4 +165,54 @@ Page {
             pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
         }
     }
+    states: [
+        State {
+            name: "portrait"
+            when: orientation === Orientation.Portrait
+            PropertyChanges {
+                target: mainList
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: connectedLabel
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: mainHeader
+                anchors.bottomMargin: quickControlPanel.visibleSize
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        },State {
+            name: "landscape"
+            when: orientation === Orientation.Landscape
+            PropertyChanges {
+                target: mainList
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: connectedLabel
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: mainHeader
+                anchors.bottomMargin: 0
+                anchors.rightMargin: quickControlPanel.visibleSize
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+            }
+        }]
 }
