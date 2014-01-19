@@ -149,6 +149,9 @@ SOURCES += \
     qml/components/FileDelegate.qml \
     qml/components/ControlPanel.qml \
     qml/components/ArtistDelegate.qml \
-    qml/components/AlbumDelegate.qml
+    qml/components/AlbumDelegate.qml \
+    qml/cover/CoverPage.qml \
+    qml/components/AlbumShowDelegate.qml \
+    qml/components/ArtistShowDelegate.qml
 }
 

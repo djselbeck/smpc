@@ -184,6 +184,21 @@ Page {
                         title: albumname
                     }
 
+                    PullDownMenu {
+                        MenuItem {
+                            text: qsTr("add album")
+                            onClicked: {
+                                addAlbum([artistname, albumname])
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr("play album")
+                            onClicked: {
+                                playAlbum([artistname, albumname])
+                            }
+                        }
+                    }
+
                     model: albumTracksModel
                     clip: true
                     populate: Transition {

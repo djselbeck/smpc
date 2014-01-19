@@ -200,6 +200,19 @@ BackgroundItem {
                                 }
                             }
                         }
+                        IconButton {
+                            id: moreButton
+                            icon.source: "image://theme/icon-m-other"
+                            onClicked: {
+                                albumClicked(artistname, title)
+                                pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:title});
+                                if ( flipped ) {
+                                    rotateOut.running = true
+                                    flipped = false
+                                    showView.interactive = true
+                                }
+                            }
+                        }
                     }
                     SilicaListView
                     {
@@ -305,6 +318,7 @@ BackgroundItem {
                     }
 
                 Component.onCompleted: {
+                    clearTrackList()
                     rotateIn.running = true
                     delegateButtons.visible = true
                     albumTracksListView.visible = true
@@ -312,7 +326,7 @@ BackgroundItem {
                     console.debug("Album backpage created")
                 }
                 Component.onDestruction: {
-                    clearTrackList()
+//                    clearTrackList()
                     console.debug("Album backpage destroyed")
                 }
             }

@@ -411,4 +411,11 @@ Page {
                 anchors.topMargin: 0
             }
         }]
+
+    onOrientationTransitionRunningChanged: {
+        if ( !orientationTransitionRunning ) {
+            playlistView.currentIndex = -1
+            playlistView.currentIndex = lastsongid
+        }
+    }
 }
