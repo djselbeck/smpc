@@ -7,10 +7,6 @@ ImageDatabase::ImageDatabase(QObject *parent) :
     QStringList drivers = QSqlDatabase::drivers();
     if ( !drivers.contains("QSQLITE") ) {
     } else {
-        // FIXME Workaround for old path and harbour compliance
-        QDir renameDir;
-        renameDir.rename("/home/nemo/.local/share/smpc/smpc","/home/nemo/.local/share/smpc/harbour-smpc");
-        renameDir.rename("/home/nemo/.local/share/smpc","/home/nemo/.local/share/harbour-smpc");
         // Check if database exists already otherwise create on
         QDir dirAccess;
         if ( !dirAccess.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation))) {

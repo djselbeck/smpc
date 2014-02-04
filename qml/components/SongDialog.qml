@@ -170,7 +170,7 @@ Dialog {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors {
             bottom: parent.bottom /*right:parent.right;left:parent.left*/
-            bottomMargin: quickControlPanel.visibleSize
+//            bottomMargin: quickControlPanel.visibleSize
         }
         IconButton {
             id: playButton
@@ -192,40 +192,40 @@ Dialog {
     onAccepted: {
         addSong(filename)
     }
-    states: [
-        State {
-            name: "portrait"
-            when: orientation === Orientation.Portrait
-            PropertyChanges {
-                target: buttonRow
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: songFlickable
-                anchors.bottomMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        },State {
-            name: "landscape"
-            when: orientation === Orientation.Landscape
-            PropertyChanges {
-                target: buttonRow
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: songFlickable
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        }]
+//    states: [
+//        State {
+//            name: "portrait"
+//            when: orientation === Orientation.Portrait
+//            PropertyChanges {
+//                target: buttonRow
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: songFlickable
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        },State {
+//            name: "landscape"
+//            when: orientation === Orientation.Landscape
+//            PropertyChanges {
+//                target: buttonRow
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: songFlickable
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        }]
 }

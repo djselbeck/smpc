@@ -510,9 +510,9 @@ Page {
 //            positionSlider.handleVisible = false;
 //            positionSlider.handleVisible = true;
 //            positionSlider.valueText = Qt.binding(function () {return formatLength(positionSlider.value);})
-            quickControlPanel.open = false
+            quickControlPanel.hideControl = true
         } else {
-            quickControlPanel.open = true
+            quickControlPanel.hideControl = false
             pageactive = false
         }
     }

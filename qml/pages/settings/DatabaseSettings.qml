@@ -16,7 +16,7 @@ Page {
         anchors {
             fill: parent
             topMargin: header.height
-            bottomMargin: quickControlPanel.visibleSize
+//            bottomMargin: quickControlPanel.visibleSize
         }
         contentHeight: mainColumn.height
         clip: true
@@ -157,6 +157,7 @@ Page {
         id: dialogComponent
         Dialog {
             id: confirmationDialog
+            allowedOrientations: Orientation.Portrait + Orientation.Landscape
             property int confirmationRole
             property string headerText
             property string questionText
@@ -251,40 +252,40 @@ Page {
         }
     }
 
-    states: [
-        State {
-            name: "portrait"
-            when: orientation === Orientation.Portrait
-            PropertyChanges {
-                target: mainFlickable
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: header.height
-            }
-            PropertyChanges {
-                target: header
-                anchors.bottomMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        },State {
-            name: "landscape"
-            when: orientation === Orientation.Landscape
-            PropertyChanges {
-                target: mainFlickable
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: header.height
-            }
-            PropertyChanges {
-                target: header
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        }]
+//    states: [
+//        State {
+//            name: "portrait"
+//            when: orientation === Orientation.Portrait
+//            PropertyChanges {
+//                target: mainFlickable
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: header.height
+//            }
+//            PropertyChanges {
+//                target: header
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        },State {
+//            name: "landscape"
+//            when: orientation === Orientation.Landscape
+//            PropertyChanges {
+//                target: mainFlickable
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: header.height
+//            }
+//            PropertyChanges {
+//                target: header
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        }]
 }

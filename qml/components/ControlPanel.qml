@@ -5,13 +5,15 @@ import Sailfish.Silica 1.0
 DockedPanel {
     id: controlPanel
 
-    dock: Dock.Bottom
-    open: true
+    open: !hideControl && !Qt.inputMethod.visible
     width: parent.width
     height: textColumn.height + Theme.paddingMedium
     contentHeight: height
 
+    property bool hideControl: false
+
     flickableDirection: Flickable.VerticalFlick
+
 
     Image {
             width: parent.width

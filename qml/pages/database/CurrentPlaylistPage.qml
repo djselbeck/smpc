@@ -21,7 +21,7 @@ Page {
         //        }
         anchors {
             fill: parent
-            bottomMargin: quickControlPanel.visibleSize
+//            bottomMargin: quickControlPanel.visibleSize
         }
 
         model: playlistModelVar
@@ -280,6 +280,7 @@ Page {
     // Delete question
     Dialog {
         id: deleteQuestionDialog
+        allowedOrientations: Orientation.Portrait + Orientation.Landscape
         Column {
             width: parent.width
             spacing: 10
@@ -389,28 +390,28 @@ Page {
         playPlaylistTrack(index)
     }
 
-    states: [
-        State {
-            name: "portrait"
-            when: orientation === Orientation.Portrait
-            PropertyChanges {
-                target: playlistView
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        },State {
-            name: "landscape"
-            when: orientation === Orientation.Landscape
-            PropertyChanges {
-                target: playlistView
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        }]
+//    states: [
+//        State {
+//            name: "portrait"
+//            when: orientation === Orientation.Portrait
+//            PropertyChanges {
+//                target: playlistView
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        },State {
+//            name: "landscape"
+//            when: orientation === Orientation.Landscape
+//            PropertyChanges {
+//                target: playlistView
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        }]
 
     onOrientationTransitionRunningChanged: {
         if ( !orientationTransitionRunning ) {

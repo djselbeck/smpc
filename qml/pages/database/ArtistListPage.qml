@@ -11,7 +11,7 @@ Page {
     Loader {
         id: gridViewLoader
         anchors.fill: parent
-        anchors.bottomMargin: quickControlPanel.visibleSize
+//        anchors.bottomMargin: quickControlPanel.visibleSize
         active: false
 
         sourceComponent: Component {
@@ -49,11 +49,11 @@ Page {
         id: showViewLoader
         active: false
         anchors.fill: parent
-        anchors.rightMargin: quickControlPanel.visibleSize
+//        anchors.rightMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
             PathView {
                 id: showView
-                property int itemHeight: height / (1.5)
+                property int itemHeight: height / (1.3)
                 property int itemWidth: itemHeight
                 onHeightChanged: {
                     console.debug("height: "+height)

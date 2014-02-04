@@ -15,7 +15,7 @@ Page {
         id: portraitLoader
         active: false
         anchors.fill: parent
-        anchors.bottomMargin: quickControlPanel.visibleSize
+//        anchors.bottomMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
 
             SilicaListView {
@@ -115,7 +115,7 @@ Page {
         id: landscapeLoader
         anchors {
             fill: parent
-            rightMargin: quickControlPanel.visibleSize
+//            rightMargin: quickControlPanel.visibleSize
         }
         active: false
         sourceComponent: Component {

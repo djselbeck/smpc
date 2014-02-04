@@ -97,9 +97,9 @@ Page {
     onStatusChanged: {
         if ((status === PageStatus.Activating)
                 || (status === PageStatus.Active)) {
-            quickControlPanel.open = false
+            quickControlPanel.hideControl = true
         } else {
-            quickControlPanel.open = true
+            quickControlPanel.hideControl = false
         }
     }
 }

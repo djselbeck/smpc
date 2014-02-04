@@ -32,7 +32,7 @@ Page {
         anchors {
             top: connectedLabel.bottom
             bottom: parent.bottom
-            bottomMargin: quickControlPanel.visibleSize
+//            bottomMargin: quickControlPanel.visibleSize
             right: parent.right
             left: parent.left
         }
@@ -165,54 +165,54 @@ Page {
             pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
         }
     }
-    states: [
-        State {
-            name: "portrait"
-            when: orientation === Orientation.Portrait
-            PropertyChanges {
-                target: mainList
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: connectedLabel
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: mainHeader
-                anchors.bottomMargin: quickControlPanel.visibleSize
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        },State {
-            name: "landscape"
-            when: orientation === Orientation.Landscape
-            PropertyChanges {
-                target: mainList
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: connectedLabel
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-            PropertyChanges {
-                target: mainHeader
-                anchors.bottomMargin: 0
-                anchors.rightMargin: quickControlPanel.visibleSize
-                anchors.leftMargin: 0
-                anchors.topMargin: 0
-            }
-        }]
+//    states: [
+//        State {
+//            name: "portrait"
+//            when: orientation === Orientation.Portrait
+//            PropertyChanges {
+//                target: mainList
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: connectedLabel
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: mainHeader
+//                anchors.bottomMargin: quickControlPanel.visibleSize
+//                anchors.rightMargin: 0
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        },State {
+//            name: "landscape"
+//            when: orientation === Orientation.Landscape
+//            PropertyChanges {
+//                target: mainList
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: connectedLabel
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//            PropertyChanges {
+//                target: mainHeader
+//                anchors.bottomMargin: 0
+//                anchors.rightMargin: quickControlPanel.visibleSize
+//                anchors.leftMargin: 0
+//                anchors.topMargin: 0
+//            }
+//        }]
 }
