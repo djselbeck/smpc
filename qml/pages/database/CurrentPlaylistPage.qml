@@ -270,7 +270,7 @@ Page {
                 }
                 OpacityRampEffect {
                     sourceItem: sectionImage
-                    direction: OpacityRamp.TopToBottom
+                    direction: OpacityRamp.BottomToTop
                 }
             }
             property: "section"

@@ -539,58 +539,6 @@ void Controller::updateStatus(status_struct status)
     }
     mLastPlaybackState = status.playing;
 
-
-    // OLD
-//    if(mCurrentSongID != status.id && (status.playing == NetworkAccess::PLAYING) )
-//    {
-//        if(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
-//                &&status.id>=0&&mCurrentSongID>=0){
-//            mPlaylist->setPlaying(mCurrentSongID,false);
-//            mPlaylist->setPlaying(status.id,true);
-//            //            playlist->get(currentsongid)->setPlaying(false);
-//            //            playlist->get(status.id)->setPlaying(true);
-
-//        }
-//        if(mCurrentSongID==-1&&(mPlaylist!=0&&mPlaylist->rowCount()>status.id&&mPlaylist->rowCount()>mCurrentSongID
-//                               &&status.id>=0))
-//        {
-//            mPlaylist->setPlaying(status.id,true);
-//        }
-
-//        // Check for cover and set URL if ready
-//        MpdAlbum tmpAlbum(this,status.album,status.artist);
-//        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
-//        emit requestCoverArt(tmpAlbum);
-
-//        MpdArtist tmpArtist(this,status.artist);
-//        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
-//        emit requestCoverArtistArt(tmpArtist);
-
-//    }
-//    if(mLastPlaybackState!=status.playing)
-//    {
-//        if(status.playing==NetworkAccess::STOP&&mPlaylist!=0&&mCurrentSongID>=0&&mCurrentSongID<mPlaylist->rowCount())
-//        {
-//            mPlaylist->setPlaying(mCurrentSongID,false);
-//            mCurrentSongID = -1;
-//        }
-//        // Check for cover and set URL if ready
-//        MpdAlbum tmpAlbum(this,status.album,status.artist);
-//        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
-//        emit requestCoverArt(tmpAlbum);
-
-//        MpdArtist tmpArtist(this,status.artist);
-//        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
-//        emit requestCoverArtistArt(tmpArtist);
-//    }
-//    mLastPlaybackState = status.playing;
-//    mCurrentSongID = status.id;
-//    if(mPlaylist==0)
-//        mCurrentSongID = -1;
-//    mVolume = status.volume;
-
-
-
     //FIXME clear up with status object or qml properties set through c++
     QStringList strings;
     strings.append(status.title);
@@ -626,6 +574,7 @@ void Controller::updateStatus(status_struct status)
     strings.append(QString::number(status.samplerate));
     strings.append(QString::number(status.bitdepth));
     strings.append(QString::number(status.channelcount));
+    strings.append(QString::number(status.playlistlength));
     emit sendStatus(strings);
 }
 
@@ -775,6 +724,7 @@ void Controller::deleteProfile(int index)
     mServerProfiles->removeAt(index);
     mQuickView->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
+    writeSettings();
 }
 
 void Controller::connectProfile(int index)

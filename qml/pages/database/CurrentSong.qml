@@ -266,7 +266,7 @@ Page {
                     }
 
                     Label {
-                        text: qsTr("nr.:")
+                        text: qsTr("track no.:")
                         color: Theme.secondaryColor
                         font.pixelSize: fontsizegrey
                         anchors {
@@ -281,6 +281,25 @@ Page {
                         wrapMode: "WordWrap"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
+
+
+                    Label {
+                        text: qsTr("playlist no.:")
+                        color: Theme.secondaryColor
+                        font.pixelSize: fontsizegrey
+                        anchors {
+                            left: parent.left
+                        }
+                    }
+                    Label {
+                        id: playlistnrText
+                        text: (lastsongid+1) + " / " + mPlaylistlength
+                        color: Theme.primaryColor
+                        font.pixelSize: fontsize
+                        wrapMode: "WordWrap"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
                     Label {
                         text: qsTr("bitrate:")
                         color: Theme.secondaryColor

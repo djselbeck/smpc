@@ -147,6 +147,7 @@ ApplicationWindow
     property int mVolume
     property int mLength:0.0
     property int mPosition:0
+    property int mPlaylistlength : 0;
     property bool mRepeat
     property bool mShuffle
     property bool mDebugEnabled
@@ -221,7 +222,7 @@ ApplicationWindow
             mAlbum=""
             mTitle=""
         }
-
+        mPlaylistlength = list[16];
         currentsongpage.audioproperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
     }
 
