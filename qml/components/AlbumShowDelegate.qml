@@ -238,8 +238,8 @@ BackgroundItem {
                                     right: parent.right
                                     left: parent.left
                                     verticalCenter: parent.verticalCenter
-                                    leftMargin: listPadding
-                                    rightMargin: listPadding
+                                    leftMargin: Theme.paddingSmall
+                                    rightMargin: Theme.paddingSmall
                                 }
 
                                 Row {
