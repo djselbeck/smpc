@@ -1138,7 +1138,7 @@
     <message>
         <location filename="qml/pages/settings/SettingsPage.qml" line="40"/>
         <source>gui settings</source>
-        <translation>Oberflächen Einstellungen</translation>
+        <translation>Oberflächeneinstellungen</translation>
     </message>
     <message>
         <location filename="qml/pages/settings/SettingsPage.qml" line="41"/>
