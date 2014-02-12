@@ -351,7 +351,7 @@ void Controller::connectSignals()
     connect(this,SIGNAL(setVolume(int)),mNetAccess,SLOT(setVolume(int)));
     connect(this,SIGNAL(requestConnect()),mNetAccess,SLOT(connectToHost()));
     connect(this,SIGNAL(requestDisconnect()),mNetAccess,SLOT(disconnect()));
-    connect(this,SIGNAL(serverProfilesUpdated()),item,SLOT(settingsModelUpdated()));
+//    connect(this,SIGNAL(serverProfilesUpdated()),item,SLOT(settingsModelUpdated()));
     connect(this,SIGNAL(setUpdateInterval(int)),mNetAccess,SLOT(setUpdateInterval(int)));
 
     connect(mNetAccess,SIGNAL(outputsReady(QList<QObject*>*)),this,SLOT(updateOutputsModel(QList<QObject*>*)));
@@ -633,7 +633,7 @@ void Controller::readSettings()
     mDownloadSize = dlSize;
     emit newDownloadSize(getLastFMArtSize(mDownloadSize));
     settings.endGroup();
-    mQuickView->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
+    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     if(mServerProfiles->length()==0)
     {
@@ -706,7 +706,7 @@ void Controller::newProfile(QVariant profile)
     }
     ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
     mServerProfiles->append(tempprofile);
-    mQuickView->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
+    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     writeSettings();
 }
@@ -730,6 +730,7 @@ void Controller::changeProfile(QVariant profile)
     else{
         mServerProfiles->at(i)->setAutoconnect(false);
     }
+    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     writeSettings();
 }
@@ -737,7 +738,7 @@ void Controller::changeProfile(QVariant profile)
 void Controller::deleteProfile(int index)
 {
     mServerProfiles->removeAt(index);
-    mQuickView->rootContext()->setContextProperty("settingsModel",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
+    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     writeSettings();
 }

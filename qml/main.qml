@@ -114,9 +114,6 @@ ApplicationWindow
     property string password;
     property Page currentsongpage;
     property Page playlistpage;
-    property Page serverList;
-    property Page artistspage;
-    property Page albumspage;
     property int listfontsize : 12;
     property int liststretch : 20;
     property int lastsongid : -1;
@@ -185,11 +182,11 @@ ApplicationWindow
         inputBlock.enabled = false
     }
 
-    function settingsModelUpdated()
-    {
-        console.debug("Got new server list");
-        serverList.listmodel = settingsModel;
-    }
+//    function settingsModelUpdated()
+//    {
+//        console.debug("Got new server list");
+//        serverList.listmodel = settingsModel;
+//    }
 
     function updateCurrentPlaying(list)
     {
@@ -323,11 +320,8 @@ ApplicationWindow
 
     // Create some permanent pages which should reside in memory for all the time
     Component.onCompleted:  {
-        var component = Qt.createComponent("pages/settings/ServerListPage.qml");
+        var component = Qt.createComponent("pages/database/CurrentPlaylistPage.qml");
         var object = component.createObject(mainWindow);
-        mainWindow.serverList = object;
-        component = Qt.createComponent("pages/database/CurrentPlaylistPage.qml");
-        object = component.createObject(mainWindow);
         mainWindow.playlistpage = object;
         pageStack.pushAttached(playlistpage);
         component = Qt.createComponent("pages/database/CurrentSong.qml");

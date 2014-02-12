@@ -5,15 +5,23 @@ import "../../components"
 Page
 {
     id: connectPage
-    property alias listmodel: connectListView.model;
     SilicaListView {
             id : connectListView
+            model: serverList;
             anchors.fill: parent
-            anchors.margins: Theme.paddingLarge
 //            anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width
             header: PageHeader {
                 title: qsTr("servers");
+            }
+            PullDownMenu {
+             MenuItem {
+                 text: qsTr("Add server")
+                 onClicked: {
+                     console.log("Clicked option add server")
+                     pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{newprofile:true});
+                 }
+             }
             }
             ScrollDecorator {}
             delegate: ListItem {

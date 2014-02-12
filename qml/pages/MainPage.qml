@@ -152,9 +152,7 @@ Page {
             if (connected)
                 filesClicked("/")
         } else if (ident == "connectto") {
-            pageStack.push(Qt.resolvedUrl("settings/ConnectServerPage.qml"), {
-                               listmodel: settingsModel
-                           })
+            pageStack.push(Qt.resolvedUrl("settings/ConnectServerPage.qml"))
         } else if (ident == "about") {
             aboutdialog.visible = true
             aboutdialog.version = versionstring

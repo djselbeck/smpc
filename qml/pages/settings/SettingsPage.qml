@@ -58,7 +58,7 @@ Page
             pageStack.push(Qt.resolvedUrl("AboutPage.qml"));
             break;
         case "servers" :
-            pageStack.push(serverList);
+            pageStack.push(Qt.resolvedUrl("ServerListPage.qml"));
             break;
         case "updatedb" :
             updateDB();

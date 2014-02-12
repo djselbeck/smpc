@@ -6,9 +6,9 @@ Page
 {
     id: serverListPage
     allowedOrientations: bothOrientation
-    property alias listmodel: serverListView.model;
     SilicaListView {
             id : serverListView
+            model: serverList;
             anchors.fill: parent
 //            anchors.bottomMargin: quickControlPanel.visibleSize
             clip: true
@@ -41,27 +41,4 @@ Page
                 }
             }
     }
-//    states: [
-//        State {
-//            name: "portrait"
-//            when: orientation === Orientation.Portrait
-//            PropertyChanges {
-//                target: serverListView
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        },State {
-//            name: "landscape"
-//            when: orientation === Orientation.Landscape
-//            PropertyChanges {
-//                target: serverListView
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        }]
-
 }
