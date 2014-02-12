@@ -143,5 +143,5 @@ MpdAlbum *AlbumModel::get(int index)
 {
     MpdAlbum *retAlbum = mEntries->at(index);
     QQmlEngine::setObjectOwnership(retAlbum,QQmlEngine::CppOwnership);
-    return mEntries->at(index);
+    return retAlbum;
 }

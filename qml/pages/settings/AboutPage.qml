@@ -13,13 +13,14 @@ Page {
             width: parent.width
             id: contentColumn
             PageHeader {
+                id: pageHeading
                 title: qsTr("about")
             }
             Image {
                 id: logo
                 source: "qrc:images/smpc-big.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: aboutPage.width - Theme.paddingLarge * 2
+                width: (orientation === Orientation.Portrait ? aboutPage.width - Theme.paddingLarge * 2 : (aboutPage.height-pageHeading.height-nameText.height-versionText.height))
                 height: width
                 cache: false
                 BackgroundItem {
@@ -35,11 +36,13 @@ Page {
             }
 
             Label {
+                id: nameText
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "SMPC"
                 font.pixelSize: Theme.fontSizeExtraLarge
             }
             Label {
+                id: versionText
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: qsTr("Version:") + " " + versionstring
                 font.pixelSize: Theme.fontSizeLarge

@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     src/mpd/artistmodel.cpp \
     src/mpd/albummodel.cpp \
     src/controller.cpp \
-    src/streamplayer.cpp
+    src/streamplayer.cpp \
+    src/mpd/serverprofilemodel.cpp
 
 
 # C++ headers
@@ -55,7 +56,8 @@ HEADERS += \
     src/mpd/artistmodel.h \
     src/mpd/albummodel.h \
     src/common.h \
-    src/streamplayer.h
+    src/streamplayer.h \
+    src/mpd/serverprofilemodel.h
 
 OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \ 

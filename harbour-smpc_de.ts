@@ -4,22 +4,22 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="qml/pages/settings/AboutPage.qml" line="16"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="17"/>
         <source>about</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/AboutPage.qml" line="44"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="47"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/AboutPage.qml" line="82"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="85"/>
         <source>Licensed under GPLv3</source>
         <translation>Lizenziert unter GPLv3</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/AboutPage.qml" line="92"/>
+        <location filename="qml/pages/settings/AboutPage.qml" line="95"/>
         <source>Fetches covers from last.fm</source>
         <translation>Lädt Coverbilder von last.fm</translation>
     </message>
@@ -267,19 +267,33 @@
 <context>
     <name>ConnectServerPage</name>
     <message>
-        <location filename="qml/pages/settings/ConnectServerPage.qml" line="15"/>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="16"/>
         <source>servers</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ConnectServerPage.qml" line="19"/>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="20"/>
         <source>Add server</source>
         <translation>Server hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ConnectServerPage.qml" line="48"/>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="47"/>
+        <source>removing serverprofile</source>
+        <translation>entferne Serverprofil</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="55"/>
+        <source>edit serverprofile</source>
+        <translation>Serverprofil bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/ConnectServerPage.qml" line="62"/>
+        <source>remove serverprofile</source>
+        <translation>Serverprofil entfernen</translation>
+    </message>
+    <message>
         <source>edit server profile</source>
-        <translation>Serverprofile bearbeiten</translation>
+        <translation type="obsolete">Serverprofile bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -756,54 +770,54 @@
 <context>
     <name>GUISettings</name>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="20"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="9"/>
         <source>GUI settings</source>
         <translation>Oberfläche</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="29"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="32"/>
         <source>album view:</source>
         <translation>Albendarstellung:</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="37"/>
-        <location filename="qml/pages/settings/GUISettings.qml" line="63"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="40"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="66"/>
         <source>Grid</source>
         <translation>Gitter</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="40"/>
-        <location filename="qml/pages/settings/GUISettings.qml" line="66"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="43"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="69"/>
         <source>List</source>
         <translation>Liste</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="55"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="58"/>
         <source>artist view:</source>
         <translation>Interpretendarstellung:</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="81"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="84"/>
         <source>list image size:</source>
         <translation>Listenbildgröße:</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="89"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="92"/>
         <source>disabled</source>
         <translation>deaktiviert</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="92"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="95"/>
         <source>small</source>
         <translation>klein</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="95"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="98"/>
         <source>medium</source>
         <translation>mittel</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/GUISettings.qml" line="98"/>
+        <location filename="qml/pages/settings/GUISettings.qml" line="101"/>
         <source>large</source>
         <translation>groß</translation>
     </message>
@@ -1126,6 +1140,16 @@
         <location filename="qml/pages/settings/ServerListPage.qml" line="22"/>
         <source>Add server</source>
         <translation>Server hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/ServerListPage.qml" line="42"/>
+        <source>removing serverprofile</source>
+        <translation>entferne Serverprofil</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/settings/ServerListPage.qml" line="48"/>
+        <source>remove serverprofile</source>
+        <translation>Serverprofil entfernen</translation>
     </message>
 </context>
 <context>

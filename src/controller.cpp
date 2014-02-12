@@ -59,9 +59,9 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     mNetAccess->setQmlThread(viewer->thread());
     //Start auto connect
-    for(int i = 0;i<mServerProfiles->length();i++)
+    for(int i = 0;i<mServerProfiles->rowCount();i++)
     {
-        if(mServerProfiles->at(i)->getAutoconnect())
+        if(mServerProfiles->get(i)->getAutoconnect())
         {
             connectProfile(i);
             break;
@@ -594,12 +594,11 @@ void Controller::requestFilePage(QString path)
 void Controller::readSettings()
 {
     if ( mServerProfiles ) {
-        mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
-        qDeleteAll(*mServerProfiles);
+        mQuickView->rootContext()->setContextProperty("serverList",0);
         delete(mServerProfiles);
         mServerProfiles = 0;
     }
-    mServerProfiles = new QList< ServerProfile*> ();
+    QList<ServerProfile*> *tmpList = new QList< ServerProfile*> ();
     QSettings settings;
     settings.beginGroup("server_properties");
     int size = settings.beginReadArray("profiles");
@@ -614,7 +613,7 @@ void Controller::readSettings()
         name = settings.value("profilename").toString();
         port = settings.value("port").toUInt();
         autoconnect = settings.value("default").toBool();
-        mServerProfiles->append(new ServerProfile(hostname,password,port,name,autoconnect));
+        tmpList->append(new ServerProfile(hostname,password,port,name,autoconnect));
     }
     settings.endArray();
     settings.endGroup();
@@ -634,12 +633,10 @@ void Controller::readSettings()
     mDownloadSize = dlSize;
     emit newDownloadSize(getLastFMArtSize(mDownloadSize));
     settings.endGroup();
-    foreach (ServerProfile *profile, *mServerProfiles) {
-        QQmlEngine::setObjectOwnership(profile,QQmlEngine::CppOwnership);
-    }
-    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
+    mServerProfiles = new ServerProfileModel(tmpList,this);
+    mQuickView->rootContext()->setContextProperty("serverList",mServerProfiles);
     emit serverProfilesUpdated();
-    if(mServerProfiles->length()==0)
+    if(mServerProfiles->rowCount() ==0)
     {
         emit showWelcome();
     }
@@ -648,16 +645,17 @@ void Controller::readSettings()
 void Controller::writeSettings()
 {
     QSettings settings;
+    settings.clear();
     settings.beginGroup("server_properties");
     settings.beginWriteArray("profiles");
-    for(int i=0;i<mServerProfiles->length();i++)
+    for(int i=0;i<mServerProfiles->rowCount();i++)
     {
         settings.setArrayIndex(i);
-        settings.setValue("hostname",mServerProfiles->at(i)->getHostname());
-        settings.setValue("password",mServerProfiles->at(i)->getPassword());
-        settings.setValue("profilename",mServerProfiles->at(i)->getName());
-        settings.setValue("port",mServerProfiles->at(i)->getPort());
-        settings.setValue("default",mServerProfiles->at(i)->getAutoconnect());
+        settings.setValue("hostname",mServerProfiles->get(i)->getHostname());
+        settings.setValue("password",mServerProfiles->get(i)->getPassword());
+        settings.setValue("profilename",mServerProfiles->get(i)->getName());
+        settings.setValue("port",mServerProfiles->get(i)->getPort());
+        settings.setValue("default",mServerProfiles->get(i)->getAutoconnect());
     }
     settings.endArray();
     settings.endGroup();
@@ -699,9 +697,10 @@ void Controller::newProfile(QVariant profile)
     bool autoconnect;
     if(strings.at(5).toInt()==1) {
         //Check for other autoconnects
-        for(int j = 0; j<mServerProfiles->length();j++)
+        for(int j = 0; j<mServerProfiles->rowCount();j++)
         {
-            mServerProfiles->at(j)->setAutoconnect(false);
+            mServerProfiles->get(j)->setAutoconnect(false);
+            mServerProfiles->notifyChanged(j);
         }
         autoconnect = true;
     }
@@ -711,7 +710,6 @@ void Controller::newProfile(QVariant profile)
     ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
     QQmlEngine::setObjectOwnership(tempprofile,QQmlEngine::CppOwnership);
     mServerProfiles->append(tempprofile);
-    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     writeSettings();
 }
@@ -720,37 +718,36 @@ void Controller::changeProfile(QVariant profile)
 {
     QStringList strings = profile.toStringList();
     int i = strings.at(0).toInt();
-    mServerProfiles->at(i)->setName(strings[1]);
-    mServerProfiles->at(i)->setHostname(strings[2]);
-    mServerProfiles->at(i)->setPassword(strings[3]);
-    mServerProfiles->at(i)->setPort(strings.at(4).toInt());
+    mServerProfiles->get(i)->setName(strings[1]);
+    mServerProfiles->get(i)->setHostname(strings[2]);
+    mServerProfiles->get(i)->setPassword(strings[3]);
+    mServerProfiles->get(i)->setPort(strings.at(4).toInt());
+    mServerProfiles->notifyChanged(i);
     if(strings.at(5).toInt()==1) {
         //Check for other autoconnects
-        for(int j = 0; j<mServerProfiles->length();j++)
+        for(int j = 0; j<mServerProfiles->rowCount();j++)
         {
-            mServerProfiles->at(j)->setAutoconnect(false);
+            mServerProfiles->get(j)->setAutoconnect(false);
+            mServerProfiles->notifyChanged(j);
         }
-        mServerProfiles->at(i)->setAutoconnect(true);
+        mServerProfiles->get(i)->setAutoconnect(true);
     }
     else{
-        mServerProfiles->at(i)->setAutoconnect(false);
+        mServerProfiles->get(i)->setAutoconnect(false);
     }
-    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
-    emit serverProfilesUpdated();
+    mServerProfiles->notifyChanged(i);
     writeSettings();
 }
 
 void Controller::deleteProfile(int index)
 {
-    mServerProfiles->removeAt(index);
-    mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
-    emit serverProfilesUpdated();
+    mServerProfiles->remove(index);
     writeSettings();
 }
 
 void Controller::connectProfile(int index)
 {
-    ServerProfile *profile = mServerProfiles->at(index);
+    ServerProfile *profile = mServerProfiles->get(index);
     setHostname(profile->getHostname());
     setPort(profile->getPort());
     setPassword(profile->getPassword());

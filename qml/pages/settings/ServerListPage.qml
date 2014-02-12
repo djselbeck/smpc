@@ -26,7 +26,8 @@ Page
                  }
              }
             }
-            delegate: BackgroundItem {
+            delegate: ListItem {
+                contentHeight: Theme.itemSizeSmall
                 Label {
                     anchors {
                         horizontalCenter: parent.horizontalCenter
@@ -36,6 +37,21 @@ Page
                     }
                     text: name
                 }
+
+                function removeProfileRemorse() {
+                    remorseAction(qsTr("removing serverprofile"), function () {
+                        deleteProfile(index);
+                    }, 3000)
+                }
+                menu: ContextMenu {
+                    MenuItem {
+                        text: qsTr("remove serverprofile")
+                        onClicked: {
+                            removeProfileRemorse();
+                        }
+                    }
+                }
+
                 onClicked: {
                     pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
                 }

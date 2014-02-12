@@ -42,13 +42,26 @@ Page
                     connectProfile(index);
                     pageStack.pop();
                 }
+
+                function removeProfileRemorse() {
+                    remorseAction(qsTr("removing serverprofile"), function () {
+                        deleteProfile(index);
+                    }, 3000)
+                }
                 menu: ContextMenu {
                     id: contextMenu
                     MenuItem {
                         id: editItem
-                        text: qsTr("edit server profile")
+                        text: qsTr("edit serverprofile")
                         onClicked: {
                             pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
+                        }
+                    }
+                    MenuItem {
+                        id: removeItem
+                        text: qsTr("remove serverprofile")
+                        onClicked: {
+                            removeProfileRemorse();
                         }
                     }
                 }

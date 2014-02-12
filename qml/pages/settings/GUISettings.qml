@@ -3,12 +3,22 @@ import Sailfish.Silica 1.0
 
 Page {
     id: guisettingsPage
-    anchors.fill: parent
+    allowedOrientations: bothOrientation
+    PageHeader {
+        id: header
+        title: qsTr("GUI settings")
+        anchors {
+            right: parent.right
+            left: parent.left
+        }
+    }
+
     SilicaFlickable
     {
         id: mainFlickable
         anchors.fill: parent
         contentHeight: mainColumn.height
+        anchors.topMargin: header.height
         Column {
             id:mainColumn
             anchors {
@@ -16,13 +26,6 @@ Page {
                 right: parent.right
             }
 
-            PageHeader {
-                title: qsTr("GUI settings")
-                anchors {
-                    right: parent.right
-                    left: parent.left
-                }
-            }
 
             ComboBox {
                 id: albumViewCB

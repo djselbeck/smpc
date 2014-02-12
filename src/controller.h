@@ -24,6 +24,7 @@
 #include <mpd/albummodel.h>
 #include <mpd/filemodel.h>
 #include <mpd/playlistmodel.h>
+#include <mpd/serverprofilemodel.h>
 
 #include <streamplayer.h>
 
@@ -99,7 +100,7 @@ private:
     int mLastPlaybackState;
     QThread *mNetworkThread;
     QThread *mDBThread;
-    QList<ServerProfile*> *mServerProfiles;
+    ServerProfileModel *mServerProfiles;
     QTimer volDecTimer,volIncTimer;
     AlbumModel *mOldAlbumModel;
     ArtistModel *mOldArtistModel;

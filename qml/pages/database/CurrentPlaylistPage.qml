@@ -258,7 +258,7 @@ Page {
                     asynchronous: true
                     sourceSize.height: height
                     sourceSize.width: width
-
+                    fillMode: Image.PreserveAspectFit
                     source: "image://imagedbprovider/album/" + artist + "/" + album
                     Image
                     {
@@ -373,30 +373,6 @@ Page {
     function parseClickedPlaylist(index) {
         playPlaylistTrack(index)
     }
-
-//    states: [
-//        State {
-//            name: "portrait"
-//            when: orientation === Orientation.Portrait
-//            PropertyChanges {
-//                target: playlistView
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        },State {
-//            name: "landscape"
-//            when: orientation === Orientation.Landscape
-//            PropertyChanges {
-//                target: playlistView
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        }]
-
     onOrientationTransitionRunningChanged: {
         if ( !orientationTransitionRunning ) {
             playlistView.currentIndex = -1
