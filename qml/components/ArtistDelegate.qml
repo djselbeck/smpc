@@ -69,7 +69,7 @@ Component {
         //            offset: 0.65
         //        }
         onClicked: {
-            artistListView.currentIndex = index
+            artistGridView.currentIndex = index
             artistClicked(artist)
             pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});
         }
