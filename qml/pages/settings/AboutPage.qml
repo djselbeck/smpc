@@ -20,7 +20,7 @@ Page {
                 id: logo
                 source: "qrc:images/smpc-big.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: (orientation === Orientation.Portrait ? aboutPage.width - Theme.paddingLarge * 2 : (aboutPage.height-pageHeading.height-nameText.height-versionText.height))
+                width: (orientation === Orientation.Portrait ? aboutPage.width - Theme.paddingLarge * 5 : (aboutPage.height-pageHeading.height-nameText.height-versionText.height))
                 height: width
                 cache: false
                 BackgroundItem {
@@ -49,7 +49,7 @@ Page {
             }
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Homepage"
+                text: "source code"
                 onClicked: {
                     Qt.openUrlExternally('https://github.com/djselbeck/smpc')
                 }
@@ -77,6 +77,13 @@ Page {
                 Label {
                     text: " 2013-2014 by Hendrik Borghorst"
                     font.pixelSize: Theme.fontSizeMedium
+                }
+            }
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "@djselbeck"
+                onClicked: {
+                    Qt.openUrlExternally('https://twitter.com/djselbeck')
                 }
             }
 
