@@ -13,8 +13,8 @@ Page {
         id: gridViewLoader
         active: false
         anchors.fill: albumslistPage
-//        anchors.bottomMargin: quickControlPanel.visibleSize
 
+        //        anchors.bottomMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
             SilicaGridView {
                 id: albumGridView
@@ -23,20 +23,25 @@ Page {
                 cellWidth: width / 2
                 cellHeight: cellWidth
                 SectionScroller {
-                    listview: albumGridView
+                    gridView: albumGridView
+                    landscape: false
                     sectionPropertyName: "sectionprop"
                 }
                 populate: Transition {
-                    NumberAnimation { properties: "x"; from:albumGridView.width*2 ;duration: populateDuration }
+                    NumberAnimation {
+                        properties: "x"
+                        from: albumGridView.width * 2
+                        duration: populateDuration
+                    }
                 }
                 ScrollDecorator {
                 }
 
-                                header: Heading {
-                                    text: artistname !== "" ? artistname : qsTr("albums")
-                                    width: parent.width
-                                    height: Theme.itemSizeMedium
-                                }
+                header: Heading {
+                    text: artistname !== "" ? artistname : qsTr("albums")
+                    width: parent.width
+                    height: Theme.itemSizeMedium
+                }
                 PullDownMenu {
                     enabled: artistname !== ""
                     MenuItem {
@@ -59,10 +64,68 @@ Page {
     }
 
     Loader {
+        id: listviewLoader
+        active: false
+        anchors.fill: albumslistPage
+
+        //        anchors.bottomMargin: quickControlPanel.visibleSize
+        sourceComponent: Component {
+            SilicaListView {
+                id: listView
+                clip: true
+                model: albumsModel
+                SectionScroller {
+                    listview: listView
+                    landscape: false
+                    sectionPropertyName: "sectionprop"
+                }
+                populate: Transition {
+                    NumberAnimation {
+                        properties: "x"
+                        from: listView.width * 2
+                        duration: populateDuration
+                    }
+                }
+                ScrollDecorator {
+                }
+
+                header: PageHeader {
+                    title: artistname !== "" ? artistname : qsTr("albums")
+                    width: parent.width
+                    height: Theme.itemSizeMedium
+                }
+                PullDownMenu {
+                    enabled: artistname !== ""
+                    MenuItem {
+                        text: qsTr("add albums")
+                        onClicked: {
+                            addArtist(artistname)
+                        }
+                    }
+                    MenuItem {
+                        text: qsTr("play albums")
+                        onClicked: {
+                            playArtist(artistname)
+                        }
+                    }
+                }
+                delegate: AlbumListDelegate {
+                }
+                section {
+                    property: 'sectionprop'
+                    delegate: SectionHeader {
+                        text: section
+                    }
+                }
+            }
+        }
+    }
+
+    Loader {
         id: showViewLoader
         active: false
         anchors.fill: parent
-//        anchors.rightMargin: quickControlPanel.visibleSize
+        //        anchors.rightMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
             PathView {
                 id: showView
@@ -72,13 +135,11 @@ Page {
 
                 SectionScroller {
                     pathview: showView
+                    landscape: true
                     sectionPropertyName: "sectionprop"
                     z: 120
                     interactive: showView.interactive
                 }
-
-
-
 
                 cacheItemCount: pathItemCount + 2
                 pathItemCount: 12 // width/itemWidth
@@ -175,47 +236,57 @@ Page {
     }
 
     onStatusChanged: {
-        if ( status === PageStatus.Activating ) {
-            if (!orientationTransitionRunning && orientation != lastOrientation) {
-                gridViewLoader.active = false;
-                showViewLoader.active = false;
+        if (status === PageStatus.Activating) {
+            if (!orientationTransitionRunning
+                    && orientation != lastOrientation) {
+                gridViewLoader.active = false
+                listviewLoader.active = false
+                showViewLoader.active = false
                 if (orientation === Orientation.Portrait) {
                     console.debug("activating page with portrait grid view")
-                    gridViewLoader.active = true
+                    if (albumView === 0) {
+                        gridViewLoader.active = true
+                    } else if (albumView === 1) {
+                        listviewLoader.active = true
+                    }
                 } else if (orientation === Orientation.Landscape) {
                     console.debug("activating page landscape showview")
                     showViewLoader.active = true
                 }
             }
         }
-        if ( status === PageStatus.Deactivating ) {
-            lastOrientation  = orientation
+        if (status === PageStatus.Deactivating) {
+            lastOrientation = orientation
         }
 
-        if (status === PageStatus.Deactivating && typeof(gridViewLoader.item) != undefined  && gridViewLoader.item ) {
+        if (status === PageStatus.Deactivating
+                && typeof (gridViewLoader.item) != undefined
+                && gridViewLoader.item) {
             lastIndex = gridViewLoader.item.currentIndex
         } else if (status === PageStatus.Activating) {
-            if (typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
-                gridViewLoader.item.positionViewAtIndex(lastIndex, GridView.Center)
+            if (typeof (gridViewLoader.item) != undefined
+                    && gridViewLoader.item) {
+                gridViewLoader.item.positionViewAtIndex(lastIndex,
+                                                        GridView.Center)
             }
             requestArtistInfo(artistname)
+        } else if (status === PageStatus.Active) {
+            if (artistname != "")
+                pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"), {
+                                           artistname: artistname
+                                       })
         }
-        else if (status === PageStatus.Active) {
-                            if (artistname != "")
-                                pageStack.pushAttached(Qt.resolvedUrl("ArtistInfoPage.qml"), {
-                                                           artistname: artistname
-                                                       })
-        }
-
     }
-
-
 
     onOrientationTransitionRunningChanged: {
         if (!orientationTransitionRunning) {
             if (orientation === Orientation.Portrait) {
                 console.debug("activating portrait grid view")
-                gridViewLoader.active = true
+                if (albumView === 0) {
+                    gridViewLoader.active = true
+                } else if (albumView === 1) {
+                    listviewLoader.active = true
+                }
             } else if (orientation === Orientation.Landscape) {
                 console.debug("activating landscape showview")
                 showViewLoader.active = true
@@ -223,14 +294,13 @@ Page {
         } else {
             console.debug("deactivating loaders")
             gridViewLoader.active = false
+            listviewLoader.active = false
             showViewLoader.active = false
             // Deactivating components
         }
     }
 
-
     Component.onDestruction: {
         clearAlbumList()
     }
-
 }

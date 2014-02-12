@@ -11,23 +11,28 @@ Page {
     Loader {
         id: gridViewLoader
         anchors.fill: parent
-//        anchors.bottomMargin: quickControlPanel.visibleSize
+        //        anchors.bottomMargin: quickControlPanel.visibleSize
         active: false
 
         sourceComponent: Component {
             SilicaGridView {
-                id: artistListView
+                id: artistGridView
 
                 model: artistsModel
                 clip: true
-                cellWidth: width/2
+                cellWidth: width / 2
                 cellHeight: cellWidth
                 populate: Transition {
-                    NumberAnimation { properties: "x"; from:artistListView.width*2 ;duration: populateDuration }
+                    NumberAnimation {
+                        properties: "x"
+                        from: artistGridView.width * 2
+                        duration: populateDuration
+                    }
                 }
 
                 SectionScroller {
-                    listview: artistListView
+                    gridView: artistGridView
+                    landscape: false
                     sectionPropertyName: "sectionprop"
                 }
                 ScrollDecorator {
@@ -46,17 +51,64 @@ Page {
     }
 
     Loader {
+        id: listViewLoader
+        anchors.fill: parent
+        //        anchors.bottomMargin: quickControlPanel.visibleSize
+        active: false
+
+        sourceComponent: Component {
+            SilicaListView {
+                id: artistListView
+
+                model: artistsModel
+                clip: true
+                populate: Transition {
+                    NumberAnimation {
+                        properties: "x"
+                        from: artistListView.width * 2
+                        duration: populateDuration
+                    }
+                }
+
+                SectionScroller {
+                    listview: artistListView
+                    landscape: false
+                    sectionPropertyName: "sectionprop"
+                }
+                ScrollDecorator {
+                }
+
+                header: PageHeader {
+                    title: qsTr("artists")
+                    width: parent.width
+                    height: Theme.itemSizeMedium
+                }
+
+                delegate: ArtistListDelegate {
+                }
+
+                section {
+                    property: 'sectionprop'
+                    delegate: SectionHeader {
+                        text: section
+                    }
+                }
+            }
+        }
+    }
+
+    Loader {
         id: showViewLoader
         active: false
         anchors.fill: parent
-//        anchors.rightMargin: quickControlPanel.visibleSize
+        //        anchors.rightMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
             PathView {
                 id: showView
                 property int itemHeight: height / (1.3)
                 property int itemWidth: itemHeight
                 onHeightChanged: {
-                    console.debug("height: "+height)
+                    console.debug("height: " + height)
                 }
                 onWidthChanged: {
                     console.debug("width: " + width)
@@ -66,11 +118,10 @@ Page {
                 SectionScroller {
                     pathview: showView
                     sectionPropertyName: "sectionprop"
+                    landscape: true
                     z: 120
                     interactive: showView.interactive
                 }
-
-
 
                 cacheItemCount: pathItemCount + 2
                 pathItemCount: 12 // width/itemWidth
@@ -166,25 +217,33 @@ Page {
     }
 
     onStatusChanged: {
-        if ( status === PageStatus.Activating ) {
-            if (!orientationTransitionRunning && orientation != lastOrientation) {
-                gridViewLoader.active = false;
-                showViewLoader.active = false;
+        if (status === PageStatus.Activating) {
+            if (!orientationTransitionRunning
+                    && orientation != lastOrientation) {
+                gridViewLoader.active = false
+                showViewLoader.active = false
                 if (orientation === Orientation.Portrait) {
                     console.debug("activating page with portrait grid view")
-                    gridViewLoader.active = true
+                    if (artistView === 0) {
+                        gridViewLoader.active = true
+                    } else if (artistView === 1) {
+                        listViewLoader.active = true
+                    }
                 } else if (orientation === Orientation.Landscape) {
                     console.debug("activating page landscape showview")
                     showViewLoader.active = true
                 }
             }
         }
-        if (status === PageStatus.Deactivating ) {
-            if (typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
+        if (status === PageStatus.Deactivating) {
+            if (typeof (gridViewLoader.item) != undefined
+                    && gridViewLoader.item) {
                 lastIndex = gridViewLoader.item.currentIndex
             }
-            lastOrientation  = orientation
-        } else if (status === PageStatus.Activating && typeof(gridViewLoader.item) != undefined && gridViewLoader.item) {
+            lastOrientation = orientation
+        } else if (status === PageStatus.Activating
+                   && typeof (gridViewLoader.item) != undefined
+                   && gridViewLoader.item) {
             gridViewLoader.item.positionViewAtIndex(lastIndex, GridView.Center)
         }
     }
@@ -193,7 +252,11 @@ Page {
         if (!orientationTransitionRunning) {
             if (orientation === Orientation.Portrait) {
                 console.debug("activating portrait grid view")
-                gridViewLoader.active = true
+                if (artistView === 0) {
+                    gridViewLoader.active = true
+                } else if (artistView === 1) {
+                    listViewLoader.active = true
+                }
             } else if (orientation === Orientation.Landscape) {
                 console.debug("activating landscape showview")
                 showViewLoader.active = true
@@ -202,6 +265,7 @@ Page {
             console.debug("deactivating loaders")
             gridViewLoader.active = false
             showViewLoader.active = false
+            listViewLoader.active = false
             // Deactivating components
         }
     }
@@ -210,5 +274,4 @@ Page {
         //artistListView.model = null
         clearArtistList()
     }
-
 }

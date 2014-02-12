@@ -103,6 +103,10 @@ ApplicationWindow
     // Signals change in download-size preference
     signal newDownloadSize(int size)
 
+    // Signals changed settings key
+    // [settingkey,value]
+    signal newSettingKey(variant setting);
+
     // Propertys of application
     property string hostname;
 

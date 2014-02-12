@@ -415,6 +415,9 @@ void Controller::connectSignals()
     // Received new Download size from database GUI settings
     connect(item,SIGNAL(newDownloadSize(int)),this,SLOT(receiveDownloadSize(int)));
     connect(this,SIGNAL(newDownloadSize(QString)),mImgDB,SLOT(setDownloadSize(QString)));
+
+    // Receive GUI settings here
+    connect(item,SIGNAL(newSettingKey(QVariant)),this,SLOT(receiveSettingKey(QVariant)));
 }
 
 void Controller::setPassword(QString password)
@@ -617,6 +620,15 @@ void Controller::readSettings()
 
     settings.beginGroup("general_properties");
     int dlSize = settings.value("download_size",LASTFM_EXTRALARGE).toInt();
+    mArtistViewSetting = settings.value("artist_view",0).toInt();
+    mAlbumViewSetting = settings.value("album_view",0).toInt();
+    mListImageSize = settings.value("list_image_size",0).toInt();
+
+    mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
+    mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
+    mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
+
+
     mQuickView->rootContext()->setContextProperty("downloadSize",dlSize);
     mDownloadSize = dlSize;
     emit newDownloadSize(getLastFMArtSize(mDownloadSize));
@@ -647,6 +659,9 @@ void Controller::writeSettings()
     settings.endGroup();
     settings.beginGroup("general_properties");
     settings.setValue("download_size",mDownloadSize);
+    settings.setValue("artist_view",mArtistViewSetting);
+    settings.setValue("album_view",mAlbumViewSetting);
+    settings.setValue("list_image_size",mListImageSize);
     settings.endGroup();
 }
 
@@ -959,6 +974,25 @@ void Controller::receiveDownloadSize(int size)
     mDownloadSize = size;
     mQuickView->rootContext()->setContextProperty("downloadSize",size);
     emit newDownloadSize(getLastFMArtSize(size));
+    writeSettings();
+}
+
+void Controller::receiveSettingKey(QVariant setting)
+{
+    QStringList settings = setting.toStringList();
+    if ( settings.length() == 2 ) {
+        if ( settings.at(0) == "albumView" ) {
+            mAlbumViewSetting = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
+        } else if ( settings.at(0) == "artistView" ) {
+            mArtistViewSetting = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
+        } else if ( settings.at(0) == "listImageSize" ) {
+            mListImageSize = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
+        }
+
+    }
     writeSettings();
 }
 

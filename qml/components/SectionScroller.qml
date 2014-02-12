@@ -7,10 +7,11 @@ Item {
 //    height: parent.height
 //    width: parent.width/7
 //    x: parent.x+parent.width-width;
-    property GridView listview;
+    property ListView listview;
+    property GridView gridView;
     property PathView pathview;
     property bool interactive:true
-    property int listviewCache
+    property int cacheCount: 0
     property string sectionPropertyName
     property bool landscape:false
     Rectangle {
@@ -22,10 +23,10 @@ Item {
 
     onListviewChanged: {
         if(listview && listview.model) {
-            listviewCache = listview.cacheBuffer
+            cacheCount = listview.cacheBuffer
             Sections.fillSections(listview,scroller.sectionPropertyName);
         } else if(listview) {
-            listviewCache = listview.cacheBuffer
+            cacheCount = listview.cacheBuffer
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview,scroller.sectionPropertyName);
             });
@@ -39,6 +40,19 @@ Item {
         } else if(pathview) {
             pathview.modelChanged.connect( function() {
                 Sections.fillSections(pathview,scroller.sectionPropertyName);
+            });
+
+        }
+    }
+
+    onGridViewChanged: {
+        if(gridView && gridView.model) {
+            cacheCount = gridView.cacheBuffer
+            Sections.fillSections(gridView,scroller.sectionPropertyName);
+        } else if(gridView) {
+            cacheCount = gridView.cacheBuffer
+            gridView.modelChanged.connect( function() {
+                Sections.fillSections(gridView,scroller.sectionPropertyName);
             });
 
         }
@@ -78,17 +92,23 @@ Item {
                 secDialog.color = Theme.rgba(Theme.highlightBackgroundColor,0.5);
                 secDialog.opacity = 1.0;
                 //secDialog.visible = true;
-                if ( typeof( listview ) != undefined) {
-                    listviewCache = listview.cacheBuffer
+                if ( listview && typeof( listview ) != undefined) {
+                    cacheCount = listview.cacheBuffer
                     listview.cacheBuffer = -1
-                } else if ( typeof( pathview ) != undefined) {
-                    listviewCache = pathview.cacheBuffer
+                }
+                else if ( gridView && typeof( gridView ) != undefined) {
+                    cacheCount = gridView.cacheBuffer
+                    gridView.cacheBuffer = -1
+                } else if ( pathview && typeof( pathview ) != undefined) {
+                    cacheCount = pathview.cacheBuffer
                 }
             } else {
                 secDialog.opacity = 0.0;
                 //secDialog.visible = false;
-                if ( typeof( listview ) != undefined) {
-                    listview.cacheBuffer = listviewCache
+                if ( listview && typeof( listview ) != undefined) {
+                    listview.cacheBuffer = cacheCount
+                } else if ( gridView && typeof( gridView ) != undefined) {
+                    gridView.cacheBuffer = cacheCount
                 } else if ( typeof( pathview ) != undefined) {
                 }
             }
@@ -98,12 +118,14 @@ Item {
                // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
                 var relPos = (mouseY/height)*100;
                 var item = Sections.getSectionNameAtRelativePos(relPos);
-                if ( item) {
+                if ( item )  {
                     secDialog.text = item.value;
                     if ( listview )
-                        listview.positionViewAtIndex(item.index,GridView.Beginning);
-                    if ( pathview )
+                        listview.positionViewAtIndex(item.index,ListView.Beginning);
+                    else if ( pathview )
                         pathview.positionViewAtIndex(item.index,PathView.Center);
+                    else if ( gridView )
+                        gridView.positionViewAtIndex(item.index,GridView.Beginning);
                 }
             }
         }
@@ -115,10 +137,11 @@ Item {
                 if ( item ) {
                     secDialog.text = item.value;
                     if ( listview )
-                        listview.positionViewAtIndex(item.index,GridView.Beginning);
-                    if ( pathview ) {
+                        listview.positionViewAtIndex(item.index,ListView.Beginning);
+                    else if ( pathview )
                         pathview.positionViewAtIndex(item.index,PathView.Center);
-                    }
+                    else if ( gridView )
+                        gridView.positionViewAtIndex(item.index,GridView.Beginning);
                 }
             }
         }
@@ -127,6 +150,7 @@ Item {
     states: [
         State {
             name: "landscape"
+            when: landscape
             PropertyChanges {
                 target: scroller
                 width: parent.width
@@ -145,6 +169,7 @@ Item {
         },
         State {
             name: "portrait"
+            when: !landscape
             PropertyChanges {
                 target: scroller
                 height: parent.height
@@ -162,6 +187,7 @@ Item {
             }
         }
     ]
-    state: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted  ) ? "portrait" : "landscape"
-
+    onStateChanged: {
+        console.debug("State:" +  state);
+    }
 }

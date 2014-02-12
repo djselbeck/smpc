@@ -119,6 +119,11 @@ private:
     int mDownloadSize;
     QString getLastFMArtSize(int index);
 
+    // GUI Settings
+    int mAlbumViewSetting;
+    int mArtistViewSetting;
+    int mListImageSize;
+
     // Streaming playback
     //StreamPlayer *mStreamPlayer;
 
@@ -186,6 +191,8 @@ private slots:
     void setAlbumWikiInfo(QString info);
 
     void receiveDownloadSize(int);
+    void receiveSettingKey(QVariant setting);
+
     void trimCache();
 
 };
