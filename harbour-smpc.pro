@@ -155,6 +155,9 @@ SOURCES += \
     qml/components/AlbumDelegate.qml \
     qml/cover/CoverPage.qml \
     qml/components/AlbumShowDelegate.qml \
-    qml/components/ArtistShowDelegate.qml
+    qml/components/ArtistShowDelegate.qml \
+    qml/pages/settings/GUISettings.qml \
+    qml/components/AlbumListDelegate.qml \
+    qml/components/ArtistListDelegate.qml
 }
 
