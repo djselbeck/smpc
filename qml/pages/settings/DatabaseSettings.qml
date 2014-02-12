@@ -23,8 +23,9 @@ Page {
 
         Column {
             id: mainColumn
-            width: parent.width
             anchors {
+                right: parent.right
+                left: parent.left
                 leftMargin: listPadding
                 rightMargin: listPadding
             }
