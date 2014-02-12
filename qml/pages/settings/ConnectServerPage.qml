@@ -5,6 +5,7 @@ import "../../components"
 Page
 {
     id: connectPage
+    allowedOrientations: bothOrientation
     SilicaListView {
             id : connectListView
             model: serverList;
@@ -25,7 +26,7 @@ Page
             }
             ScrollDecorator {}
             delegate: ListItem {
-                height: Theme.itemSizeSmall
+                contentHeight: Theme.itemSizeSmall
                 Label {
                     clip: true
                     anchors {
@@ -40,6 +41,16 @@ Page
                     console.debug("Connecting to profile:" + index);
                     connectProfile(index);
                     pageStack.pop();
+                }
+                menu: ContextMenu {
+                    id: contextMenu
+                    MenuItem {
+                        id: editItem
+                        text: qsTr("edit server profile")
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
+                        }
+                    }
                 }
             }
     }

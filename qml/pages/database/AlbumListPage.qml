@@ -37,8 +37,8 @@ Page {
                 ScrollDecorator {
                 }
 
-                header: Heading {
-                    text: artistname !== "" ? artistname : qsTr("albums")
+                header: PageHeader {
+                    title: artistname !== "" ? artistname : qsTr("albums")
                     width: parent.width
                     height: Theme.itemSizeMedium
                 }

@@ -594,6 +594,7 @@ void Controller::requestFilePage(QString path)
 void Controller::readSettings()
 {
     if ( mServerProfiles ) {
+        mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
         qDeleteAll(*mServerProfiles);
         delete(mServerProfiles);
         mServerProfiles = 0;
@@ -633,6 +634,9 @@ void Controller::readSettings()
     mDownloadSize = dlSize;
     emit newDownloadSize(getLastFMArtSize(mDownloadSize));
     settings.endGroup();
+    foreach (ServerProfile *profile, *mServerProfiles) {
+        QQmlEngine::setObjectOwnership(profile,QQmlEngine::CppOwnership);
+    }
     mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();
     if(mServerProfiles->length()==0)
@@ -705,6 +709,7 @@ void Controller::newProfile(QVariant profile)
         autoconnect = false;
     }
     ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
+    QQmlEngine::setObjectOwnership(tempprofile,QQmlEngine::CppOwnership);
     mServerProfiles->append(tempprofile);
     mQuickView->rootContext()->setContextProperty("serverList",QVariant::fromValue(*(QList<QObject*>*)mServerProfiles));
     emit serverProfilesUpdated();

@@ -38,8 +38,8 @@ Page {
                 ScrollDecorator {
                 }
 
-                header: Heading {
-                    text: qsTr("artists")
+                header: PageHeader {
+                    title: qsTr("artists")
                     width: parent.width
                     height: Theme.itemSizeMedium
                 }
