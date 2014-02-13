@@ -1070,7 +1070,7 @@
     <message>
         <location filename="qml/pages/database/SearchPage.qml" line="189"/>
         <source>playing album</source>
-        <translation>Lied abspielen</translation>
+        <translation>Album abspielen</translation>
     </message>
     <message>
         <location filename="qml/pages/database/SearchPage.qml" line="194"/>
