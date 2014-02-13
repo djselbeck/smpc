@@ -317,12 +317,12 @@
 <context>
     <name>Controller</name>
     <message>
-        <location filename="src/controller.cpp" line="458"/>
+        <location filename="src/controller.cpp" line="459"/>
         <source>Connected to: </source>
         <translation>Verbunden zu: </translation>
     </message>
     <message>
-        <location filename="src/controller.cpp" line="476"/>
+        <location filename="src/controller.cpp" line="477"/>
         <source>Disconnected from server</source>
         <translation>Getrennt von Server</translation>
     </message>
@@ -336,19 +336,19 @@
     </message>
     <message>
         <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="39"/>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="278"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="283"/>
         <source>add url</source>
         <translation>URL hinzufügen</translation>
     </message>
     <message>
         <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="45"/>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="225"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="230"/>
         <source>delete playlist</source>
         <translation>Wiedergabeliste löschen</translation>
     </message>
     <message>
         <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="51"/>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="246"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="251"/>
         <source>save playlist</source>
         <translation>Wiedergabeliste abspeichern</translation>
     </message>
@@ -383,17 +383,22 @@
         <translation>Album anzeigen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="118"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="117"/>
+        <source>play as next</source>
+        <translation>Lied als nächstes abspielen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="123"/>
         <source>show information</source>
         <translation>zeige Informationen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="281"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="286"/>
         <source>enter url:</source>
         <translation>URL eingeben:</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="286"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="291"/>
         <source>input url (http://, file://, etc)</source>
         <translation>URL eingeben (http://, file://, etc)</translation>
     </message>
@@ -402,7 +407,7 @@
         <translation type="obsolete">entferne</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="196"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="201"/>
         <source>Deleting</source>
         <translation>Lösche</translation>
     </message>
@@ -415,17 +420,17 @@
         <translation type="obsolete">Löschen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="228"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="233"/>
         <source>really delete playlist?</source>
         <translation>Wiedergabeliste wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="249"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="254"/>
         <source>playlist name:</source>
         <translation>Wiedergabelistenname:</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="254"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage.qml" line="259"/>
         <source>input playlist name</source>
         <translation>Wiedergabelistenname eingeben</translation>
     </message>
@@ -712,64 +717,70 @@
 <context>
     <name>FileDelegate</name>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="80"/>
+        <location filename="qml/components/FileDelegate.qml" line="79"/>
+        <location filename="qml/components/FileDelegate.qml" line="84"/>
         <source>adding track</source>
         <translation>füge Lied hinzu</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="85"/>
+        <location filename="qml/components/FileDelegate.qml" line="89"/>
         <source>adding playlist</source>
         <translation>Wiedergabeliste hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="93"/>
+        <location filename="qml/components/FileDelegate.qml" line="97"/>
         <source>adding directory</source>
         <translation>Ordner hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="98"/>
+        <location filename="qml/components/FileDelegate.qml" line="102"/>
         <source>playing track</source>
         <translation>spiele Lied ab</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="103"/>
+        <location filename="qml/components/FileDelegate.qml" line="107"/>
         <source>playing playlist</source>
         <translation>Wiedergabeliste abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="108"/>
+        <location filename="qml/components/FileDelegate.qml" line="112"/>
         <source>playing directory</source>
         <translation>Ordner abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="116"/>
+        <location filename="qml/components/FileDelegate.qml" line="120"/>
         <source>play file</source>
         <translation>Datei abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="117"/>
+        <location filename="qml/components/FileDelegate.qml" line="121"/>
         <source>play directory</source>
         <translation>Ordner abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="117"/>
+        <location filename="qml/components/FileDelegate.qml" line="121"/>
         <source>play playlist</source>
         <translation>Wiedergabeliste abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="131"/>
+        <location filename="qml/components/FileDelegate.qml" line="135"/>
         <source>add file</source>
         <translation>Datei hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="132"/>
+        <location filename="qml/components/FileDelegate.qml" line="136"/>
         <source>add directory</source>
         <translation>Ordner hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/components/FileDelegate.qml" line="132"/>
+        <location filename="qml/components/FileDelegate.qml" line="136"/>
         <source>add playlist</source>
         <translation>Wiedergabeliste hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="qml/components/FileDelegate.qml" line="151"/>
+        <source>play after current</source>
+        <translation>Lied als nächstes abspielen</translation>
     </message>
 </context>
 <context>

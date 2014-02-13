@@ -830,6 +830,33 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
     updateStatusInternal();
 }
 
+void NetworkAccess::playTrackNext(int index)
+{
+    qWarning() << "PlaynextTrack";
+    int currentPosition = getStatus().id;
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        if ( index < currentPosition) {
+            outstream << "move " << QString::number(index) << " " << QString::number(currentPosition) << endl;
+        } else {
+            outstream << "move " << QString::number(index) << " " << QString::number(currentPosition + 1) << endl;
+        }
+        QString response ="";
+        //Clear read buffer
+        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+
+            }
+        }
+    }
+    updateStatusInternal();
+}
+
 void NetworkAccess::addTrackAfterCurrent(QString fileuri)
 {
     int currentPosition = getStatus().id;

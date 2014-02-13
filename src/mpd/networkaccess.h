@@ -124,6 +124,9 @@ public slots:
     //Variant [Artist,Album]
     void getAlbumTracks(QVariant albuminfo);
 
+    // Plays current playlist entry (index) next
+    void playTrackNext(int index);
+
     void getArtistAlbumMap();
 
     void getCurrentPlaylistTracks();

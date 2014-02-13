@@ -112,6 +112,11 @@ Page {
                                 }
                             }
                         }
+                        MenuItem {
+                            visible: !playing
+                            text: qsTr("play as next")
+                            onClicked: playPlaylistSongNext(index)
+                        }
 
                         MenuItem {
                             visible: playing
