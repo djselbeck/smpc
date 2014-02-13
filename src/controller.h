@@ -105,10 +105,10 @@ private:
     AlbumModel *mOldAlbumModel;
     ArtistModel *mOldArtistModel;
     PlaylistModel *mPlaylist;
-    QList<MpdTrack*> *mAlbumTracks;
-    QList<MpdTrack*> *mPlaylistTracks;
+    PlaylistModel *mAlbumTracks;
+    PlaylistModel *mPlaylistTracks;
     QStringList *mSavedPlaylists;
-    QList<MpdTrack*> *mSearchedTracks;
+    PlaylistModel *mSearchedTracks;
     QList<MPDOutput*> *mOutputs;
     QStack<FileModel*> *mFileModels;
     ImageDatabase *mImgDB;
@@ -124,6 +124,8 @@ private:
     int mAlbumViewSetting;
     int mArtistViewSetting;
     int mListImageSize;
+    int mSectionsInSearch;
+    int mSectionsInPlaylist;
 
     // Streaming playback
     //StreamPlayer *mStreamPlayer;

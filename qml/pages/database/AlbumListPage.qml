@@ -242,14 +242,14 @@ Page {
                 gridViewLoader.active = false
                 listviewLoader.active = false
                 showViewLoader.active = false
-                if (orientation === Orientation.Portrait) {
+                if ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted)) {
                     console.debug("activating page with portrait grid view")
                     if (albumView === 0) {
                         gridViewLoader.active = true
                     } else if (albumView === 1) {
                         listviewLoader.active = true
                     }
-                } else if (orientation === Orientation.Landscape) {
+                } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)) {
                     console.debug("activating page landscape showview")
                     showViewLoader.active = true
                 }
@@ -280,14 +280,14 @@ Page {
 
     onOrientationTransitionRunningChanged: {
         if (!orientationTransitionRunning) {
-            if (orientation === Orientation.Portrait) {
+            if ( (orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted) ){
                 console.debug("activating portrait grid view")
                 if (albumView === 0) {
                     gridViewLoader.active = true
                 } else if (albumView === 1) {
                     listviewLoader.active = true
                 }
-            } else if (orientation === Orientation.Landscape) {
+            } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted) ) {
                 console.debug("activating landscape showview")
                 showViewLoader.active = true
             }

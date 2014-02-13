@@ -18,7 +18,7 @@ Component {
             Image{
                 width: ( listImageSize !== 0 ) ? mainRow.height : 0
                 height: mainRow.height
-                cache: false
+                cache: true
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
                 sourceSize.width: width

@@ -89,6 +89,7 @@ signals:
     void requestExit();
 public slots:
     void addTrackToPlaylist(QString fileuri);
+    void addTrackAfterCurrent(QString fileuri);
     void addAlbumToPlaylist(QString album);
     void playAlbum(QString album);
     void addArtistAlbumToPlaylist(QString artist,QString album);

@@ -25,6 +25,7 @@ ApplicationWindow
     signal addArtist(string artist);
     signal addFiles(string files);
     signal addSong(string uri);
+    signal addSongAfterCurrent(string uri);
     signal addPlaylist(string name);
     signal playPlaylist(string name);
     signal playAlbum(variant album);
@@ -137,7 +138,7 @@ ApplicationWindow
 
     property real listPadding : Theme.paddingLarge
     property int populateDuration: 500
-    property int bothOrientation: Orientation.Landscape + Orientation.Portrait
+    property int bothOrientation: Orientation.Landscape + Orientation.Portrait + Orientation.PortraitInverted + Orientation.LandscapeInverted
 
     property bool volumeChanging:false
 

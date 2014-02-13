@@ -102,7 +102,8 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/components/ArtistShowDelegate.qml \
     qml/pages/settings/GUISettings.qml \
     qml/components/AlbumListDelegate.qml \
-    qml/components/ArtistListDelegate.qml
+    qml/components/ArtistListDelegate.qml \
+    qml/components/PlaylistSectionDelegate.qml
 
 
 

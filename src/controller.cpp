@@ -100,16 +100,13 @@ Controller::~Controller()
         delete(mPlaylist);
     if(mAlbumTracks)
     {
-        qDeleteAll(*mAlbumTracks);
         delete(mAlbumTracks);
     }
     if(mPlaylistTracks)
     {
-        qDeleteAll(*mPlaylistTracks);
         delete(mPlaylistTracks);
     }
     if(mSearchedTracks) {
-        qDeleteAll(*mSearchedTracks);
         delete(mSearchedTracks);
     }
     if(mOutputs) {
@@ -182,15 +179,11 @@ void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 {
     mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
-        for( int i = 0; i < mPlaylistTracks->length();i++)
-        {
-            delete(mPlaylistTracks->at(i));
-        }
         delete(mPlaylistTracks);
         mPlaylistTracks = 0;
     }
-    mPlaylistTracks = (QList<MpdTrack*>*)list;
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",QVariant::fromValue(*list));
+    mPlaylistTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
+    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",mPlaylistTracks);
     emit savedPlaylistReady();
 }
 
@@ -251,15 +244,11 @@ void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 {
     mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
-        for( int i = 0; i < mAlbumTracks->length();i++)
-        {
-            delete(mAlbumTracks->at(i));
-        }
         delete(mAlbumTracks);
         mAlbumTracks = 0;
     }
-    mAlbumTracks = (QList<MpdTrack*>*)list;
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",QVariant::fromValue(*list));
+    mAlbumTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
+    mQuickView->rootContext()->setContextProperty("albumTracksModel",mAlbumTracks);
     emit albumTracksReady();
 }
 
@@ -271,8 +260,8 @@ void Controller::updateSearchedTracks(QList<QObject*>* list)
         delete (mSearchedTracks);
         mSearchedTracks = 0;
     }
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",QVariant::fromValue(*list));
-    mSearchedTracks = (QList<MpdTrack*>*)list;
+    mSearchedTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
+    mQuickView->rootContext()->setContextProperty("searchedTracksModel",mSearchedTracks);
     emit searchedTracksReady();
 }
 
@@ -333,6 +322,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(playSong(QString)),mNetAccess,SLOT(playTrack(QString)));
     connect(item,SIGNAL(playFiles(QString)),mNetAccess,SLOT(playFiles(QString)));
     connect(item,SIGNAL(addSong(QString)),mNetAccess,SLOT(addTrackToPlaylist(QString)));
+    connect(item,SIGNAL(addSongAfterCurrent(QString)),mNetAccess,SLOT(addTrackAfterCurrent(QString)));
     connect(item,SIGNAL(requestSavedPlaylist(QString)),mNetAccess,SLOT(getPlaylistTracks(QString)));
     connect(item,SIGNAL(addPlaylist(QString)),mNetAccess,SLOT(addPlaylist(QString)));
     connect(item,SIGNAL(playPlaylist(QString)),mNetAccess,SLOT(playPlaylist(QString)));
@@ -623,11 +613,14 @@ void Controller::readSettings()
     mArtistViewSetting = settings.value("artist_view",0).toInt();
     mAlbumViewSetting = settings.value("album_view",0).toInt();
     mListImageSize = settings.value("list_image_size",0).toInt();
+    mSectionsInSearch = settings.value("sections_in_search",1).toInt();
+    mSectionsInPlaylist = settings.value("sections_in_playlist",1).toInt();
 
     mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
     mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
     mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
-
+    mQuickView->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
+    mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
 
     mQuickView->rootContext()->setContextProperty("downloadSize",dlSize);
     mDownloadSize = dlSize;
@@ -664,6 +657,8 @@ void Controller::writeSettings()
     settings.setValue("artist_view",mArtistViewSetting);
     settings.setValue("album_view",mAlbumViewSetting);
     settings.setValue("list_image_size",mListImageSize);
+    settings.setValue("sections_in_search",mSectionsInSearch);
+    settings.setValue("sections_in_playlist",mSectionsInPlaylist);
     settings.endGroup();
 }
 
@@ -856,9 +851,9 @@ void Controller::cleanFileStack()
 void Controller::addlastsearchtoplaylist()
 {
     if ( mSearchedTracks ) {
-        for(int i = 0;i<mSearchedTracks->length();i++)
+        for(int i = 0;i<mSearchedTracks->rowCount();i++)
         {
-            emit addURIToPlaylist(mSearchedTracks->at(i)->getFileUri());
+            emit addURIToPlaylist(mSearchedTracks->get(i)->getFileUri());
         }
     }
 }
@@ -887,10 +882,6 @@ void Controller::clearTrackList()
 {
     mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
-        for( int i = 0; i < mAlbumTracks->length();i++)
-        {
-            delete(mAlbumTracks->at(i));
-        }
         delete(mAlbumTracks);
         mAlbumTracks = 0;
     }
@@ -910,10 +901,6 @@ void Controller::clearPlaylistList()
 {
     mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
-        for( int i = 0; i < mPlaylistTracks->length();i++)
-        {
-            delete(mPlaylistTracks->at(i));
-        }
         delete(mPlaylistTracks);
         mPlaylistTracks = 0;
     }
@@ -993,6 +980,12 @@ void Controller::receiveSettingKey(QVariant setting)
         } else if ( settings.at(0) == "listImageSize" ) {
             mListImageSize = settings.at(1).toInt();
             mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
+        } else if ( settings.at(0) == "sectionsInSearch" ) {
+            mSectionsInSearch = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
+        } else if ( settings.at(0) == "sectionsInPlaylist" ) {
+            mSectionsInPlaylist = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
         }
 
     }

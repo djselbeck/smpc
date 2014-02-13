@@ -29,7 +29,7 @@ BackgroundItem {
             sourceSize.width: width
             sourceSize.height: height
             source: coverURL
-            cache: false
+            cache: true
             asynchronous: true
             fillMode: Image.PreserveAspectCrop
         }

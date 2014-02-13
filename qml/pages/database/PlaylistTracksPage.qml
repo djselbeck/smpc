@@ -46,10 +46,22 @@ Page
                     }
                 }
             }
+
+            section {
+                delegate: Loader {
+                    active: sectionsInPlaylist && visible
+                    height: sectionsInPlaylist ? Theme.itemSizeMedium : 0
+                    width: parent.width
+                    sourceComponent: PlaylistSectionDelegate{
+                        width:undefined
+                    }
+                }
+                property: "section"
+            }
+
             delegate: ListItem {
                 menu: contextMenu
-                property int workaroundHeight: mainColumn.height
-                height: workaroundHeight
+                contentHeight: mainColumn.height
                 Column{
                     id: mainColumn
                     height: (trackRow + artistLabel >= Theme.itemSizeSmall ?trackRow + artistLabel : Theme.itemSizeSmall )
@@ -64,7 +76,7 @@ Page
                             id: trackRow
                             Label {text: (index+1)+". ";anchors {verticalCenter: parent.verticalCenter}}
                             Label {clip: true; wrapMode: Text.WrapAnywhere; elide: Text.ElideRight; text:  (title==="" ? filename : title);anchors {verticalCenter: parent.verticalCenter}}
-                            Label { text: (length===0 ? "": " ("+lengthformatted+")");anchors {verticalCenter: parent.verticalCenter}}
+                            Label { text: (length===0 ? "": " ("+lengthformated+")");anchors {verticalCenter: parent.verticalCenter}}
                         }
                         Label{
                             id: artistLabel
@@ -80,13 +92,18 @@ Page
                 }
                 onClicked: {
                     playlistTracksListView.currentIndex = index;
-                    albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr);
+                    albumTrackClicked(title,album,artist,lengthformated,path,year,tracknr);
                 }
                 function playTrackRemorse() {
-                    remorseAction(qsTr("playing track"), function() { playSong(uri); },3000)
+                    remorseAction(qsTr("playing track"), function() { playSong(path); },3000)
                 }
                 function addTrackRemorse() {
-                    remorseAction(qsTr("adding track"), function() { addSong(uri); },3000)
+                    remorseAction(qsTr("adding track"), function() { addSong(path); },3000)
+                }
+                function addTrackAfterCurrentRemorse() {
+                    remorseAction(qsTr("adding track"), function () {
+                        addSongAfterCurrent(path)
+                    }, 3000)
                 }
                 Component {
                     id: contextMenu
@@ -104,8 +121,11 @@ Page
                                 addTrackRemorse();
                             }
                         }
-                        onHeightChanged: {
-                            workaroundHeight = height + mainColumn.height
+                        MenuItem {
+                            text: qsTr("play after current")
+                            onClicked: {
+                                addTrackAfterCurrentRemorse();
+                            }
                         }
                     }
                 }

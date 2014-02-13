@@ -5,8 +5,7 @@ Component {
     ListItem {
         menu: contextMenu
         id: filesDelegate
-        property int workaroundHeight: fileicon.height
-        height: workaroundHeight
+        contentHeight: fileicon.height
         Image {
             height: (filenametext.height + trackLabel
                      >= Theme.itemSizeSmall ? filenametext.height
@@ -81,6 +80,11 @@ Component {
                 addSong(path)
             }, 3000)
         }
+        function addTrackAfterCurrentRemorse() {
+            remorseAction(qsTr("adding track"), function () {
+                addSongAfterCurrent(path)
+            }, 3000)
+        }
         function addPlaylistRemorse() {
             remorseAction(qsTr("adding playlist"), function () {
                 console.debug(
@@ -141,8 +145,13 @@ Component {
                         }
                     }
                 }
-                onHeightChanged: {
-                    workaroundHeight = height + fileicon.height
+                MenuItem {
+                    enabled: isFile
+                    visible: isFile
+                    text: qsTr("play after current")
+                    onClicked: {
+                        addTrackAfterCurrentRemorse();
+                    }
                 }
             }
         }

@@ -630,7 +630,7 @@ Page {
             }
         }
     ]
-    state : (orientation === Orientation.Portrait ) ? "portrait" : "landscape"
+    state : ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted) ) ? "portrait" : "landscape"
 
     Timer{
         id: drawerCloseTimer

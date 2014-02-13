@@ -44,7 +44,7 @@ Page
                 }
 
                 function removeProfileRemorse() {
-                    remorseAction(qsTr("removing serverprofile"), function () {
+                    remorseAction(qsTr("removing server profile"), function () {
                         deleteProfile(index);
                     }, 3000)
                 }
@@ -52,14 +52,14 @@ Page
                     id: contextMenu
                     MenuItem {
                         id: editItem
-                        text: qsTr("edit serverprofile")
+                        text: qsTr("edit server profile")
                         onClicked: {
                             pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
                         }
                     }
                     MenuItem {
                         id: removeItem
-                        text: qsTr("remove serverprofile")
+                        text: qsTr("remove server profile")
                         onClicked: {
                             removeProfileRemorse();
                         }

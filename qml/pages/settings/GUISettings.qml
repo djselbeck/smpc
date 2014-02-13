@@ -115,6 +115,30 @@ Page {
                     }
                 }
             }
+            TextSwitch{
+                id: sectionInPlaylistSwitch
+                text: qsTr("show sections in playlists")
+                checked: sectionsInPlaylist
+                onClicked: {
+                    if ( checked ) {
+                        newSettingKey(["sectionsInPlaylist","1"]);
+                    } else {
+                        newSettingKey(["sectionsInPlaylist","0"]);
+                    }
+                }
+            }
+            TextSwitch{
+                id: sectionInSearchSwitch
+                text: qsTr("show sections in search")
+                checked: sectionsInSearch
+                onClicked: {
+                    if ( checked ) {
+                        newSettingKey(["sectionsInSearch","1"]);
+                    } else {
+                        newSettingKey(["sectionsInSearch","0"]);
+                    }
+                }
+            }
 
         }
     }

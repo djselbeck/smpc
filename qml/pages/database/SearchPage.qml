@@ -113,6 +113,18 @@ Page {
                 }
             }
 
+            section {
+                delegate: Loader {
+                    active: sectionsInSearch && visible
+                    height: sectionsInSearch ? Theme.itemSizeMedium : 0
+                    width: parent.width
+                    sourceComponent: PlaylistSectionDelegate{
+                        width:undefined
+                    }
+                }
+                property: "section"
+            }
+
             delegate: ListItem {
                 menu: contextMenu
                 contentHeight: Theme.itemSizeSmall
@@ -145,7 +157,7 @@ Page {
                             }
                         }
                         Label {
-                            text: (length === 0 ? "" : " (" + lengthformatted + ")")
+                            text: (length === 0 ? "" : " (" + lengthformated + ")")
                             anchors {
                                 verticalCenter: parent.verticalCenter
                             }
@@ -159,17 +171,17 @@ Page {
                     }
                 }
                 onClicked: {
-                    albumTrackClicked(title, album, artist, lengthformatted,
-                                      uri, year, tracknr)
+                    albumTrackClicked(title, album, artist, lengthformated,
+                                      path, year, tracknr)
                 }
                 function playTrackRemorse() {
                     remorseAction(qsTr("playing track"), function () {
-                        playSong(uri)
+                        playSong(path)
                     }, 3000)
                 }
                 function addTrackRemorse() {
                     remorseAction(qsTr("adding track"), function () {
-                        addSong(uri)
+                        addSong(path)
                     }, 3000)
                 }
 

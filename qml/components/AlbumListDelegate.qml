@@ -21,7 +21,7 @@ Component {
                 height: mainRow.height
                 sourceSize.width: width
                 sourceSize.height: height
-                cache: false
+                cache: true
                 asynchronous: true
                 source: ( listImageSize === 0 ) ? "" : coverURL
             }

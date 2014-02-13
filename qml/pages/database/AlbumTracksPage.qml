@@ -224,12 +224,12 @@ Page {
         } else if (status === PageStatus.Activating) {
             if (!orientationTransitionRunning) {
                 // Activate correct loader
-                if (orientation === Orientation.Portrait) {
+                if ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted)) {
                     if ( landscapeLoader.active ) {
                         landscapeLoader.active = false;
                     }
                     portraitLoader.active = true
-                } else if (orientation === Orientation.Landscape) {
+                } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)) {
                     if ( portraitLoader.active ) {
                         portraitLoader.active = false;
                     }
@@ -251,13 +251,11 @@ Page {
     onOrientationTransitionRunningChanged: {
         if (!orientationTransitionRunning) {
             // Activate correct loader
-            if (orientation === Orientation.Portrait) {
+            if ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted)) {
 
 
                 portraitLoader.active = true
-            } else if (orientation === Orientation.Landscape) {
-
-
+            } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)) {
                 landscapeLoader.active = true
             }
         } else {
@@ -309,7 +307,7 @@ Page {
                         }
                     }
                     Label {
-                        text: (length === 0 ? "" : " (" + lengthformatted + ")")
+                        text: (length === 0 ? "" : " (" + lengthformated + ")")
                         anchors {
                             verticalCenter: parent.verticalCenter
                         }
@@ -330,27 +328,27 @@ Page {
             }
             onClicked: {
                 //albumTracksListView.currentIndex = index
-                albumTrackClicked(title, album, artist, lengthformatted, uri,
+                albumTrackClicked(title, album, artist, lengthformated, path,
                                   year, tracknr)
             }
             function playTrackRemorse() {
                 remorseAction(qsTr("playing track"), function () {
-                    playSong(uri)
+                    playSong(path)
                 }, 3000)
             }
             function addTrackRemorse() {
                 remorseAction(qsTr("adding track"), function () {
-                    addSong(uri)
+                    addSong(path)
+                }, 3000)
+            }
+            function addTrackAfterCurrentRemorse() {
+                remorseAction(qsTr("adding track"), function () {
+                    addSongAfterCurrent(path)
                 }, 3000)
             }
             Component {
                 id: contextMenu
                 ContextMenu {
-                    anchors{
-                        right: parent.right
-                        left: parent.left
-                    }
-
                     MenuItem {
                         text: qsTr("play track")
                         onClicked: {
@@ -362,6 +360,12 @@ Page {
                         text: qsTr("add track to list")
                         onClicked: {
                             addTrackRemorse()
+                        }
+                    }
+                    MenuItem {
+                        text: qsTr("play after current")
+                        onClicked: {
+                            addTrackAfterCurrentRemorse();
                         }
                     }
                 }

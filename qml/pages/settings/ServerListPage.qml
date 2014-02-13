@@ -39,13 +39,13 @@ Page
                 }
 
                 function removeProfileRemorse() {
-                    remorseAction(qsTr("removing serverprofile"), function () {
+                    remorseAction(qsTr("removing server profile"), function () {
                         deleteProfile(index);
                     }, 3000)
                 }
                 menu: ContextMenu {
                     MenuItem {
-                        text: qsTr("remove serverprofile")
+                        text: qsTr("remove server profile")
                         onClicked: {
                             removeProfileRemorse();
                         }
