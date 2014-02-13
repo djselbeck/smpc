@@ -62,7 +62,12 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
                 int imageID = mDB->imageIDFromAlbumArtist(album,artist);
                 // No image found return dummy url
                 if ( imageID <= -1 ) {
-                    // Start image retrieval
+                    // Try getting album art for album with out artist (think samplers)
+                    imageID = mDB->imageIDFromAlbum(album);
+                    if ( imageID >= 0 ) {
+                        QString url = "image://imagedbprovider/albumid/" + QString::number(imageID);
+                        return url;
+                    }
                     qDebug() << "returning dummy image for album: " << album;
                     // Return dummy for the time being
                     return DUMMY_ALBUMIMAGE;
