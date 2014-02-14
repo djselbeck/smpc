@@ -1064,6 +1064,7 @@
     </message>
     <message>
         <location filename="qml/pages/database/SearchPage.qml" line="183"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="199"/>
         <source>adding track</source>
         <translation>Lied hinzufügen</translation>
     </message>
@@ -1078,22 +1079,27 @@
         <translation>Album hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/SearchPage.qml" line="203"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="208"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/SearchPage.qml" line="210"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="215"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/SearchPage.qml" line="216"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="221"/>
+        <source>play after current</source>
+        <translation>Lied als nächstes abspielen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/database/SearchPage.qml" line="227"/>
         <source>add album to list</source>
         <translation>Album hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/SearchPage.qml" line="222"/>
+        <location filename="qml/pages/database/SearchPage.qml" line="233"/>
         <source>play album</source>
         <translation>Album abspielen</translation>
     </message>
