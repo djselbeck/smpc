@@ -195,6 +195,11 @@ Page {
                         addAlbum(["", album])
                     }, 3000)
                 }
+                function addTrackAfterCurrentRemorse() {
+                    remorseAction(qsTr("adding track"), function () {
+                        addSongAfterCurrent(path)
+                    }, 3000)
+                }
                 Component {
                     id: contextMenu
                     ContextMenu {
@@ -210,6 +215,12 @@ Page {
                             text: qsTr("add track to list")
                             onClicked: {
                                 addTrackRemorse()
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr("play after current")
+                            onClicked: {
+                                addTrackAfterCurrentRemorse();
                             }
                         }
                         MenuItem {
