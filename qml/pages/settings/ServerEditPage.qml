@@ -165,27 +165,4 @@ Dialog
             top: 65536
             bottom: 1
     }
-//    states: [
-//        State {
-//            name: "portrait"
-//            when: orientation === Orientation.Portrait
-//            PropertyChanges {
-//                target: serverSettingFlickable
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        },State {
-//            name: "landscape"
-//            when: orientation === Orientation.Landscape
-//            PropertyChanges {
-//                target: serverSettingFlickable
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        }]
-
 }

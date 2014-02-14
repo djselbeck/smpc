@@ -8,15 +8,8 @@ Page {
     property string album:mAlbum
     property string artist:mArtist
     //property int lengthtextcurrent:lengthTextcurrent.text;
-    property alias lengthtextcomplete: lengthTextcomplete.text
-    property alias bitrate: bitrateText.text
     property bool shuffle
     property bool repeat
-    property alias nr: nrText.text
-    property alias uri: fileText.text
-    property alias audioproperties: audiopropertiesText.text
-    property alias pospressed: positionSlider.pressed
-    property alias volumepressed: volumeSlider.pressed
     property bool playing
     property int fontsize: Theme.fontSizeMedium
     property int fontsizegrey: Theme.fontSizeSmall
@@ -275,7 +268,7 @@ Page {
                     }
                     Label {
                         id: nrText
-                        text: ""
+                        text: mTrackNr
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
@@ -307,7 +300,7 @@ Page {
                     }
                     Label {
                         id: bitrateText
-                        text: ""
+                        text: mBitrate
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
@@ -320,7 +313,7 @@ Page {
                     }
                     Label {
                         id: audiopropertiesText
-                        text: ""
+                        text: mAudioProperties
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
@@ -333,7 +326,7 @@ Page {
                     }
                     Label {
                         id: fileText
-                        text: ""
+                        text: mUri
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WrapAnywhere"
@@ -456,7 +449,7 @@ Page {
                 label: qsTr("position")
                 Label {
                     id: lengthTextcomplete
-                    text: ""
+                    text: mLengthText
                     color: Theme.primaryColor
                     font.pixelSize: fontsizegrey
                     wrapMode: "WordWrap"
@@ -467,6 +460,7 @@ Page {
                     }
                 }
                 onPressedChanged: {
+                    mPositionSliderActive = pressed
                     if (!pressed) {
                         seek(value)
                         value  = Qt.binding(function() {return mPosition;});

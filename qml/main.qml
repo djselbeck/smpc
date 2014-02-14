@@ -114,8 +114,6 @@ ApplicationWindow
 
     property int port;
     property string password;
-    property Page currentsongpage;
-    property Page playlistpage;
     property int listfontsize : 12;
     property int liststretch : 20;
     property int lastsongid : -1;
@@ -154,6 +152,12 @@ ApplicationWindow
     property bool mRepeat
     property bool mShuffle
     property bool mDebugEnabled
+    property bool mPositionSliderActive:false;
+    property string mAudioProperties;
+    property string mTrackNr;
+    property string mBitrate;
+    property string mUri;
+    property string mLengthText;
 
 
     // JS-functions
@@ -184,24 +188,18 @@ ApplicationWindow
         inputBlock.enabled = false
     }
 
-//    function settingsModelUpdated()
-//    {
-//        console.debug("Got new server list");
-//        serverList.listmodel = settingsModel;
-//    }
-
     function updateCurrentPlaying(list)
     {
         mTitle = list[0];
         mAlbum = list[1];
         mArtist = list[2];
-        if(currentsongpage.pospressed==false) {
+        if(mPositionSliderActive==false) {
             mPosition = list[3];
         }
         mLength = list[4];
         //currentsongpage.lengthtextcurrent = formatLength(list[3]);
-        currentsongpage.lengthtextcomplete = list[4]==0 ? "": formatLength(list[4]);
-        currentsongpage.bitrate = list[5]+"kbps";
+        mLengthText = list[4]==0 ? "": formatLength(list[4]);
+        mBitrate = list[5]+"kbps";
         playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-m-pause" : "image://theme/icon-m-play";
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
@@ -211,11 +209,10 @@ ApplicationWindow
         }
         mRepeat = (list[8]=="0" ?  false:true);
         mShuffle = (list[9]=="0" ?  false:true);
-        currentsongpage.nr = (list[10]==0? "":list[10]);
-        currentsongpage.uri = list[11];
+        mTrackNr = (list[10]==0? "":list[10]);
+        mUri = list[11];
         if(list[12]!=lastsongid)
         {
-            playlistpage.songid = list[12];
             lastsongid = list[12];
         }
         if(stopped) {
@@ -226,7 +223,7 @@ ApplicationWindow
             mTitle=""
         }
         mPlaylistlength = list[16];
-        currentsongpage.audioproperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
+        mAudioProperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
     }
 
     function savedPlaylistClicked(modelData)
@@ -320,17 +317,6 @@ ApplicationWindow
         artistimageurl = url;
     }
 
-    // Create some permanent pages which should reside in memory for all the time
-    Component.onCompleted:  {
-        var component = Qt.createComponent("pages/database/CurrentPlaylistPage.qml");
-        var object = component.createObject(mainWindow);
-        mainWindow.playlistpage = object;
-        pageStack.pushAttached(playlistpage);
-        component = Qt.createComponent("pages/database/CurrentSong.qml");
-        object = component.createObject(mainWindow);
-        currentsongpage = object;
-    }
-
     // Notifies user about ongoing action in netaccess
     BusyIndicator
     {
@@ -358,4 +344,5 @@ ApplicationWindow
 
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
 }

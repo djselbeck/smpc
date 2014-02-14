@@ -5,20 +5,14 @@ import "../../components"
 Page {
     id: currentPlaylistPage
     //property alias listmodel: playlistView.model
-    property alias songid: playlistView.currentIndex
     allowedOrientations: bothOrientation
     property int lastIndex
     SilicaListView {
         id: playlistView
         clip: true
         delegate: trackDelegate
+        currentIndex: lastsongid
 
-        //        anchors {
-        //            right:parent.right
-        //            left: parent.left
-        //            top: parent.top
-        //            bottom: quickControlPanel.top
-        //        }
         anchors {
             fill: parent
 //            bottomMargin: quickControlPanel.visibleSize
@@ -193,7 +187,7 @@ Page {
                     if (!playing) {
                         parseClickedPlaylist(index)
                     } else {
-                        pageStack.push(currentsongpage)
+                        pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
                     }
                 }
 
@@ -307,7 +301,7 @@ Page {
         if (status === PageStatus.Activating) {
             playlistView.positionViewAtIndex(lastsongid, ListView.Center)
         } else if (status === PageStatus.Active) {
-            pageStack.pushAttached(currentsongpage)
+            pageStack.pushAttached(Qt.resolvedUrl("CurrentSong.qml"));
         }
     }
 

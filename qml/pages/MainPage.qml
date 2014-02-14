@@ -103,14 +103,14 @@ Page {
         repeat: false
         onTriggered: {
             if (connected){
-                pageStack.push(playlistpage)
+                pageStack.push(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"))
             }
         }
     }
 
     onStatusChanged: {
         if (status === PageStatus.Active) {
-            pageStack.pushAttached(playlistpage);
+            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
             showCurrentSongTimer.start()
         } else if (status === PageStatus.Deactivating) {
             if (showCurrentSongTimer.running) {
@@ -127,8 +127,7 @@ Page {
     function parseClickedMainMenu(ident) {
         if (ident == "playlist") {
             if (connected){
-                pageStack.push(playlistpage)
-                pageStack.pushAttached(currentsongpage);
+                pageStack.push(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"))
             }
         } else if (ident == "settings") {
             pageStack.push(Qt.resolvedUrl("settings/SettingsPage.qml"))
@@ -163,54 +162,4 @@ Page {
             pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
         }
     }
-//    states: [
-//        State {
-//            name: "portrait"
-//            when: orientation === Orientation.Portrait
-//            PropertyChanges {
-//                target: mainList
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//            PropertyChanges {
-//                target: connectedLabel
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//            PropertyChanges {
-//                target: mainHeader
-//                anchors.bottomMargin: quickControlPanel.visibleSize
-//                anchors.rightMargin: 0
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        },State {
-//            name: "landscape"
-//            when: orientation === Orientation.Landscape
-//            PropertyChanges {
-//                target: mainList
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//            PropertyChanges {
-//                target: connectedLabel
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//            PropertyChanges {
-//                target: mainHeader
-//                anchors.bottomMargin: 0
-//                anchors.rightMargin: quickControlPanel.visibleSize
-//                anchors.leftMargin: 0
-//                anchors.topMargin: 0
-//            }
-//        }]
 }
