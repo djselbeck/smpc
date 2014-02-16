@@ -15,15 +15,21 @@ Component {
                 leftMargin: listPadding
                 rightMargin: listPadding
             }
-            Image{
+            spacing: Theme.paddingSmall
+            Rectangle {
+                id: imageRectangle
+                color: Theme.rgba(Theme.highlightBackgroundColor,0.2)
                 width: ( listImageSize !== 0 ) ? mainRow.height : 0
                 height: mainRow.height
-                cache: true
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                sourceSize.width: width
-                sourceSize.height: height
-                source: ( listImageSize === 0 ) ? "" : imageURL
+                Image{
+                    anchors.fill: parent
+                    cache: true
+                    fillMode: Image.PreserveAspectCrop
+                    asynchronous: true
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    source: ( listImageSize === 0 ) ? "" : imageURL
+                }
             }
             Label {
                 anchors.verticalCenter: parent.verticalCenter

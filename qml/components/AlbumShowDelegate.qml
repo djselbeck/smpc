@@ -25,6 +25,7 @@ BackgroundItem {
         color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
         Image {
             id: albumImage
+            antialiasing: true
             anchors.fill: parent
             sourceSize.width: width
             sourceSize.height: height
@@ -41,8 +42,6 @@ BackgroundItem {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: parent.width
-
             color: Theme.highlightBackgroundColor
             gradient: Gradient {
                 GradientStop {

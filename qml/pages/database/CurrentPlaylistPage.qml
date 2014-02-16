@@ -115,7 +115,7 @@ Page {
                         MenuItem {
                             visible: playing
                             text: qsTr("show information")
-                            onClicked: pageStack.push(currentsongpage)
+                            onClicked: pageStack.navigateForward(PageStackAction.Animated)
                         }
 
                     }
@@ -187,7 +187,7 @@ Page {
                     if (!playing) {
                         parseClickedPlaylist(index)
                     } else {
-                        pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
+                        pageStack.navigateForward(PageStackAction.Animated)
                     }
                 }
 

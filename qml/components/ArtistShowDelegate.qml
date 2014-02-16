@@ -4,6 +4,7 @@ import Sailfish.Silica 1.0
 BackgroundItem {
     id: artistShowDelegate
     //menu: contextMenu
+    antialiasing: true
     width: showView.itemWidth
     height: showView.itemHeight
     z: PathView.z
@@ -25,6 +26,7 @@ BackgroundItem {
         color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
         Image {
             id: albumImage
+            antialiasing: true
             anchors.fill: parent
             sourceSize.width: width
             sourceSize.height: height
@@ -35,14 +37,12 @@ BackgroundItem {
         }
         Rectangle {
             id: gradientRect
-            visible: true //artistImage.source!=""
+            visible: true
             anchors {
                 bottom: parent.bottom
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
-            width: parent.width
-
             color: Theme.highlightBackgroundColor
             gradient: Gradient {
                 GradientStop {

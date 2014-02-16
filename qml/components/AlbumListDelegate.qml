@@ -9,6 +9,7 @@ Component {
         Row {
             id: mainRow
             height: parent.height
+            spacing: Theme.paddingSmall
             anchors {
                 right: parent.right
                 left: parent.left
@@ -16,15 +17,22 @@ Component {
                 leftMargin: listPadding
                 rightMargin: listPadding
             }
-            Image{
+            Rectangle {
+                id: imageRectangle
+                color: Theme.rgba(Theme.highlightBackgroundColor,0.2)
                 width: ( listImageSize !== 0 ) ? mainRow.height : 0
                 height: mainRow.height
-                sourceSize.width: width
-                sourceSize.height: height
-                cache: true
-                asynchronous: true
-                source: ( listImageSize === 0 ) ? "" : coverURL
+                Image{
+                    id: albumPicture
+                    anchors.fill: parent
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    cache: true
+                    asynchronous: true
+                    source: ( listImageSize === 0 ) ? "" : coverURL
+                }
             }
+
 
             Label {
                 id: albumLabel

@@ -128,27 +128,27 @@
 <context>
     <name>AlbumShowDelegate</name>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="72"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="73"/>
         <source>No Album Tag</source>
         <translation>Kein Album Tag</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="285"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="286"/>
         <source>playing track</source>
         <translation>spiele Lied</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="290"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="291"/>
         <source>adding track</source>
         <translation>füge Lied hinzu</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="303"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="304"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="310"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="311"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
@@ -269,7 +269,7 @@
 <context>
     <name>ArtistShowDelegate</name>
     <message>
-        <location filename="qml/components/ArtistShowDelegate.qml" line="72"/>
+        <location filename="qml/components/ArtistShowDelegate.qml" line="74"/>
         <source>No Artist Tag</source>
         <translation>Kein Interpreten Tag</translation>
     </message>
