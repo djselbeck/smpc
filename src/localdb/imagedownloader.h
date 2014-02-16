@@ -58,6 +58,8 @@ public slots:
     void artistInformationReceiver(ArtistInformation *info);
     void artistDownloadFailure();
 
+    void clearDownloadQueue();
+
 
 };
 

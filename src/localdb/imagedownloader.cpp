@@ -168,3 +168,9 @@ void ImageDownloader::setDownloadSize(QString size)
     mAlbumProvider->setDownloadSize(size);
     mArtistProvider->setDownloadSize(size);
 }
+
+void ImageDownloader::clearDownloadQueue()
+{
+    mArtistQueue->clear();
+    mAlbumQueue->clear();
+}

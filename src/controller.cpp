@@ -218,7 +218,7 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
         delete(mOldAlbumModel);
         mOldAlbumModel = 0;
     }
-    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,mImgDB,getLastFMArtSize(mDownloadSize), this);
+    AlbumModel *model = new AlbumModel((QList<MpdAlbum*>*)list,mImgDB,getLastFMArtSize(mDownloadSize),mDownloadEnabled, this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     mOldAlbumModel = model;
 
@@ -409,6 +409,9 @@ void Controller::connectSignals()
 
     // Receive GUI settings here
     connect(item,SIGNAL(newSettingKey(QVariant)),this,SLOT(receiveSettingKey(QVariant)));
+
+    // Set downloading enabled variable to imagedatabase
+    connect(this,SIGNAL(newDownloadEnabled(bool)),mImgDB,SLOT(setDownloadEnabled(bool)));
 }
 
 void Controller::setPassword(QString password)
@@ -616,12 +619,18 @@ void Controller::readSettings()
     mListImageSize = settings.value("list_image_size",0).toInt();
     mSectionsInSearch = settings.value("sections_in_search",1).toInt();
     mSectionsInPlaylist = settings.value("sections_in_playlist",1).toInt();
+    mDownloadEnabled = settings.value("lastfm_download",1).toInt();
+    mCoverInNowPlaying = settings.value("show_covernowplaying",1).toInt();
+
+    emit newDownloadEnabled(mDownloadEnabled);
 
     mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
     mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
     mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
     mQuickView->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
     mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
+    mQuickView->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
+    mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
 
     mQuickView->rootContext()->setContextProperty("downloadSize",dlSize);
     mDownloadSize = dlSize;
@@ -660,6 +669,8 @@ void Controller::writeSettings()
     settings.setValue("list_image_size",mListImageSize);
     settings.setValue("sections_in_search",mSectionsInSearch);
     settings.setValue("sections_in_playlist",mSectionsInPlaylist);
+    settings.setValue("lastfm_download",mDownloadEnabled);
+    settings.setValue("show_covernowplaying",mCoverInNowPlaying);
     settings.endGroup();
 }
 
@@ -987,6 +998,13 @@ void Controller::receiveSettingKey(QVariant setting)
         } else if ( settings.at(0) == "sectionsInPlaylist" ) {
             mSectionsInPlaylist = settings.at(1).toInt();
             mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
+        } else if ( settings.at(0) == "lastfmEnabled" ) {
+            mDownloadEnabled = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
+            emit newDownloadEnabled(mDownloadEnabled);
+        } else if ( settings.at(0) == "showCoverNowPlaying" ) {
+            mCoverInNowPlaying = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
         }
 
     }

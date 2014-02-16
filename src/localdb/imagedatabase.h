@@ -79,6 +79,7 @@ public slots:
     void cleanupDatabase();
 
     void setDownloadSize(QString size);
+    void setDownloadEnabled(bool enabled);
 
 
 private:
@@ -104,6 +105,9 @@ private:
     int mImageCount;
     int mArtistCount;
     int mAlbumBlacklistCount;
+
+    // Settings
+    bool mDownloadEnabled;
 
     int getArtistCount();
     int getAlbumCount();

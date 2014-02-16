@@ -15,7 +15,7 @@ class AlbumModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit AlbumModel(QObject *parent = 0);
-    AlbumModel(QList<MpdAlbum*> *list, ImageDatabase *db, QString lastfmArtSize, QObject *parent = 0);
+    AlbumModel(QList<MpdAlbum*> *list, ImageDatabase *db, QString lastfmArtSize, bool downloading = false, QObject *parent = 0);
     ~AlbumModel();
 
     Q_INVOKABLE MpdAlbum* get(int index);
@@ -38,6 +38,9 @@ private:
     ImageDatabase *mDB;
     // Synchron downloader class to limit network usage
     ImageDownloader *mDownloader;
+
+    // Settings
+    bool mDownloadEnabled;
 
 signals:
     void requestAlbumInformation(MpdAlbum album) const;

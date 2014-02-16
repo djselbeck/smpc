@@ -95,6 +95,8 @@ Page {
                     }
 
                     ToggleImage {
+                        enabled: showCoverNowPlaying
+                        visible: showCoverNowPlaying
                         anchors {
                             horizontalCenter: parent.horizontalCenter
                         }
@@ -102,9 +104,9 @@ Page {
                         property int calcheight: (infoFlickable.height
                                                   - (titleText.height + albumText.height
                                                      + artistText.height + pageHeading.height))
-                        height: (calcheight > (contentColumn.width - listPadding
+                        height: showCoverNowPlaying ? (calcheight > (contentColumn.width - listPadding
                                                * 2) ? (contentColumn.width
-                                                       - listPadding * 2) : calcheight)
+                                                       - listPadding * 2) : calcheight) : 0
                         width: height
                         fillMode: Image.PreserveAspectFit
                         sourceprimary: coverimageurl
@@ -112,9 +114,10 @@ Page {
                         active: visible
                         Image {
                             id: fallbackImage
+                            enabled: showCoverNowPlaying
                             source: "qrc:/images/smpc-big.png"
                             anchors.fill: parent
-                            visible: ( !coverImage.ready )
+                            visible: ( !coverImage.ready  && showCoverNowPlaying )
                         }
                     }
                     Item

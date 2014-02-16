@@ -105,7 +105,10 @@ void ImageDatabase::fillDatabase(QMap<MpdArtist*, QList<MpdAlbum*>* > *map)
         foreach (MpdAlbum *album, *albumList) {
             int imageID = imageIDFromAlbumArtist(album->getTitle(),album->getArtist());
             if ( imageID == -1 ) {
-                emit requestAlbumDownload(MpdAlbum(this,album->getTitle(),album->getArtist()));
+                // Check if downloading is enabled first
+                if ( mDownloadEnabled ) {
+                    emit requestAlbumDownload(MpdAlbum(this,album->getTitle(),album->getArtist()));
+                }
             }
         }
     }
@@ -413,7 +416,9 @@ QPixmap ImageDatabase::getAlbumImage(QString album, QString artist, bool downloa
     if ( download ) {
         qDebug() << "No image found, try downloading";
         MpdAlbum tempAlbum(this,album,artist);
-        emit requestAlbumDownload(tempAlbum);
+        if ( mDownloadEnabled ) {
+            emit requestAlbumDownload(tempAlbum);
+        }
     }
     return QPixmap();
 }
@@ -679,7 +684,10 @@ void ImageDatabase::requestCoverImage(MpdAlbum album)
         return;
     }
     emit coverAlbumArtReady("");
-    emit requestAlbumDownload(album);
+    // Check if downloading is enabled first
+    if ( mDownloadEnabled ) {
+        emit requestAlbumDownload(album);
+    }
 }
 
 void ImageDatabase::requestCoverArtistImage(MpdArtist artist)
@@ -694,7 +702,10 @@ void ImageDatabase::requestCoverArtistImage(MpdArtist artist)
         return;
     }
     emit coverArtistArtReady("");
-    emit requestArtistDownload(artist);
+    // Check if downloading is enabled first
+    if ( mDownloadEnabled ) {
+        emit requestArtistDownload(artist);
+    }
 }
 
 void ImageDatabase::fillDatabase(QList<MpdArtist *> *artistList)
@@ -703,8 +714,11 @@ void ImageDatabase::fillDatabase(QList<MpdArtist *> *artistList)
         MpdArtist *artist = artistList->at(i);
         int imgID = imageIDFromArtist(artist->getName());
         if(imgID == -1 ) {
-            qDebug() << "Start downloading info for: " << artist->getName();
-            emit requestArtistDownload(MpdArtist(*artist));
+            // Check if downloading is enabled first
+            if ( mDownloadEnabled ) {
+                qDebug() << "Start downloading info for: " << artist->getName();
+                emit requestArtistDownload(MpdArtist(*artist));
+            }
         }
     }
     qDeleteAll(*artistList);
@@ -849,4 +863,14 @@ void ImageDatabase::setDownloadSize(QString size)
     mDownloadSize = size;
     mDownloader->setDownloadSize(size);
     qDebug() << "Setting DL size to :" << size;
+}
+
+void ImageDatabase::setDownloadEnabled(bool enabled)
+{
+    mDownloadEnabled = enabled;
+    if ( !mDownloadEnabled ) {
+        qDebug() << "Disable lastfm metadata downloading";
+        // Cancel all downloads here
+        mDownloader->clearDownloadQueue();
+    }
 }

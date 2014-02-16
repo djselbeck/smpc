@@ -86,6 +86,7 @@ signals:
 
     void requestDBStatistic();
     void newDownloadSize(QString);
+    void newDownloadEnabled(bool);
 
 private:
     QQuickView *mQuickView;
@@ -118,6 +119,7 @@ private:
     //DB
     DatabaseStatistic *mDBStatistic;
     int mDownloadSize;
+    int mDownloadEnabled;
     QString getLastFMArtSize(int index);
 
     // GUI Settings
@@ -126,6 +128,7 @@ private:
     int mListImageSize;
     int mSectionsInSearch;
     int mSectionsInPlaylist;
+    int mCoverInNowPlaying;
 
     // Streaming playback
     //StreamPlayer *mStreamPlayer;

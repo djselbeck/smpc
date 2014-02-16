@@ -98,9 +98,17 @@ Page {
                 color: Theme.primaryColor
             }
             Label {
+                visible: lastfmEnabled
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: qsTr("Fetches covers from last.fm")
+                text: qsTr("Fetches metadata from last.fm")
                 font.pixelSize: Theme.fontSizeTiny
+                MouseArea
+                {
+                    anchors.fill: parent
+                    onClicked: {
+                        Qt.openUrlExternally('https://www.last.fm')
+                    }
+                }
             }
         }
     }

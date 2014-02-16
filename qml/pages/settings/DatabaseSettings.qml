@@ -50,6 +50,20 @@ Page {
             Label {
                 text: qsTr("album downloads remaining: ") + dbStatistic.getAlbumQueueSize()
             }
+            TextSwitch
+            {
+                id: lastfmEnabledSwitch
+                text: qsTr("Last.fm Metadata download");
+                checked: lastfmEnabled
+                onClicked: {
+                    if ( checked ) {
+                        newSettingKey(["lastfmEnabled","1"]);
+                    } else {
+                        newSettingKey(["lastfmEnabled","0"]);
+                    }
+                }
+            }
+
             ComboBox {
                 id: downloadSizeComboBox
                 label: qsTr("download size:")
@@ -95,7 +109,7 @@ Page {
                                        confirmationRole: 4
                                    })
                 }
-                enabled: dbStatistic.getArtistQueueSize() === 0
+                enabled: ( (dbStatistic.getArtistQueueSize() === 0) && lastfmEnabled )
             }
             Button {
                 id: downloadAlbumImagesBtn
@@ -106,7 +120,7 @@ Page {
                                        confirmationRole: 5
                                    })
                 }
-                enabled: dbStatistic.getAlbumQueueSize() === 0
+                enabled: ( (dbStatistic.getAlbumQueueSize() === 0) && lastfmEnabled )
             }
             Button {
                 id: clearBlacklistBtn

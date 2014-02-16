@@ -5,12 +5,13 @@ AlbumModel::AlbumModel(QObject *parent) :
 {
 }
 
-AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QString lastfmartsize, QObject *parent) : QAbstractListModel(parent)
+AlbumModel::AlbumModel(QList<MpdAlbum *> *list, ImageDatabase *db, QString lastfmartsize, bool downloading,QObject *parent) : QAbstractListModel(parent)
 {
     mEntries = list;
     mDB = db;
     mDownloader = new ImageDownloader();
     mDownloader->setDownloadSize(lastfmartsize);
+    mDownloadEnabled = downloading;
 
     connect(this,SIGNAL(requestAlbumInformation(MpdAlbum)),mDownloader,SLOT(requestAlbumArt(MpdAlbum)),Qt::QueuedConnection);
     connect(mDownloader,SIGNAL(albumInformationReady(AlbumInformation*)),this,SLOT(albumInformationReady(AlbumInformation*)));
@@ -58,7 +59,9 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
             if ( imageID == -1 ) {
                 // Start image retrieval
                 qDebug() << "returning dummy image for album: " << album->getTitle();
-                emit requestAlbumInformation(*album);
+                if ( mDownloadEnabled ) {
+                    emit requestAlbumInformation(*album);
+                }
                 // Return dummy for the time being
                 return DUMMY_ALBUMIMAGE;
             } else if (imageID == -2 ) {

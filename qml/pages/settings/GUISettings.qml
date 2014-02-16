@@ -116,6 +116,18 @@ Page {
                 }
             }
             TextSwitch{
+                id: coverNowPlayingSwitch
+                text: qsTr("show cover in now playing")
+                checked: showCoverNowPlaying
+                onClicked: {
+                    if ( checked ) {
+                        newSettingKey(["showCoverNowPlaying","1"]);
+                    } else {
+                        newSettingKey(["showCoverNowPlaying","0"]);
+                    }
+                }
+            }
+            TextSwitch{
                 id: sectionInPlaylistSwitch
                 text: qsTr("show sections in playlists")
                 checked: sectionsInPlaylist
