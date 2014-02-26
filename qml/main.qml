@@ -25,6 +25,8 @@ ApplicationWindow
     signal addArtist(string artist);
     signal addFiles(string files);
     signal addSong(string uri);
+    signal addSongToSaved(variant data);
+    signal removeSongFromSaved(variant data);
     signal addSongAfterCurrent(string uri);
     signal addPlaylist(string name);
     signal playPlaylist(string name);

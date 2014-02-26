@@ -410,6 +410,9 @@ void Controller::connectSignals()
     // Receive GUI settings here
     connect(item,SIGNAL(newSettingKey(QVariant)),this,SLOT(receiveSettingKey(QVariant)));
 
+    connect(item,SIGNAL(addSongToSaved(QVariant)),mNetAccess,SLOT(addTrackToSavedPlaylist(QVariant)));
+    connect(item,SIGNAL(removeSongFromSaved(QVariant)),mNetAccess,SLOT(removeTrackFromSavedPlaylist(QVariant)));
+
     // Set downloading enabled variable to imagedatabase
     connect(this,SIGNAL(newDownloadEnabled(bool)),mImgDB,SLOT(setDownloadEnabled(bool)));
 }

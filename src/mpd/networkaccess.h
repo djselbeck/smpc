@@ -89,6 +89,8 @@ signals:
     void requestExit();
 public slots:
     void addTrackToPlaylist(QString fileuri);
+    void addTrackToSavedPlaylist(QVariant data);
+    void removeTrackFromSavedPlaylist(QVariant data);
     void addTrackAfterCurrent(QString fileuri);
     void addAlbumToPlaylist(QString album);
     void playAlbum(QString album);

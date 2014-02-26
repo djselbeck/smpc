@@ -105,6 +105,12 @@ Page
                         addSongAfterCurrent(path)
                     }, 3000)
                 }
+                function removeFromListRemorse() {
+                    remorseAction(qsTr("removing track"), function () {
+                        removeSongFromSaved([index,playlistname]);
+                        savedPlaylistClicked(playlistname);
+                    }, 3000)
+                }
                 Component {
                     id: contextMenu
                     ContextMenu {
@@ -125,6 +131,12 @@ Page
                             text: qsTr("play after current")
                             onClicked: {
                                 addTrackAfterCurrentRemorse();
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr("remove from list")
+                            onClicked: {
+                                removeFromListRemorse();
                             }
                         }
                     }

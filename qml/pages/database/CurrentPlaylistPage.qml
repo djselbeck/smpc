@@ -76,11 +76,11 @@ Page {
                 Component {
                     id: contextMenu
                     ContextMenu {
-                        MenuItem {
-                            visible: !playing
-                            text: qsTr("play song")
-                            onClicked: playPlaylistTrack(index)
-                        }
+//                        MenuItem {
+//                            visible: !playing
+//                            text: qsTr("play song")
+//                            onClicked: playPlaylistTrack(index)
+//                        }
                         MenuItem {
                             text: qsTr("remove song")
                             onClicked: {
@@ -116,6 +116,14 @@ Page {
                             visible: playing
                             text: qsTr("show information")
                             onClicked: pageStack.navigateForward(PageStackAction.Animated)
+                        }
+
+                        MenuItem {
+                            text: qsTr("add to saved list")
+                            onClicked: {
+                                requestSavedPlaylists()
+                                pageStack.push(Qt.resolvedUrl("AddToPlaylistDialog.qml"),{url:path});
+                            }
                         }
 
                     }

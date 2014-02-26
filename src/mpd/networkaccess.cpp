@@ -830,6 +830,58 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
     updateStatusInternal();
 }
 
+// Format [URI,playlistName]
+void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
+{
+    QStringList inputStrings = data.toStringList();
+    if ( inputStrings.size() != 2 ) {
+        return;
+    }
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "playlistadd \"" << inputStrings.at(1) << "\" " << "\"" << inputStrings.at(0) << "\"" <<  endl;
+        QString response ="";
+        //Clear read buffer
+        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+
+            }
+        }
+    }
+    updateStatusInternal();
+}
+
+// Format [index,playlistName]
+void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
+{
+    QStringList inputStrings = data.toStringList();
+    if ( inputStrings.size() != 2 ) {
+        return;
+    }
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "playlistdelete \"" << inputStrings.at(1) << "\" " << inputStrings.at(0) <<  endl;
+        QString response ="";
+        //Clear read buffer
+        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+
+            }
+        }
+    }
+    updateStatusInternal();
+}
+
 void NetworkAccess::playTrackNext(int index)
 {
     qWarning() << "PlaynextTrack";

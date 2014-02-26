@@ -153,6 +153,15 @@ Component {
                         addTrackAfterCurrentRemorse();
                     }
                 }
+                MenuItem {
+                    enabled: isFile
+                    visible: isFile
+                    text: qsTr("add to saved list")
+                    onClicked: {
+                        requestSavedPlaylists()
+                        pageStack.push(Qt.resolvedUrl("../pages/database/AddToPlaylistDialog.qml"),{url:path});
+                    }
+                }
             }
         }
     }
