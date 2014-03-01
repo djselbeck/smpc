@@ -107,12 +107,6 @@ Page {
                 id: showView
                 property int itemHeight: height / (1.3)
                 property int itemWidth: itemHeight
-                onHeightChanged: {
-                    console.debug("height: " + height)
-                }
-                onWidthChanged: {
-                    console.debug("width: " + width)
-                }
                 model: artistsModel
 
                 SectionScroller {
