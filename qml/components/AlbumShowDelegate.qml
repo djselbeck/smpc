@@ -37,10 +37,9 @@ BackgroundItem {
         Rectangle {
             id: gradientRect
             visible: true //artistImage.source!=""
+            antialiasing: true
             anchors {
-                bottom: parent.bottom
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
+                fill: albumImage
             }
             color: Theme.highlightBackgroundColor
             gradient: Gradient {
