@@ -137,27 +137,27 @@
 <context>
     <name>AlbumShowDelegate</name>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="71"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="70"/>
         <source>No Album Tag</source>
         <translation>Kein Album Tag</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="284"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="283"/>
         <source>playing track</source>
         <translation>spiele Lied</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="289"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="288"/>
         <source>adding track</source>
         <translation>füge Lied hinzu</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="302"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="301"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/components/AlbumShowDelegate.qml" line="309"/>
+        <location filename="qml/components/AlbumShowDelegate.qml" line="308"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
@@ -166,44 +166,50 @@
     <name>AlbumTracksPage</name>
     <message>
         <location filename="qml/pages/database/AlbumTracksPage.qml" line="97"/>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="189"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="195"/>
         <source>add album</source>
         <translation>Album hinzufügen</translation>
     </message>
     <message>
         <location filename="qml/pages/database/AlbumTracksPage.qml" line="103"/>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="195"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="201"/>
         <source>play album</source>
         <translation>Album abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="335"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="109"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="207"/>
+        <source>show all tracks</source>
+        <translation>alle Lieder anzeigen</translation>
+    </message>
+    <message>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="347"/>
         <source>playing track</source>
         <translation>spiele Lied ab</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="340"/>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="345"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="352"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="357"/>
         <source>adding track</source>
         <translation>füge Lied hinzu</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="353"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="365"/>
         <source>play track</source>
         <translation>Lied abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="360"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="372"/>
         <source>add track to list</source>
         <translation>Lied hinzufügen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="366"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="378"/>
         <source>play after current</source>
         <translation>Lied als nächstes abspielen</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/AlbumTracksPage.qml" line="372"/>
+        <location filename="qml/pages/database/AlbumTracksPage.qml" line="384"/>
         <source>add to saved list</source>
         <translation>zu gespeicherten Liste hinzufügen</translation>
     </message>
@@ -283,7 +289,7 @@
 <context>
     <name>ArtistShowDelegate</name>
     <message>
-        <location filename="qml/components/ArtistShowDelegate.qml" line="72"/>
+        <location filename="qml/components/ArtistShowDelegate.qml" line="71"/>
         <source>No Artist Tag</source>
         <translation>Kein Interpreten Tag</translation>
     </message>

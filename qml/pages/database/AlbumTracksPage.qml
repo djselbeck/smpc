@@ -94,6 +94,15 @@ Page {
                 }
                 PullDownMenu {
                     MenuItem {
+                        enabled: (artistname!=="")
+                        visible: enabled
+                        text: qsTr("show all tracks")
+                        onClicked: {
+                            albumClicked("", albumname);
+                            artistname = "";
+                        }
+                    }
+                    MenuItem {
                         text: qsTr("add album")
                         onClicked: {
                             addAlbum([artistname, albumname])
@@ -186,6 +195,15 @@ Page {
 
                     PullDownMenu {
                         MenuItem {
+                            enabled: (artistname!=="")
+                            visible: enabled
+                            text: qsTr("show all tracks")
+                            onClicked: {
+                                albumClicked("", albumname);
+                                artistname = "";
+                            }
+                        }
+                        MenuItem {
                             text: qsTr("add album")
                             onClicked: {
                                 addAlbum([artistname, albumname])
@@ -197,6 +215,7 @@ Page {
                                 playAlbum([artistname, albumname])
                             }
                         }
+
                     }
 
                     model: albumTracksModel
@@ -292,7 +311,7 @@ Page {
                 Row {
                     id: titleRow
                     Label {
-                        text: (index + 1) + ". "
+                        text: tracknr + ". "
                         anchors {
                             verticalCenter: parent.verticalCenter
                         }

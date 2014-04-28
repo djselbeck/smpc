@@ -336,6 +336,7 @@ void NetworkAccess::updateStatusInternal()
 
 status_struct NetworkAccess::getStatus()
 {
+    qDebug() << "::getStatus()";
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -538,6 +539,7 @@ status_struct NetworkAccess::getStatus()
             getCurrentPlaylistTracks();
         }
         mPlaylistversion=tempstat.playlistversion;
+        qDebug() << "::getStatus() return";
         return tempstat;
     }
     status_struct tempstat;
@@ -567,6 +569,7 @@ status_struct NetworkAccess::getStatus()
         getCurrentPlaylistTracks();
     }
     mPlaylistversion=tempstat.playlistversion;
+    qDebug() << "::getStatus() return";
     return tempstat;
 }
 
@@ -884,7 +887,6 @@ void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
 
 void NetworkAccess::playTrackNext(int index)
 {
-    qWarning() << "PlaynextTrack";
     int currentPosition = getStatus().id;
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
@@ -906,7 +908,9 @@ void NetworkAccess::playTrackNext(int index)
             }
         }
     }
-    updateStatusInternal();
+    //TODO Workaround
+    qDebug() << "Track moved";
+//    updateStatusInternal();
 }
 
 void NetworkAccess::addTrackAfterCurrent(QString fileuri)
