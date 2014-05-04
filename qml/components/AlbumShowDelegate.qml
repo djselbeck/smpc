@@ -260,7 +260,7 @@ BackgroundItem {
                                         font.pixelSize: Theme.fontSizeSmall
                                     }
                                     Label {
-                                        text: (length === 0 ? "" : " (" + lengthformatted + ")")
+                                        text: (length === 0 ? "" : " (" + lengthformated + ")")
                                         anchors {
                                             verticalCenter: parent.verticalCenter
                                         }
@@ -281,20 +281,20 @@ BackgroundItem {
                             }
                             function playTrackRemorse() {
                                 remorseAction(qsTr("playing track"), function () {
-                                    playSong(uri)
+                                    playSong(path)
                                 }, 3000)
                             }
                             function addTrackRemorse() {
                                 remorseAction(qsTr("adding track"), function () {
-                                    addSong(uri)
+                                    addSong(path)
                                 }, 3000)
                             }
                             Component {
                                 id: contextMenu
                                 ContextMenu {
                                     anchors{
-                                        right: parent.right
-                                        left: parent.left
+                                        right: (parent != null ) ? parent.right : undefined
+                                        left: (parent != null ) ? parent.left : undefined
                                     }
 
                                     MenuItem {
