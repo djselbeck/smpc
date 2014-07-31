@@ -293,7 +293,6 @@ Page {
         ListItem {
             menu: contextMenu
             contentHeight: Theme.itemSizeSmall
-            width: parent.width
             Column {
                 id: mainColumn
                 clip: true
@@ -368,6 +367,10 @@ Page {
             Component {
                 id: contextMenu
                 ContextMenu {
+                    anchors{
+                        right: (parent != null ) ? parent.right : undefined
+                        left: (parent != null ) ? parent.left : undefined
+                    }
                     MenuItem {
                         text: qsTr("play track")
                         onClicked: {

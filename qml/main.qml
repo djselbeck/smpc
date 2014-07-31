@@ -319,6 +319,15 @@ ApplicationWindow
         artistimageurl = url;
     }
 
+    function jumpNowPlaying()
+    {
+        pageStack.clear();
+        pageStack.push(initialPage);
+        pageStack.push();
+        pageStack.push(Qt.resolvedUrl("pages/database/CurrentPlaylistPage.qml"));
+        pageStack.push(Qt.resolvedUrl("pages/database/CurrentSong.qml"));
+    }
+
     // Notifies user about ongoing action in netaccess
     BusyIndicator
     {
@@ -335,6 +344,8 @@ ApplicationWindow
         preventStealing: true
         enabled: false
     }
+
+
 
 
     ControlPanel {
