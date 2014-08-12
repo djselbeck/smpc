@@ -53,7 +53,7 @@ Page
                 }
 
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
+                    pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,macaddress:macaddress,newprofile:false});
                 }
             }
     }

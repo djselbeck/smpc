@@ -19,7 +19,7 @@ Page {
         }
 
         model: playlistModelVar
-
+        quickScrollEnabled: jollaQuickscroll
         highlightFollowsCurrentItem: true
         highlightMoveDuration: 0
         header: PageHeader {

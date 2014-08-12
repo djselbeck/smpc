@@ -17,7 +17,7 @@ Page {
         sourceComponent: Component {
             SilicaGridView {
                 id: artistGridView
-
+                quickScrollEnabled: jollaQuickscroll
                 model: artistsModel
                 clip: true
                 cellWidth: width / 2
@@ -59,7 +59,7 @@ Page {
         sourceComponent: Component {
             SilicaListView {
                 id: artistListView
-
+                quickScrollEnabled: jollaQuickscroll
                 model: artistsModel
                 clip: true
                 populate: Transition {

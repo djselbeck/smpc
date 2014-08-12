@@ -11,6 +11,7 @@ Page
     SilicaListView {
             id : playlistTracksListView
             model: savedPlaylistModel
+            quickScrollEnabled: jollaQuickscroll
             SpeedScroller {
                 listview: playlistTracksListView
             }

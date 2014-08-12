@@ -5,7 +5,7 @@ import "SpeedScroller.js" as Sections
 Item {
     id: scroller
     height: parent.height
-    width: parent.width/7
+    width: (orientation === Orientation.Portrait ||  orientation === Orientation.PortraitInverted) ?  parent.width/7 : parent.width/12
     property alias scrollenabled: inputArea.enabled
     property int listviewCache
     x: parent.x+parent.width-width;
@@ -16,6 +16,35 @@ Item {
 //        opacity:0.5
 //        anchors.fill:parent
 //    }
+
+    Rectangle {
+        id: sectionScrollIndicator
+        property bool listviewScrolling : ( listview && listview.flicking)
+        property bool inputAreaScrolling : inputArea.pressed
+        opacity: ( (listviewScrolling || inputAreaScrolling) ? 1.0 : 0.0 )
+        anchors.fill:parent
+
+        gradient: Gradient {
+
+
+            GradientStop {
+                position: 0.0
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            }
+            GradientStop {
+                position: 0.5
+                color: Theme.rgba(Theme.highlightBackgroundColor,0.4)
+            }
+            GradientStop {
+                position: 1.0
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            }
+        }
+        Behavior on opacity {
+                 PropertyAnimation { properties: "opacity"; easing.type: Easing.InOutQuad; duration: 300 }
+        }
+    }
+
 
     onListviewChanged: {
         if(listview && listview.model) {

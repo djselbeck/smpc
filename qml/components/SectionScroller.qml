@@ -14,11 +14,56 @@ Item {
     property int cacheCount: 0
     property string sectionPropertyName
     property bool landscape:false
+
+
     Rectangle {
         id: testrect
         visible: mDebugEnabled
         opacity:0.5
         anchors.fill:parent
+    }
+
+    Rectangle {
+        id: sectionScrollIndicator
+        property bool listviewScrolling : ( listview && listview.flicking)
+        property bool gridviewScrolling : ( gridView && gridView.flicking)
+        property bool pathviewScrolling : ( pathview && pathview.flicking)
+        property bool inputAreaScrolling : inputArea.pressed
+        opacity: ( (listviewScrolling || gridviewScrolling || pathviewScrolling || inputAreaScrolling) && !landscape ? 1.0 : 0.0 )
+        anchors.fill:parent
+
+        gradient: Gradient {
+
+            GradientStop {
+                position: 0.0
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            }
+            GradientStop {
+                position: 0.5
+                color: Theme.rgba(Theme.highlightBackgroundColor,0.4)
+            }
+            GradientStop {
+                position: 1.0
+                color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+            }
+        }
+        Behavior on opacity {
+                 PropertyAnimation { properties: "opacity"; easing.type: Easing.InOutQuad; duration: 300 }
+        }
+    }
+
+    Rectangle {
+        id: sectionScrollIndicatorLandscape
+        property bool listviewScrolling : ( listview && listview.flicking)
+        property bool gridviewScrolling : ( gridView && gridView.flicking)
+        property bool pathviewScrolling : ( pathview && pathview.flicking)
+        property bool inputAreaScrolling : inputArea.pressed
+        opacity: ( (listviewScrolling || gridviewScrolling || pathviewScrolling || inputAreaScrolling) && landscape ? 1.0 : 0.0 )
+        anchors.fill:parent
+        color: Theme.rgba(Theme.highlightBackgroundColor,0.4)
+        Behavior on opacity {
+                 PropertyAnimation { properties: "opacity"; easing.type: Easing.InOutQuad; duration: 300 }
+        }
     }
 
     onListviewChanged: {

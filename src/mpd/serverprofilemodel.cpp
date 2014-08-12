@@ -42,6 +42,10 @@ QVariant ServerProfileModel::data(const QModelIndex &index, int role) const
     {
         return mEntries->at(index.row())->getAutoconnect();
     }
+    else if(role==MACAddressRole)
+    {
+        return mEntries->at(index.row())->getMACAddress();
+    }
 
     return 0;
 }
@@ -58,6 +62,7 @@ QHash<int, QByteArray> ServerProfileModel::roleNames() const {
     roles[PortRole] = "port";
     roles[PasswordRole] = "password";
     roles[AutoconnectRole] = "autoconnect";
+    roles[MACAddressRole] = "macaddress";
     return roles;
 }
 
@@ -77,6 +82,7 @@ void ServerProfileModel::notifyChanged(int position)
     roles.append(PasswordRole);
     roles.append(PortRole);
     roles.append(AutoconnectRole);
+    roles.append(MACAddressRole);
     emit dataChanged(createIndex(position,0),createIndex(position,0),roles);
 }
 

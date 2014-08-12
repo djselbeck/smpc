@@ -54,7 +54,7 @@ Page
                         id: editItem
                         text: qsTr("edit server profile")
                         onClicked: {
-                            pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,newprofile:false});
+                            pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{hostname:hostname,port:port,name:name,password:password,index:index,autoconnect:autoconnect,macaddress:macaddress,newprofile:false});
                         }
                     }
                     MenuItem {
@@ -62,6 +62,14 @@ Page
                         text: qsTr("remove server profile")
                         onClicked: {
                             removeProfileRemorse();
+                        }
+                    }
+                    MenuItem {
+                        id: wakeItem
+                        text: qsTr("wake server")
+                        onClicked: {
+                            console.log("Waking profile: " + index);
+                            wakeUpServer(index);
                         }
                     }
                 }

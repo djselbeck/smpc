@@ -415,6 +415,8 @@ void Controller::connectSignals()
 
     // Set downloading enabled variable to imagedatabase
     connect(this,SIGNAL(newDownloadEnabled(bool)),mImgDB,SLOT(setDownloadEnabled(bool)));
+
+    connect(item,SIGNAL(wakeUpServer(int)),this,SLOT(wakeUpHost(int)));
 }
 
 void Controller::setPassword(QString password)
@@ -599,7 +601,7 @@ void Controller::readSettings()
     QSettings settings;
     settings.beginGroup("server_properties");
     int size = settings.beginReadArray("profiles");
-    QString hostname,password,name;
+    QString hostname,password,name,macAddr;
     int port;
     bool autoconnect;
     for(int i = 0;i<size;i++)
@@ -610,7 +612,8 @@ void Controller::readSettings()
         name = settings.value("profilename").toString();
         port = settings.value("port").toUInt();
         autoconnect = settings.value("default").toBool();
-        tmpList->append(new ServerProfile(hostname,password,port,name,autoconnect));
+        macAddr = settings.value("macaddress").toString();
+        tmpList->append(new ServerProfile(hostname,password,port,name,autoconnect,macAddr));
     }
     settings.endArray();
     settings.endGroup();
@@ -662,6 +665,7 @@ void Controller::writeSettings()
         settings.setValue("profilename",mServerProfiles->get(i)->getName());
         settings.setValue("port",mServerProfiles->get(i)->getPort());
         settings.setValue("default",mServerProfiles->get(i)->getAutoconnect());
+        settings.setValue("macaddress",mServerProfiles->get(i)->getMACAddress());
     }
     settings.endArray();
     settings.endGroup();
@@ -705,6 +709,7 @@ void Controller::newProfile(QVariant profile)
     profilename = strings[1];
     int port = strings.at(4).toInt();
     bool autoconnect;
+    QString macAddr = strings.at(6);
     if(strings.at(5).toInt()==1) {
         //Check for other autoconnects
         for(int j = 0; j<mServerProfiles->rowCount();j++)
@@ -717,7 +722,7 @@ void Controller::newProfile(QVariant profile)
     else{
         autoconnect = false;
     }
-    ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect);
+    ServerProfile *tempprofile = new ServerProfile(hostname,password,port,profilename,autoconnect,macAddr);
     QQmlEngine::setObjectOwnership(tempprofile,QQmlEngine::CppOwnership);
     mServerProfiles->append(tempprofile);
     emit serverProfilesUpdated();
@@ -732,6 +737,7 @@ void Controller::changeProfile(QVariant profile)
     mServerProfiles->get(i)->setHostname(strings[2]);
     mServerProfiles->get(i)->setPassword(strings[3]);
     mServerProfiles->get(i)->setPort(strings.at(4).toInt());
+    mServerProfiles->get(i)->setMACAdress(strings[6]);
     mServerProfiles->notifyChanged(i);
     if(strings.at(5).toInt()==1) {
         //Check for other autoconnects
@@ -1054,4 +1060,21 @@ void Controller::trimCache()
 {
 //    mQuickView->engine()->clearComponentCache();
 //    mQuickView->engine()->collectGarbage();
+}
+
+void Controller::wakeUpHost(int index)
+{
+    if ( mServerProfiles == NULL || mServerProfiles->rowCount() < index || mServerProfiles->get(index)->getMACAddress()=="") {
+        return;
+    }
+
+    QUdpSocket udpSocket;
+    QByteArray dataGram;
+    dataGram.append(QByteArray::fromHex("ffffffffffff"));
+    for ( int i = 0; i < 16; i++) {
+        dataGram.append(QByteArray::fromHex(mServerProfiles->get(index)->getMACAddress().toLatin1()));
+    }
+
+    qint64 bytesSend = udpSocket.writeDatagram(dataGram,QHostAddress::Broadcast,9);
+    qDebug() << "Send WoL: " << bytesSend << " bytes, content: " << dataGram.toHex() << endl;
 }

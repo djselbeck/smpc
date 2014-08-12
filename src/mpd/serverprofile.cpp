@@ -5,13 +5,14 @@ ServerProfile::ServerProfile(QObject *parent) :
 {
 }
 
-ServerProfile::ServerProfile(QString hostname, QString password, int port, QString name, bool autocon)
+ServerProfile::ServerProfile(QString hostname, QString password, int port, QString name, bool autocon, QString macAddr)
 {
     this->mHostname = hostname;
     this->mPassword = password;
     this->mPort = port;
     this->mName = name;
     this->mAutoconnect = autocon;
+    this->mMACAdress = macAddr;
 }
 
 void ServerProfile::setHostname(QString hostname)
@@ -41,6 +42,11 @@ void ServerProfile::setPort(int port)
 void ServerProfile::setAutoconnect(bool autoconnect)
 {
     this->mAutoconnect = autoconnect;
+}
+
+void ServerProfile::setMACAdress(QString macAddr)
+{
+    this->mMACAdress = macAddr;
 }
 
 
@@ -77,4 +83,9 @@ void ServerProfile::setStreamingPort(int port)
 bool ServerProfile::getAutoconnect()
 {
     return mAutoconnect;
+}
+
+QString ServerProfile::getMACAddress()
+{
+    return mMACAdress;
 }

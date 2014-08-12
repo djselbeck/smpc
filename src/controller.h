@@ -201,6 +201,8 @@ private slots:
 
     void trimCache();
 
+    void wakeUpHost(int index);
+
 };
 
 #endif // CONTROLLER_H

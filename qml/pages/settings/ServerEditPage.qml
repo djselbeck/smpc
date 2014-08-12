@@ -12,6 +12,7 @@ Dialog
     property alias port: portInputField.text
     property alias streamingport: streamingPortInputField.text
     property alias autoconnect: autoconnectSwitch.checked
+    property alias macaddress: macAddressField.text
     property int index
     property bool newprofile
     SilicaFlickable
@@ -108,6 +109,7 @@ Dialog
                 echoMode: TextInput.Password
             }
             Label{
+                visible: false
                 anchors.right: parent.right
                 anchors.left: parent.left
                 text:qsTr("streaming port:")
@@ -120,6 +122,23 @@ Dialog
                 text: "8081"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: portvalidator
+                visible: false
+            }
+            Label{
+                visible: false
+                anchors.right: parent.right
+                anchors.left: parent.left
+                text:qsTr("mac address:")
+            }
+            TextField
+            {
+                anchors.right: parent.right
+                anchors.left: parent.left
+                id: macAddressField
+                placeholderText: "ff:ff:ff:ff:ff:ff"
+                inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+                validator: macValidator
+                visible: true
             }
             TextSwitch
             {
@@ -151,11 +170,10 @@ Dialog
 
     onAccepted: {
         if(newprofile) {
-            console.debug("creating new profile");
-            newProfile([index,name,hostname,password,port,autoconnect?1:0]);
+            newProfile([index,name,hostname,password,port,autoconnect?1:0,macAddressField.text]);
         }
         else {
-            changeProfile([index,name,hostname,password,port,autoconnect?1:0]);
+            changeProfile([index,name,hostname,password,port,autoconnect?1:0,macAddressField.text]);
         }
 
     }
@@ -164,5 +182,11 @@ Dialog
             id:portvalidator
             top: 65536
             bottom: 1
+    }
+
+    RegExpValidator
+    {
+        id: macValidator
+        regExp: /[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}/
     }
 }

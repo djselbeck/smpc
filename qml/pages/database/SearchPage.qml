@@ -68,6 +68,7 @@ Page {
                 //bottomMargin: mainDrawer.open ? undefined : quickControlPanel.visibleSize
             }
             ScrollDecorator {}
+            quickScrollEnabled: jollaQuickscroll
             SpeedScroller {
                 listview: searchsongListView
             }

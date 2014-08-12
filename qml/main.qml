@@ -111,6 +111,8 @@ ApplicationWindow
     // [settingkey,value]
     signal newSettingKey(variant setting);
 
+    signal wakeUpServer(int index);
+
     // Propertys of application
     property string hostname;
 
@@ -160,6 +162,8 @@ ApplicationWindow
     property string mBitrate;
     property string mUri;
     property string mLengthText;
+
+    property bool jollaQuickscroll: false
 
 
     // JS-functions

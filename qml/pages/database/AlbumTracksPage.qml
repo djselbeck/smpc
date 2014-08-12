@@ -20,7 +20,7 @@ Page {
 
             SilicaListView {
                 id: albumTracksListView
-
+                quickScrollEnabled: jollaQuickscroll
                 contentWidth: width
                 model: albumTracksModel
                 clip: true
@@ -192,7 +192,7 @@ Page {
                     header: PageHeader{
                         title: albumname
                     }
-
+                    quickScrollEnabled: jollaQuickscroll
                     PullDownMenu {
                         MenuItem {
                             enabled: (artistname!=="")

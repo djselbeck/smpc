@@ -13,7 +13,7 @@ Page
                 listview: savedPlaylistsListView
             }
             ScrollDecorator {}
-
+            quickScrollEnabled: jollaQuickscroll
             anchors.fill: parent
 //            anchors.bottomMargin: quickControlPanel.visibleSize
             contentWidth: width

@@ -29,6 +29,7 @@ public:
         ProfileNameRole,
         PortRole,
         PasswordRole,
+        MACAddressRole,
         AutoconnectRole
     };
 

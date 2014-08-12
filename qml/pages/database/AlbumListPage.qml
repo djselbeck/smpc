@@ -37,6 +37,7 @@ Page {
                 ScrollDecorator {
                 }
 
+                quickScrollEnabled: jollaQuickscroll
                 header: PageHeader {
                     title: artistname !== "" ? artistname : qsTr("albums")
                     width: parent.width
@@ -74,6 +75,7 @@ Page {
                 id: listView
                 clip: true
                 model: albumsModel
+                quickScrollEnabled: jollaQuickscroll
                 SectionScroller {
                     listview: listView
                     landscape: false

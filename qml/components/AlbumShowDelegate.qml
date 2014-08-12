@@ -299,6 +299,7 @@ BackgroundItem {
 
                                     MenuItem {
                                         text: qsTr("play track")
+                                        font.pixelSize: Theme.fontSizeSmall
                                         onClicked: {
                                             playTrackRemorse()
                                         }
@@ -306,6 +307,7 @@ BackgroundItem {
 
                                     MenuItem {
                                         text: qsTr("add track to list")
+                                        font.pixelSize: Theme.fontSizeSmall
                                         onClicked: {
                                             addTrackRemorse()
                                         }
