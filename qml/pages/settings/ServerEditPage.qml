@@ -125,7 +125,6 @@ Dialog
                 visible: false
             }
             Label{
-                visible: false
                 anchors.right: parent.right
                 anchors.left: parent.left
                 text:qsTr("mac address:")
