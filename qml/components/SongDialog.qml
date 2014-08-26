@@ -156,6 +156,13 @@ Dialog {
                 }
             }
             MenuItem {
+                text: qsTr("play after current")
+                onClicked: {
+                    addSongAfterCurrent(filename)
+                    pageStack.navigateBack(PageStackAction.Animated)
+                }
+            }
+            MenuItem {
                 text: qsTr("play song")
                 onClicked: {
                     playSong(filename)

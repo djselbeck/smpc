@@ -8,6 +8,7 @@ Page {
     property int lastOrientation
     allowedOrientations: bothOrientation
 
+
     Loader {
         id: gridViewLoader
         anchors.fill: parent

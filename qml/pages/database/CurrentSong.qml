@@ -16,6 +16,9 @@ Page {
     property bool detailsvisible: true
     property bool pageactive: false
 
+    Component.onDestruction: {
+        mCurrentSongPage = null;
+    }
 
     allowedOrientations: bothOrientation
 
@@ -519,6 +522,7 @@ Page {
     }
 
 
+
     onStatusChanged: {
         if ((status === PageStatus.Activating)
                 || (status === PageStatus.Active)) {
@@ -637,4 +641,7 @@ Page {
             mainDrawer.hide()
         }
     }
+
+
+
 }

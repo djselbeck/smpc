@@ -125,6 +125,7 @@ Page {
                     } else {
                         newSettingKey(["showCoverNowPlaying","0"]);
                     }
+                    mCurrentSongPage = null;
                 }
             }
             TextSwitch{
@@ -137,6 +138,7 @@ Page {
                     } else {
                         newSettingKey(["sectionsInPlaylist","0"]);
                     }
+                    mPlaylistPage = null;
                 }
             }
             TextSwitch{

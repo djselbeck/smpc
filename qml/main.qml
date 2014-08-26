@@ -165,6 +165,9 @@ ApplicationWindow
 
     property bool jollaQuickscroll: false
 
+    property Page mPlaylistPage;
+    property Page mCurrentSongPage;
+
 
     // JS-functions
     //TODO separation
@@ -348,7 +351,6 @@ ApplicationWindow
         preventStealing: true
         enabled: false
     }
-
 
 
 

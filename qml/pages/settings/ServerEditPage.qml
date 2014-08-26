@@ -134,7 +134,8 @@ Dialog
                 anchors.right: parent.right
                 anchors.left: parent.left
                 id: macAddressField
-                placeholderText: "ff:ff:ff:ff:ff:ff"
+                placeholderText: "optional for wake on lan"
+                labelVisible: true
                 inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
                 validator: macValidator
                 visible: true

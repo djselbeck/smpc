@@ -26,8 +26,52 @@ Page {
         text: connected ? qsTr("connected to")
                           + ": " + profilename : qsTr("disconnected")
     }
+    Grid
+    {
+        visible:false
+         enabled: false
+        columns: orientation === Orientation.Landscape ? 2 : 1
+        anchors {
+            top: connectedLabel.bottom
+            bottom: parent.bottom
+//            bottomMargin: quickControlPanel.visibleSize
+            right: parent.right
+            left: parent.left
+        }
+        Button
+        {
+            text: qsTr("playlist")
+        }
+        Button
+        {
+            text: qsTr("artists")
+        }
+        Button
+        {
+            text: qsTr("albums")
+        }
+        Button
+        {
+            text: qsTr("files")
+        }
+        Button
+        {
+            text: qsTr("search")
+        }
+        Button
+        {
+            text: qsTr("connect")
+        }
+        Button
+        {
+            text: qsTr("settings")
+        }
+    }
+
     SilicaListView {
         id: mainList
+        enabled: true
+        visible: true
         clip: true
         anchors {
             top: connectedLabel.bottom
@@ -110,7 +154,14 @@ Page {
 
     onStatusChanged: {
         if (status === PageStatus.Active) {
-            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
+//            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
+            if ( mPlaylistPage == undefined) {
+                var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
+                var playlistPage = playlistComponent.createObject(mainWindow);
+                mPlaylistPage = playlistPage;
+            }
+
+            pageStack.pushAttached(mPlaylistPage);
             showCurrentSongTimer.start()
         } else if (status === PageStatus.Deactivating) {
             if (showCurrentSongTimer.running) {

@@ -6,7 +6,8 @@ Page {
     id: currentPlaylistPage
     //property alias listmodel: playlistView.model
     allowedOrientations: bothOrientation
-    property int lastIndex
+    property int lastIndex: lastsongid
+    property bool mDeleteRemorseRunning: false
     SilicaListView {
         id: playlistView
         clip: true
@@ -83,7 +84,10 @@ Page {
 //                        }
                         MenuItem {
                             text: qsTr("remove song")
+                            visible: !mDeleteRemorseRunning
+                            enabled: !mDeleteRemorseRunning
                             onClicked: {
+                                mDeleteRemorseRunning = true;
                                 remove()
                             }
                         }
@@ -201,7 +205,8 @@ Page {
 
                 function remove() {
                     remorseAction(qsTr("Deleting"), function () {
-                        deletePlaylistTrack(index)
+                        deletePlaylistTrack(index);
+                        mDeleteRemorseRunning = false;
                     }, 3000)
                 }
             }
@@ -309,7 +314,12 @@ Page {
         if (status === PageStatus.Activating) {
             playlistView.positionViewAtIndex(lastsongid, ListView.Center)
         } else if (status === PageStatus.Active) {
-            pageStack.pushAttached(Qt.resolvedUrl("CurrentSong.qml"));
+//            pageStack.pushAttached(Qt.resolvedUrl("CurrentSong.qml"));
+            if ( mCurrentSongPage == undefined) {
+                var currentSongComponent = Qt.createComponent(Qt.resolvedUrl("CurrentSong.qml"));
+                mCurrentSongPage = currentSongComponent.createObject(mainWindow);
+            }
+            pageStack.pushAttached(mCurrentSongPage);
         }
     }
 
@@ -321,5 +331,9 @@ Page {
             playlistView.currentIndex = -1
             playlistView.currentIndex = lastsongid
         }
+    }
+    onLastIndexChanged: {
+        playlistView.currentIndex = -1
+        playlistView.currentIndex = lastIndex
     }
 }

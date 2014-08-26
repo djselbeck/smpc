@@ -310,7 +310,7 @@ void NetworkAccess::getCurrentPlaylistTracks()
         emit startupdateplaylist();
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
-        outstream << "playlistinfo " << endl;
+        outstream << "playlistinfo" << endl;
     }
     emit currentPlayListReady((QList<QObject*>*)parseMPDTracks(""));
     emit ready();

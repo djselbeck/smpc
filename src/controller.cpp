@@ -55,6 +55,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     mQuickView->rootContext()->setContextProperty("outputsModel",0);
     mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+
     updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     mNetAccess->setQmlThread(viewer->thread());
