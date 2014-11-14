@@ -8,6 +8,11 @@ Page {
     allowedOrientations: bothOrientation
     property int lastIndex: lastsongid
     property bool mDeleteRemorseRunning: false
+
+    Component.onDestruction: {
+        mPlaylistPage = null;
+    }
+
     SilicaListView {
         id: playlistView
         clip: true
