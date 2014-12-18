@@ -106,8 +106,9 @@ Item {
     Rectangle {
         id: secDialog
         property alias text: currSecText.text
-        y: landscape ? 0 : (inputArea.mouseY-(height/2) > (parent.height-height) ? (parent.height-height) : (inputArea.mouseY-(height/2) < 0 ? 0 : inputArea.mouseY-(height/2)) )
-        x: landscape ?  (inputArea.mouseX-(width/2) > (parent.width-width) ? (parent.width-width) : (inputArea.mouseX-(width/2) < 0 ? 0 : inputArea.mouseX-(width/2)) ) : 0
+        y: landscape ? -height : (inputArea.mouseY - (height / 2)
+                                  > (parent.height - height) ? (parent.height - height) : (inputArea.mouseY - (height / 2) < 0 ? 0 : inputArea.mouseY - (height / 2)))
+        x: landscape ? (inputArea.mouseX - (width / 2) > (parent.width - width) ? (parent.width - width) : (inputArea.mouseX - (width / 2) < 0 ? 0 : inputArea.mouseX - (width / 2))) : -width
         height: currSecText.height
         width: currSecText.width+(Theme.paddingMedium*2)
         visible:true
