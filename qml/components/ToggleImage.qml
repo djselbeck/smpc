@@ -76,13 +76,13 @@ Item {
         }
     }
 
-    BusyIndicator {
+    /*BusyIndicator {
         id: busyIndicator
         anchors.centerIn: parent
         size: BusyIndicatorSize.Medium
         running: (primaryImg.status === Image.Loading
                   || secondaryImg.status === Image.Loading)
-    }
+    }*/
 
     Timer {
         id: waitTimer
