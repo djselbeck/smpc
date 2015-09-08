@@ -398,10 +398,16 @@ Page {
                 IconButton {
                     id: volumeButton
                     anchors.centerIn: parent
-                    icon.source: "image://theme/icon-status-volume-max"
+                    icon.source: "image://theme/icon-system-volume"
                     onClicked: {
                         volumeControl.state = "sliderVisible"
                         volumeSliderFadeOutTimer.start()
+                    }
+                    icon.onStatusChanged: {
+                        if ( icon.status == Image.Error) {
+                            // Try old icon name before Sailfish 2.0
+                            icon.source = "image://theme/icon-status-volume-max"
+                        }
                     }
                 }
 
