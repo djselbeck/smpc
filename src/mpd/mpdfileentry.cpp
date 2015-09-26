@@ -29,27 +29,27 @@ MpdFileEntry::~MpdFileEntry()
     mTrack=NULL;
 }
 
-bool MpdFileEntry::isFile()
+const bool MpdFileEntry::isFile()
 {
     return mType==MpdFileType_File ? true:false;
 }
 
-bool MpdFileEntry::isDirectory()
+const bool MpdFileEntry::isDirectory()
 {
     return mType==MpdFileType_Directory ? true:false;
 }
 
-bool MpdFileEntry::isPlaylist()
+const bool MpdFileEntry::isPlaylist()
 {
     return mType==MpdFileType_Playlist ? true:false;
 }
 
-QString MpdFileEntry::getName()
+const QString MpdFileEntry::getName()
 {
     return mName;
 }
 
-QString MpdFileEntry::getPrePath()
+const QString MpdFileEntry::getPrePath()
 {
     return mPrePath;
 }
@@ -93,10 +93,29 @@ QString MpdFileEntry::getYear()
     if(mTrack!=NULL)
         return getTrack()->getYear();
 }
+
+QString MpdFileEntry::getTrackMBID()
+{
+    if(mTrack!=NULL)
+        return getTrack()->getTrackMBID();
+}
+
+QString MpdFileEntry::getArtistMBID()
+{
+    if(mTrack!=NULL)
+        return getTrack()->getArtistMBID();
+}
+
+QString MpdFileEntry::getAlbumMBID()
+{
+    if(mTrack!=NULL)
+        return getTrack()->getAlbumMBID();
+}
 QString MpdFileEntry::getSection()
 {
     return (mName=="" ? "" :QString(mName.toUpper()[0]));
 }
+
 
 int MpdFileEntry::getTrackNr()
 {

@@ -64,7 +64,7 @@ Component {
             if (isFile) {
                 console.debug("Album:" + album)
                 albumTrackClicked(title, album, artist, length, path,
-                                  year, tracknr)
+                                  year, tracknr,trackmbid,artistmbid,albummbid)
             }
             if (isPlaylist) {
                 console.debug(

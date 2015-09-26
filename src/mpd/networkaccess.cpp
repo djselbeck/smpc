@@ -3,6 +3,7 @@
 /** Constructor for NetworkAccess object. Handles all the network stuff
   */
 
+#define MPD_WHILE_PARSE_LOOP while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&(!response.startsWith("OK"))&&(!response.startsWith("ACK")))
 
 NetworkAccess::NetworkAccess(QObject *parent) :
     QThread(parent)
@@ -79,26 +80,37 @@ void NetworkAccess::getAlbums()
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
 
-        outstream << "list album" << endl;
+        outstream << "list album group MUSICBRAINZ_ALBUMID" << endl;
 
         //Read all albums until OK send from mpd
         QString response ="";
         MpdAlbum *tempalbum;
         QString name;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        QString mbid;
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(7)==QString("Album: "))
-                {
-                    name = response.right(response.length()-7);
-                    name.chop(1);
-                    tempalbum = new MpdAlbum(this,name);
-                    albums->append(tempalbum);
+                /* Remove newline at the end */
+                response.chop(1);
+                if ( response.startsWith("Album: ") ) {
+                    // Append album if name is already set(last album)
+                    if ( name != "" ) {
+                        tempalbum = new MpdAlbum(NULL,name,"",mbid);
+                        albums->append(tempalbum);
+                    }
+                    name = response.right(response.length() - 7);
+                }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID:") ) {
+                    mbid = response.right(response.length() - 21);
                 }
             }
+        }
+        /* Append last album also */
+        if ( name != "" ) {
+            tempalbum = new MpdAlbum(NULL,name,"",mbid);
+            albums->append(tempalbum);
         }
     }
 
@@ -131,17 +143,16 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
         QString response ="";
         MpdArtist *tempartist=NULL;
         QString name;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-
-                if (response.left(8)==QString("Artist: "))
+                response.chop(1);
+                if (response.startsWith("Artist: "))
                 {
                     name = response.right(response.length()-8);
-                    name.chop(1);
                     tempartist = new MpdArtist(NULL,name);
                     artists->append(tempartist);
                 }
@@ -207,29 +218,40 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         outstream.setCodec("UTF-8");
         outstream.setAutoDetectUnicode(false);
         outstream.setCodec("UTF-8");
-        outstream << "list album \"" <<artist<<"\"" << endl;
+        outstream << "list album artist \"" <<artist<<"\"" << " group MUSICBRAINZ_ALBUMID" << endl;
 
         //Read all albums until OK send from mpd
         QString response ="";
         MpdAlbum *tempalbum;
         QString name;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        QString mbid;
+
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(7)==QString("Album: "))
-                {
-                    name = response.right(response.length()-7);
-                    name.chop(1);
-                    tempalbum = new MpdAlbum(NULL,name,artist);
-                    tempalbum->moveToThread(mQmlThread);
-                    QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
-                    albums->append(tempalbum);
+                /* Remove newline at the end */
+                response.chop(1);
+                if ( response.startsWith("Album: ") ) {
+                    // Append album if name is already set(last album)
+                    if ( name != "" ) {
+                        tempalbum = new MpdAlbum(NULL,name,artist,mbid);
+                        albums->append(tempalbum);
+                    }
+                    name = response.right(response.length() - 7);
+                }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID:") ) {
+                    mbid = response.right(response.length() - 21);
                 }
             }
         }
+        /* Append last album also */
+        if ( name != "" ) {
+            tempalbum = new MpdAlbum(NULL,name,artist,mbid);
+            albums->append(tempalbum);
+        }
+
     }
 
     //Get album tracks
@@ -365,52 +387,46 @@ status_struct NetworkAccess::getStatus()
         bool random=false;
         quint8 volume = 0;
         quint8 bitdepth = 0;
-        quint16 samplerate = 0;
+        quint32 samplerate = 0;
         quint8 channelcount = 0;
 
         outstream << "status" << endl;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(9)==QString("bitrate: ")) {
+                response.chop(1);
+                if (response.startsWith("bitrate: ")) {
                     bitrate = response.right(response.length()-9);
-                    bitrate.chop(1);
                 }
-                if (response.left(6)==QString("time: ")) {
+                if (response.startsWith("time: ")) {
                     timestring = response.right(response.length()-6);
-                    timestring.chop(1);
                     elapstr = timestring.split(":").at(0);
                     runstr = timestring.split(":").at(1);
                     elapsed = elapstr.toInt();
                     runtime = runstr.toInt();
                 }
-                if (response.left(6)==QString("song: ")) {
+                if (response.startsWith("song: ")) {
                     playlistidstring = response.right(response.length()-6);
-                    playlistidstring.chop(1);
                     playlistid = playlistidstring.toUInt();
                 }
-                if (response.left(8)==QString("volume: ")) {
+                if (response.startsWith("volume: ")) {
                     volumestring = response.right(response.length()-8);
-                    volumestring.chop(1);
                     volume = volumestring.toUInt();
                 }
-                if (response.left(10)==QString("playlist: ")) {
+                if (response.startsWith("playlist: ")) {
                     volumestring = response.right(response.length()-10);
-                    volumestring.chop(1);
                     playlistversion = volumestring.toUInt();
                 }
-                if (response.left(16)==QString("playlistlength: ")) {
+                if (response.startsWith("playlistlength: ")) {
                     volumestring = response.right(response.length()-16);
-                    volumestring.chop(1);
                     playlistlength = volumestring.toUInt();
                 }
-                if (response.left(7)==QString("state: ")) {
+                if (response.startsWith("state: ")) {
                     {
                         volumestring = response.right(response.length()-7);
-                        volumestring.chop(1);
                         if (volumestring == "play")
                         {
                             playing = NetworkAccess::PLAYING;
@@ -423,10 +439,9 @@ status_struct NetworkAccess::getStatus()
                         }
                     }
                 }
-                if (response.left(8)==QString("repeat: ")) {
+                if (response.startsWith("repeat: ")) {
                     {
                         volumestring = response.right(response.length()-8);
-                        volumestring.chop(1);
                         if (volumestring == "1")
                         {
                             repeat = true;
@@ -436,10 +451,9 @@ status_struct NetworkAccess::getStatus()
                         }
                     }
                 }
-                if (response.left(8)==QString("random: ")) {
+                if (response.startsWith("random: ")) {
                     {
                         volumestring = response.right(response.length()-8);
-                        volumestring.chop(1);
                         if (volumestring == "1")
                         {
                             random = true;
@@ -449,7 +463,7 @@ status_struct NetworkAccess::getStatus()
                         }
                     }
                 }
-                if(response.left(7)==QString("audio: ")) {
+                if(response.startsWith("audio: ")) {
                     QStringList templist = response.right(response.length()-7).split(":");
                     if(templist.length()==3){
                         samplerate=templist.at(0).toUInt();
@@ -463,32 +477,28 @@ status_struct NetworkAccess::getStatus()
 
         response = "";
         outstream << "currentsong" << endl;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(7)==QString("Title: ")) {
+                response.chop(1);
+                if (response.startsWith("Title: ")) {
                     title = response.right(response.length()-7);
-                    title.chop(1);
                 }
-                else if (response.left(8)==QString("Artist: ")) {
+                else if (response.startsWith("Artist: ")) {
                     artist = response.right(response.length()-8);
-                    artist.chop(1);
                 }
-                else if (response.left(7)==QString("Album: ")) {
+                else if (response.startsWith("Album: ")) {
                     album = response.right(response.length()-7);
-                    album.chop(1);
                 }
-                else if (response.left(6)==QString("file: ")) {
+                else if (response.startsWith("file: ")) {
                     fileuri = response.right(response.length()-6);
-                    fileuri.chop(1);
                 }
-                else if (response.left(7)==QString("Track: "))
+                else if (response.startsWith("Track: "))
                 {
                     tracknrstring = response.right(response.length()-7);
-                    tracknrstring.chop(1);
                     //tracknr = tracknrstring.toInt();
                     QStringList tempstrs = tracknrstring.split("/");
                     if(tempstrs.length()==2)
@@ -582,7 +592,7 @@ void NetworkAccess::pause()
             QTextStream outstream(tcpsocket);
             outstream << "pause" << endl;
             QString response ="";
-            while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+            MPD_WHILE_PARSE_LOOP
             {
                 tcpsocket->waitForReadyRead(READYREAD);
                 while (tcpsocket->canReadLine())
@@ -606,7 +616,7 @@ void NetworkAccess::stop()
         QTextStream outstream(tcpsocket);
         outstream << "stop" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -625,7 +635,7 @@ void NetworkAccess::enableOutput(int nr)
         QTextStream outstream(tcpsocket);
         outstream << "enableoutput " << nr << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -643,7 +653,7 @@ void NetworkAccess::disableOutput(int nr)
         QTextStream outstream(tcpsocket);
         outstream << "disableoutput " << nr << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -660,7 +670,7 @@ void NetworkAccess::updateDB()
         QTextStream outstream(tcpsocket);
         outstream << "update" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -679,7 +689,7 @@ void NetworkAccess::next()
         QTextStream outstream(tcpsocket);
         outstream << "next" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -698,7 +708,7 @@ void NetworkAccess::previous()
         QTextStream outstream(tcpsocket);
         outstream << "previous" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -729,7 +739,7 @@ void NetworkAccess::addAlbumToPlaylist(QString album)
             outstream << "add \"" << temptracks->at(i)->getFileUri() << "\""<< endl;
         }
         outstream << "command_list_end" << endl;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -762,7 +772,7 @@ void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
             outstream << "add \"" << temptracks->at(i)->getFileUri() << "\""<< endl;
         }
         outstream << "command_list_end" << endl;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -820,7 +830,7 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
         outstream << "add \"" << fileuri << "\"" << endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -846,7 +856,7 @@ void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
         outstream << "playlistadd \"" << inputStrings.at(1) << "\" " << "\"" << inputStrings.at(0) << "\"" <<  endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -872,7 +882,7 @@ void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
         outstream << "playlistdelete \"" << inputStrings.at(1) << "\" " << inputStrings.at(0) <<  endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -898,7 +908,7 @@ void NetworkAccess::playTrackNext(int index)
         }
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -922,7 +932,7 @@ void NetworkAccess::addTrackAfterCurrent(QString fileuri)
         outstream << "addid \"" << fileuri << "\" " << QString::number(currentPosition+1) << endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -945,7 +955,7 @@ void NetworkAccess::playFiles(QString fileuri)
         outstream << "add \"" << fileuri << "\"" << endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -972,7 +982,7 @@ void NetworkAccess::playTrack(QString fileuri)
         outstream << "add \"" << fileuri << "\"" << endl;
         QString response ="";
         //Clear read buffer
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -996,7 +1006,7 @@ void NetworkAccess::playTrackByNumber(int nr)
         outstream.setCodec("UTF-8");
         outstream << "play " << QString::number(nr).toUtf8() << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1016,7 +1026,7 @@ void NetworkAccess::deleteTrackByNumer(int nr)
         outstream.setCodec("UTF-8");
         outstream << "delete " << QString::number(nr).toUtf8() << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1036,7 +1046,7 @@ void NetworkAccess::seekPosition(int id, int pos)
         outstream.setCodec("UTF-8");
         outstream << "seek " << QString::number(id).toUtf8() <<" " <<  QString::number(pos).toUtf8() << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1063,7 +1073,7 @@ void NetworkAccess::setRepeat(bool repeat)
         outstream.setCodec("UTF-8");
         outstream << "repeat " << (repeat ? "1":"0") << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1082,7 +1092,7 @@ void NetworkAccess::setRandom(bool random)
         outstream.setCodec("UTF-8");
         outstream << "random " << (random ? "1":"0") << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1103,7 +1113,7 @@ void NetworkAccess::setVolume(int volume)
         QTextStream outstream(tcpsocket);
         outstream << "setvol " << QString::number(volume).toUtf8() << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1123,7 +1133,7 @@ void NetworkAccess::savePlaylist(QString name)
         outstream.setCodec("UTF-8");
         outstream << "save \"" << name << "\"" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1132,7 +1142,7 @@ void NetworkAccess::savePlaylist(QString name)
 
             }
         }
-        if (response.left(2)=="OK")
+        if (response.startsWith("OK"))
         {
             emit ready();
             return;
@@ -1154,7 +1164,7 @@ void NetworkAccess::deletePlaylist(QString name)
         outstream.setCodec("UTF-8");
         outstream << "rm \"" << name << "\"" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1163,7 +1173,7 @@ void NetworkAccess::deletePlaylist(QString name)
 
             }
         }
-        if (response.left(2)=="OK")
+        if (response.startsWith("OK"))
         {
             return;
         }
@@ -1186,21 +1196,22 @@ void NetworkAccess::getSavedPlaylists()
         QString response ="";
         QString name;
 
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(10)==QString("playlist: ")) {
+                response.chop(1);
+                if (response.startsWith("playlist: ")) {
                     name = response.right(response.length()-10);
-                    name.chop(1);
                     tempplaylists->append(name);
                 }
             }
         }
 
     }
+    tempplaylists->sort();
     emit ready();
     emit savedPlaylistsReady(tempplaylists);
 }
@@ -1214,7 +1225,7 @@ void NetworkAccess::addPlaylist(QString name)
         outstream.setCodec("UTF-8");
         outstream << "load \"" << name << "\"" <<endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1236,7 +1247,7 @@ void NetworkAccess::playPlaylist(QString name)
         outstream.setCodec("UTF-8");
         outstream << "load \"" << name << "\"" <<endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1256,7 +1267,7 @@ void NetworkAccess::clearPlaylist()
         QTextStream outstream(tcpsocket);
         outstream << "clear" << endl;
         QString response ="";
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
@@ -1291,15 +1302,15 @@ quint32 NetworkAccess::getPlayListVersion()
         outstream << "status" << endl;
         QString response ="";
         QString versionstring;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(10)==QString("playlist: ")) {
+                response.chop(1);
+                if (response.startsWith("playlist: ")) {
                     versionstring = response.right(response.length()-10);
-                    versionstring.chop(1);
                     playlistversion = versionstring.toUInt();
                 }
             }
@@ -1336,14 +1347,20 @@ void NetworkAccess::getDirectory(QString path)
         QString prepath="";
         QStringList tempsplitter;
         quint32 length=0;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+
+        QString trackMBID;
+        QString artistMBID;
+        QString albumMBID;
+
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
+                response.chop(1);
                 //New file: so new track begins in mpds output
-                if (response.left(6)==QString("file: ")) {
+                if (response.startsWith("file: ")) {
                     if (file!=""&&length!=0)
                     {
                         tempsplitter = file.split("/");
@@ -1353,6 +1370,9 @@ void NetworkAccess::getDirectory(QString path)
                             temptrack->setYear(datestring);
                             temptrack->setTrackNr(nr);
                             temptrack->setAlbumTracks(albumnrs);
+                            temptrack->setAlbumMBID(albumMBID);
+                            temptrack->setArtistMBID(artistMBID);
+                            temptrack->setTrackMBID(trackMBID);
                             prepath ="";
                             for (int j=0;j<tempsplitter.length()-1;j++)
                             {
@@ -1369,6 +1389,7 @@ void NetworkAccess::getDirectory(QString path)
                             tempfile->moveToThread(mQmlThread);
                             QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
                             QQmlEngine::setObjectOwnership(tempfile, QQmlEngine::CppOwnership);
+                            artistMBID = "";
                             tempsplitter.clear();
                         }
                         artist= "";
@@ -1380,35 +1401,31 @@ void NetworkAccess::getDirectory(QString path)
                         nr=0;
                         datestring="";
                         albumnrs=0;
+                        trackMBID = "";
+                        artistMBID = "";
+                        albumMBID = "";
                     }
                     file = response.right(response.length()-6);
-                    file.chop(1);
                 }
-                if (response.left(7)==QString("Title: ")) {
+                else if (response.startsWith("Title: ")) {
                     title = response.right(response.length()-7);
-                    title.chop(1);
                 }
-                if (response.left(8)==QString("Artist: ")) {
+                else if (response.startsWith("Artist: ")) {
                     artist = response.right(response.length()-8);
-                    artist.chop(1);
                 }
-                if (response.left(7)==QString("Album: ")) {
+                else if (response.startsWith("Album: ")) {
                     albumstring = response.right(response.length()-7);
-                    albumstring.chop(1);
                     album = albumstring;
                 }
-                if (response.left(6)==QString("Time: ")) {
+                else if (response.startsWith("Time: ")) {
                     albumstring = response.right(response.length()-6);
-                    albumstring.chop(1);
                     length = albumstring.toUInt();
                 }
-                if (response.left(6)==QString("Date: ")) {
+                else if (response.startsWith("Date: ")) {
                     datestring = response.right(response.length()-6);
-                    datestring.chop(1);
                 }
-                if (response.left(7)==QString("Track: ")) {
+                else if (response.startsWith("Track: ")) {
                     albumstring = response.right(response.length()-7);
-                    albumstring.chop(1);
                     QStringList tracknrs;
                     tracknrs = albumstring.split('/');
                     if(tracknrs.length()>0)
@@ -1418,11 +1435,21 @@ void NetworkAccess::getDirectory(QString path)
                             albumnrs = tracknrs.at(1).toInt();
                     }
                 }
+                else if (response.startsWith("MUSICBRAINZ_TRACKID: ")) {
+                    trackMBID = response.right(response.length()-21);
+                }
+                else if (response.startsWith("MUSICBRAINZ_ALBUMID: ")) {
+                    albumMBID = response.right(response.length()-21);
+                }
+                else if (response.startsWith("MUSICBRAINZ_ARTISTID: ")) {
+                    if ( artistMBID == "" ) {
+                        artistMBID = response.right(response.length()-22);
+                    }
+                }
                 //Directory found. WORKS
-                if (response.left(11)==QString("directory: "))
+                else if (response.startsWith("directory: "))
                 {
                     filename = response.right(response.length()-11);
-                    filename.chop(1);
                     tempsplitter = filename.split("/");
                     if (tempsplitter.length()>0)
                     {
@@ -1445,10 +1472,9 @@ void NetworkAccess::getDirectory(QString path)
                     }
 
                 }
-                if (response.left(10)==QString("playlist: "))
+                if (response.startsWith("playlist: "))
                 {
                     filename = response.right(response.length()-10);
-                    filename.chop(1);
                     tempsplitter = filename.split("/");
                     if (tempsplitter.length()>0)
                     {
@@ -1482,6 +1508,9 @@ void NetworkAccess::getDirectory(QString path)
                 temptrack->setTrackNr(nr);
                 temptrack->setAlbumTracks(albumnrs);
                 temptrack->setYear(datestring);
+                temptrack->setAlbumMBID(albumMBID);
+                temptrack->setArtistMBID(artistMBID);
+                temptrack->setTrackMBID(trackMBID);
                 prepath ="";
                 for (int j=0;j<tempsplitter.length()-1;j++)
                 {
@@ -1597,8 +1626,11 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
         int nr,albumnrs;
         nr = albumnrs = 0;
         QString file;
+        QString trackMBID;
+        QString albumMBID;
+        QString artistMBID;
         quint32 length=0;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             if (!tcpsocket->waitForReadyRead(READYREAD))
             {
@@ -1607,14 +1639,17 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(6)==QString("file: ")) {
+                // Remove new line
+                response.chop(1);
+                if (response.startsWith("file: ")) {
                     if (temptrack!=NULL)
                     {
+                        // Discard track if artist filter mismatches
                         if (artist==cartist||cartist=="") {
-                            temptrack->setPlaying(false);
                             temptracks->append(temptrack);
-                            temptrack->moveToThread(mQmlThread);
-                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+                            artistMBID = "";
+                            /* temptrack->moveToThread(mQmlThread);
+                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership); */
                         } else {
                             delete(temptrack);
                         }
@@ -1625,44 +1660,50 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                         temptrack = new MpdTrack(NULL);
                     }
                     file = response.right(response.length()-6);
-                    file.chop(1);
                     temptrack->setFileUri(file);
                 }
-                if (response.left(7)==QString("Title: ")) {
+                else if (response.startsWith("Title: ")) {
                     title = response.right(response.length()-7);
-                    title.chop(1);
                     temptrack->setTitle(title);
                 }
-                if (response.left(8)==QString("Artist: ")) {
+                else if (response.startsWith("Artist: ")) {
                     artist = response.right(response.length()-8);
-                    artist.chop(1);
                     temptrack->setArtist(artist);
                 }
-                if (response.left(13)==QString("AlbumArtist: ")) {
+                else if (response.startsWith("AlbumArtist: ")) {
                     albumartist = response.right(response.length()-13);
-                    albumartist.chop(1);
                     temptrack->setAlbumArtist(albumartist);
                 }
-                if (response.left(7)==QString("Album: ")) {
+                else if (response.startsWith("Album: ")) {
                     albumstring = response.right(response.length()-7);
-                    albumstring.chop(1);
                     temptrack->setAlbum(albumstring);
                 }
 
-                if (response.left(6)==QString("Time: ")) {
+                else if (response.startsWith("Time: ")) {
                     albumstring = response.right(response.length()-6);
-                    albumstring.chop(1);
                     length = albumstring.toUInt();
                     temptrack->setLength(length);
                 }
-                if (response.left(6)==QString("Date: ")) {
+                else if (response.startsWith("Date: ")) {
                     datestring = response.right(response.length()-6);
-                    datestring.chop(1);
                     temptrack->setYear(datestring);
                 }
-                if (response.left(7)==QString("Track: ")) {
+                else if (response.startsWith("MUSICBRAINZ_TRACKID: ")) {
+                    trackMBID = response.right(response.length()-21);
+                    temptrack->setTrackMBID(trackMBID);
+                }
+                else if (response.startsWith("MUSICBRAINZ_ALBUMID: ")) {
+                    albumMBID = response.right(response.length()-21);
+                    temptrack->setAlbumMBID(albumMBID);
+                }
+                else if (response.startsWith("MUSICBRAINZ_ARTISTID: ")) {
+                    if ( artistMBID == "" ) {
+                        artistMBID = response.right(response.length()-22);
+                        temptrack->setArtistMBID(artistMBID);
+                    }
+                }
+                else if (response.startsWith("Track: ")) {
                     albumstring = response.right(response.length()-7);
-                    albumstring.chop(1);
                     QStringList tracknrs;
                     tracknrs = albumstring.split('/');
                     if(tracknrs.length()>0)
@@ -1683,8 +1724,8 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
             if (artist==cartist||cartist=="") {
                 temptrack->setPlaying(false);
                 temptracks->append(temptrack);
-                temptrack->moveToThread(mQmlThread);
-                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
+                /* temptrack->moveToThread(mQmlThread);
+                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership); */
             }
             else {
                 delete(temptrack);
@@ -1716,25 +1757,23 @@ void NetworkAccess::getOutputs()
 
 
         outstream << "outputs" << endl;
-        while ((tcpsocket->state()==QTcpSocket::ConnectedState)&&((response.left(2)!=QString("OK")))&&((response.left(3)!=QString("ACK"))))
+        MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
                 response = QString::fromUtf8(tcpsocket->readLine());
-                if (response.left(12)==QString("outputname: ")) {
+                response.chop(1);
+                if (response.startsWith("outputname: ")) {
                     tempstring = response.right(response.length()-12);
-                    tempstring.chop(1);
                     outputname = tempstring;
                 }
-                if (response.left(10)==QString("outputid: ")) {
+                if (response.startsWith("outputid: ")) {
                     tempstring = response.right(response.length()-10);
-                    tempstring.chop(1);
                     outputid = tempstring.toInt();
                 }
-                if (response.left(15)==QString("outputenabled: ")) {
+                if (response.startsWith("outputenabled: ")) {
                     tempstring = response.right(response.length()-15);
-                    tempstring.chop(1);
                     outputenabled = ( tempstring=="1" ? true:false);
                     MPDOutput *tmpOutput = new MPDOutput(outputname,outputenabled,outputid);
                     outputlist->append(tmpOutput);

@@ -20,6 +20,10 @@ const QString MpdArtist::getName()
    return this->mName;
 }
 
+const QString MpdArtist::getMBID() {
+    return mMBID;
+}
+
 
 MpdArtist::~MpdArtist()
 {

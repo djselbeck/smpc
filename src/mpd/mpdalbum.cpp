@@ -5,15 +5,16 @@ MpdAlbum::MpdAlbum(QObject *parent) :
 {
 }
 
-MpdAlbum::MpdAlbum(QObject *parent, QString title, QString artist) : QObject(parent)
+MpdAlbum::MpdAlbum(QObject *parent, QString title, QString artist, QString mbid) : QObject(parent)
 {
-    this->mTitle = title;
+    mTitle = title;
     mArtist = artist;
+    mMBID = mbid;
 }
 
 MpdAlbum::MpdAlbum(const MpdAlbum &copyObject,QObject *parent) : QObject(parent)  {
-    this->mTitle = copyObject.mTitle;
-    this->mArtist = copyObject.mArtist;
+    mTitle = copyObject.mTitle;
+    mArtist = copyObject.mArtist;
 }
 
 const QString MpdAlbum::getTitle()
@@ -21,10 +22,13 @@ const QString MpdAlbum::getTitle()
     return mTitle;
 }
 
-QString MpdAlbum::getArtist() {
+const QString MpdAlbum::getArtist() {
     return mArtist;
 }
 
+const QString MpdAlbum::getMBID() {
+    return mMBID;
+}
 
 void MpdAlbum::operator =(MpdAlbum &rhs)
 {
@@ -49,7 +53,7 @@ bool MpdAlbum::lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs)
 
 
 // Return first letter as section
-QString MpdAlbum::getSection()
+const QString MpdAlbum::getSection()
 {
     return (mTitle=="" ? "" : QString(mTitle.toUpper()[0]) );
 }

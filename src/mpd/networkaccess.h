@@ -38,7 +38,7 @@ struct status_struct {
     quint32 length;
     quint32 currentpositiontime;
     quint32 playlistlength;
-    quint16 samplerate;
+    quint32 samplerate;
     quint8 channelcount;
     quint8 bitdepth;
 };

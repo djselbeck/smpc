@@ -8,6 +8,7 @@ class MpdArtist : public QObject
     Q_OBJECT
     Q_PROPERTY(QString artist READ getName NOTIFY changed )
     Q_PROPERTY(QString sectionprop READ getSection NOTIFY changed )
+    Q_PROPERTY(QString mbid READ getMBID NOTIFY changed )
 public:
     explicit MpdArtist(QObject *parent = 0);
     MpdArtist(QObject *parent, QString mName);
@@ -17,6 +18,9 @@ public:
     ~MpdArtist();
 
     const QString getName();
+
+    const QString getMBID();
+
     QString getSection();
     bool operator< (const MpdArtist& other) const;
     bool operator==(MpdArtist & rhs);
@@ -27,6 +31,7 @@ public:
 
 private:
     QString mName;
+    QString mMBID;
 
 signals:
     void changed();

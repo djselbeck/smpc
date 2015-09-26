@@ -38,7 +38,10 @@ public:
         lengthRole,
         tracknoRole,
         yearRole,
-        imageURLRole
+        imageURLRole,
+        trackmbidRole,
+        albummbidRole,
+        artistmbidRole,
     };
 
 private:

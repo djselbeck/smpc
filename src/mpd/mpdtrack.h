@@ -24,25 +24,33 @@ class MpdTrack : public QObject
     Q_PROPERTY(int tracknr READ getTrackNr NOTIFY changed )
     Q_PROPERTY(QString year READ getYear NOTIFY changed )
     Q_PROPERTY(QString filename READ getFileName NOTIFY changed )
+    Q_PROPERTY(QString trackmbid READ getTrackMBID NOTIFY changed )
+    Q_PROPERTY(QString albummbid READ getAlbumMBID NOTIFY changed )
+    Q_PROPERTY(QString artistmbid READ getArtistMBID NOTIFY changed )
 public:
     explicit MpdTrack(QObject *parent = 0);
     MpdTrack(QObject *parent,QString file,QString mTitle, quint32 mLength);
     MpdTrack(QObject *parent,QString file,QString mTitle, quint32 mLength,bool mPlaying);
     MpdTrack(QObject *parent,QString file,QString mTitle,QString mArtist, QString mAlbum, quint32 mLength);
-    QString getName();
 
-    QString getTitle();
-    QString getFileUri();
-    quint32 getLength();
-    QString getAlbum();
-    QString getArtist();
-    QString getAlbumArtist();
-    QString getLengthFormated();
-    QString getYear();
-    QString getFileName();
+    const QString getName();
+    const QString getTitle();
+    const QString getFileUri();
+    const quint32 getLength();
+    const QString getAlbum();
+    const QString getArtist();
+    const QString getAlbumArtist();
+    const QString getLengthFormated();
+    const QString getYear();
+    const QString getFileName();
 
-    int getTrackNr();
-    int getAlbumTracks();
+    const int getTrackNr();
+    const int getAlbumTracks();
+
+    const QString getTrackMBID();
+    const QString getAlbumMBID();
+    const QString getArtistMBID();
+
     void setTitle(QString);
     void setFileUri(QString);
     void setLength(quint32 mLength);
@@ -53,7 +61,11 @@ public:
     void setTrackNr(int nr);
     void setAlbumTracks(int nr);
 
-    bool getPlaying();
+    void setTrackMBID(QString mbid);
+    void setAlbumMBID(QString mbid);
+    void setArtistMBID(QString mbid);
+
+    const bool getPlaying();
     void setPlaying(bool mPlaying);
 private:
     QString mTitle;
@@ -65,6 +77,10 @@ private:
     int mTrackNR;
     int mAlbumTracks;
     QString mYear;
+
+    QString mTrackMBID;
+    QString mArtistMBID;
+    QString mAlbumMBID;
 
     bool mPlaying;
 

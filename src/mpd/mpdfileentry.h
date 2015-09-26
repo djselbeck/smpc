@@ -26,11 +26,12 @@ public:
     MpdFileEntry(QString mPrePath,QString mName, quint8 mType ,MpdTrack *mTrack,QObject *parent = 0);
     MpdFileEntry(QString mPrePath,QString mName, quint8 mType ,QObject *parent = 0);
     ~MpdFileEntry();
-    bool isFile();
-    bool isDirectory();
-    bool isPlaylist();
-    QString getName();
-    QString getPrePath();
+    const bool isFile();
+    const bool isDirectory();
+    const bool isPlaylist();
+
+    const QString getName();
+    const QString getPrePath();
     MpdTrack *getTrack();
     QString getTitle();
     QString getArtist();
@@ -39,6 +40,10 @@ public:
     QString getLengthFormatted();
     QString getYear();
     QString getSection();
+
+    QString getTrackMBID();
+    QString getAlbumMBID();
+    QString getArtistMBID();
 
     int getTrackNr();
     bool operator< (const MpdFileEntry& other) const;

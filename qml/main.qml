@@ -257,9 +257,9 @@ ApplicationWindow
     }
 
 
-    function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr)
+    function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr,trackmbid,artistmbid,albummbid)
     {
-        pageStack.push(Qt.resolvedUrl("components/SongDialog.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr});
+        pageStack.push(Qt.resolvedUrl("components/SongDialog.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr,trackmbid:trackmbid,artistmbid:artistmbid,albummbid:albummbid});
     }
 
     function receiveFilesPage()

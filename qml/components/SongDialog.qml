@@ -15,6 +15,9 @@ Dialog {
     property alias filename: fileText.text
     property int fontsize: Theme.fontSizeMedium
     property int fontsizegrey: Theme.fontSizeSmall
+    property alias trackmbid: trackmbidText.text
+    property alias albummbid: albummbidText.text
+    property alias artistmbid: artistmbidText.text
 
     SilicaFlickable {
 
@@ -122,6 +125,54 @@ Dialog {
             }
             Label {
                 id: nrText
+                text: ""
+                color: Theme.primaryColor
+                font.pixelSize: fontsize
+                wrapMode: "WordWrap"
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+            }
+            Label {
+                text: qsTr("Musicbrainz track id:")
+                color: Theme.secondaryColor
+                font.pixelSize: fontsizegrey
+            }
+            Label {
+                id: trackmbidText
+                text: ""
+                color: Theme.primaryColor
+                font.pixelSize: fontsize
+                wrapMode: "WordWrap"
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+            }
+            Label {
+                text: qsTr("Musicbrainz album id:")
+                color: Theme.secondaryColor
+                font.pixelSize: fontsizegrey
+            }
+            Label {
+                id: albummbidText
+                text: ""
+                color: Theme.primaryColor
+                font.pixelSize: fontsize
+                wrapMode: "WordWrap"
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+            }
+            Label {
+                text: qsTr("Musicbrainz artist id:")
+                color: Theme.secondaryColor
+                font.pixelSize: fontsizegrey
+            }
+            Label {
+                id: artistmbidText
                 text: ""
                 color: Theme.primaryColor
                 font.pixelSize: fontsize

@@ -75,7 +75,7 @@ Page {
                 }
 
                 Label {
-                    text: " 2013-2014 by Hendrik Borghorst"
+                    text: " 2013-2015 by Hendrik Borghorst"
                     font.pixelSize: Theme.fontSizeMedium
                 }
             }

@@ -37,7 +37,10 @@ public:
         yearRole,
         playingRole,
         sectionRole,
-        sectionImageURLRole
+        sectionImageURLRole,
+        trackmbidRole,
+        albummbidRole,
+        artistmbidRole,
     };
 
 private:

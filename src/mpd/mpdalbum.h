@@ -8,9 +8,10 @@ class MpdAlbum : public QObject
     Q_OBJECT
     Q_PROPERTY(QString title READ getTitle NOTIFY changed )
     Q_PROPERTY(QString sectionprop READ getSection NOTIFY changed )
+    Q_PROPERTY(QString mbid READ getMBID NOTIFY changed )
 public:
     explicit MpdAlbum(QObject *parent = 0);
-    MpdAlbum(QObject *parent,QString mTitle,QString artist="");
+    MpdAlbum(QObject *parent,QString mTitle,QString artist="", QString mbid="");
 
 
     MpdAlbum(const MpdAlbum &copyObject, QObject *parent = 0);
@@ -23,14 +24,15 @@ public:
 
     static bool lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs);
 
-    QString getSection();
-    QString getArtist();
-
+    const QString getSection();
+    const QString getArtist();
+    const QString getMBID();
 
 
 private:
     QString mTitle;
     QString mArtist;
+    QString mMBID;
 
 signals:
     // Dummy signal, so qml shuts up

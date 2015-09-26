@@ -33,20 +33,6 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         return mEntries->at(index.row())->getFileName();
     else if(role==titleRole)
         return mEntries->at(index.row())->getTitle();
-    else if(role==artistRole)
-        return mEntries->at(index.row())->getArtist();
-    else if(role==albumRole)
-        return mEntries->at(index.row())->getAlbum();
-    else if(role==lengthRole)
-        return mEntries->at(index.row())->getLength();
-    else if(role==lengthFormatedRole)
-        return mEntries->at(index.row())->getLengthFormated();
-    else if(role==tracknoRole)
-        return mEntries->at(index.row())->getTrackNr();
-    else if(role==yearRole)
-        return mEntries->at(index.row())->getYear();
-    else if(role==playingRole)
-        return mEntries->at(index.row())->getPlaying();
     else if(role==sectionRole) {
         MpdTrack  *tmpTrack = mEntries->at(index.row());
         QString album = tmpTrack->getAlbum();
@@ -61,6 +47,26 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         }
         return sectionString;
     }
+    else if(role==artistRole)
+        return mEntries->at(index.row())->getArtist();
+    else if(role==albumRole)
+        return mEntries->at(index.row())->getAlbum();
+    else if(role==lengthRole)
+        return mEntries->at(index.row())->getLength();
+    else if(role==lengthFormatedRole)
+        return mEntries->at(index.row())->getLengthFormated();
+    else if(role==tracknoRole)
+        return mEntries->at(index.row())->getTrackNr();
+    else if(role==yearRole)
+        return mEntries->at(index.row())->getYear();
+    else if(role==playingRole)
+        return mEntries->at(index.row())->getPlaying();
+    else if(role==trackmbidRole)
+        return mEntries->at(index.row())->getTrackMBID();
+    else if(role==albummbidRole)
+        return mEntries->at(index.row())->getAlbumMBID();
+    else if(role==artistmbidRole)
+        return mEntries->at(index.row())->getArtistMBID();
     else if ( role== sectionImageURLRole ) {
         MpdTrack *track = mEntries->at(index.row());
         QString album = track->getAlbum();
@@ -136,6 +142,9 @@ QHash<int, QByteArray> PlaylistModel::roleNames() const {
     roles[playingRole] = "playing";
     roles[sectionRole] = "section";
     roles[sectionImageURLRole] = "sectionImageURL";
+    roles[trackmbidRole] = "trackmbid";
+    roles[albummbidRole] = "albummbid";
+    roles[artistmbidRole] = "artistmbid";
 
     return roles;
 }
