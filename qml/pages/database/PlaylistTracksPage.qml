@@ -93,7 +93,7 @@ Page
                 }
                 onClicked: {
                     playlistTracksListView.currentIndex = index;
-                    albumTrackClicked(title,album,artist,lengthformated,path,year,tracknr);
+                    albumTrackClicked(title, album, artist, lengthformated, path,year, tracknr,trackmbid,artistmbid,albummbid);
                 }
                 function playTrackRemorse() {
                     remorseAction(qsTr("playing track"), function() { playSong(path); },3000)
