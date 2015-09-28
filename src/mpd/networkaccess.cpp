@@ -80,7 +80,8 @@ void NetworkAccess::getAlbums()
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
 
-        outstream << "list album group MUSICBRAINZ_ALBUMID" << endl;
+//        outstream << "list album group MUSICBRAINZ_ALBUMID" << endl;
+        outstream << "list album" << endl;
 
         //Read all albums until OK send from mpd
         QString response ="";
@@ -99,6 +100,8 @@ void NetworkAccess::getAlbums()
                     // Append album if name is already set(last album)
                     if ( name != "" ) {
                         tempalbum = new MpdAlbum(NULL,name,"",mbid);
+                        tempalbum->moveToThread(mQmlThread);
+                        QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                         albums->append(tempalbum);
                     }
                     name = response.right(response.length() - 7);
@@ -110,6 +113,8 @@ void NetworkAccess::getAlbums()
         /* Append last album also */
         if ( name != "" ) {
             tempalbum = new MpdAlbum(NULL,name,"",mbid);
+            tempalbum->moveToThread(mQmlThread);
+            QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
             albums->append(tempalbum);
         }
     }
@@ -154,6 +159,8 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
                 {
                     name = response.right(response.length()-8);
                     tempartist = new MpdArtist(NULL,name);
+                    tempartist->moveToThread(mQmlThread);
+                    QQmlEngine::setObjectOwnership(tempartist, QQmlEngine::CppOwnership);
                     artists->append(tempartist);
                 }
 
@@ -218,7 +225,8 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         outstream.setCodec("UTF-8");
         outstream.setAutoDetectUnicode(false);
         outstream.setCodec("UTF-8");
-        outstream << "list album artist \"" <<artist<<"\"" << " group MUSICBRAINZ_ALBUMID" << endl;
+//        outstream << "list album artist \"" <<artist<<"\"" << " group MUSICBRAINZ_ALBUMID" << endl;
+        outstream << "list album artist \"" << artist <<"\"" << endl;
 
         //Read all albums until OK send from mpd
         QString response ="";
@@ -238,6 +246,8 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
                     // Append album if name is already set(last album)
                     if ( name != "" ) {
                         tempalbum = new MpdAlbum(NULL,name,artist,mbid);
+                        tempalbum->moveToThread(mQmlThread);
+                        QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                         albums->append(tempalbum);
                     }
                     name = response.right(response.length() - 7);
@@ -249,6 +259,8 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         /* Append last album also */
         if ( name != "" ) {
             tempalbum = new MpdAlbum(NULL,name,artist,mbid);
+            tempalbum->moveToThread(mQmlThread);
+            QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
             albums->append(tempalbum);
         }
 
@@ -1648,8 +1660,8 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
                         if (artist==cartist||cartist=="") {
                             temptracks->append(temptrack);
                             artistMBID = "";
-                            /* temptrack->moveToThread(mQmlThread);
-                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership); */
+                            temptrack->moveToThread(mQmlThread);
+                            QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
                         } else {
                             delete(temptrack);
                         }
@@ -1724,8 +1736,8 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
             if (artist==cartist||cartist=="") {
                 temptrack->setPlaying(false);
                 temptracks->append(temptrack);
-                /* temptrack->moveToThread(mQmlThread);
-                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership); */
+                temptrack->moveToThread(mQmlThread);
+                QQmlEngine::setObjectOwnership(temptrack, QQmlEngine::CppOwnership);
             }
             else {
                 delete(temptrack);
