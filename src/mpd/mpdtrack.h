@@ -33,23 +33,23 @@ public:
     MpdTrack(QObject *parent,QString file,QString mTitle, quint32 mLength,bool mPlaying);
     MpdTrack(QObject *parent,QString file,QString mTitle,QString mArtist, QString mAlbum, quint32 mLength);
 
-    const QString getName();
-    const QString getTitle();
-    const QString getFileUri();
-    const quint32 getLength();
-    const QString getAlbum();
-    const QString getArtist();
-    const QString getAlbumArtist();
-    const QString getLengthFormated();
-    const QString getYear();
-    const QString getFileName();
+    QString getName() const;
+    QString getTitle() const;
+    QString getFileUri() const;
+    quint32 getLength() const;
+    QString getAlbum() const;
+    QString getArtist() const;
+    QString getAlbumArtist() const;
+    QString getLengthFormated() const;
+    QString getYear() const;
+    QString getFileName() const;
 
-    const int getTrackNr();
-    const int getAlbumTracks();
+    int getTrackNr() const;
+    int getAlbumTracks() const;
 
-    const QString getTrackMBID();
-    const QString getAlbumMBID();
-    const QString getArtistMBID();
+    QString getTrackMBID() const;
+    QString getAlbumMBID() const;
+    QString getArtistMBID() const;
 
     void setTitle(QString);
     void setFileUri(QString);
@@ -65,7 +65,7 @@ public:
     void setAlbumMBID(QString mbid);
     void setArtistMBID(QString mbid);
 
-    const bool getPlaying();
+    bool getPlaying() const;
     void setPlaying(bool mPlaying);
 private:
     QString mTitle;

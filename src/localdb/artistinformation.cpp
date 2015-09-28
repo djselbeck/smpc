@@ -10,7 +10,7 @@ ArtistInformation::ArtistInformation(QString artist, QString artistInfo, QString
     }
 }
 
-ArtistInformation::ArtistInformation(const ArtistInformation &copyObject) {
+ArtistInformation::ArtistInformation(const ArtistInformation &copyObject) : QObject(0) {
     mImageURL = copyObject.mImageURL;
     if(copyObject.mImageData) {
         mImageData = new QByteArray(*copyObject.mImageData);

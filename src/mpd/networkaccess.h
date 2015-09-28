@@ -63,6 +63,20 @@ public:
     void setConnectParameters(QString hostname,int port, QString password);
     void setQmlThread(QThread *thread);
 
+    struct MpdVersion {
+        quint32 mpdMajor1;
+        quint32 mpdMajor2;
+        quint32 mpdMinor;
+    };
+
+    struct MpdServerInfo {
+        /* Version of the server */
+        MpdVersion version;
+        /* Capabilities of the connected server */
+        bool mpd_cmd_list_group_capabilites;
+        bool mpd_cmd_list_filter_criteria;
+    };
+
 
 signals:
     void connectionestablished();
@@ -153,6 +167,8 @@ protected slots:
     void disconnectedfromServer();
     void updateStatusInternal();
     void errorHandle();
+
+
     
 protected:
     //   void run();
@@ -175,6 +191,9 @@ private:
     QList<MpdAlbum*>* getArtistsAlbums_prv(QString artist);
     QMap<MpdArtist*, QList<MpdAlbum*>* > *getArtistsAlbumsMap_prv();
     QThread *mQmlThread;
+
+    MpdServerInfo pServerInfo;
+    void checkServerCapabilities();
 };
 
 #endif // NETWORKACCESS_H

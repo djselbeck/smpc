@@ -17,11 +17,11 @@ public:
 
     ~MpdArtist();
 
-    const QString getName();
+    QString getName() const;
 
-    const QString getMBID();
+    QString getMBID() const;
 
-    QString getSection();
+    QString getSection() const;
     bool operator< (const MpdArtist& other) const;
     bool operator==(MpdArtist & rhs);
     void operator=(MpdArtist &rhs);

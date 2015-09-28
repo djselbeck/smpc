@@ -26,26 +26,27 @@ public:
     MpdFileEntry(QString mPrePath,QString mName, quint8 mType ,MpdTrack *mTrack,QObject *parent = 0);
     MpdFileEntry(QString mPrePath,QString mName, quint8 mType ,QObject *parent = 0);
     ~MpdFileEntry();
-    const bool isFile();
-    const bool isDirectory();
-    const bool isPlaylist();
 
-    const QString getName();
-    const QString getPrePath();
-    MpdTrack *getTrack();
-    QString getTitle();
-    QString getArtist();
-    QString getPath();
-    QString getAlbum();
-    QString getLengthFormatted();
-    QString getYear();
-    QString getSection();
+    bool isFile() const;
+    bool isDirectory() const;
+    bool isPlaylist() const;
 
-    QString getTrackMBID();
-    QString getAlbumMBID();
-    QString getArtistMBID();
+    QString getName() const;
+    QString getPrePath() const;
+    MpdTrack *getTrack() const;
+    QString getTitle() const;
+    QString getArtist() const;
+    QString getPath() const;
+    QString getAlbum() const;
+    QString getLengthFormatted() const;
+    QString getYear() const;
+    QString getSection() const;
 
-    int getTrackNr();
+    QString getTrackMBID() const;
+    QString getAlbumMBID() const;
+    QString getArtistMBID() const;
+
+    int getTrackNr() const;
     bool operator< (const MpdFileEntry& other) const;
     bool operator==(MpdFileEntry & rhs);
     static bool lessThan(const MpdFileEntry *lhs, const MpdFileEntry* rhs);

@@ -70,7 +70,6 @@ bool ImageDatabase::syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist) {
         mAlbums = albums;
         mAlbumNo = 0;
         mAlbumArtist = artist;
-        MpdAlbum *firstAlbum = albums->first();
         //mCurrentAlbumProvider = new LastFMAlbumProvider(*firstAlbum,*mAlbumArtist);
         connect(mCurrentAlbumProvider,SIGNAL(ready(AlbumInformation*)),this,SLOT(albumReady(AlbumInformation*)));
         mCurrentAlbumProvider->startDownload();
@@ -85,13 +84,9 @@ bool ImageDatabase::syncArtists(QList<MpdAlbum*> &artists) {
 }
 
 void ImageDatabase::albumReady(AlbumInformation *albumInformation) {
-    QString albumName = albumInformation->getName();
-    QString albumURL = albumInformation->getURL();
-    QByteArray *imgData = albumInformation->getImageData();
     delete(mCurrentAlbumProvider);
     if ( mAlbumNo < mAlbums->size() ) {
         mAlbumNo++;
-        MpdAlbum *album = mAlbums->at(mAlbumNo);
         //mCurrentAlbumProvider = new LastFMAlbumProvider(*album,*mAlbumArtist);
         connect(mCurrentAlbumProvider,SIGNAL(ready(AlbumInformation*)),this,SLOT(albumReady(AlbumInformation*)));
         mCurrentAlbumProvider->startDownload();

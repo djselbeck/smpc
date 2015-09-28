@@ -16,19 +16,16 @@ public:
 
     MpdAlbum(const MpdAlbum &copyObject, QObject *parent = 0);
 
-    const QString getTitle();
+    QString getTitle() const;
+    QString getSection() const;
+    QString getArtist() const;
+    QString getMBID() const;
 
     bool operator< (const MpdAlbum& rhs) const;
     bool operator==(MpdAlbum & rhs) const ;
     void operator=(MpdAlbum &rhs);
 
     static bool lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs);
-
-    const QString getSection();
-    const QString getArtist();
-    const QString getMBID();
-
-
 private:
     QString mTitle;
     QString mArtist;

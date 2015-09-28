@@ -29,32 +29,32 @@ MpdFileEntry::~MpdFileEntry()
     mTrack=NULL;
 }
 
-const bool MpdFileEntry::isFile()
+bool MpdFileEntry::isFile() const
 {
     return mType==MpdFileType_File ? true:false;
 }
 
-const bool MpdFileEntry::isDirectory()
+bool MpdFileEntry::isDirectory() const
 {
     return mType==MpdFileType_Directory ? true:false;
 }
 
-const bool MpdFileEntry::isPlaylist()
+bool MpdFileEntry::isPlaylist() const
 {
     return mType==MpdFileType_Playlist ? true:false;
 }
 
-const QString MpdFileEntry::getName()
+QString MpdFileEntry::getName() const
 {
     return mName;
 }
 
-const QString MpdFileEntry::getPrePath()
+QString MpdFileEntry::getPrePath() const
 {
     return mPrePath;
 }
 
-MpdTrack *MpdFileEntry::getTrack()
+MpdTrack *MpdFileEntry::getTrack() const
 {
     if(mTrack!=NULL)
     {
@@ -63,64 +63,74 @@ MpdTrack *MpdFileEntry::getTrack()
     return NULL;
 }
 
-QString MpdFileEntry::getTitle()
+QString MpdFileEntry::getTitle() const
 {
     if(mTrack!=NULL)
         return getTrack()->getTitle();
+    return "";
 }
-QString MpdFileEntry::getArtist()
+QString MpdFileEntry::getArtist() const
 {
     if(mTrack!=NULL)
         return getTrack()->getArtist();
+    return "";
 }
-QString MpdFileEntry::getPath()
+QString MpdFileEntry::getPath() const
 {
     if(mTrack!=NULL)
         return getTrack()->getFileUri();
+    return "";
 }
-QString MpdFileEntry::getAlbum()
+QString MpdFileEntry::getAlbum() const
 {
     if(mTrack!=NULL)
         return getTrack()->getAlbum();
+    return "";
 }
-QString MpdFileEntry::getLengthFormatted()
+QString MpdFileEntry::getLengthFormatted() const
 {
     if(mTrack!=NULL)
         return getTrack()->getLengthFormated();
+    return "";
 }
-QString MpdFileEntry::getYear()
+QString MpdFileEntry::getYear() const
 {
     if(mTrack!=NULL)
         return getTrack()->getYear();
+    return "";
 }
 
-QString MpdFileEntry::getTrackMBID()
+QString MpdFileEntry::getTrackMBID() const
 {
     if(mTrack!=NULL)
         return getTrack()->getTrackMBID();
+    return "";
 }
 
-QString MpdFileEntry::getArtistMBID()
+QString MpdFileEntry::getArtistMBID() const
 {
     if(mTrack!=NULL)
         return getTrack()->getArtistMBID();
+    return "";
 }
 
-QString MpdFileEntry::getAlbumMBID()
+QString MpdFileEntry::getAlbumMBID() const
 {
     if(mTrack!=NULL)
         return getTrack()->getAlbumMBID();
+    return "";
 }
-QString MpdFileEntry::getSection()
+QString MpdFileEntry::getSection() const
 {
     return (mName=="" ? "" :QString(mName.toUpper()[0]));
 }
 
 
-int MpdFileEntry::getTrackNr()
+int MpdFileEntry::getTrackNr() const
 {
     if(mTrack!=NULL)
         return getTrack()->getTrackNr();
+    return 0;
 }
 
 bool MpdFileEntry::operator< (const MpdFileEntry& other) const

@@ -18,6 +18,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     connect(tcpsocket,SIGNAL(disconnected()),this,SLOT(disconnectedfromServer()));
     connect(statusupdater,SIGNAL(timeout()),this,SLOT(updateStatusInternal()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(errorHandle()));
+
 }
 
 
@@ -47,8 +48,20 @@ bool NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
         teststring.truncate(6);
         if (teststring==QString("OK MPD"))
         {
-
+            QString versionString = response.remove("OK MPD ");
+            QStringList versionParts = versionString.split(".");
+            if ( versionParts.length() == 3 ) {
+                if ( pServerInfo.version.mpdMajor2 != versionParts[1].toUInt()) {
+                    qDebug() << "New server version, check capabilities";
+                    /* Version has changed, so recheck capabilities */
+                    pServerInfo.version.mpdMajor1 = versionParts[0].toUInt();
+                    pServerInfo.version.mpdMajor2 = versionParts[1].toUInt();
+                    pServerInfo.version.mpdMinor = versionParts[2].toUInt();
+                    checkServerCapabilities();
+                }
+            }
         }
+
         authenticate(password);
         emit ready();
         emit connectionestablished();
@@ -80,8 +93,11 @@ void NetworkAccess::getAlbums()
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
 
-//        outstream << "list album group MUSICBRAINZ_ALBUMID" << endl;
-        outstream << "list album" << endl;
+        if ( pServerInfo.mpd_cmd_list_group_capabilites ) {
+            outstream << "list album group MUSICBRAINZ_ALBUMID" << endl;
+        } else {
+            outstream << "list album" << endl;
+        }
 
         //Read all albums until OK send from mpd
         QString response ="";
@@ -225,8 +241,11 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         outstream.setCodec("UTF-8");
         outstream.setAutoDetectUnicode(false);
         outstream.setCodec("UTF-8");
-//        outstream << "list album artist \"" <<artist<<"\"" << " group MUSICBRAINZ_ALBUMID" << endl;
-        outstream << "list album artist \"" << artist <<"\"" << endl;
+        if ( pServerInfo.mpd_cmd_list_group_capabilites && pServerInfo.mpd_cmd_list_filter_criteria ) {
+            outstream << "list album artist \"" <<artist<<"\"" << " group MUSICBRAINZ_ALBUMID" << endl;
+        } else {
+            outstream << "list album \"" << artist <<"\"" << endl;
+        }
 
         //Read all albums until OK send from mpd
         QString response ="";
@@ -1843,4 +1862,18 @@ QMap<MpdArtist*, QList<MpdAlbum*>* > *NetworkAccess::getArtistsAlbumsMap_prv()
         (*resMap)[tmpArtist] = albums;
     }
     return resMap;
+}
+
+
+void NetworkAccess::checkServerCapabilities() {
+    /* Check server version */
+    if ( pServerInfo.version.mpdMajor2 >= 19 ) {
+        /* Enable new list command features */
+        pServerInfo.mpd_cmd_list_filter_criteria = true;
+        pServerInfo.mpd_cmd_list_group_capabilites = true;
+        qDebug() << "Enable new list features of version 0.19";
+    } else {
+        pServerInfo.mpd_cmd_list_filter_criteria = false;
+        pServerInfo.mpd_cmd_list_group_capabilites = false;
+    }
 }

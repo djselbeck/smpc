@@ -52,39 +52,39 @@ MpdTrack::MpdTrack(QObject *parent, QString file, QString title, QString artist,
 }
 
 
-const QString MpdTrack::getTitle()
+QString MpdTrack::getTitle() const
 {
     return mTitle;
 }
-const QString MpdTrack::getFileUri()
+QString MpdTrack::getFileUri() const
 {
     return mFileURI;
 }
 
-const quint32 MpdTrack::getLength()
+quint32 MpdTrack::getLength() const
 {
     return mLength;
 }
-const QString MpdTrack::getAlbum()
+QString MpdTrack::getAlbum() const
 {
     return mAlbum;
 }
 
-const QString MpdTrack::getArtist()
+QString MpdTrack::getArtist() const
 {
     return mArtist;
 }
 
-const QString MpdTrack::getAlbumArtist()
+QString MpdTrack::getAlbumArtist() const
 {
     return mAlbumArtist;
 }
 
-const bool MpdTrack::getPlaying()
+bool MpdTrack::getPlaying() const
 {
     return mPlaying;
 }
-const QString MpdTrack::getLengthFormated()
+QString MpdTrack::getLengthFormated() const
 {
     QString temp;
     int hours=0,min=0,sec=0;
@@ -108,41 +108,41 @@ const QString MpdTrack::getLengthFormated()
     return temp;
 }
 
-const QString MpdTrack::getName()
+QString MpdTrack::getName() const
 {
   return mFileURI;
 }
 
-const int MpdTrack::getTrackNr()
+int MpdTrack::getTrackNr() const
 {
     return mTrackNR;
 }
 
-const int MpdTrack::getAlbumTracks()
+int MpdTrack::getAlbumTracks() const
 {
     return mAlbumTracks;
 }
 
-const QString MpdTrack::getYear()
+QString MpdTrack::getYear() const
 {
     return mYear;
 }
 
-const QString MpdTrack::getFileName() {
+QString MpdTrack::getFileName() const {
     QStringList splitted;
     splitted = getFileUri().split('/');
     return (splitted.last() !="" ? splitted.last() : getFileUri());
 }
 
-const QString MpdTrack::getTrackMBID() {
+QString MpdTrack::getTrackMBID() const {
     return mTrackMBID;
 }
 
-const QString MpdTrack::getAlbumMBID() {
+QString MpdTrack::getAlbumMBID() const {
     return mAlbumMBID;
 }
 
-const QString MpdTrack::getArtistMBID() {
+QString MpdTrack::getArtistMBID() const {
     return mArtistMBID;
 }
 

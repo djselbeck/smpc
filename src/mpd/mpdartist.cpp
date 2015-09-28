@@ -15,12 +15,12 @@ MpdArtist::MpdArtist(const MpdArtist &copyObject, QObject *parent) : QObject(par
 }
 
 
-const QString MpdArtist::getName()
+QString MpdArtist::getName() const
 {
    return this->mName;
 }
 
-const QString MpdArtist::getMBID() {
+QString MpdArtist::getMBID() const {
     return mMBID;
 }
 
@@ -29,7 +29,7 @@ MpdArtist::~MpdArtist()
 {
 }
 
-QString MpdArtist::getSection()
+QString MpdArtist::getSection() const
 {
     return (mName=="" ? "" :QString(mName.toUpper()[0]));
 }
