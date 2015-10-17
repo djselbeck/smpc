@@ -153,7 +153,18 @@ Page {
                     }
                 }
             }
-
+            TextSwitch{
+                id: showViewModeLandscapeSwitch
+                text: qsTr("use show mode in landscape")
+                checked: useShowView
+                onClicked: {
+                    if ( checked ) {
+                        newSettingKey(["showModeLandscape","1"]);
+                    } else {
+                        newSettingKey(["showModeLandscape","0"]);
+                    }
+                }
+            }
         }
     }
 }

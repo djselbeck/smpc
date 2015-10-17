@@ -172,7 +172,7 @@ Page {
         id: dialogComponent
         Dialog {
             id: confirmationDialog
-            allowedOrientations: Orientation.Portrait + Orientation.Landscape
+            allowedOrientations: bothOrientation
             property int confirmationRole
             property string headerText
             property string questionText

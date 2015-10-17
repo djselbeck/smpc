@@ -628,6 +628,7 @@ void Controller::readSettings()
     mSectionsInPlaylist = settings.value("sections_in_playlist",1).toInt();
     mDownloadEnabled = settings.value("lastfm_download",1).toInt();
     mCoverInNowPlaying = settings.value("show_covernowplaying",1).toInt();
+    mShowModeLandscape = settings.value("useShowView",1).toInt();
 
     emit newDownloadEnabled(mDownloadEnabled);
 
@@ -638,6 +639,8 @@ void Controller::readSettings()
     mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
     mQuickView->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
     mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
+
+    mQuickView->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
 
     mQuickView->rootContext()->setContextProperty("downloadSize",dlSize);
     mDownloadSize = dlSize;
@@ -679,6 +682,7 @@ void Controller::writeSettings()
     settings.setValue("sections_in_playlist",mSectionsInPlaylist);
     settings.setValue("lastfm_download",mDownloadEnabled);
     settings.setValue("show_covernowplaying",mCoverInNowPlaying);
+    settings.setValue("useShowView",mShowModeLandscape);
     settings.endGroup();
 }
 
@@ -1015,6 +1019,9 @@ void Controller::receiveSettingKey(QVariant setting)
         } else if ( settings.at(0) == "showCoverNowPlaying" ) {
             mCoverInNowPlaying = settings.at(1).toInt();
             mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
+        } else if ( settings.at(0) == "showModeLandscape" ) {
+            mShowModeLandscape = settings.at(1).toInt();
+            mQuickView->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
         }
 
     }

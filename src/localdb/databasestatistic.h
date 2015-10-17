@@ -7,7 +7,7 @@ class DatabaseStatistic : public QObject
 {
     Q_OBJECT
 public:
-    DatabaseStatistic(int albumCount,int albumBlacklistCount, int artistCount, int imageCount, int artistQueueSize, int albumQueueSize, int databaseSize)
+    DatabaseStatistic(int albumCount,int albumBlacklistCount, int artistCount, int imageCount, int artistQueueSize, int albumQueueSize, qint64 databaseSize)
     {
         mAlbumCount = albumCount;
         mAlbumBlacklistCount = albumBlacklistCount;
@@ -46,7 +46,7 @@ public:
     }
 
 
-    Q_INVOKABLE int getDatabaseSize()
+    Q_INVOKABLE qint64 getDatabaseSize()
     {
         return mDatabaseSize;
     }
@@ -58,7 +58,7 @@ private:
     int mImageCount;
     int mArtistQueueSize;
     int mAlbumQueueSize;
-    int mDatabaseSize;
+    qint64 mDatabaseSize;
 };
 
 #endif // DATABASESTATISTIC_H

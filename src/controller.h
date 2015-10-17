@@ -129,6 +129,7 @@ private:
     int mSectionsInSearch;
     int mSectionsInPlaylist;
     int mCoverInNowPlaying;
+    int mShowModeLandscape;
 
     // Streaming playback
     //StreamPlayer *mStreamPlayer;

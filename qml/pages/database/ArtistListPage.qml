@@ -21,7 +21,9 @@ Page {
                 quickScrollEnabled: jollaQuickscroll
                 model: artistsModel
                 clip: true
-                cellWidth: width / 2
+                cellWidth: Screen.sizeCategory >= Screen.Large ? ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)
+                                                                  ? (width / 6) : width / 4) :
+                                                                 ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted) ? (width/4) : (width / 2))
                 cellHeight: cellWidth
                 populate: Transition {
                     NumberAnimation {
@@ -218,15 +220,17 @@ Page {
                 gridViewLoader.active = false
                 showViewLoader.active = false
                 if ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted)) {
-                    console.debug("activating page with portrait grid view")
                     if (artistView === 0) {
                         gridViewLoader.active = true
                     } else if (artistView === 1) {
                         listViewLoader.active = true
                     }
                 } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)) {
-                    console.debug("activating page landscape showview")
-                    showViewLoader.active = true
+                    if ( useShowView) {
+                        showViewLoader.active = true
+                    } else {
+                        gridViewLoader.active = true
+                    }
                 }
             }
         }
@@ -246,15 +250,17 @@ Page {
     onOrientationTransitionRunningChanged: {
         if (!orientationTransitionRunning) {
             if ((orientation === Orientation.Portrait) || (orientation === Orientation.PortraitInverted)) {
-                console.debug("activating portrait grid view")
                 if (artistView === 0) {
                     gridViewLoader.active = true
                 } else if (artistView === 1) {
                     listViewLoader.active = true
                 }
             } else if ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)) {
-                console.debug("activating landscape showview")
-                showViewLoader.active = true
+                if ( useShowView) {
+                    showViewLoader.active = true
+                } else {
+                    gridViewLoader.active = true
+                }
             }
         } else {
             console.debug("deactivating loaders")

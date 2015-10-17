@@ -1639,6 +1639,8 @@ void NetworkAccess::setConnectParameters(QString hostname, int port, QString pas
 
 void NetworkAccess::connectToHost()
 {
+    /* Invalidate current playlist */
+    mPlaylistversion = 0;
     connectToHost(hostname,port,password);
 }
 

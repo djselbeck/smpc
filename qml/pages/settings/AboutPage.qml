@@ -18,7 +18,10 @@ Page {
             }
             Image {
                 id: logo
-                source: "qrc:images/smpc-big.png"
+                source: "qrc:images/smpc.svg"
+                sourceSize.height: parent.width
+                sourceSize.width: parent.width
+                smooth: true
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: (orientation === Orientation.Portrait ? aboutPage.width - Theme.paddingLarge * 5 : (aboutPage.height-pageHeading.height-nameText.height-versionText.height))
                 height: width

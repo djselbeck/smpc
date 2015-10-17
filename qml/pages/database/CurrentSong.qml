@@ -398,7 +398,7 @@ Page {
                 IconButton {
                     id: volumeButton
                     anchors.centerIn: parent
-                    icon.source: "image://theme/icon-system-volume"
+                    icon.source: "image://theme/icon-m-speaker"
                     onClicked: {
                         volumeControl.state = "sliderVisible"
                         volumeSliderFadeOutTimer.start()
