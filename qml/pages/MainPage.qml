@@ -147,7 +147,7 @@ Page {
         repeat: false
         onTriggered: {
             if (connected){
-                pageStack.push(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"))
+                pageStack.navigateForward(PageStackAction.Animated);
             }
         }
     }
@@ -156,8 +156,14 @@ Page {
         if (status === PageStatus.Active) {
 //            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
             if ( mPlaylistPage == undefined) {
-                var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
-                var playlistPage = playlistComponent.createObject(mainWindow);
+                /* Check if running on large device and load corresponding page */
+                if ( Screen.sizeCategory >= Screen.Large ) {
+                    var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage_large.qml"));
+                    var playlistPage = playlistComponent.createObject(mainWindow);
+                } else {
+                    var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
+                    var playlistPage = playlistComponent.createObject(mainWindow);
+                }
                 mPlaylistPage = playlistPage;
             }
 

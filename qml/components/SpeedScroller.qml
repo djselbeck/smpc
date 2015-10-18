@@ -5,7 +5,7 @@ import "SpeedScroller.js" as Sections
 Item {
     id: scroller
     height: parent.height
-    width: (orientation === Orientation.Portrait ||  orientation === Orientation.PortraitInverted) ?  parent.width/7 : parent.width/12
+    width: 64 * Theme.pixelRatio
     property alias scrollenabled: inputArea.enabled
     property int listviewCache
     x: parent.x+parent.width-width;

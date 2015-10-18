@@ -69,6 +69,7 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/pages/database/FileBrowserPage.qml \
     qml/pages/database/CurrentSong.qml \
     qml/pages/database/CurrentPlaylistPage.qml \
+    qml/pages/database/CurrentPlaylistPage_large.qml \
     qml/pages/database/ArtistListPage.qml \
     qml/pages/database/ArtistInformationPage.qml \
     qml/pages/database/ArtistInfoPage.qml \
@@ -104,7 +105,12 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/components/AlbumListDelegate.qml \
     qml/components/ArtistListDelegate.qml \
     qml/components/PlaylistSectionDelegate.qml \
-    qml/pages/database/AddToPlaylistDialog.qml
+    qml/pages/database/AddToPlaylistDialog.qml \
+    qml/pages/database/CurrentPlaylistPage_large.qml \
+    qml/pages/database/CurrentSong_large.qml \
+    qml/components/URLInputDialog.qml \
+    qml/components/SavePlaylistDialog.qml \
+    qml/components/DeletePlaylistDialog.qml
 
 
 
@@ -129,6 +135,7 @@ SOURCES += \
     qml/pages/database/FileBrowserPage.qml \
     qml/pages/database/CurrentSong.qml \
     qml/pages/database/CurrentPlaylistPage.qml \
+    qml/pages/database/CurrentPlaylistPage_large.qml \
     qml/pages/database/ArtistListPage.qml \
     qml/pages/database/ArtistInformationPage.qml \
     qml/pages/database/ArtistInfoPage.qml \

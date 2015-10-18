@@ -5,7 +5,7 @@ Dialog
 {
     id: saveToList
     property string url;
-
+    allowedOrientations: bothOrientation
     canAccept: false
 
 

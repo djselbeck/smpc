@@ -231,88 +231,17 @@ Page {
     }
 
     // Delete question
-    Dialog {
+    DeletePlaylistDialog {
         id: deleteQuestionDialog
-        allowedOrientations: Orientation.Portrait + Orientation.Landscape
-        Column {
-            width: parent.width
-            spacing: 10
-            anchors.margins: Theme.paddingMedium
-            DialogHeader {
-                acceptText: qsTr("delete playlist")
-            }
-            Label {
-                text: qsTr("really delete playlist?")
-            }
-        }
-        onDone: {
-            if (result === DialogResult.Accepted) {
-                deletePlaylist()
-            }
-        }
+
     }
 
-    Dialog {
+    SavePlaylistDialog {
         id: saveplaylistDialog
-        allowedOrientations: bothOrientation
-        Column {
-            width: parent.width
-            spacing: 10
-            anchors.margins: Theme.paddingMedium
-            DialogHeader {
-                acceptText: qsTr("save playlist")
-            }
-            Label {
-                text: qsTr("playlist name:")
-            }
-            TextField {
-                id: playlistNameField
-                width: parent.width
-                placeholderText: qsTr("input playlist name")
-            }
-        }
-        onDone: {
-            if (result === DialogResult.Accepted) {
-                console.debug("Saving playlist: " + playlistNameField.text)
-                savePlaylist(playlistNameField.text)
-            }
-            playlistNameField.text = ""
-            playlistNameField.focus = false
-        }
-        onOpened: {
-            playlistNameField.focus = true
-        }
     }
 
-    Dialog {
+    URLInputDialog {
         id: urlInputDialog
-        allowedOrientations: bothOrientation
-        Column {
-            width: parent.width
-            spacing: 10
-            anchors.margins: Theme.paddingMedium
-            DialogHeader {
-                acceptText: qsTr("add url")
-            }
-            Label {
-                text: qsTr("enter url:")
-            }
-            TextField {
-                id: urlInputField
-                width: parent.width
-                placeholderText: qsTr("input url (http://, file://, etc)")
-            }
-        }
-        onDone: {
-            if (result === DialogResult.Accepted) {
-                addSong(urlInputField.text)
-            }
-            urlInputField.text = ""
-            urlInputField.focus = false
-        }
-        onOpened: {
-            urlInputField.focus = true
-        }
     }
 
     onStatusChanged: {

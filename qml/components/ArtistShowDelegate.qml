@@ -28,8 +28,8 @@ BackgroundItem {
             id: albumImage
             antialiasing: true
             anchors.fill: parent
-            /*sourceSize.width: width
-            sourceSize.height: height*/
+            sourceSize.width: width
+            sourceSize.height: height
             source: imageURL
             cache: true
             asynchronous: true
@@ -166,6 +166,8 @@ BackgroundItem {
                         IconButton {
                             id: backButton
                             icon.source: "image://theme/icon-m-back"
+                            height: backsideLoader.height / 4
+                            width: height
                             onClicked: {
                                 if ( flipped ) {
                                     rotateOut.running = true
@@ -177,6 +179,8 @@ BackgroundItem {
                         IconButton {
                             id: playButton
                             icon.source: "image://theme/icon-m-play"
+                            height: backsideLoader.height / 4
+                            width: height
                             onClicked: {
                                 playArtist(artist)
                                 if ( flipped ) {
@@ -189,6 +193,8 @@ BackgroundItem {
                         IconButton {
                             id: addButton
                             icon.source: "image://theme/icon-m-add"
+                            height: backsideLoader.height / 4
+                            width: height
                             onClicked: {
                                 addArtist(artist)
                                 if ( flipped ) {
@@ -201,6 +207,8 @@ BackgroundItem {
                         IconButton {
                             id: moreButton
                             icon.source: "image://theme/icon-m-other"
+                            height: backsideLoader.height / 4
+                            width: height
                             onClicked: {
                                 artistClicked(artist)
                                 pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});

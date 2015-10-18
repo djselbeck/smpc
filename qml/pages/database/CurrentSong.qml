@@ -115,12 +115,19 @@ Page {
                         sourceprimary: coverimageurl
                         sourcesecondary: artistimageurl
                         active: visible
-                        Image {
-                            id: fallbackImage
-                            enabled: showCoverNowPlaying
-                            source: "qrc:/images/smpc-big.png"
+                        Rectangle {
+                            color: Theme.rgba(
+                                       Theme.highlightBackgroundColor,
+                                       Theme.highlightBackgroundOpacity)
                             anchors.fill: parent
-                            visible: ( !coverImage.ready  && showCoverNowPlaying )
+                            visible: (!coverImage.ready
+                                      && showCoverNowPlaying)
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:images/pictogram.svg"
+                                sourceSize.width: Screen.width / 2
+                                sourceSize.height: Screen.width / 2
+                            }
                         }
                     }
                     Item
@@ -142,6 +149,19 @@ Page {
                             }
                             cache: false
                             fillMode: Image.PreserveAspectCrop
+                            Rectangle {
+                                color: Theme.rgba(
+                                           Theme.highlightBackgroundColor,
+                                           Theme.highlightBackgroundOpacity)
+                                anchors.fill: parent
+                                visible: albumImgLandscape.status != Image.Ready
+                                Image {
+                                    anchors.fill: parent
+                                    source: "qrc:images/pictogram.svg"
+                                    sourceSize.width: Screen.width / 2
+                                    sourceSize.height: Screen.width / 2
+                                }
+                            }
                         }
                         Image
                         {
@@ -156,6 +176,19 @@ Page {
                             }
                             cache: false
                             fillMode: Image.PreserveAspectCrop
+                            Rectangle {
+                                color: Theme.rgba(
+                                           Theme.highlightBackgroundColor,
+                                           Theme.highlightBackgroundOpacity)
+                                anchors.fill: parent
+                                visible: artistImgLandscape.status != Image.Ready
+                                Image {
+                                    anchors.fill: parent
+                                    source: "qrc:images/pictogram.svg"
+                                    sourceSize.width: Screen.width / 2
+                                    sourceSize.height: Screen.width / 2
+                                }
+                            }
                         }
                         Rectangle
                         {

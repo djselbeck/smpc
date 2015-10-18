@@ -146,6 +146,7 @@ Page
     }
     Dialog
     {
+        allowedOrientations: bothOrientation
         id: deleteSavedPlaylistQuestion
         property string playlistname;
         Column {

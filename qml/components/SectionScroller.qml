@@ -200,7 +200,7 @@ Item {
             PropertyChanges {
                 target: scroller
                 width: parent.width
-                height: parent.height/7
+                height: 64 * Theme.pixelRatio
                 x:0
                 y: parent.y+parent.height-height;
                 landscape: true
@@ -219,7 +219,7 @@ Item {
             PropertyChanges {
                 target: scroller
                 height: parent.height
-                width: parent.width/7
+                width: 64 * Theme.pixelRatio
                 x: parent.x+parent.width-width;
                 y: 0
                 landscape: false

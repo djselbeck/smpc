@@ -50,7 +50,7 @@ Page {
                                 id: artistImage
                                 width: parent.width / 2
                                 height: imageRow.height
-                                cache: false
+                                cache: true
                                 asynchronous: true
                                 sourceSize.width: width
                                 sourceSize.height: height
@@ -68,7 +68,7 @@ Page {
                                 id: albumImage
                                 width: parent.width / 2
                                 height: imageRow.height
-                                cache: false
+                                cache: true
                                 asynchronous: true
                                 sourceSize.width: width
                                 sourceSize.height: height
@@ -144,7 +144,7 @@ Page {
                         id: artistImageLC
                         width: height
                         height: pictureColumn.width
-                        cache: false
+                        cache: true
                         asynchronous: true
                         sourceSize.width: width
                         sourceSize.height: height
@@ -164,7 +164,7 @@ Page {
                         id: albumImageLC
                         width: height
                         height: pictureColumn.width
-                        cache: false
+                        cache: true
                         asynchronous: true
                         sourceSize.width: width
                         sourceSize.height: height
