@@ -29,7 +29,7 @@ QString MpdAlbum::getMBID() const {
     return mMBID;
 }
 
-void MpdAlbum::operator =(MpdAlbum &rhs)
+void MpdAlbum::operator =(const MpdAlbum &rhs)
 {
     mTitle = rhs.mTitle;
     mArtist = rhs.mArtist;

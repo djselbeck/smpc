@@ -4,7 +4,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 }
 
-Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQuickView(viewer),mPassword(""),mHostname(""),mPort(6600)
+Controller::Controller(QQmlEngine *qmlEngine, QObject *qmlRoot,QObject *parent) : QObject(parent),mQMLEngine(qmlEngine),mQMLRootObject(qmlRoot),mPassword(""),mHostname(""),mPort(6600)
 {
     mImgDB = new ImageDatabase();
     mQMLImgProvider = new QMLImageProvider(mImgDB);
@@ -44,21 +44,21 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mWasConnected = false;
     mFileModels = new QStack<FileModel*>();
     // Set empty qml properties for later usage
-    mQuickView->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
-    mQuickView->rootContext()->setContextProperty("coverstring","");
-    mQuickView->rootContext()->setContextProperty("artistInfoText","");
-    mQuickView->rootContext()->setContextProperty("albumInfoText","");
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
-    mQuickView->rootContext()->setContextProperty("artistsModel",0);
-    mQuickView->rootContext()->setContextProperty("albumsModel",0);
-    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
-    mQuickView->rootContext()->setContextProperty("outputsModel",0);
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("versionstring",QVariant::fromValue(QString(VERSION)));
+    mQMLEngine->rootContext()->setContextProperty("coverstring","");
+    mQMLEngine->rootContext()->setContextProperty("artistInfoText","");
+    mQMLEngine->rootContext()->setContextProperty("albumInfoText","");
+    mQMLEngine->rootContext()->setContextProperty("albumTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("artistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("albumsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistModel",0);
+    mQMLEngine->rootContext()->setContextProperty("outputsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("searchedTracksModel",0);
 
     updatePlaylistModel(0);
-    viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
-    mNetAccess->setQmlThread(viewer->thread());
+    mQMLEngine->addImageProvider("imagedbprovider",mQMLImgProvider);
+    mNetAccess->setQmlThread(mQMLEngine->rootContext()->thread());
     //Start auto connect
     for(int i = 0;i<mServerProfiles->rowCount();i++)
     {
@@ -132,7 +132,7 @@ void Controller::updatePlaylistModel(QList<QObject*>* list)
     qDebug() << "new playlist model created";
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     qDebug() << "new playlist model ownership set";
-    mQuickView->rootContext()->setContextProperty("playlistModelVar",model);
+    mQMLEngine->rootContext()->setContextProperty("playlistModelVar",model);
     qDebug() << "new playlist model set in qml context";
     if(mPlaylist==0){
         qDebug() << "no old playlist found";
@@ -156,7 +156,7 @@ void Controller::updateFilesModel(QList<QObject*>* list)
     {
         FileModel *model = new FileModel((QList<MpdFileEntry*>*)list,mImgDB,this);
         QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
-        mQuickView->rootContext()->setContextProperty("filesModel",model);
+        mQMLEngine->rootContext()->setContextProperty("filesModel",model);
         mFileModels->push(model);
         emit filesModelReady();
     }
@@ -165,12 +165,12 @@ void Controller::updateFilesModel(QList<QObject*>* list)
 
 void Controller::updateSavedPlaylistsModel(QStringList *list)
 {
-    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistsModel",0);
     if ( mSavedPlaylists ) {
         delete(mSavedPlaylists);
         mSavedPlaylists = 0;
     }
-    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",QVariant::fromValue(*list));
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistsModel",QVariant::fromValue(*list));
     mSavedPlaylists = list;
     emit savedPlaylistsReady();
 
@@ -178,19 +178,19 @@ void Controller::updateSavedPlaylistsModel(QStringList *list)
 
 void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
         delete(mPlaylistTracks);
         mPlaylistTracks = 0;
     }
     mPlaylistTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",mPlaylistTracks);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistModel",mPlaylistTracks);
     emit savedPlaylistReady();
 }
 
 void Controller::updateArtistsModel(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("artistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("artistsModel",0);
     if(mOldArtistModel!=0)
     {
         delete(mOldArtistModel);
@@ -201,7 +201,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
     ArtistModel *model = new ArtistModel((QList<MpdArtist*>*)list,mImgDB,this);
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     mOldArtistModel = model;
-    mQuickView->rootContext()->setContextProperty("artistsModel",model);
+    mQMLEngine->rootContext()->setContextProperty("artistsModel",model);
     emit artistsReady();
 }
 
@@ -213,7 +213,7 @@ void Controller::updateArtistsModel(QList<QObject*>* list)
 
 void Controller::updateAlbumsModel(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("albumsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("albumsModel",0);
     if(mOldAlbumModel!=0)
     {
         delete(mOldAlbumModel);
@@ -223,52 +223,52 @@ void Controller::updateAlbumsModel(QList<QObject*>* list)
     QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
     mOldAlbumModel = model;
 
-    mQuickView->rootContext()->setContextProperty("albumsModel",model);
+    mQMLEngine->rootContext()->setContextProperty("albumsModel",model);
     emit albumsReady();
 }
 
 void Controller::updateOutputsModel(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("outputsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("outputsModel",0);
     if(mOutputs!=0)
     {
         delete(mOutputs);
     }
     mOutputs = (QList<MPDOutput*>*)list;
 
-    mQuickView->rootContext()->setContextProperty("outputsModel",QVariant::fromValue(*list));
+    mQMLEngine->rootContext()->setContextProperty("outputsModel",QVariant::fromValue(*list));
     emit outputsReady();
 }
 
 
 void Controller::updateAlbumTracksModel(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
         delete(mAlbumTracks);
         mAlbumTracks = 0;
     }
     mAlbumTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",mAlbumTracks);
+    mQMLEngine->rootContext()->setContextProperty("albumTracksModel",mAlbumTracks);
     emit albumTracksReady();
 }
 
 void Controller::updateSearchedTracks(QList<QObject*>* list)
 {
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("searchedTracksModel",0);
     if(mSearchedTracks!=0)
     {
         delete (mSearchedTracks);
         mSearchedTracks = 0;
     }
     mSearchedTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",mSearchedTracks);
+    mQMLEngine->rootContext()->setContextProperty("searchedTracksModel",mSearchedTracks);
     emit searchedTracksReady();
 }
 
 void Controller::connectSignals()
 {
-    QObject *item = (QObject *)mQuickView->rootObject();
+    QObject *item = mQMLRootObject;
     qRegisterMetaType<status_struct>("status_struct");
     qRegisterMetaType<QList<MpdTrack*>*>("QList<MpdTrack*>*");
     qRegisterMetaType<QList<MpdAlbum*>*>("QList<MpdAlbum*>*");
@@ -360,7 +360,7 @@ void Controller::connectSignals()
     connect(this,SIGNAL(filesModelReady()),item,SLOT(receiveFilesPage()));
     connect(this,SIGNAL(filePopCleared()),item,SLOT(popCleared()));
 
-    connect(mQuickView,SIGNAL(focusObjectChanged(QObject*)),this,SLOT(focusChanged(QObject*)));
+    connect(mQMLEngine,SIGNAL(focusObjectChanged(QObject*)),this,SLOT(focusChanged(QObject*)));
 
 
     connect(this,SIGNAL(requestArtistAlbumMap()),mNetAccess,SLOT(getArtistAlbumMap()));
@@ -594,7 +594,7 @@ void Controller::requestFilePage(QString path)
 void Controller::readSettings()
 {
     if ( mServerProfiles ) {
-        mQuickView->rootContext()->setContextProperty("serverList",0);
+        mQMLEngine->rootContext()->setContextProperty("serverList",0);
         delete(mServerProfiles);
         mServerProfiles = 0;
     }
@@ -632,22 +632,22 @@ void Controller::readSettings()
 
     emit newDownloadEnabled(mDownloadEnabled);
 
-    mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
-    mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
-    mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
-    mQuickView->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
-    mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
-    mQuickView->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
-    mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
+    mQMLEngine->rootContext()->setContextProperty("artistView", mArtistViewSetting);
+    mQMLEngine->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
+    mQMLEngine->rootContext()->setContextProperty("listImageSize", mListImageSize);
+    mQMLEngine->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
+    mQMLEngine->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
+    mQMLEngine->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
+    mQMLEngine->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
 
-    mQuickView->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
+    mQMLEngine->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
 
-    mQuickView->rootContext()->setContextProperty("downloadSize",dlSize);
+    mQMLEngine->rootContext()->setContextProperty("downloadSize",dlSize);
     mDownloadSize = dlSize;
     emit newDownloadSize(getLastFMArtSize(mDownloadSize));
     settings.endGroup();
     mServerProfiles = new ServerProfileModel(tmpList,this);
-    mQuickView->rootContext()->setContextProperty("serverList",mServerProfiles);
+    mQMLEngine->rootContext()->setContextProperty("serverList",mServerProfiles);
     emit serverProfilesUpdated();
     if(mServerProfiles->rowCount() ==0)
     {
@@ -777,7 +777,7 @@ void Controller::connectProfile(int index)
     mPassword = profile->getPassword();
     mProfilename = profile->getName();
     mReconnectTimer.setInterval(5000);
-    mQuickView->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(mProfilename)));
+    mQMLEngine->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(mProfilename)));
     if(mNetAccess->connected())
     {
         emit requestDisconnect();
@@ -866,7 +866,7 @@ void Controller::cleanFileStack()
         }
         delete(list);
     }
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("searchedTracksModel",0);
     if(mSearchedTracks!=0){
         delete(mSearchedTracks);
         mSearchedTracks = 0;
@@ -886,7 +886,7 @@ void Controller::addlastsearchtoplaylist()
 
 void Controller::clearAlbumList()
 {
-    mQuickView->rootContext()->setContextProperty("albumsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("albumsModel",0);
     if(mOldAlbumModel!=0)
     {
         delete(mOldAlbumModel);
@@ -896,7 +896,7 @@ void Controller::clearAlbumList()
 
 void Controller::clearArtistList()
 {
-    mQuickView->rootContext()->setContextProperty("artistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("artistsModel",0);
     if(mOldArtistModel!=0)
     {
         delete(mOldArtistModel);
@@ -906,7 +906,7 @@ void Controller::clearArtistList()
 
 void Controller::clearTrackList()
 {
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("albumTracksModel",0);
     if ( mAlbumTracks ) {
         delete(mAlbumTracks);
         mAlbumTracks = 0;
@@ -915,7 +915,7 @@ void Controller::clearTrackList()
 
 void Controller::clearPlaylists()
 {
-    mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistsModel",0);
     if(mSavedPlaylists)
     {
         delete(mSavedPlaylists);
@@ -925,7 +925,7 @@ void Controller::clearPlaylists()
 
 void Controller::clearPlaylistList()
 {
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
+    mQMLEngine->rootContext()->setContextProperty("savedPlaylistModel",0);
     if ( mPlaylistTracks ) {
         delete(mPlaylistTracks);
         mPlaylistTracks = 0;
@@ -962,7 +962,7 @@ void Controller::fillArtistImages(QList<QObject *> *artistList)
 
 void Controller::newDBStatisticReceiver(DatabaseStatistic *statistic)
 {
-    mQuickView->rootContext()->setContextProperty("dbStatistic",statistic);
+    mQMLEngine->rootContext()->setContextProperty("dbStatistic",statistic);
     if ( mDBStatistic ) {
         delete mDBStatistic;
     }
@@ -977,18 +977,18 @@ void Controller::fillAlbumImages()
 
 void Controller::setArtistBioInfo(QString info)
 {
-    mQuickView->rootContext()->setContextProperty("artistInfoText",info);
+    mQMLEngine->rootContext()->setContextProperty("artistInfoText",info);
 }
 
 void Controller::setAlbumWikiInfo(QString info)
 {
-    mQuickView->rootContext()->setContextProperty("albumInfoText",info);
+    mQMLEngine->rootContext()->setContextProperty("albumInfoText",info);
 }
 
 void Controller::receiveDownloadSize(int size)
 {
     mDownloadSize = size;
-    mQuickView->rootContext()->setContextProperty("downloadSize",size);
+    mQMLEngine->rootContext()->setContextProperty("downloadSize",size);
     emit newDownloadSize(getLastFMArtSize(size));
     writeSettings();
 }
@@ -999,29 +999,29 @@ void Controller::receiveSettingKey(QVariant setting)
     if ( settings.length() == 2 ) {
         if ( settings.at(0) == "albumView" ) {
             mAlbumViewSetting = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
+            mQMLEngine->rootContext()->setContextProperty("albumView", mAlbumViewSetting);
         } else if ( settings.at(0) == "artistView" ) {
             mArtistViewSetting = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("artistView", mArtistViewSetting);
+            mQMLEngine->rootContext()->setContextProperty("artistView", mArtistViewSetting);
         } else if ( settings.at(0) == "listImageSize" ) {
             mListImageSize = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("listImageSize", mListImageSize);
+            mQMLEngine->rootContext()->setContextProperty("listImageSize", mListImageSize);
         } else if ( settings.at(0) == "sectionsInSearch" ) {
             mSectionsInSearch = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
+            mQMLEngine->rootContext()->setContextProperty("sectionsInSearch", mSectionsInSearch);
         } else if ( settings.at(0) == "sectionsInPlaylist" ) {
             mSectionsInPlaylist = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
+            mQMLEngine->rootContext()->setContextProperty("sectionsInPlaylist", mSectionsInPlaylist);
         } else if ( settings.at(0) == "lastfmEnabled" ) {
             mDownloadEnabled = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
+            mQMLEngine->rootContext()->setContextProperty("lastfmEnabled", mDownloadEnabled);
             emit newDownloadEnabled(mDownloadEnabled);
         } else if ( settings.at(0) == "showCoverNowPlaying" ) {
             mCoverInNowPlaying = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
+            mQMLEngine->rootContext()->setContextProperty("showCoverNowPlaying", mCoverInNowPlaying);
         } else if ( settings.at(0) == "showModeLandscape" ) {
             mShowModeLandscape = settings.at(1).toInt();
-            mQuickView->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
+            mQMLEngine->rootContext()->setContextProperty("useShowView", mShowModeLandscape);
         }
 
     }
@@ -1057,7 +1057,7 @@ QString Controller::getLastFMArtSize(int index)
 
 void Controller::clearSearchTracks()
 {
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    mQMLEngine->rootContext()->setContextProperty("searchedTracksModel",0);
     if(mSearchedTracks!=0){
         delete(mSearchedTracks);
         mSearchedTracks = 0;
@@ -1066,8 +1066,8 @@ void Controller::clearSearchTracks()
 
 void Controller::trimCache()
 {
-//    mQuickView->engine()->clearComponentCache();
-//    mQuickView->engine()->collectGarbage();
+//    mQMLEngine->engine()->clearComponentCache();
+//    mQMLEngine->engine()->collectGarbage();
 }
 
 void Controller::wakeUpHost(int index)

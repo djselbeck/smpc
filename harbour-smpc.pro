@@ -1,7 +1,8 @@
 # The name of your app
 TARGET = harbour-smpc
 
-QT += network gui sql multimedia
+TEMPLATE += app
+QT += qml quick widgets network gui sql multimedia
 
 CONFIG += sailfishapp
 
@@ -116,7 +117,8 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
 
 RESOURCES += \
     translations.qrc \
-    miscresources.qrc
+    miscresources.qrc \
+    qml_resources.qrc
 
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_DEBUG_OUTPUT
@@ -186,3 +188,6 @@ icon256.files += icons/256x256/harbour-smpc.png
 icon256.path = /usr/share/icons/hicolor/256x256/apps
 
 INSTALLS += icon86 icon108 icon128 icon256
+
+DISTFILES += \
+    qml/android/main.qml

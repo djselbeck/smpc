@@ -24,7 +24,7 @@ public:
     QString getSection() const;
     bool operator< (const MpdArtist& other) const;
     bool operator==(MpdArtist & rhs);
-    void operator=(MpdArtist &rhs);
+    void operator=(const MpdArtist &rhs);
 
     static bool lessThan(const MpdArtist *lhs, const MpdArtist* rhs);
 

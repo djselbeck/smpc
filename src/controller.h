@@ -4,9 +4,13 @@
 #include <QObject>
 #include <QString>
 #include <QStack>
+
 #include <QQmlEngine>
 
 #include <QQuickView>
+#ifdef Q_OS_SAILFISH
+#endif
+
 #include <QtQml>
 
 // Local Metadata Database
@@ -44,7 +48,7 @@ class Controller : public QObject
     Q_OBJECT
 public:
     explicit Controller(QObject *parent = 0);
-    Controller(QQuickView *mQuickView,QObject *parent = 0);
+    Controller(QQmlEngine *qmlEngine,QObject *qmlRoot,QObject *parent = 0);
     ~Controller();
     void connectSignals();
 public slots:
@@ -88,8 +92,11 @@ signals:
     void newDownloadSize(QString);
     void newDownloadEnabled(bool);
 
+    void setQMLRoot(QObject *root);
+
 private:
-    QQuickView *mQuickView;
+    QQmlEngine *mQMLEngine;
+    QObject *mQMLRootObject;
     NetworkAccess *mNetAccess;
     QString mHostname,mPassword,mProfilename;
     quint16 mPort;

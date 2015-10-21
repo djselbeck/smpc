@@ -23,7 +23,7 @@ public:
 
     bool operator< (const MpdAlbum& rhs) const;
     bool operator==(MpdAlbum & rhs) const ;
-    void operator=(MpdAlbum &rhs);
+    void operator=(const MpdAlbum &rhs);
 
     static bool lessThan(const MpdAlbum *lhs, const MpdAlbum* rhs);
 private:

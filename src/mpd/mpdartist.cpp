@@ -41,7 +41,7 @@ bool MpdArtist::operator==(MpdArtist & rhs)
 {
     return getName()==rhs.getName();
 }
-void MpdArtist::operator=(MpdArtist &rhs)
+void MpdArtist::operator=(const MpdArtist &rhs)
 {
    mName = rhs.mName;
 }

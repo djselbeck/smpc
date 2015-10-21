@@ -1,13 +1,21 @@
 #include <QGuiApplication>
-#include <QQuickView>
 #include <QDebug>
 
 #include "src/controller.h"
 
+#ifdef Q_OS_SAILFISH
+#include <QQuickView>
 #include <sailfishapp.h>
+#endif
+
+#ifdef Q_OS_ANDROID
+#include <QApplication>
+#include <QQmlApplicationEngine>
+#endif
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
+#ifdef Q_SAILFISH
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     app->setOrganizationName("harbour-smpc");
     app->setApplicationName("harbour-smpc");
@@ -26,9 +34,26 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
         qDebug() << path;
     }
 
-    Controller control(&(*view),0);
+    Controller control(view->engine(),view->rootObject(),0);
     view->show();
     return app->exec();
+#endif
+
+#ifdef Q_OS_ANDROID
+    QApplication app(argc, argv);
+    app.setOrganizationName("ampc");
+    app.setApplicationName("ampc");
+
+
+    QQmlApplicationEngine engine;
+
+    engine.load(QUrl(QStringLiteral("qrc:/qml/android/main.qml")));
+    Controller controller(&engine,engine.rootObjects().first());
+
+
+
+    return app.exec();
+#endif
 }
 
 
