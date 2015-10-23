@@ -13,10 +13,10 @@ ListItem {
             Image {
                 id: albumImage
                 anchors.fill: parent
-                sourceSize.width: width
-                sourceSize.height: height
+                /*sourceSize.width: width
+                sourceSize.height: height*/
                 source: coverURL
-                cache: true
+                cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
             }

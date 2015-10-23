@@ -23,11 +23,11 @@ Component {
                 height: mainRow.height
                 Image{
                     anchors.fill: parent
-                    cache: true
+                    cache: false
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
-                    sourceSize.width: width
-                    sourceSize.height: height
+                    /*sourceSize.width: width
+                    sourceSize.height: height*/
                     source: ( listImageSize === 0 ) ? "" : imageURL
                 }
             }

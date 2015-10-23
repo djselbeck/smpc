@@ -146,8 +146,6 @@ Page {
                         height: pictureColumn.width
                         cache: true
                         asynchronous: true
-                        sourceSize.width: width
-                        sourceSize.height: height
                         source: artistname
                                 == "" ? "image://imagedbprovider/artistfromalbum/"
                                         + albumname : "image://imagedbprovider/artist/" + artistname
@@ -166,8 +164,6 @@ Page {
                         height: pictureColumn.width
                         cache: true
                         asynchronous: true
-                        sourceSize.width: width
-                        sourceSize.height: height
                         source: artistname == "" ? "image://imagedbprovider/album/"
                                                    + albumname : "image://imagedbprovider/album/"
                                                    + artistname + "/" + albumname

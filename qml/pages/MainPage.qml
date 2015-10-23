@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../components"
 
@@ -8,7 +8,7 @@ Page {
     PageHeader {
         id: mainHeader
         title: "SMPC"
-        anchors{
+        anchors {
             top: parent.top
             right: parent.right
             left: parent.left
@@ -16,88 +16,88 @@ Page {
     }
     Label {
         id: connectedLabel
-        anchors{
+        anchors {
             top: mainHeader.bottom
             right: parent.right
             left: parent.left
         }
         horizontalAlignment: Text.AlignHCenter
         color: Theme.highlightColor
-        text: connected ? qsTr("connected to")
-                          + ": " + profilename : qsTr("disconnected")
+        text: connected ? qsTr("connected to") + ": " + profilename : qsTr(
+                              "disconnected")
     }
-    Grid
-    {
-        visible:false
-         enabled: false
-        columns: orientation === Orientation.Landscape ? 2 : 1
+    SilicaFlickable {
         anchors {
             top: connectedLabel.bottom
             bottom: parent.bottom
-//            bottomMargin: quickControlPanel.visibleSize
             right: parent.right
             left: parent.left
         }
-        Button
-        {
-            text: qsTr("playlist")
-        }
-        Button
-        {
-            text: qsTr("artists")
-        }
-        Button
-        {
-            text: qsTr("albums")
-        }
-        Button
-        {
-            text: qsTr("files")
-        }
-        Button
-        {
-            text: qsTr("search")
-        }
-        Button
-        {
-            text: qsTr("connect")
-        }
-        Button
-        {
-            text: qsTr("settings")
-        }
-    }
-
-    SilicaListView {
-        id: mainList
-        enabled: true
-        visible: true
+        contentHeight: mainGrid.height
         clip: true
-        anchors {
-            top: connectedLabel.bottom
-            bottom: parent.bottom
-//            bottomMargin: quickControlPanel.visibleSize
-            right: parent.right
-            left: parent.left
-        }
+        Item {
+            height: mainGrid.height
+            width: parent.width
+            Grid {
+                id: mainGrid
 
-        contentWidth: width
+                columns: Screen.sizeCategory
+                         >= Screen.Large ? 3 : (orientation === Orientation.Landscape
+                                                || orientation
+                                                === Orientation.LandscapeInverted) ? 4 : 2
+                horizontalItemAlignment: Grid.AlignHCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                Repeater {
+                    model: mainMenuModel
+                    delegate: Component {
+                        BackgroundItem {
+                            id: gridItem
+                            width: Theme.itemSizeHuge
+                            height: Theme.itemSizeHuge
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.margins: Theme.paddingSmall
+                                color: Theme.rgba(
+                                           Theme.highlightBackgroundColor,
+                                           Theme.highlightBackgroundOpacity)
+                            }
+                            Column {
+                                anchors.centerIn: parent
+                                Image {
+                                    id: itemIcon
+                                    source: icon
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                                Label {
+                                    id: itemLabel
+                                    anchors {
+                                        horizontalCenter: parent.horizontalCenter
+                                    }
+                                    font.pixelSize: Theme.fontSizeMedium
+                                    width: gridItem.width - (2 * Theme.paddingSmall)
+                                    horizontalAlignment: "AlignHCenter"
+                                     scale: paintedWidth > width ? (width / paintedWidth) : 1
+                               /*     transform: [
+                                        Scale {
+                                            id: scale
+                                            xScale: yScale
+                                            yScale: itemLabel.width > (gridItem.width - (2 * Theme.paddingSmall)) ? (gridItem.width - (2 * Theme.paddingSmall)) / itemLabel.width : 1
+                                        },
+                                        Translate {
+                                                        x: scale.xScale != 1 ? ((gridItem.width - (2 * Theme.paddingSmall))-itemLabel.width*scale.xScale)/2 : 0 ;
+                                                        y: scale.yScale != 1 ? ((gridItem.height - (2 * Theme.paddingSmall))-itemLabel.height*scale.yScale)/2 : 0;}
+                                    ]
+*/
+                                    text: name
+                                }
+                            }
 
-
-        model: mainMenuModel
-        delegate: ListItem {
-            Label {
-                clip: true
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    verticalCenter: parent.verticalCenter
-                    leftMargin: listPadding
-                    rightMargin: listPadding
+                            onClicked: {
+                                parseClickedMainMenu(ident)
+                            }
+                        }
+                    }
                 }
-                text: name
-            }
-            onClicked: {
-                parseClickedMainMenu(ident)
             }
         }
     }
@@ -105,35 +105,38 @@ Page {
     Component.onCompleted: {
         mainMenuModel.append({
                                  name: qsTr("playlist"),
-                                 ident: "playlist"
+                                 ident: "playlist",
+                                 icon: "image://theme/icon-m-document"
                              })
-//        mainMenuModel.append({
-//                                 name: qsTr("song information"),
-//                                 ident: "currentsong"
-//                             })
         mainMenuModel.append({
                                  name: qsTr("artists"),
-                                 ident: "artists"
+                                 ident: "artists",
+                                 icon: "image://theme/icon-m-mic"
                              })
         mainMenuModel.append({
                                  name: qsTr("albums"),
-                                 ident: "albums"
+                                 ident: "albums",
+                                 icon: "image://theme/icon-m-music"
                              })
         mainMenuModel.append({
                                  name: qsTr("files"),
-                                 ident: "files"
+                                 ident: "files",
+                                 icon: "image://theme/icon-m-folder"
                              })
         mainMenuModel.append({
                                  name: qsTr("search"),
-                                 ident: "search"
+                                 ident: "search",
+                                 icon: "image://theme/icon-m-search"
                              })
         mainMenuModel.append({
                                  name: qsTr("connect"),
-                                 ident: "connectto"
+                                 ident: "connectto",
+                                 icon: "image://theme/icon-m-computer"
                              })
         mainMenuModel.append({
                                  name: qsTr("settings"),
-                                 ident: "settings"
+                                 ident: "settings",
+                                 icon: "image://theme/icon-m-developer-mode"
                              })
     }
 
@@ -146,44 +149,15 @@ Page {
         interval: 15000
         repeat: false
         onTriggered: {
-            if (connected){
-                pageStack.navigateForward(PageStackAction.Animated);
+            if (connected) {
+                pageStack.navigateForward(PageStackAction.Animated)
             }
-        }
-    }
-
-    onStatusChanged: {
-        if (status === PageStatus.Active) {
-//            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
-            if ( mPlaylistPage == undefined) {
-                /* Check if running on large device and load corresponding page */
-                if ( Screen.sizeCategory >= Screen.Large ) {
-                    var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage_large.qml"));
-                    var playlistPage = playlistComponent.createObject(mainWindow);
-                } else {
-                    var playlistComponent = Qt.createComponent(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
-                    var playlistPage = playlistComponent.createObject(mainWindow);
-                }
-                mPlaylistPage = playlistPage;
-            }
-
-            pageStack.pushAttached(mPlaylistPage);
-            showCurrentSongTimer.start()
-        } else if (status === PageStatus.Deactivating) {
-            if (showCurrentSongTimer.running) {
-                showCurrentSongTimer.stop()
-            }
-        }
-        else if ( status === PageStatus.Activating ) {
-
-
-            //pageStack.pushAttached(currentsongpage);
         }
     }
 
     function parseClickedMainMenu(ident) {
         if (ident == "playlist") {
-            if (connected){
+            if (connected) {
                 pageStack.navigateForward(PageStackAction.Animated)
             }
         } else if (ident == "settings") {
@@ -197,12 +171,14 @@ Page {
             artistname = ""
             if (connected) {
                 requestAlbums()
-                pageStack.push(Qt.resolvedUrl("database/AlbumListPage.qml"),{artistname:artistname});
+                pageStack.push(Qt.resolvedUrl("database/AlbumListPage.qml"), {
+                                   artistname: artistname
+                               })
             }
         } else if (ident == "artists") {
             if (connected) {
                 requestArtists()
-                pageStack.push(Qt.resolvedUrl("database/ArtistListPage.qml"));
+                pageStack.push(Qt.resolvedUrl("database/ArtistListPage.qml"))
             }
         } else if (ident == "files") {
             if (connected)
@@ -217,6 +193,36 @@ Page {
             updateDB()
         } else if (ident == "search") {
             pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
+        }
+    }
+
+    onStatusChanged: {
+        if (status === PageStatus.Active) {
+            //            pageStack.pushAttached(Qt.resolvedUrl("database/CurrentPlaylistPage.qml"));
+            if (mPlaylistPage == undefined) {
+                /* Check if running on large device and load corresponding page */
+                if (Screen.sizeCategory >= Screen.Large) {
+                    var playlistComponent = Qt.createComponent(
+                                Qt.resolvedUrl(
+                                    "database/CurrentPlaylistPage_large.qml"))
+                    var playlistPage = playlistComponent.createObject(
+                                mainWindow)
+                } else {
+                    var playlistComponent = Qt.createComponent(
+                                Qt.resolvedUrl(
+                                    "database/CurrentPlaylistPage.qml"))
+                    var playlistPage = playlistComponent.createObject(
+                                mainWindow)
+                }
+                mPlaylistPage = playlistPage
+            }
+
+            pageStack.pushAttached(mPlaylistPage)
+            showCurrentSongTimer.start()
+        } else if (status === PageStatus.Deactivating) {
+            if (showCurrentSongTimer.running) {
+                showCurrentSongTimer.stop()
+            }
         }
     }
 }

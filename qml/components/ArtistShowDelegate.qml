@@ -28,10 +28,8 @@ BackgroundItem {
             id: albumImage
             antialiasing: true
             anchors.fill: parent
-            sourceSize.width: width
-            sourceSize.height: height
             source: imageURL
-            cache: true
+            cache: false
             asynchronous: true
             fillMode: Image.PreserveAspectCrop
         }

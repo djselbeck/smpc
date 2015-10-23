@@ -14,10 +14,10 @@ Component {
             Image {
                 id: artistImage
                 anchors.fill: parent
-                sourceSize.width: width
-                sourceSize.height: height
+                /*sourceSize.width: width
+                sourceSize.height: height*/
                 source: imageURL
-                cache: true
+                cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
             }
