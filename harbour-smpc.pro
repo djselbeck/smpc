@@ -176,7 +176,7 @@ SOURCES += \
 icon86.files += icons/86x86/harbour-smpc.png
 icon86.path = /usr/share/icons/hicolor/86x86/apps
 
-icon108.files += icons/128x128/harbour-smpc.png
+icon108.files += icons/108x108/harbour-smpc.png
 icon108.path = /usr/share/icons/hicolor/108x108/apps
 
 icon128.files += icons/128x128/harbour-smpc.png

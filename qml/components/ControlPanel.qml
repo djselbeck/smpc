@@ -74,6 +74,7 @@ DockedPanel {
         Row {
             id:buttonRow
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottomMargin: Theme.paddingMedium
             height: shuffleButton.height
             Switch {
                 id: shuffleButton

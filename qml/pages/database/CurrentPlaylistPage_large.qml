@@ -458,14 +458,15 @@ Page {
                     }
                 }
 
-                backgroundSize: volumeControl.height + positionSlider.height + buttonRow.height
+               //backgroundSize: volumeControl.height + positionSlider.height + buttonRow.height
+                backgroundSize: backgroundColumn.height
                 background: Column {
                     id: backgroundColumn
-                    anchors.fill: parent
+                    width: parent.width
                     Item {
                         id: volumeControl
                         width: parent.width
-                        height: volumeSlider.height
+                        height: volumeSlider.height + Theme.paddingMedium
                         state: "sliderInvisible"
                         states: [
                             State {
@@ -522,9 +523,9 @@ Page {
                         }
 
                         Slider {
-                            anchors.fill: parent
-
                             id: volumeSlider
+                            width: parent.width
+                            anchors.verticalCenter: parent.verticalCenter
                             stepSize: 1
                             maximumValue: 100
                             minimumValue: 0

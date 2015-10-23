@@ -121,7 +121,7 @@ ApplicationWindow
     property int listfontsize : 12;
     property int liststretch : 20;
     property int lastsongid : -1;
-    property string playbuttoniconsource : "image://theme/icon-m-play";
+    property string playbuttoniconsource : "image://theme/icon-l-play";
     property string playbuttoniconsourcecover : "image://theme/icon-cover-play";
     property string volumebuttoniconsource;
     property string lastpath;
@@ -209,7 +209,7 @@ ApplicationWindow
         //currentsongpage.lengthtextcurrent = formatLength(list[3]);
         mLengthText = list[4]==0 ? "": formatLength(list[4]);
         mBitrate = list[5]+"kbps";
-        playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-m-pause" : "image://theme/icon-m-play";
+        playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-l-pause" : "image://theme/icon-l-play";
         playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
         playing = (list[6]=="playing") ? true : false;
         stopped = (list[6]=="stop") ? true : false;
