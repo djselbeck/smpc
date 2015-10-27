@@ -5,7 +5,7 @@ import "../../components"
 Page
 {
     id: connectPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     SilicaListView {
             id : connectListView
             model: serverList;
@@ -19,7 +19,6 @@ Page
              MenuItem {
                  text: qsTr("Add server")
                  onClicked: {
-                     console.log("Clicked option add server")
                      pageStack.push(Qt.resolvedUrl("ServerEditPage.qml"),{newprofile:true});
                  }
              }
@@ -38,7 +37,6 @@ Page
                     text: name
                 }
                 onClicked: {
-                    console.debug("Connecting to profile:" + index);
                     connectProfile(index);
                     pageStack.pop();
                 }
@@ -68,7 +66,6 @@ Page
                         id: wakeItem
                         text: qsTr("wake server")
                         onClicked: {
-                            console.log("Waking profile: " + index);
                             wakeUpServer(index);
                         }
                     }

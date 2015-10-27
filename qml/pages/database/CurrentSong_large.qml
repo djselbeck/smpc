@@ -5,7 +5,7 @@ import "../../components"
 Page {
     id: currentSongLarge_page
 
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     Item {
         id: landscapeImageRow
         anchors.verticalCenter: parent.verticalCenter

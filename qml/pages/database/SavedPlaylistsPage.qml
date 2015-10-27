@@ -5,7 +5,7 @@ import "../../components"
 Page
 {
     id: savedPlaylistPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string artistname;
     SilicaListView {
             id : savedPlaylistsListView
@@ -74,6 +74,5 @@ Page
     }
     Component.onDestruction: {
         clearPlaylists();
-        console.debug("Clearing playlists");
     }
 }

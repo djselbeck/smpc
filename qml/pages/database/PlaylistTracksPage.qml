@@ -5,7 +5,7 @@ import "../../components"
 Page
 {
     id: playlistTracksPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string playlistname;
     property int lastIndex;
     SilicaListView {
@@ -146,7 +146,7 @@ Page
     }
     Dialog
     {
-        allowedOrientations: bothOrientation
+        allowedOrientations: Orientation.All
         id: deleteSavedPlaylistQuestion
         property string playlistname;
         Column {

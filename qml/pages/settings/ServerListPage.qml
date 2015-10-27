@@ -5,7 +5,7 @@ import Sailfish.Silica 1.0
 Page
 {
     id: serverListPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     SilicaListView {
             id : serverListView
             model: serverList;

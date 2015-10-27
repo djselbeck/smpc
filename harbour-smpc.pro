@@ -1,7 +1,7 @@
 # The name of your app
 TARGET = harbour-smpc
 
-QT += network gui sql multimedia
+QT += network gui sql multimedia svg
 
 CONFIG += sailfishapp
 
@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     src/mpd/albummodel.cpp \
     src/controller.cpp \
     src/streamplayer.cpp \
-    src/mpd/serverprofilemodel.cpp
+    src/mpd/serverprofilemodel.cpp \
+    src/mpd/mpdplaybackstatus.cpp
 
 
 # C++ headers
@@ -57,7 +58,9 @@ HEADERS += \
     src/mpd/albummodel.h \
     src/common.h \
     src/streamplayer.h \
-    src/mpd/serverprofilemodel.h
+    src/mpd/serverprofilemodel.h \
+    src/mpd/mpdplaybackstatus.h \
+    src/mpd/mpdcommon.h
 
 OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \ 
@@ -185,4 +188,7 @@ icon128.path = /usr/share/icons/hicolor/128x128/apps
 icon256.files += icons/256x256/harbour-smpc.png
 icon256.path = /usr/share/icons/hicolor/256x256/apps
 
-INSTALLS += icon86 icon108 icon128 icon256
+iconsvg.files += icons/scalable/harbour-smpc.svgz
+iconsvg.path = /usr/share/icons/hicolor/scalable/apps
+
+INSTALLS += icon86 icon108 icon128 icon256 iconsvg

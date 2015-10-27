@@ -9,6 +9,9 @@
 #include <mpd/mpdtrack.h>
 #include <mpd/mpdfileentry.h>
 #include <mpd/mpdoutput.h>
+#include <mpd/mpdplaybackstatus.h>
+#include <mpd/mpdcommon.h>
+
 #include <common.h>
 
 // Timeout value for network communication
@@ -19,37 +22,11 @@ class MpdArtist;
 class MpdTrack;
 class MpdFileEntry;
 
-struct status_struct {
-    quint32 playlistversion;
-    qint32 id;
-    quint16 bitrate;
-    int tracknr;
-    int albumtrackcount;
-    quint8 percent;
-    quint8 volume;
-    QString info;
-    QString title;
-    QString album;
-    QString artist;
-    QString fileuri;
-    quint8 playing;
-    bool repeat;
-    bool shuffle;
-    quint32 length;
-    quint32 currentpositiontime;
-    quint32 playlistlength;
-    quint32 samplerate;
-    quint8 channelcount;
-    quint8 bitdepth;
-};
-
-
 class NetworkAccess : public QThread
 {
     Q_OBJECT
     
 public:
-    enum State {PAUSE,PLAYING,STOP};
     explicit NetworkAccess(QObject *parent = 0);
     Q_INVOKABLE bool connectToHost(QString hostname, quint16 port,QString password);
     Q_INVOKABLE bool connected();
@@ -59,29 +36,15 @@ public:
     void resumeUpdates();
     void setUpdateInterval(quint16 ms);
     void seekPosition(int id,int pos);
-    status_struct getStatus();
     void setConnectParameters(QString hostname,int port, QString password);
     void setQmlThread(QThread *thread);
 
-    struct MpdVersion {
-        quint32 mpdMajor1;
-        quint32 mpdMajor2;
-        quint32 mpdMinor;
-    };
-
-    struct MpdServerInfo {
-        /* Version of the server */
-        MpdVersion version;
-        /* Capabilities of the connected server */
-        bool mpd_cmd_list_group_capabilites;
-        bool mpd_cmd_list_filter_criteria;
-    };
+    void registerPlaybackStatus(MPDPlaybackStatus *playbackStatus);
 
 
 signals:
     void connectionestablished();
     void disconnected();
-    void statusUpdate(status_struct status);
     void connectionError(QString);
     void currentPlayListReady(QList<QObject*>*);
     void artistsReady(QList<QObject*>*);
@@ -165,8 +128,8 @@ public slots:
 protected slots:
     void connectedtoServer();
     void disconnectedfromServer();
-    void updateStatusInternal();
     void errorHandle();
+    void getStatus();
 
 
     
@@ -191,6 +154,12 @@ private:
     QList<MpdAlbum*>* getArtistsAlbums_prv(QString artist);
     QMap<MpdArtist*, QList<MpdAlbum*>* > *getArtistsAlbumsMap_prv();
     QThread *mQmlThread;
+
+    MpdPlaybackState getPlaybackState();
+    quint32 getPlaybackID();
+    quint32 getPlaylistLength();
+
+    MPDPlaybackStatus *mPlaybackStatus;
 
     MpdServerInfo pServerInfo;
     void checkServerCapabilities();

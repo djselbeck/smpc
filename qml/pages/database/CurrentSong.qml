@@ -20,7 +20,7 @@ Page {
         mCurrentSongPage = null;
     }
 
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
 
     Drawer {
         id: mainDrawer

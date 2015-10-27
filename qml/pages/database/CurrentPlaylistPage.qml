@@ -5,7 +5,7 @@ import "../../components"
 Page {
     id: currentPlaylistPage
     //property alias listmodel: playlistView.model
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property int lastIndex: lastsongid
     property bool mDeleteRemorseRunning: false
 
@@ -137,9 +137,7 @@ Page {
 
                     }
                 }
-                //                Component.onCompleted: {
-                //                    console.debug("component created: " + title);
-                //                }
+
                 Column {
                     id: mainColumn
                     clip: true

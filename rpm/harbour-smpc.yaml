@@ -27,4 +27,5 @@ Files:
 - '%{_datadir}/icons/hicolor/108x108/apps'
 - '%{_datadir}/icons/hicolor/128x128/apps'
 - '%{_datadir}/icons/hicolor/256x256/apps'
+- '%{_datadir}/icons/hicolor/scalable/apps'
 PkgBR: []

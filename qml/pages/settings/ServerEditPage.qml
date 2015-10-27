@@ -5,7 +5,7 @@ import "../../components"
 Dialog
 {
     id: serverEditPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property alias name: profilenameInputField.text
     property alias hostname: hostnameInputField.text
     property alias password: passwordInputField.text
@@ -19,9 +19,7 @@ Dialog
     {
         id: serverSettingFlickable
         anchors.fill: parent
-//        anchors.bottomMargin: quickControlPanel.visibleSize
         clip: true
-//        anchors.margins: Theme.paddingLarge;
         contentHeight: settingsContent.height + 20;
         VerticalScrollDecorator {}
         PullDownMenu {
@@ -29,7 +27,6 @@ Dialog
                 text: qsTr("remove server profile")
                 onClicked: {
                     pageStack.pop();
-                    console.debug("Delete profile requested: " + index);
                     deleteProfile(index);
 
                 }
@@ -149,23 +146,6 @@ Dialog
             }
         }
     }
-
-//    onStatusChanged: {
-//        if(status === PageStatus.Deactivating )
-//        {
-//            console.debug("edit server page deactivating");
-//            if(newprofile) {
-//                console.debug("creating new profile");
-//                newProfile([index,name,hostname,password,port,autoconnect?1:0]);
-//            }
-//            else
-//                changeProfile([index,name,hostname,password,port,autoconnect?1:0]);
-
-
-//        } else if ( status === PageStatus.Activating ) {
-//            profilenameInputField.focus = true;
-//        }
-//    }
 
 
     onAccepted: {

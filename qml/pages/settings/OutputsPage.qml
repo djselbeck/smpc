@@ -5,7 +5,7 @@ import "../../components"
 Page
 {
     id: outputsPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string artistname;
     SilicaListView {
             id : outputsListView
@@ -36,12 +36,10 @@ Page
                              text: outputname
                              onClicked: {
                                  if(outputenabled){
-                                     console.debug("disabling output:" + id)
                                      disableOutput(id);
                                      outputenabled = false;
                                  }
                                  else {
-                                     console.debug("enabling output:" + id)
                                      enableOutput(id);
                                      outputenabled = true;
                                  }

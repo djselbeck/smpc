@@ -4,9 +4,6 @@ import "SectionScroller.js" as Sections
 
 Item {
     id: scroller
-//    height: parent.height
-//    width: parent.width/7
-//    x: parent.x+parent.width-width;
     property ListView listview;
     property GridView gridView;
     property PathView pathview;
@@ -233,7 +230,4 @@ Item {
             }
         }
     ]
-    onStateChanged: {
-        console.debug("State:" +  state);
-    }
 }

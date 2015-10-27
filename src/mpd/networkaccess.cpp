@@ -10,13 +10,14 @@ NetworkAccess::NetworkAccess(QObject *parent) :
 {
     updateinterval = 5000;
     mPlaylistversion = -1;
+    mPlaybackStatus = 0;
     //create socket later used for communication
     tcpsocket = new QTcpSocket(this);
     statusupdater = new QTimer(this);
     connect(tcpsocket,SIGNAL(connected()),this,SLOT(connectedtoServer()));
     connect(tcpsocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
     connect(tcpsocket,SIGNAL(disconnected()),this,SLOT(disconnectedfromServer()));
-    connect(statusupdater,SIGNAL(timeout()),this,SLOT(updateStatusInternal()));
+    connect(statusupdater,SIGNAL(timeout()),this,SLOT(getStatus()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(errorHandle()));
 
 }
@@ -220,7 +221,7 @@ bool NetworkAccess::authenticate(QString password)
 void NetworkAccess::socketConnected()
 {
     //emit connectionestablished();
-    //updateStatusInternal();
+    //getStatus();
 }
 
 void NetworkAccess::getArtistsAlbums(QString artist)
@@ -382,44 +383,24 @@ void NetworkAccess::getPlaylistTracks(QString name)
     emit ready();
 }
 
-void NetworkAccess::updateStatusInternal()
-{
-    emit statusUpdate(getStatus());
-}
 
-status_struct NetworkAccess::getStatus()
+void NetworkAccess::getStatus()
 {
+    if ( mPlaybackStatus == 0 ) {
+        return;
+    }
     qDebug() << "::getStatus()";
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         QString response ="";
-        QString title;
-        QString album;
-        QString artist;
-        QString bitrate = "";
 
-        quint32 playlistid=-1;
         QString playlistidstring="-1";
         quint32 playlistversion = 0;
-        quint32 playlistlength = 0;
-        int elapsed =0;
-        int runtime =0;
         QString tracknrstring="";
-        int tracknr = 0;
-        int albumtrackcount = 0;
 
         QString timestring;
         QString elapstr,runstr;
-        QString volumestring;
-        QString fileuri;
-        quint8 playing=NetworkAccess::STOP;
-        bool repeat=false;
-        bool random=false;
-        quint8 volume = 0;
-        quint8 bitdepth = 0;
-        quint32 samplerate = 0;
-        quint8 channelcount = 0;
 
         outstream << "status" << endl;
         MPD_WHILE_PARSE_LOOP
@@ -430,76 +411,60 @@ status_struct NetworkAccess::getStatus()
                 response = QString::fromUtf8(tcpsocket->readLine());
                 response.chop(1);
                 if (response.startsWith("bitrate: ")) {
-                    bitrate = response.right(response.length()-9);
+                    mPlaybackStatus->setBitrate(response.right(response.length()-9).toUInt());
                 }
-                if (response.startsWith("time: ")) {
+                else if (response.startsWith("time: ")) {
                     timestring = response.right(response.length()-6);
                     elapstr = timestring.split(":").at(0);
                     runstr = timestring.split(":").at(1);
-                    elapsed = elapstr.toInt();
-                    runtime = runstr.toInt();
+                    mPlaybackStatus->setCurrentTime(elapstr.toInt());
+                    mPlaybackStatus->setLength(runstr.toInt());
                 }
-                if (response.startsWith("song: ")) {
+                else if (response.startsWith("song: ")) {
                     playlistidstring = response.right(response.length()-6);
-                    playlistid = playlistidstring.toUInt();
+                    mPlaybackStatus->setID(playlistidstring.toUInt());
                 }
-                if (response.startsWith("volume: ")) {
-                    volumestring = response.right(response.length()-8);
-                    volume = volumestring.toUInt();
+                else if (response.startsWith("volume: ")) {
+                    mPlaybackStatus->setVolume(response.right(response.length()-8).toUInt());
                 }
-                if (response.startsWith("playlist: ")) {
-                    volumestring = response.right(response.length()-10);
-                    playlistversion = volumestring.toUInt();
+                else if (response.startsWith("playlist: ")) {
+                    playlistversion = response.right(response.length()-10).toUInt();
+                    mPlaybackStatus->setPlaylistVersion(playlistversion);
                 }
-                if (response.startsWith("playlistlength: ")) {
-                    volumestring = response.right(response.length()-16);
-                    playlistlength = volumestring.toUInt();
+                else if (response.startsWith("playlistlength: ")) {
+                    mPlaybackStatus->setPlaylistSize(response.right(response.length()-16).toUInt());
                 }
-                if (response.startsWith("state: ")) {
+                else if (response.startsWith("state: ")) {
                     {
-                        volumestring = response.right(response.length()-7);
-                        if (volumestring == "play")
+                        response = response.right(response.length()-7);
+                        if (response == "play")
                         {
-                            playing = NetworkAccess::PLAYING;
+                            mPlaybackStatus->setPlaybackStatus(MPD_PLAYING);
                         }
-                        else if (volumestring == "pause") {
-                            playing = NetworkAccess::PAUSE;
+                        else if (response == "pause") {
+                            mPlaybackStatus->setPlaybackStatus(MPD_PAUSE);
                         }
-                        else if (volumestring == "stop") {
-                            playing = NetworkAccess::STOP;
+                        else if (response == "stop") {
+                            mPlaybackStatus->setPlaybackStatus(MPD_STOP);
                         }
                     }
                 }
-                if (response.startsWith("repeat: ")) {
+                else if (response.startsWith("repeat: ")) {
                     {
-                        volumestring = response.right(response.length()-8);
-                        if (volumestring == "1")
-                        {
-                            repeat = true;
-                        }
-                        else {
-                            repeat = false;
-                        }
+                        mPlaybackStatus->setRepeat(response.right(response.length()-8) == "1" ? true : false);
                     }
                 }
-                if (response.startsWith("random: ")) {
+                else if (response.startsWith("random: ")) {
                     {
-                        volumestring = response.right(response.length()-8);
-                        if (volumestring == "1")
-                        {
-                            random = true;
-                        }
-                        else {
-                            random = false;
-                        }
+                        mPlaybackStatus->setShuffle(response.right(response.length()-8) == "1" ? true : false);
                     }
                 }
-                if(response.startsWith("audio: ")) {
+                else if(response.startsWith("audio: ")) {
                     QStringList templist = response.right(response.length()-7).split(":");
                     if(templist.length()==3){
-                        samplerate=templist.at(0).toUInt();
-                        channelcount = templist.at(2).toUInt();
-                        bitdepth = templist.at(1).toUInt();
+                        mPlaybackStatus->setSamplerate(templist.at(0).toUInt());
+                        mPlaybackStatus->setChannelCount(templist.at(2).toUInt());
+                        mPlaybackStatus->setBitDepth(templist.at(1).toUInt());
                     }
                 }
 
@@ -516,16 +481,16 @@ status_struct NetworkAccess::getStatus()
                 response = QString::fromUtf8(tcpsocket->readLine());
                 response.chop(1);
                 if (response.startsWith("Title: ")) {
-                    title = response.right(response.length()-7);
+                    mPlaybackStatus->setTitle(response.right(response.length()-7));
                 }
                 else if (response.startsWith("Artist: ")) {
-                    artist = response.right(response.length()-8);
+                    mPlaybackStatus->setArtist(response.right(response.length()-8));
                 }
                 else if (response.startsWith("Album: ")) {
-                    album = response.right(response.length()-7);
+                    mPlaybackStatus->setAlbum(response.right(response.length()-7));
                 }
                 else if (response.startsWith("file: ")) {
-                    fileuri = response.right(response.length()-6);
+                    mPlaybackStatus->setURI(response.right(response.length()-6));
                 }
                 else if (response.startsWith("Track: "))
                 {
@@ -534,92 +499,33 @@ status_struct NetworkAccess::getStatus()
                     QStringList tempstrs = tracknrstring.split("/");
                     if(tempstrs.length()==2)
                     {
-                        tracknr = tempstrs.first().toUInt();
-                        albumtrackcount = tempstrs.at(1).toUInt();
+                        mPlaybackStatus->setTrackNo(tempstrs.first().toUInt());
+                        mPlaybackStatus->setAlbumTrackCount(tempstrs.at(1).toUInt());
 
                     }
-                    if(tempstrs.length()==1)
+                    else if(tempstrs.length()==1)
                     {
-                        tracknr = tracknrstring.toUInt();
+                        mPlaybackStatus->setTrackNo(tracknrstring.toUInt());
                     }
                 }
             }
         }
 
-        status_struct tempstat;
-        if ((runtime!=0)&&(elapsed!=0)) {
-            tempstat.percent = ((elapsed*100)/runtime);
-        }
-        else {
-            tempstat.percent=0;
-        }
-
-        //TODO Samplerate,channel count, bit depth
-        tempstat.info = "Bitrate: "+bitrate.toUtf8();
-        tempstat.album = album;
-        tempstat.title = title;
-        tempstat.artist = artist;
-        tempstat.id = playlistid;
-        tempstat.volume = volume;
-        tempstat.playing = playing;
-        tempstat.playlistversion = playlistversion;
-        tempstat.playlistlength = playlistlength;
-        tempstat.repeat = repeat;
-        tempstat.shuffle = random;
-        tempstat.currentpositiontime=elapsed;
-        tempstat.length = runtime;
-        tempstat.fileuri=fileuri;
-        tempstat.tracknr = tracknr;
-        tempstat.bitrate = bitrate.toUInt();
-        tempstat.albumtrackcount = albumtrackcount;
-        tempstat.bitdepth = bitdepth;
-        tempstat.samplerate = samplerate;
-        tempstat.channelcount = channelcount;
-        if(mPlaylistversion!=tempstat.playlistversion)
+        if(mPlaylistversion!=playlistversion)
         {
             getCurrentPlaylistTracks();
         }
-        mPlaylistversion=tempstat.playlistversion;
+        mPlaylistversion=playlistversion;
         qDebug() << "::getStatus() return";
-        return tempstat;
     }
-    status_struct tempstat;
-    tempstat.repeat=false;
-    tempstat.shuffle=false;
-    tempstat.id = -1;
-    tempstat.percent = 0;
-    tempstat.album="";
-    tempstat.info="";
-    tempstat.title="";
-    tempstat.artist="";
-    tempstat.volume=0;
-    tempstat.playlistversion = 0;
-    tempstat.playing = NetworkAccess::STOP;
-    tempstat.currentpositiontime=0;
-    tempstat.length=0;
-    tempstat.fileuri="";
-    tempstat.tracknr = 0;
-    tempstat.bitrate = 0;
-    tempstat.albumtrackcount = 0;
-    tempstat.playlistlength = 0;
-    tempstat.bitdepth = 0;
-    tempstat.samplerate = 0;
-    tempstat.channelcount = 0;
-    if(mPlaylistversion!=tempstat.playlistversion)
-    {
-        getCurrentPlaylistTracks();
-    }
-    mPlaylistversion=tempstat.playlistversion;
-    qDebug() << "::getStatus() return";
-    return tempstat;
 }
 
 
 void NetworkAccess::pause()
 {
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
-        status_struct tempstat = getStatus();
-        if(tempstat.playing!=NetworkAccess::STOP) {
+        MpdPlaybackState playbackState = getPlaybackState();
+        if(playbackState != MPD_STOP) {
             QTextStream outstream(tcpsocket);
             outstream << "pause" << endl;
             QString response ="";
@@ -632,10 +538,10 @@ void NetworkAccess::pause()
 
                 }
             }
-            updateStatusInternal();
+            getStatus();
         }
         else {
-            playTrackByNumber(tempstat.id);
+            playTrackByNumber(getPlaybackID());
         }
     }
     
@@ -656,7 +562,7 @@ void NetworkAccess::stop()
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -710,7 +616,7 @@ void NetworkAccess::updateDB()
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -729,7 +635,7 @@ void NetworkAccess::next()
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -748,7 +654,7 @@ void NetworkAccess::previous()
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -781,7 +687,7 @@ void NetworkAccess::addAlbumToPlaylist(QString album)
         }
     }
     emit ready();
-    //   updateStatusInternal();
+    //   getStatus();
 }
 
 void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
@@ -814,7 +720,7 @@ void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
         }
     }
     emit ready();
-    //     updateStatusInternal();
+    //     getStatus();
 }
 
 
@@ -871,7 +777,7 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
             }
         }
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 // Format [URI,playlistName]
@@ -897,7 +803,7 @@ void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
             }
         }
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 // Format [index,playlistName]
@@ -923,12 +829,12 @@ void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
             }
         }
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 void NetworkAccess::playTrackNext(int index)
 {
-    int currentPosition = getStatus().id;
+    quint32 currentPosition = getPlaybackID();
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -951,12 +857,12 @@ void NetworkAccess::playTrackNext(int index)
     }
     //TODO Workaround
     qDebug() << "Track moved";
-//    updateStatusInternal();
+//    getStatus();
 }
 
 void NetworkAccess::addTrackAfterCurrent(QString fileuri)
 {
-    int currentPosition = getStatus().id;
+    quint32 currentPosition = getPlaybackID();
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -973,7 +879,7 @@ void NetworkAccess::addTrackAfterCurrent(QString fileuri)
             }
         }
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 //Replace song with uri and plays it back
@@ -1000,7 +906,7 @@ void NetworkAccess::playFiles(QString fileuri)
 
         playTrackByNumber(0);
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 
@@ -1025,9 +931,9 @@ void NetworkAccess::playTrack(QString fileuri)
         //Get song id in playlist
 
         
-        playTrackByNumber(getStatus().playlistlength-1);
+        playTrackByNumber(getPlaylistLength() - 1);
     }
-    updateStatusInternal();
+    getStatus();
 }
 
 void NetworkAccess::playTrackByNumber(int nr)
@@ -1046,7 +952,7 @@ void NetworkAccess::playTrackByNumber(int nr)
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -1066,12 +972,13 @@ void NetworkAccess::deleteTrackByNumer(int nr)
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
 void NetworkAccess::seekPosition(int id, int pos)
 {
+    qDebug() << "seek: " << id << ":" << pos;
     if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
@@ -1086,13 +993,13 @@ void NetworkAccess::seekPosition(int id, int pos)
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
 void NetworkAccess::seek(int pos)
 {
-    seekPosition(getStatus().id,pos);
+    seekPosition(getPlaybackID(),pos);
 }
 
 
@@ -1132,7 +1039,7 @@ void NetworkAccess::setRandom(bool random)
 
             }
         }
-        updateStatusInternal();
+        getStatus();
 
     }
 
@@ -1307,7 +1214,7 @@ void NetworkAccess::clearPlaylist()
 
             }
         }
-        updateStatusInternal();
+        getStatus();
     }
 }
 
@@ -1572,7 +1479,7 @@ void NetworkAccess::getDirectory(QString path)
 void NetworkAccess::resumeUpdates()
 {
     if (tcpsocket->state()==QTcpSocket::ConnectedState) {
-        updateStatusInternal();
+        getStatus();
         statusupdater->start(updateinterval);
     }
 }
@@ -1878,4 +1785,96 @@ void NetworkAccess::checkServerCapabilities() {
         pServerInfo.mpd_cmd_list_filter_criteria = false;
         pServerInfo.mpd_cmd_list_group_capabilites = false;
     }
+}
+
+
+void NetworkAccess::registerPlaybackStatus(MPDPlaybackStatus *playbackStatus)
+{
+    Q_ASSERT(mPlaybackStatus == 0);
+    mPlaybackStatus = playbackStatus;
+}
+
+MpdPlaybackState NetworkAccess::getPlaybackState()
+{
+    MpdPlaybackState playbackState;
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "status" << endl;
+        QString response;
+        MPD_WHILE_PARSE_LOOP
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+                response.chop(1);
+                if (response.startsWith("state: ")) {
+                    {
+                        response = response.right(response.length()-7);
+                        if (response == "play")
+                        {
+                            playbackState = MPD_PLAYING;
+                        }
+                        else if (response == "pause") {
+                            playbackState = MPD_PAUSE;
+                        }
+                        else if (response == "stop") {
+                            playbackState = MPD_STOP;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return playbackState;
+}
+
+quint32 NetworkAccess::getPlaybackID()
+{
+    qDebug() << "::getPlaybackID";
+    quint32 playbackID;
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "status" << endl;
+        QString response = "";
+        MPD_WHILE_PARSE_LOOP
+        {
+            qDebug() << response;
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                response = QString::fromUtf8(tcpsocket->readLine());
+                response.chop(1);
+                if (response.startsWith("song: ")) {
+                    playbackID = response.right(response.length()-6).toUInt();
+                }
+            }
+        }
+    }
+    qDebug() << "ID: " << playbackID;
+    return playbackID;
+}
+
+quint32 NetworkAccess::getPlaylistLength()
+{
+    quint32 playlistLength;
+    if (tcpsocket->state() == QAbstractSocket::ConnectedState) {
+        QTextStream outstream(tcpsocket);
+        outstream.setCodec("UTF-8");
+        outstream << "status" << endl;
+        QString response = "";
+        MPD_WHILE_PARSE_LOOP
+        {
+            tcpsocket->waitForReadyRead(READYREAD);
+            while (tcpsocket->canReadLine())
+            {
+                if (response.startsWith("playlistlength: ")) {
+                    playlistLength = response.right(response.length()-16).toUInt();
+                }
+            }
+        }
+    }
+    return playlistLength;
 }

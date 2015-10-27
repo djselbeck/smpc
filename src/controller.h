@@ -25,6 +25,7 @@
 #include <mpd/filemodel.h>
 #include <mpd/playlistmodel.h>
 #include <mpd/serverprofilemodel.h>
+#include <mpd/mpdplaybackstatus.h>
 
 #include <streamplayer.h>
 
@@ -116,6 +117,8 @@ private:
     QMLImageProvider *mQMLImgProvider;
     bool mApplicationActive;
 
+    MPDPlaybackStatus *mPlaybackStatus;
+
     //DB
     DatabaseStatistic *mDBStatistic;
     int mDownloadSize;
@@ -145,10 +148,6 @@ private slots:
     void seek(int);
     void incVolume();
     void decVolume();
-    void updateStatus(status_struct status);
-    void mediaKeyHandle(int key);
-    void mediaKeyPressed(int key);
-    void mediaKeyReleased(int key);
     /*Privates*/
     void connectedToServer();
     void disconnectedToServer();
@@ -203,6 +202,8 @@ private slots:
     void trimCache();
 
     void wakeUpHost(int index);
+
+    void updatePlaybackState();
 
 };
 

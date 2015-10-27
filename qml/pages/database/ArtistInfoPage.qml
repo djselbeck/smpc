@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 
 Page {
     id: artistInfoPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string artistname
     PageHeader {
         id: header

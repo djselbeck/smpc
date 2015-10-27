@@ -224,11 +224,9 @@ BackgroundItem {
                     rotateIn.running = true
                     delegateButtons.visible = true
                     showView.interactive = false
-                    console.debug("Album backpage created")
                 }
                 Component.onDestruction: {
                     clearTrackList()
-                    console.debug("Album backpage destroyed")
                 }
             }
         }
@@ -236,7 +234,6 @@ BackgroundItem {
     }
 
     onClicked: {
-        console.debug("index: " + index + " currentindex: " + showView.currentIndex)
         // Only flip front cover
         if ( coverRotation == 0 ) {
             if (!flipped) {

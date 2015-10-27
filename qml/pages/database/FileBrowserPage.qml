@@ -5,7 +5,7 @@ import "../../components"
 Page
 {
     id: filePage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string filepath;
     property var listmodel;
     property int lastContentPosY:0
@@ -63,12 +63,7 @@ Page
     }
 
     Component.onDestruction: {
-        console.debug("popping file model stack");
         fastscrollenabled = false;
         popfilemodelstack();
-    }
-
-    Component.onCompleted: {
-        console.debug("filepage created: ");
     }
 }

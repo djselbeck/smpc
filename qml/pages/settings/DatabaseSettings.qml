@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     PageHeader {
         id: header
         title: qsTr("database")
@@ -16,7 +16,6 @@ Page {
         anchors {
             fill: parent
             topMargin: header.height
-//            bottomMargin: quickControlPanel.visibleSize
         }
         contentHeight: mainColumn.height
         clip: true
@@ -87,8 +86,6 @@ Page {
                 }
 
                 onValueChanged: {
-                    console.debug(
-                                "Download size: " + currentIndex + ":" + value + " selected")
                     newDownloadSize(currentIndex)
                 }
             }
@@ -172,7 +169,7 @@ Page {
         id: dialogComponent
         Dialog {
             id: confirmationDialog
-            allowedOrientations: bothOrientation
+            allowedOrientations: Orientation.All
             property int confirmationRole
             property string headerText
             property string questionText
@@ -194,7 +191,6 @@ Page {
             }
 
             Component.onCompleted: {
-                console.debug("Created:" + confirmationRole);
                 switch (confirmationRole) {
                     // Clear blacklisted albums
                 case 0:

@@ -6,7 +6,7 @@ Page {
     id: searchpage
     property int currentindex: -1
     property string selectedsearch
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
 
     Drawer {
         id: mainDrawer
@@ -254,19 +254,15 @@ Page {
         var searchfor
         switch (searchforcombobox.currentIndex) {
         case 0:
-            console.debug("Searching for titles")
             searchfor = "title"
             break
         case 1:
-            console.debug("Searching for albums")
             searchfor = "album"
             break
         case 2:
-            console.debug("Searching for artists")
             searchfor = "artist"
             break
         case 3:
-            console.debug("Searching for files")
             searchfor = "file"
             break
         }

@@ -103,8 +103,6 @@ Item {
     }
 
     function setActiveImage() {
-//        console.debug(
-//                    "active: " + active + " state: " + state + " visible: " + visible)
         waitTimer.stop()
         if (active) {
             waitTimer.start()

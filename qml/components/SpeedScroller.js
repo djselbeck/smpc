@@ -3,7 +3,6 @@ var itmCount = 0;
 
 function fillSections(listview) {
     if(!listview || !listview.model) {
-        console.debug("NO LISTMODEL");
         return;
     }
     var count = (typeof listview.model.count === 'undefined' ? listview.model.length : listview.model.count);

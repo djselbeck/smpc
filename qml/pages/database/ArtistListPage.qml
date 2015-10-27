@@ -6,7 +6,7 @@ Page {
     id: artistlistPage
     property int lastIndex
     property int lastOrientation
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
 
 
     Loader {
@@ -263,7 +263,6 @@ Page {
                 }
             }
         } else {
-            console.debug("deactivating loaders")
             gridViewLoader.active = false
             showViewLoader.active = false
             listViewLoader.active = false
@@ -272,7 +271,6 @@ Page {
     }
 
     Component.onDestruction: {
-        //artistListView.model = null
         clearArtistList()
     }
 }

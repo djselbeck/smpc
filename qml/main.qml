@@ -120,9 +120,9 @@ ApplicationWindow
     property string password;
     property int listfontsize : 12;
     property int liststretch : 20;
-    property int lastsongid : -1;
-    property string playbuttoniconsource : "image://theme/icon-l-play";
-    property string playbuttoniconsourcecover : "image://theme/icon-cover-play";
+    property int lastsongid : mpd_status.id
+    property string playbuttoniconsource : mpd_status.playbackStatus === 1 ? "image://theme/icon-l-pause" : "image://theme/icon-l-play";
+    property string playbuttoniconsourcecover :  mpd_status.playbackStatus === 1 ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
     property string volumebuttoniconsource;
     property string lastpath;
     property string artistname;
@@ -131,8 +131,6 @@ ApplicationWindow
     property string coverimageurl;
     property string artistimageurl;
     property string profilename;
-    property bool repeat;
-    property bool shuffle;
     property bool quitbtnenabled;
     property bool connected;
     property bool playing : false;
@@ -141,27 +139,26 @@ ApplicationWindow
 
     property real listPadding : Theme.paddingLarge
     property int populateDuration: 500
-    property int bothOrientation: Orientation.Landscape + Orientation.Portrait + Orientation.PortraitInverted + Orientation.LandscapeInverted
 
     property bool volumeChanging:false
 
     // current song information
-    property string mTitle
-    property string mArtist
-    property string mAlbum
-    property int mVolume
-    property int mLength:0.0
-    property int mPosition:0
-    property int mPlaylistlength : 0;
-    property bool mRepeat
-    property bool mShuffle
+    property string mTitle: mpd_status.title;
+    property string mArtist: mpd_status.artist;
+    property string mAlbum: mpd_status.album;
+    property int mVolume: mpd_status.volume;
+    property int mLength: mpd_status.length
+    property int mPosition: mpd_status.currentTime
+    property int mPlaylistlength : mpd_status.playlistSize
+    property bool mRepeat: mpd_status.repeat
+    property bool mShuffle: mpd_status.shuffle
     property bool mDebugEnabled
     property bool mPositionSliderActive:false;
-    property string mAudioProperties;
-    property string mTrackNr;
-    property string mBitrate;
-    property string mUri;
-    property string mLengthText;
+    property string mAudioProperties: mpd_status.samplerate + " Hz " + mpd_status.bitDepth + " " + qsTr("bits") + " " + mpd_status.channelCount + " " + qsTr("channels") ;
+    property string mTrackNr: mpd_status.trackNo
+    property string mBitrate: mpd_status.bitrate + " " + qsTr("kbps");
+    property string mUri: mpd_status.uri
+    property string mLengthText: formatLength(mpd_status.length)
 
     property bool jollaQuickscroll: false
 
@@ -197,7 +194,7 @@ ApplicationWindow
         inputBlock.enabled = false
     }
 
-    function updateCurrentPlaying(list)
+   /* function updateCurrentPlaying(list)
     {
         mTitle = list[0];
         mAlbum = list[1];
@@ -233,7 +230,7 @@ ApplicationWindow
         }
         mPlaylistlength = list[16];
         mAudioProperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
-    }
+    }*/
 
     function savedPlaylistClicked(modelData)
     {
@@ -248,15 +245,6 @@ ApplicationWindow
         requestFilesPage(path);
     }
 
-    function updatePlaylist()
-    {
-        //  blockinteraction.enabled=false;
-        console.debug("setting new playlist");
-        // playlistModelVar = playlistModel;
-        console.debug("received new playlist and set model");
-    }
-
-
     function albumTrackClicked(title,album,artist,lengthformatted,uri,year,tracknr,trackmbid,artistmbid,albummbid)
     {
         pageStack.push(Qt.resolvedUrl("components/SongDialog.qml"),{title:title,album:album,artist:artist,filename:uri,lengthtext:lengthformatted,date:year,nr:tracknr,trackmbid:trackmbid,artistmbid:artistmbid,albummbid:albummbid});
@@ -269,7 +257,6 @@ ApplicationWindow
     }
 
     function popCleared() {
-        console.debug("POP cleared");
         fastscrollenabled = true;
     }
 
@@ -277,7 +264,7 @@ ApplicationWindow
     function formatLength(length)
     {
         if ( length === 0 ) {
-            return "0:00"
+            return "00:00"
         }
 
         var temphours = Math.floor(length/3600);

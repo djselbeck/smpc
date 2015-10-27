@@ -62,13 +62,10 @@ Component {
                 filesClicked((prepath == "/" ? "" : prepath + "/") + name)
             }
             if (isFile) {
-                console.debug("Album:" + album)
                 albumTrackClicked(title, album, artist, length, path,
                                   year, tracknr,trackmbid,artistmbid,albummbid)
             }
             if (isPlaylist) {
-                console.debug(
-                            "Playlist:" + (prepath == "/" ? "" : prepath + "/") + name)
                 savedPlaylistClicked(
                             (prepath == "/" ? "" : prepath + "/") + name)
                 pageStack.push(Qt.resolvedUrl("../pages/database/PlaylistTracksPage.qml"),{playlistname:name})
@@ -87,9 +84,6 @@ Component {
         }
         function addPlaylistRemorse() {
             remorseAction(qsTr("adding playlist"), function () {
-                console.debug(
-                            "playlist: " + (prepath == "/" ? "" : prepath + "/")
-                            + name + " requested")
                 addPlaylist((prepath == "/" ? "" : prepath + "/") + name)
             }, 3000)
         }

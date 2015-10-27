@@ -1,10 +1,10 @@
-import QtQuick 2.2
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
 Page {
     id: mainPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     PageHeader {
         id: mainHeader
         title: "SMPC"
@@ -45,7 +45,6 @@ Page {
                          >= Screen.Large ? 3 : (orientation === Orientation.Landscape
                                                 || orientation
                                                 === Orientation.LandscapeInverted) ? 4 : 2
-                horizontalItemAlignment: Grid.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 Repeater {
                     model: mainMenuModel

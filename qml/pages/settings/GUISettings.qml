@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 
 Page {
     id: guisettingsPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     PageHeader {
         id: header
         title: qsTr("GUI settings")

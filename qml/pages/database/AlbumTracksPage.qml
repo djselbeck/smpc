@@ -5,8 +5,7 @@ import "../../components"
 
 Page {
     id: albumTracksPage
-    allowedOrientations: bothOrientation
-    //    property alias listmodel: albumTracksModel
+    allowedOrientations: Orientation.All
     property string albumname
     property string artistname
     property int lastIndex: 0

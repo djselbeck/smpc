@@ -5,7 +5,7 @@ Dialog
 {
     id: saveToList
     property string url;
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     canAccept: false
 
 
@@ -46,6 +46,5 @@ Dialog
     }
     Component.onDestruction: {
         clearPlaylists();
-        console.debug("Clearing playlists");
     }
 }

@@ -61,49 +61,10 @@ ListItem {
         }
 
 
-
         onClicked: {
             albumGridView.currentIndex = index
             albumClicked(artistname, title)
             pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:title});
         }
-//        Component.onCompleted: {
-//            console.debug("Album created: " + title)
-//        }
-//        Component.onDestruction: {
-//            console.debug("Album destroyed:" + title)
-//        }
 
-//        function playAlbumRemorse() {
-//            remorseAction(qsTr("playing album"), function () {
-//                playAlbum([artistname, title])
-//            }, 3000)
-//        }
-//        function addAlbumRemorse() {
-//            remorseAction(qsTr("adding album"), function () {
-//                addAlbum([artistname, title])
-//            }, 3000)
-//        }
-//        Component {
-//            id: contextMenu
-//            ContextMenu {
-//                MenuItem {
-//                    text: qsTr("play album")
-//                    onClicked: {
-//                        if (title !== "") {
-//                            playAlbumRemorse()
-//                        }
-//                    }
-//                }
-
-//                MenuItem {
-//                    text: qsTr("add album to list")
-//                    onClicked: {
-//                        if (title !== "") {
-//                            addAlbumRemorse()
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }

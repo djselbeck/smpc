@@ -5,7 +5,7 @@ import "../../components"
 
 Page {
     id: albumslistPage
-    allowedOrientations: bothOrientation
+    allowedOrientations: Orientation.All
     property string artistname
     property int lastIndex
     property int lastOrientation
@@ -300,11 +300,10 @@ Page {
                 }
             }
         } else {
-            console.debug("deactivating loaders")
+            // Deactivating components
             gridViewLoader.active = false
             listviewLoader.active = false
             showViewLoader.active = false
-            // Deactivating components
         }
     }
 
