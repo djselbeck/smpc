@@ -527,7 +527,7 @@ void Controller::updatePlaybackState()
         mCurrentSongID = id;
 
         // Set current playing attribute
-        if ( mPlaylist && (mPlaylist->rowCount() > mCurrentSongID) && mCurrentSongID > 0 )
+        if ( mPlaylist && (mPlaylist->rowCount() > mCurrentSongID) && mCurrentSongID >= 0 )
         {
             mPlaylist->setPlaying(mCurrentSongID,true);
         }
