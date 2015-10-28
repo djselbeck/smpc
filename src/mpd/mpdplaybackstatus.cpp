@@ -3,6 +3,25 @@
 MPDPlaybackStatus::MPDPlaybackStatus(QObject *parent) :
     QObject(parent)
 {
+    pPlaylistVersion = 0;
+    pID = 0;
+    pBitrate = 0;
+    pTrackNo = 0;
+    pAlbumTrackCount = 0;
+    pVolume = 0;
+    pTitle = "";
+    pAlbum = "";
+    pArtist = "";
+    pURI = "";
+    pPlaybackStatus = MPD_STOP;
+    pRepeat = false;
+    pShuffle = false;
+    pLength = 0;
+    pCurrentTime = 0;
+    pPlaylistSize = 0;
+    pSamplerate = 0;
+    pChannelCount = 0;
+    pBitDepth = 0;
 }
 
 MPDPlaybackStatus::MPDPlaybackStatus(const MPDPlaybackStatus &copyObject, QObject *parent) : QObject(parent)

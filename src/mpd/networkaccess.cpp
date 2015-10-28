@@ -403,6 +403,8 @@ void NetworkAccess::getStatus()
         QString elapstr,runstr;
 
         outstream << "status" << endl;
+
+        bool newSong = false;
         MPD_WHILE_PARSE_LOOP
         {
             tcpsocket->waitForReadyRead(READYREAD);
@@ -422,6 +424,9 @@ void NetworkAccess::getStatus()
                 }
                 else if (response.startsWith("song: ")) {
                     playlistidstring = response.right(response.length()-6);
+                    if ( playlistidstring.toUInt() != mPlaybackStatus->getID() ) {
+                        newSong = true;
+                    }
                     mPlaybackStatus->setID(playlistidstring.toUInt());
                 }
                 else if (response.startsWith("volume: ")) {
@@ -471,41 +476,43 @@ void NetworkAccess::getStatus()
             }
         }
 
-        response = "";
-        outstream << "currentsong" << endl;
-        MPD_WHILE_PARSE_LOOP
-        {
-            tcpsocket->waitForReadyRead(READYREAD);
-            while (tcpsocket->canReadLine())
+        if ( newSong ) {
+            response = "";
+            outstream << "currentsong" << endl;
+            MPD_WHILE_PARSE_LOOP
             {
-                response = QString::fromUtf8(tcpsocket->readLine());
-                response.chop(1);
-                if (response.startsWith("Title: ")) {
-                    mPlaybackStatus->setTitle(response.right(response.length()-7));
-                }
-                else if (response.startsWith("Artist: ")) {
-                    mPlaybackStatus->setArtist(response.right(response.length()-8));
-                }
-                else if (response.startsWith("Album: ")) {
-                    mPlaybackStatus->setAlbum(response.right(response.length()-7));
-                }
-                else if (response.startsWith("file: ")) {
-                    mPlaybackStatus->setURI(response.right(response.length()-6));
-                }
-                else if (response.startsWith("Track: "))
+                tcpsocket->waitForReadyRead(READYREAD);
+                while (tcpsocket->canReadLine())
                 {
-                    tracknrstring = response.right(response.length()-7);
-                    //tracknr = tracknrstring.toInt();
-                    QStringList tempstrs = tracknrstring.split("/");
-                    if(tempstrs.length()==2)
-                    {
-                        mPlaybackStatus->setTrackNo(tempstrs.first().toUInt());
-                        mPlaybackStatus->setAlbumTrackCount(tempstrs.at(1).toUInt());
-
+                    response = QString::fromUtf8(tcpsocket->readLine());
+                    response.chop(1);
+                    if (response.startsWith("Title: ")) {
+                        mPlaybackStatus->setTitle(response.right(response.length()-7));
                     }
-                    else if(tempstrs.length()==1)
+                    else if (response.startsWith("Artist: ")) {
+                        mPlaybackStatus->setArtist(response.right(response.length()-8));
+                    }
+                    else if (response.startsWith("Album: ")) {
+                        mPlaybackStatus->setAlbum(response.right(response.length()-7));
+                    }
+                    else if (response.startsWith("file: ")) {
+                        mPlaybackStatus->setURI(response.right(response.length()-6));
+                    }
+                    else if (response.startsWith("Track: "))
                     {
-                        mPlaybackStatus->setTrackNo(tracknrstring.toUInt());
+                        tracknrstring = response.right(response.length()-7);
+                        //tracknr = tracknrstring.toInt();
+                        QStringList tempstrs = tracknrstring.split("/");
+                        if(tempstrs.length()==2)
+                        {
+                            mPlaybackStatus->setTrackNo(tempstrs.first().toUInt());
+                            mPlaybackStatus->setAlbumTrackCount(tempstrs.at(1).toUInt());
+
+                        }
+                        else if(tempstrs.length()==1)
+                        {
+                            mPlaybackStatus->setTrackNo(tracknrstring.toUInt());
+                        }
                     }
                 }
             }
@@ -1870,6 +1877,8 @@ quint32 NetworkAccess::getPlaylistLength()
             tcpsocket->waitForReadyRead(READYREAD);
             while (tcpsocket->canReadLine())
             {
+                response = QString::fromUtf8(tcpsocket->readLine());
+                response.chop(1);
                 if (response.startsWith("playlistlength: ")) {
                     playlistLength = response.right(response.length()-16).toUInt();
                 }
