@@ -346,7 +346,7 @@ void Controller::connectSignals()
     connect(this,SIGNAL(getFiles(QString)),mNetAccess,SLOT(getDirectory(QString)));
     connect(this,SIGNAL(setVolume(int)),mNetAccess,SLOT(setVolume(int)));
     connect(this,SIGNAL(requestConnect()),mNetAccess,SLOT(connectToHost()));
-    connect(this,SIGNAL(requestDisconnect()),mNetAccess,SLOT(disconnect()));
+    connect(this,SIGNAL(requestDisconnect()),mNetAccess,SLOT(disconnectFromServer()));
 //    connect(this,SIGNAL(serverProfilesUpdated()),item,SLOT(settingsModelUpdated()));
     connect(this,SIGNAL(setUpdateInterval(int)),mNetAccess,SLOT(setUpdateInterval(int)));
 

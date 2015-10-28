@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     src/controller.cpp \
     src/streamplayer.cpp \
     src/mpd/serverprofilemodel.cpp \
-    src/mpd/mpdplaybackstatus.cpp
+    src/mpd/mpdplaybackstatus.cpp \
+    src/mpd/mpdnetworkidler.cpp
 
 
 # C++ headers
@@ -60,7 +61,8 @@ HEADERS += \
     src/streamplayer.h \
     src/mpd/serverprofilemodel.h \
     src/mpd/mpdplaybackstatus.h \
-    src/mpd/mpdcommon.h
+    src/mpd/mpdcommon.h \
+    src/mpd/mpdnetworkidler.h
 
 OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \ 
@@ -122,8 +124,8 @@ RESOURCES += \
     miscresources.qrc
 
 
-DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_DEBUG_OUTPUT
-#DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
+#DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_DEBUG_OUTPUT
+DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
 TRANSLATIONS += $${TARGET}_de.ts
 

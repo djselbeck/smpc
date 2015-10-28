@@ -16,6 +16,8 @@
 
 // Timeout value for network communication
 #define READYREAD 15000
+#define IDLEWAIT 2000
+#define RESYNC_TIME 30 * 1000
 
 class MpdAlbum;
 class MpdArtist;
@@ -32,8 +34,6 @@ public:
     Q_INVOKABLE bool connected();
 
     bool authenticate(QString passwort);
-    void suspendUpdates();
-    void resumeUpdates();
     void setUpdateInterval(quint16 ms);
     void seekPosition(int id,int pos);
     void setConnectParameters(QString hostname,int port, QString password);
@@ -64,6 +64,7 @@ signals:
     void busy();
     void ready();
     void requestExit();
+
 public slots:
     void addTrackToPlaylist(QString fileuri);
     void addTrackToSavedPlaylist(QVariant data);
@@ -91,7 +92,7 @@ public slots:
     void setVolume(int volume);
     void setRandom(bool);
     void setRepeat(bool);
-    void disconnect();
+    void disconnectFromServer();
     void connectToHost();
     quint32 getPlayListVersion();
     void getAlbums();
@@ -124,20 +125,21 @@ public slots:
     void getOutputs();
     void searchTracks(QVariant request);
 
-
 protected slots:
     void connectedtoServer();
     void disconnectedfromServer();
     void errorHandle();
     void getStatus();
 
+    void interpolateStatus();
 
-    
-protected:
-    //   void run();
-
+    void goIdle();
+    void cancelIdling();
+    void newDataInIdle();
 
 private:
+
+    void sendMPDCommand(QString cmd);
 
     QString hostname;
     quint16 port;
@@ -145,6 +147,7 @@ private:
     QTcpSocket* tcpsocket;
     QString mpdversion;
     QTimer *statusupdater;
+    QTimer *mIdleCountdown;
     quint16 updateinterval;
     quint32 mPlaylistversion;
     QList<MpdTrack*>* parseMPDTracks(QString cartist);
@@ -163,6 +166,10 @@ private:
 
     MpdServerInfo pServerInfo;
     void checkServerCapabilities();
+
+    QTime mLastSyncTime;
+
+    bool mIdling;
 };
 
 #endif // NETWORKACCESS_H
