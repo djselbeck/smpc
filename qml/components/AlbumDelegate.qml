@@ -6,6 +6,11 @@ ListItem {
         width: albumGridView.cellWidth
         contentHeight: albumGridView.cellHeight
 
+        layer.enabled: true
+        layer.effect: ShaderEffect {
+            blending: highlighted
+        }
+
         Rectangle {
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
