@@ -30,9 +30,7 @@ SOURCES += main.cpp \
     src/controller.cpp \
     src/streamplayer.cpp \
     src/mpd/serverprofilemodel.cpp \
-    src/mpd/mpdplaybackstatus.cpp \
-    src/mpd/mpdnetworkidler.cpp
-
+    src/mpd/mpdplaybackstatus.cpp
 
 # C++ headers
 HEADERS += \
@@ -61,8 +59,7 @@ HEADERS += \
     src/streamplayer.h \
     src/mpd/serverprofilemodel.h \
     src/mpd/mpdplaybackstatus.h \
-    src/mpd/mpdcommon.h \
-    src/mpd/mpdnetworkidler.h
+    src/mpd/mpdcommon.h
 
 OTHER_FILES = rpm/harbour-smpc.yaml \
     icon-m-stop.png \ 
