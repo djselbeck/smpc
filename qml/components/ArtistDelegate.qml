@@ -3,10 +3,15 @@ import Sailfish.Silica 1.0
 
 Component {
     ListItem {
-        //        menu: contextMenu
         width: GridView.view.cellWidth
-        //        menu: contextMenu
         contentHeight: width
+
+        layer.enabled: true
+        layer.effect: ShaderEffect {
+            blending: highlighted
+        }
+
+
         Rectangle {
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
@@ -62,48 +67,11 @@ Component {
         }
 
 
-
-        //        OpacityRampEffect {
-        //            sourceItem: mainRow
-        //            slope: 3
-        //            offset: 0.65
-        //        }
         onClicked: {
             artistGridView.currentIndex = index
             artistClicked(artist)
             pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});
         }
-        //        function playArtistRemorse() {
-        //            remorseAction(qsTr("playing artist"), function () {
-        //                playArtist(artist)
-        //            }, 3000)
-        //        }
-        //        function addArtistRemorse() {
-        //            remorseAction(qsTr("adding artist"), function () {
-        //                addArtist(artist)
-        //            }, 3000)
-        //        }
-        //        Component {
-        //            id: contextMenu
-        //            ContextMenu {
-        //                MenuItem {
-        //                    text: qsTr("play artist")
-        //                    onClicked: {
-        //                        if (artist !== "") {
-        //                            playArtistRemorse()
-        //                        }
-        //                    }
-        //                }
 
-        //                MenuItem {
-        //                    text: qsTr("add artist to list")
-        //                    onClicked: {
-        //                        if (artist !== "") {
-        //                            addArtistRemorse()
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
     }
 }
