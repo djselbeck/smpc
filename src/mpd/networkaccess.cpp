@@ -17,7 +17,6 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     connect(tcpsocket,SIGNAL(connected()),this,SLOT(connectedtoServer()));
     connect(tcpsocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
     connect(tcpsocket,SIGNAL(disconnected()),this,SLOT(disconnectedfromServer()));
-    connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(disconnectedfromServer()));
     connect(statusupdater,SIGNAL(timeout()),this,SLOT(interpolateStatus()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(errorHandle()));
 
@@ -1135,6 +1134,7 @@ void NetworkAccess::disconnectedfromServer()
     mPlaylistversion = 0;
     if ( mPlaybackStatus) {
         mPlaybackStatus->clearPlayback();
+        mPlaybackStatus->setID(0);
     }
     if (statusupdater->isActive())
     {
@@ -1460,6 +1460,7 @@ bool NetworkAccess::connected()
 
 void NetworkAccess::errorHandle()
 {
+    emit ready();
     tcpsocket->disconnectFromHost();
 }
 
@@ -1906,7 +1907,6 @@ void NetworkAccess::sendMPDCommand(QString cmd)
         if ( mIdling ) {
             cancelIdling();
         }
-        qDebug() << "Executing cmd: " << cmd.replace("/","");
         QTextStream outstream(tcpsocket);
         outstream.setCodec("UTF-8");
         outstream << cmd;
