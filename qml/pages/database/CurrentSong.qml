@@ -74,10 +74,6 @@ Page {
                     left: parent.left
                 }
 
-                PageHeader {
-                    id: pageHeading
-                    title: qsTr("current song")
-                }
                 // Spacing hack
                 Rectangle
                 {
@@ -106,7 +102,7 @@ Page {
                         id: coverImage
                         property int calcheight: (infoFlickable.height
                                                   - (titleText.height + albumText.height
-                                                     + artistText.height + pageHeading.height))
+                                                     + artistText.height))
                         height: showCoverNowPlaying ? (calcheight > (contentColumn.width - listPadding
                                                * 2) ? (contentColumn.width
                                                        - listPadding * 2) : calcheight) : 0
@@ -311,7 +307,7 @@ Page {
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
-                        anchors.horizontalCenter: parent.horizontalCenter
+//                        anchors.horizontalCenter: parent.horizontalCenter
                     }
 
 
@@ -329,7 +325,7 @@ Page {
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
-                        anchors.horizontalCenter: parent.horizontalCenter
+//                        anchors.horizontalCenter: parent.horizontalCenter
                     }
 
                     Label {
@@ -343,7 +339,7 @@ Page {
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
-                        anchors.horizontalCenter: parent.horizontalCenter
+//                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
                         text: qsTr("properties:")
@@ -356,7 +352,7 @@ Page {
                         color: Theme.primaryColor
                         font.pixelSize: fontsize
                         wrapMode: "WordWrap"
-                        anchors.horizontalCenter: parent.horizontalCenter
+//                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
                         text: qsTr("uri:")

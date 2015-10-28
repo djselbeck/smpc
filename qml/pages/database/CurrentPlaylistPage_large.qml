@@ -389,7 +389,7 @@ Page {
                                 color: Theme.primaryColor
                                 font.pixelSize: Theme.fontSizeMedium
                                 wrapMode: "WordWrap"
-                                anchors.horizontalCenter: parent.horizontalCenter
+//                                anchors.horizontalCenter: parent.horizontalCenter
                             }
 
                             Label {
@@ -406,7 +406,7 @@ Page {
                                 color: Theme.primaryColor
                                 font.pixelSize: Theme.fontSizeMedium
                                 wrapMode: "WordWrap"
-                                anchors.horizontalCenter: parent.horizontalCenter
+//                                anchors.horizontalCenter: parent.horizontalCenter
                             }
 
                             Label {
@@ -420,7 +420,7 @@ Page {
                                 color: Theme.primaryColor
                                 font.pixelSize: Theme.fontSizeMedium
                                 wrapMode: "WordWrap"
-                                anchors.horizontalCenter: parent.horizontalCenter
+//                                anchors.horizontalCenter: parent.horizontalCenter
                             }
                             Label {
                                 text: qsTr("properties:")
@@ -433,7 +433,7 @@ Page {
                                 color: Theme.primaryColor
                                 font.pixelSize: Theme.fontSizeMedium
                                 wrapMode: "WordWrap"
-                                anchors.horizontalCenter: parent.horizontalCenter
+//                                anchors.horizontalCenter: parent.horizontalCenter
                             }
                             Label {
                                 text: qsTr("uri:")
