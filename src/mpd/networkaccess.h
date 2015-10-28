@@ -82,7 +82,6 @@ public slots:
     void playTrack(QString fileuri);
     void playTrackByNumber(int nr);
     void deleteTrackByNumer(int nr);
-    void socketConnected();
     void pause();
     void next();
     void previous();
@@ -141,9 +140,9 @@ private:
 
     void sendMPDCommand(QString cmd);
 
-    QString hostname;
-    quint16 port;
-    QString password;
+    QString mHostname;
+    quint16 mPort;
+    QString mPassword;
     QTcpSocket* tcpsocket;
     QString mpdversion;
     QTimer *statusupdater;
