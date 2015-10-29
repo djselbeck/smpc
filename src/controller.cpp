@@ -63,7 +63,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
 
     updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
-    mNetAccess->setQmlThread(viewer->thread());
+    mNetAccess->setQMLThread(viewer->thread());
     //Start auto connect
     for(int i = 0;i<mServerProfiles->rowCount();i++)
     {
@@ -310,14 +310,14 @@ void Controller::connectSignals()
     connect(item,SIGNAL(deleteSavedPlaylist(QString)),mNetAccess,SLOT(deletePlaylist(QString)));
     connect(item,SIGNAL(requestSavedPlaylists()),mNetAccess,SLOT(getSavedPlaylists()));
     connect(mNetAccess,SIGNAL(savedPlaylistsReady(QStringList*)),this,SLOT(updateSavedPlaylistsModel(QStringList*)));
-    connect(mNetAccess,SIGNAL(savedplaylistTracksReady(QList<QObject*>*)),this,SLOT(updateSavedPlaylistModel(QList<QObject*>*)));
-    connect(mNetAccess,SIGNAL(currentPlayListReady(QList<QObject*>*)),this,SLOT(updatePlaylistModel(QList<QObject*>*)));
+    connect(mNetAccess,SIGNAL(savedPlaylistTracksReady(QList<QObject*>*)),this,SLOT(updateSavedPlaylistModel(QList<QObject*>*)));
+    connect(mNetAccess,SIGNAL(currentPlaylistReady(QList<QObject*>*)),this,SLOT(updatePlaylistModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(albumsReady(QList<QObject*>*)),this,SLOT(updateAlbumsModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(updateArtistsModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(artistAlbumsReady(QList<QObject*>*)),this,SLOT(updateAlbumsModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(albumTracksReady(QList<QObject*>*)),this,SLOT(updateAlbumTracksModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(filesReady(QList<QObject*>*)),this,SLOT(updateFilesModel(QList<QObject*>*)));
-    connect(mNetAccess,SIGNAL(connectionestablished()),this,SLOT(connectedToServer()));
+    connect(mNetAccess,SIGNAL(connectionEstablished()),this,SLOT(connectedToServer()));
     connect(mNetAccess,SIGNAL(disconnected()),this,SLOT(disconnectedToServer()));
     connect(mPlaybackStatus,SIGNAL(playbackStatusChanged()),this,SLOT(updatePlaybackState()));
     connect(mNetAccess,SIGNAL(busy()),item,SLOT(busy()));
