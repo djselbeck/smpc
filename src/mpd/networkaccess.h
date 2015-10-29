@@ -35,9 +35,8 @@ public:
      * @param hostname to connect to
      * @param port used to connect to
      * @param password used to authenticate with. Can be empty if not used on server.
-     * @return
      */
-    Q_INVOKABLE bool connectToHost(QString hostname, quint16 port,QString password = "");
+    Q_INVOKABLE void connectToHost(QString hostname, quint16 port,QString password = "");
 
     /**
      * @brief Checks if connection to server exists

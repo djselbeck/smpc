@@ -18,13 +18,19 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     //create socket later used for communication
     mTCPSocket = new QTcpSocket(this);
     mStatusTimer = new QTimer(this);
+
+    // TCP signal handling
     connect(mTCPSocket,SIGNAL(connected()),this,SLOT(onServerConnected()));
     connect(mTCPSocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
     connect(mTCPSocket,SIGNAL(disconnected()),this,SLOT(onServerDisconnected()));
-    connect(mStatusTimer,SIGNAL(timeout()),this,SLOT(interpolateStatus()));
     connect(mTCPSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onConnectionError()));
 
+    // Status updating/interpolation
+    connect(mStatusTimer,SIGNAL(timeout()),this,SLOT(interpolateStatus()));
+
+    // MPD idle stuff
     mIdling = false;
+    // Timer used to countdown to idle mode. This ensures that the client not misses anything importang.
     mIdleCountdown = new QTimer(this);
     mIdleCountdown->setSingleShot(true);
     connect(mIdleCountdown,SIGNAL(timeout()),this,SLOT(goIdle()));
@@ -32,32 +38,35 @@ NetworkAccess::NetworkAccess(QObject *parent) :
 
 
 /** connects to host and return true if successful, false if not. Takes an string as hostname and int as port */
-bool NetworkAccess::connectToHost(QString hostname, quint16 port,QString password)
+void NetworkAccess::connectToHost(QString hostname, quint16 port,QString password)
 {
     emit busy();
     mHostname = hostname;
     mPort = port;
     mPassword = password;
+    /* Check if the client is currently connected to a server, if yes disconnect */
     if ( connected() ) {
-        mTCPSocket->close();
-        qDebug() << "Gracefully closed socket";
+        disconnectFromServer();
     }
-    mTCPSocket->connectToHost(hostname ,port,QIODevice::ReadWrite);
 
-    return true;
+    // Initiate TCP connection here
+    mTCPSocket->connectToHost(hostname ,port,QIODevice::ReadWrite);
 }
 
 void NetworkAccess::disconnectFromServer()
 {
     emit busy();
+    // Check if the socket is really connected before trying to close the connection.
     if ( connected() ) {
+        // Send connection termination request.
         sendMPDCommand("close\n");
+
+        // Wait for connection termination and forcefully close the socket if not done gracefully.
         mTCPSocket->close();
         mTCPSocket->waitForDisconnected(5000);
         if ( mTCPSocket->state() != QAbstractSocket::UnconnectedState) {
             mTCPSocket->abort();
         }
-        qDebug() << "Gracefully closed socket";
     }
     emit ready();
 }
@@ -70,8 +79,9 @@ void NetworkAccess::getAlbums()
     emit busy();
     QList<MpdAlbum*> *albums = new QList<MpdAlbum*>();
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
-        //Start getting list from mpd
-        //Send request
+        /* Start getting list from mpd. If server is new enough try to filter my musicbrainz album id.
+         * This helps with albums that have the same name as others (e.g. "Greatest Hits").
+         * Not fully implemented yet */
 
         if ( pServerInfo.mpd_cmd_list_group_capabilites ) {
             sendMPDCommand(QString("list album group MUSICBRAINZ_ALBUMID\n"));
@@ -92,11 +102,15 @@ void NetworkAccess::getAlbums()
                 response = QString::fromUtf8(mTCPSocket->readLine());
                 /* Remove newline at the end */
                 response.chop(1);
+                /* Parse album name and if server is new enough parse mbid */
                 if ( response.startsWith("Album: ") ) {
                     // Append album if name is already set(last album)
                     if ( name != "" ) {
                         tempalbum = new MpdAlbum(NULL,name,"",mbid);
+
+                        /* This helps with qml Q_PROPERTY accesses */
                         tempalbum->moveToThread(mQMLThread);
+                        /* Set ownership to CppOwnership to guarantee that the GC of qml never deletes this */
                         QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                         albums->append(tempalbum);
                     }
@@ -106,10 +120,12 @@ void NetworkAccess::getAlbums()
                 }
             }
         }
-        /* Append last album also */
+        /* Make sure the last album isn't missed because of loop structure */
         if ( name != "" ) {
             tempalbum = new MpdAlbum(NULL,name,"",mbid);
+            /* See above */
             tempalbum->moveToThread(mQMLThread);
+            /* Set ownership to CppOwnership to guarantee that the GC of qml never deletes this */
             QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
             albums->append(tempalbum);
         }
@@ -117,18 +133,23 @@ void NetworkAccess::getAlbums()
 
     //Get album tracks
     qSort(albums->begin(),albums->end(),MpdAlbum::lessThan);
+
+    /* Notify potential busy indicators */
     emit ready();
+    /* Emit ready signal and send list with it */
     emit albumsReady((QList<QObject*>*)albums);
 }
 
 void NetworkAccess::getArtists()
 {
     emit busy();
+    /* Requests all artists of the mpd database and send them back with a ready signal */
     emit artistsReady((QList<QObject*>*)getArtists_prv());
     emit ready();
 
 }
 
+/* Private function to fetch and parse artists from mpd */
 QList<MpdArtist*> *NetworkAccess::getArtists_prv()
 {
     QList<MpdArtist*> *artists = new QList<MpdArtist*>();
@@ -137,22 +158,27 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
         //Send request
         sendMPDCommand("list artist\n");
 
-        //Read all albums until OK send from mpd
+        //Read & parse all artists until OK send from mpd
         QString response ="";
         MpdArtist *tempartist=NULL;
         QString name;
         MPD_WHILE_PARSE_LOOP
         {
+            /* Wait until data is available */
             mTCPSocket->waitForReadyRead(READYREAD);
             while (mTCPSocket->canReadLine())
             {
+                /* Read line and chop new line at the end */
                 response = QString::fromUtf8(mTCPSocket->readLine());
                 response.chop(1);
+                /* Parse mpd output */
                 if (response.startsWith("Artist: "))
                 {
                     name = response.right(response.length()-8);
                     tempartist = new MpdArtist(NULL,name);
+                    /* This helps with qml Q_PROPERTY accesses */
                     tempartist->moveToThread(mQMLThread);
+                    /* Set ownership to CppOwnership to guarantee that the GC of qml never deletes this */
                     QQmlEngine::setObjectOwnership(tempartist, QQmlEngine::CppOwnership);
                     artists->append(tempartist);
                 }
@@ -160,11 +186,13 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
             }
         }
     }
+    /* Sort the created list */
     qSort(artists->begin(),artists->end(),MpdArtist::lessThan);
+    /* Return the list directly, this will later be send further via signals for multithreading. */
     return artists;
 }
 
-
+/* Tries to authenticate with mpd server. Returns true if successfully authenticated */
 bool NetworkAccess::authenticate(QString password)
 {
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
@@ -182,6 +210,7 @@ bool NetworkAccess::authenticate(QString password)
         }
         QString teststring = response;
         teststring.truncate(2);
+        /* Check authentication result here and return */
         if (teststring==QString("OK"))
         {
             return true;
@@ -198,6 +227,8 @@ bool NetworkAccess::authenticate(QString password)
 void NetworkAccess::getArtistsAlbums(QString artist)
 {
     emit busy();
+    /* Request all albums for the specific artist and send them away via a signal
+     * for multithreading. */
     emit(artistAlbumsReady((QList<QObject*>*)getArtistsAlbums_prv(artist)));
     emit ready();
 }
