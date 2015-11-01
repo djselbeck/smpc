@@ -339,12 +339,6 @@ ApplicationWindow
         enabled: false
     }
 
-    onMRepeatChanged: {
-        console.debug("Mrepeat:" + mRepeat);
-    }
-    onMShuffleChanged: {
-        console.debug("Mshuffle: " + mShuffle);
-    }
 
     ControlPanel {
         id: quickControlPanel
