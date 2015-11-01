@@ -424,7 +424,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(wakeUpServer(int)),this,SLOT(wakeUpHost(int)));
 
     /* New status object connection */
-    connect(mPlaybackStatus,SIGNAL(trackNoChanged()),this,SLOT(updatePlaybackState()));
+    connect(mPlaybackStatus,SIGNAL(idChanged()),this,SLOT(updatePlaybackState()));
     connect(mPlaybackStatus,SIGNAL(playlistVersionChanged()),this,SLOT(updatePlaybackState()));
 }
 
