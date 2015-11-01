@@ -1894,7 +1894,7 @@ void NetworkAccess::goIdle()
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(mTCPSocket);
         outstream.setCodec("UTF-8");
-        outstream << "idle" << "\n";
+        outstream << "idle mixer player options playlist" << "\n";
         outstream.flush();
     }
     mIdling = true;
