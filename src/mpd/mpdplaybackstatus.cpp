@@ -1,5 +1,4 @@
 #include "mpdplaybackstatus.h"
-#include <QDebug>
 
 MPDPlaybackStatus::MPDPlaybackStatus(QObject *parent) :
     QObject(parent)
@@ -105,13 +104,11 @@ quint8 MPDPlaybackStatus::getPlaybackStatus()
 
 bool MPDPlaybackStatus::getRepeat()
 {
-    qDebug() << "Repeat requested";
     return pRepeat;
 }
 
 bool MPDPlaybackStatus::getShuffle()
 {
-    qDebug() << "Shuffle requested";
     return pShuffle;
 }
 
@@ -245,7 +242,6 @@ void MPDPlaybackStatus::setRepeat(bool repeat)
 {
     if (pRepeat != repeat ) {
         pRepeat = repeat;
-        qDebug() << "Repeat changed";
         emit repeatChanged();
     }
 }
@@ -254,7 +250,6 @@ void MPDPlaybackStatus::setShuffle(bool shuffle)
 {
     if(pShuffle != shuffle) {
         pShuffle = shuffle;
-        qDebug() << "Shuffle changed";
         emit shuffleChanged();
     }
 }
