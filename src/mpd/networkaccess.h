@@ -17,7 +17,10 @@
 // Timeout value for network communication
 #define READYREAD 15000
 #define IDLEWAIT 2000
-#define RESYNC_TIME 30 * 1000
+
+/* Time after a resync of status with server is done. This is only to compensate
+ for timedrift and will probably removed later. */
+#define RESYNC_TIME 120 * 1000
 
 class MpdAlbum;
 class MpdArtist;
@@ -90,6 +93,7 @@ signals:
      * @brief connectionError An error occured on the network connection.
      */
     void connectionError(QString);
+
 
     /* Database signals */
     /**
@@ -512,6 +516,12 @@ protected slots:
      */
     void onNewNetworkData();
 
+    /**
+     * @brief onConnectionStateChanged Handles changes in the sockets connection state
+     */
+    void onConnectionStateChanged(QAbstractSocket::SocketState socketState);
+
+
 private:
     /**
      * @brief mHostname hostname of the server to connect/connected to
@@ -577,6 +587,15 @@ private:
      * interpolated song position and real position every RESYNC_TIME ms.
      */
     QTime mLastSyncTime;
+
+    /**
+     * @brief mLastStatusTimestamp Time of last status cmd sent to server.
+     */
+    QTime mLastStatusTimestamp;
+    /**
+     * @brief mLastSyncElapsedTime Time position of mpds last sync. Track position.
+     */
+    quint32 mLastSyncElapsedTime;
 
     bool mIdling;
 

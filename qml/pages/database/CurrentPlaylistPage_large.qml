@@ -599,13 +599,11 @@ Page {
                         Switch {
                             id: shuffleButton
                             icon.source: "image://theme/icon-m-shuffle"
-                            checked: mShuffle
+                            automaticCheck: false
+                            checked: mpd_status.shuffle
                             onClicked: {
-                                mShuffle = checked
-                                checked = Qt.binding(function () {
-                                    return mShuffle
-                                })
-                                setShuffle(checked)
+                                console.debug("checked: " + checked);
+                                setShuffle(!checked)
                             }
                         }
                         IconButton {
@@ -630,14 +628,11 @@ Page {
                         }
                         Switch {
                             id: repeatButton
-                            checked: mRepeat
+                            automaticCheck: false
+                            checked: mpd_status.repeat
                             icon.source: "image://theme/icon-m-repeat"
                             onClicked: {
-                                mRepeat = checked
-                                checked = Qt.binding(function () {
-                                    return mRepeat
-                                })
-                                setRepeat(checked)
+                                setRepeat(!checked)
                             }
                         }
                     }

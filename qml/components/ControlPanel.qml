@@ -78,12 +78,11 @@ DockedPanel {
             height: shuffleButton.height
             Switch {
                 id: shuffleButton
+                automaticCheck: false
                 icon.source: "image://theme/icon-m-shuffle"
                 checked: mShuffle
                 onClicked: {
-                    setShuffle(checked)
-                    mShuffle = checked
-                    checked  = Qt.binding(function() {return mShuffle;});
+                    setShuffle(!checked)
                 }
             }
             IconButton {
@@ -108,12 +107,11 @@ DockedPanel {
             }
             Switch {
                 id: repeatButton
+                automaticCheck: false
                 checked: mRepeat
                 icon.source: "image://theme/icon-m-repeat"
                 onClicked: {
-                    setRepeat(checked)
-                    mRepeat = checked;
-                    checked  = Qt.binding(function() {return mRepeat;});
+                    setRepeat(!checked)
                 }
             }
         }

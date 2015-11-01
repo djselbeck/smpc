@@ -24,6 +24,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     connect(mTCPSocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
     connect(mTCPSocket,SIGNAL(disconnected()),this,SLOT(onServerDisconnected()));
     connect(mTCPSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onConnectionError()));
+    connect(mTCPSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(onConnectionStateChanged(QAbstractSocket::SocketState)));
 
     // Status updating/interpolation
     connect(mStatusTimer,SIGNAL(timeout()),this,SLOT(interpolateStatus()));
@@ -70,6 +71,7 @@ void NetworkAccess::disconnectFromServer()
     }
     emit ready();
 }
+
 
 
 /** return all albums currently availible from connected MPD as MpdAlbum objects,
@@ -391,6 +393,7 @@ void NetworkAccess::getStatus()
         MPD_WHILE_PARSE_LOOP
         {
             mTCPSocket->waitForReadyRead(READYREAD);
+            mLastStatusTimestamp.start();
             while (mTCPSocket->canReadLine())
             {
                 response = QString::fromUtf8(mTCPSocket->readLine());
@@ -404,6 +407,7 @@ void NetworkAccess::getStatus()
                     runstr = timestring.split(":").at(1);
                     mPlaybackStatus->setCurrentTime(elapstr.toInt());
                     mPlaybackStatus->setLength(runstr.toInt());
+                    mLastSyncElapsedTime = elapstr.toUInt();
                 }
                 else if (response.startsWith("song: ")) {
                     playlistidstring = response.right(response.length()-6);
@@ -417,6 +421,9 @@ void NetworkAccess::getStatus()
                 }
                 else if (response.startsWith("playlist: ")) {
                     playlistversion = response.right(response.length()-10).toUInt();
+                    if ( playlistversion != mPlaybackStatus->getPlaylistVersion() ) {
+                        newSong = true;
+                    }
                     mPlaybackStatus->setPlaylistVersion(playlistversion);
                 }
                 else if (response.startsWith("playlistlength: ")) {
@@ -442,11 +449,13 @@ void NetworkAccess::getStatus()
                 }
                 else if (response.startsWith("repeat: ")) {
                     {
+                        qDebug() << response;
                         mPlaybackStatus->setRepeat(response.right(response.length()-8) == "1" ? true : false);
                     }
                 }
                 else if (response.startsWith("random: ")) {
                     {
+                        qDebug() << response;
                         mPlaybackStatus->setShuffle(response.right(response.length()-8) == "1" ? true : false);
                     }
                 }
@@ -1857,7 +1866,7 @@ void NetworkAccess::interpolateStatus()
         /* Interpolate status here */
         if ( mPlaybackStatus->getPlaybackStatus() == MPD_PLAYING &&
              mPlaybackStatus->getLength() > mPlaybackStatus->getCurrentTime()) {
-            mPlaybackStatus->setCurrentTime(mPlaybackStatus->getCurrentTime() + mStatusInterval/1000);
+            mPlaybackStatus->setCurrentTime(mLastSyncElapsedTime + mLastStatusTimestamp.elapsed()/1000  );
         }
         if ( mLastSyncTime.elapsed() >= RESYNC_TIME) {
             qDebug() << "resyncing mpd status for time drift";
@@ -1885,7 +1894,7 @@ void NetworkAccess::goIdle()
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         QTextStream outstream(mTCPSocket);
         outstream.setCodec("UTF-8");
-        outstream << "idle mixer player options playlist" << "\n";
+        outstream << "idle" << "\n";
         outstream.flush();
     }
     mIdling = true;
@@ -1935,6 +1944,37 @@ void NetworkAccess::onNewNetworkData()
 
 }
 
+/*
+ * React on changes of sockets connection state. This is required to get notified
+ * about connection timeouts for example. This controls the busy indication */
+void NetworkAccess::onConnectionStateChanged(QAbstractSocket::SocketState socketState)
+{
+    qDebug() << "New connection state: " << socketState;
+    switch ( socketState ) {
+        case QAbstractSocket::UnconnectedState: {
+        emit ready();
+        break;
+    }
+    case QAbstractSocket::HostLookupState: {
+        emit busy();
+        break;
+    }
+    case QAbstractSocket::ConnectingState : {
+        emit busy();
+        break;
+    }
+    case QAbstractSocket::ConnectedState : {
+        emit ready();
+        break;
+    }
+    case QAbstractSocket::ClosingState:  {
+        emit busy();
+        break;
+    }
+    default:
+        emit ready();
+    }
+}
 
 void NetworkAccess::sendMPDCommand(QString cmd)
 {
