@@ -13,6 +13,7 @@ struct MpdServerInfo {
     /* Capabilities of the connected server */
     bool mpd_cmd_list_group_capabilites;
     bool mpd_cmd_list_filter_criteria;
+    bool mpd_cmd_idle;
 };
 
 enum MpdPlaybackState {

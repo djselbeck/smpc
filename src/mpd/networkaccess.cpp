@@ -35,6 +35,11 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     mIdleCountdown = new QTimer(this);
     mIdleCountdown->setSingleShot(true);
     connect(mIdleCountdown,SIGNAL(timeout()),this,SLOT(goIdle()));
+
+    /* Reset server capabilities */
+    pServerInfo.mpd_cmd_list_filter_criteria = false;
+    pServerInfo.mpd_cmd_list_group_capabilites = false;
+    pServerInfo.mpd_cmd_idle = false;
 }
 
 
@@ -1187,6 +1192,11 @@ void NetworkAccess::onServerDisconnected()
     if ( mIdleCountdown->isActive()) {
         mIdleCountdown->stop();
     }
+
+    /* Reset server capabilities */
+    pServerInfo.mpd_cmd_list_filter_criteria = false;
+    pServerInfo.mpd_cmd_list_group_capabilites = false;
+    pServerInfo.mpd_cmd_idle = false;
     emit ready();
 }
 
@@ -1215,7 +1225,6 @@ void NetworkAccess::onServerConnected() {
                     pServerInfo.version.mpdMajor1 = versionParts[0].toUInt();
                     pServerInfo.version.mpdMajor2 = versionParts[1].toUInt();
                     pServerInfo.version.mpdMinor = versionParts[2].toUInt();
-                    checkServerCapabilities();
                 }
             }
         }
@@ -1223,6 +1232,7 @@ void NetworkAccess::onServerConnected() {
         if ( mPassword != "" ) {
             authenticate(mPassword);
         }
+        checkServerCapabilities();
         emit ready();
         emit connectionEstablished();
         qDebug() << "Handshake with server done";
@@ -1769,6 +1779,27 @@ void NetworkAccess::checkServerCapabilities() {
         pServerInfo.mpd_cmd_list_filter_criteria = false;
         pServerInfo.mpd_cmd_list_group_capabilites = false;
     }
+
+    /*
+     * Get allowed commands */
+    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+        sendMPDCommand("commands\n");
+        QString response ="";
+        MPD_WHILE_PARSE_LOOP
+        {
+            mTCPSocket->waitForReadyRead(READYREAD);
+            while (mTCPSocket->canReadLine())
+            {
+                response = QString::fromUtf8(mTCPSocket->readLine());
+                response.chop(1);
+                response = response.right(response.length()-9);
+                qDebug() << response;
+                if ( response == "idle") {
+                    pServerInfo.mpd_cmd_idle = true;
+                }
+            }
+        }
+    }
 }
 
 
@@ -1876,7 +1907,7 @@ void NetworkAccess::interpolateStatus()
     } else {
         qDebug() << "Not idling, polling status";
         getStatus();
-        if ( !mIdleCountdown->isActive() && connected() ) {
+        if ( !mIdleCountdown->isActive() && connected() && pServerInfo.mpd_cmd_idle ) {
             qDebug() << "Idle counter is starting";
             mIdleCountdown->start();
         }
