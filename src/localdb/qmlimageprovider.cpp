@@ -7,7 +7,6 @@ QMLImageProvider::QMLImageProvider(ImageDatabase *db) : QQuickImageProvider(QQui
 
 QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    qDebug() << "Image request: " << id << "requestedSize: " << requestedSize;
     // Format is artist/album
     QStringList idList = id.split('/');
     if(id.length()<2) {
@@ -23,7 +22,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         } else if (idList[0] == "artistid") {
             QPixmap tmpImg = mDB->getArtistImage(idList[1].toInt());
@@ -32,7 +30,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         } else if (idList[0] == "album" && idList.length() == 3 ) {
             QPixmap tmpImg = mDB->getAlbumImage(idList[2],idList[1],false);
@@ -45,7 +42,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         } else if (idList[0] == "artistfromalbum" ) {
             QPixmap tmpImg = mDB->getArtistImageForAlbum(idList[1]);
@@ -54,7 +50,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         } else if (idList[0] == "artist" ) {
             QPixmap tmpImg = mDB->getArtistImage(idList[1]);
@@ -63,7 +58,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         }
         else {
@@ -73,7 +67,6 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             if ( requestedSize.isValid()) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
-            qDebug() << "got image";
             return tmpImg;
         }
     }

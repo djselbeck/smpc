@@ -3,14 +3,14 @@ import Sailfish.Silica 1.0
 
 Component {
     ListItem {
-        width: GridView.view.cellWidth
-        contentHeight: width
-
         layer.enabled: true
         layer.effect: ShaderEffect {
             blending: highlighted
         }
 
+        width: GridView.view.cellWidth
+        height: width
+        contentHeight: width
 
         Rectangle {
             anchors.fill: parent
@@ -19,9 +19,7 @@ Component {
             Image {
                 id: artistImage
                 anchors.fill: parent
-                /*sourceSize.width: width
-                sourceSize.height: height*/
-                source: imageURL
+                source: (artistGridView.scrolling) ? "" : imageURL
                 cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
@@ -35,8 +33,6 @@ Component {
                     horizontalCenter: parent.horizontalCenter
                 }
                 width: parent.width
-
-                color: Theme.highlightBackgroundColor
                 gradient: Gradient {
                     GradientStop {
                         position: 0.5
@@ -66,12 +62,13 @@ Component {
             }
         }
 
-
         onClicked: {
             artistGridView.currentIndex = index
             artistClicked(artist)
-            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumListPage.qml"),{artistname:artistname});
+            pageStack.push(Qt.resolvedUrl(
+                               "../pages/database/AlbumListPage.qml"), {
+                               artistname: artistname
+                           })
         }
-
     }
 }

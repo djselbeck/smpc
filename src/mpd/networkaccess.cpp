@@ -18,6 +18,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     //create socket later used for communication
     mTCPSocket = new QTcpSocket(this);
     mStatusTimer = new QTimer(this);
+    mQMLThread = 0;
 
     // TCP signal handling
     connect(mTCPSocket,SIGNAL(connected()),this,SLOT(onServerConnected()));

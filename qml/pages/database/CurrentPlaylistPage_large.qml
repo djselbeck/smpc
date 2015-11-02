@@ -114,7 +114,6 @@ Page {
                             MenuItem {
                                 text: qsTr("show album")
                                 onClicked: {
-                                    onClicked: {
                                         albumClicked("", album)
                                         pageStack.push(
                                                     Qt.resolvedUrl(
@@ -123,13 +122,16 @@ Page {
                                                         artistname: "",
                                                         albumname: album
                                                     })
-                                    }
                                 }
                             }
                             MenuItem {
                                 visible: !playing
                                 text: qsTr("play as next")
-                                onClicked: playPlaylistSongNext(index)
+                                onClicked: {
+                                    /* Workaround for to fast model change, seems to segfault */
+                                    while ( contextMenu.active ) {}
+                                    playPlaylistSongNext(index)
+                                }
                             }
 
                             MenuItem {

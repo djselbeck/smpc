@@ -2,7 +2,6 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 ListItem {
-        //menu: contextMenu
         width: albumGridView.cellWidth
         contentHeight: albumGridView.cellHeight
 
@@ -18,16 +17,14 @@ ListItem {
             Image {
                 id: albumImage
                 anchors.fill: parent
-                /*sourceSize.width: width
-                sourceSize.height: height*/
-                source: coverURL
+                source: albumGridView.scrolling ? "" : coverURL
                 cache: false
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
             }
             Rectangle {
                 id: gradientRect
-                visible: true //artistImage.source!=""
+                visible: true
                 anchors {
                     bottom: parent.bottom
                     top: parent.top
@@ -35,7 +32,6 @@ ListItem {
                 }
                 width: parent.width
 
-                color: Theme.highlightBackgroundColor
                 gradient: Gradient {
                     GradientStop {
                         position: 0.5

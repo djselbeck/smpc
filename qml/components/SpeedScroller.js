@@ -13,4 +13,3 @@ function getItemPositionFromRelative(position) {
     var index = Math.ceil(((itmCount)*position)/100);
     return index-1;
 }
-

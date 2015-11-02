@@ -8,14 +8,16 @@ Item {
     property GridView gridView;
     property PathView pathview;
     property bool interactive:true
-    property int cacheCount: 0
     property string sectionPropertyName
     property bool landscape:false
 
+    property bool scrolling;
+    property var lastItem;
 
     Rectangle {
         id: testrect
         visible: mDebugEnabled
+        enabled: visible
         opacity:0.5
         anchors.fill:parent
     }
@@ -65,10 +67,8 @@ Item {
 
     onListviewChanged: {
         if(listview && listview.model) {
-            cacheCount = listview.cacheBuffer
             Sections.fillSections(listview,scroller.sectionPropertyName);
         } else if(listview) {
-            cacheCount = listview.cacheBuffer
             listview.modelChanged.connect( function() {
                 Sections.fillSections(listview,scroller.sectionPropertyName);
             });
@@ -89,10 +89,8 @@ Item {
 
     onGridViewChanged: {
         if(gridView && gridView.model) {
-            cacheCount = gridView.cacheBuffer
             Sections.fillSections(gridView,scroller.sectionPropertyName);
         } else if(gridView) {
-            cacheCount = gridView.cacheBuffer
             gridView.modelChanged.connect( function() {
                 Sections.fillSections(gridView,scroller.sectionPropertyName);
             });
@@ -135,57 +133,70 @@ Item {
                 secDialog.color = Theme.rgba(Theme.highlightBackgroundColor,0.5);
                 secDialog.opacity = 1.0;
                 //secDialog.visible = true;
-                if ( listview && typeof( listview ) != undefined) {
-                    cacheCount = listview.cacheBuffer
-                    listview.cacheBuffer = -1
-                }
-                else if ( gridView && typeof( gridView ) != undefined) {
-                    cacheCount = gridView.cacheBuffer
-                    gridView.cacheBuffer = -1
-                } else if ( pathview && typeof( pathview ) != undefined) {
-                    cacheCount = pathview.cacheBuffer
-                }
             } else {
                 secDialog.opacity = 0.0;
+                scrolling = false;
+                scrollTimeout.stop();
                 //secDialog.visible = false;
-                if ( listview && typeof( listview ) != undefined) {
-                    listview.cacheBuffer = cacheCount
-                } else if ( gridView && typeof( gridView ) != undefined) {
-                    gridView.cacheBuffer = cacheCount
-                } else if ( typeof( pathview ) != undefined) {
-                }
             }
         }
-        onMouseYChanged: {
+        onPositionChanged: {
+            var relPos;
+            var item;
             if(interactive && pressed && !landscape) {
                // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
-                var relPos = (mouseY/height)*100;
-                var item = Sections.getSectionNameAtRelativePos(relPos);
-                if ( item )  {
-                    secDialog.text = item.value;
-                    if ( listview )
-                        listview.positionViewAtIndex(item.index,ListView.Beginning);
-                    else if ( pathview )
-                        pathview.positionViewAtIndex(item.index,PathView.Center);
-                    else if ( gridView )
-                        gridView.positionViewAtIndex(item.index,GridView.Beginning);
+
+                relPos = (mouseY/height)*100;
+                item = Sections.getSectionNameAtRelativePos(relPos);
+                if ( item !== lastItem) {
+                    scrolling = true;
+                    scrollTimeout.restart();
+                    if ( item )  {
+                        secDialog.text = item.value;
+                        if ( listview )
+                            listview.positionViewAtIndex(item.index,ListView.Beginning);
+                        else if ( pathview )
+                            pathview.positionViewAtIndex(item.index,PathView.Center);
+                        else if ( gridView )
+                            gridView.positionViewAtIndex(item.index,GridView.Beginning);
+                    }
                 }
+                lastItem = item;
+
+            }
+            else if(interactive && pressed && landscape) {
+               // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
+                relPos = (mouseX/width)*100;
+                item = Sections.getSectionNameAtRelativePos(relPos);
+                if ( item !== lastItem) {
+                    scrolling = true;
+                    scrollTimeout.restart();
+                    if ( item ) {
+                        secDialog.text = item.value;
+                        if ( listview )
+                            listview.positionViewAtIndex(item.index,ListView.Beginning);
+                        else if ( pathview )
+                            pathview.positionViewAtIndex(item.index,PathView.Center);
+                        else if ( gridView )
+                            gridView.positionViewAtIndex(item.index,GridView.Beginning);
+                    }
+                }
+                lastItem = item;
             }
         }
+
+        onMouseYChanged: {
+
+        }
         onMouseXChanged: {
-            if(interactive && pressed && landscape) {
-               // secDialog.color = Theme.rgba(Theme.highlightColor,0.5);
-                var relPos = (mouseX/width)*100;
-                var item = Sections.getSectionNameAtRelativePos(relPos);
-                if ( item ) {
-                    secDialog.text = item.value;
-                    if ( listview )
-                        listview.positionViewAtIndex(item.index,ListView.Beginning);
-                    else if ( pathview )
-                        pathview.positionViewAtIndex(item.index,PathView.Center);
-                    else if ( gridView )
-                        gridView.positionViewAtIndex(item.index,GridView.Beginning);
-                }
+
+        }
+        Timer {
+            id: scrollTimeout
+            interval: 200
+            repeat: false
+            onTriggered: {
+                scrolling = false;
             }
         }
     }
@@ -202,7 +213,7 @@ Item {
                 y: parent.y+parent.height-height;
                 landscape: true
             }
-            PropertyChanges {
+            AnchorChanges {
                 target: secDialog
                 anchors {
                     right : undefined
@@ -221,7 +232,7 @@ Item {
                 y: 0
                 landscape: false
             }
-            PropertyChanges {
+            AnchorChanges {
                 target: secDialog
                 anchors {
                     right : parent.left

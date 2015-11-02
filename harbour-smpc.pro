@@ -112,7 +112,8 @@ OTHER_FILES = rpm/harbour-smpc.yaml \
     qml/pages/database/CurrentSong_large.qml \
     qml/components/URLInputDialog.qml \
     qml/components/SavePlaylistDialog.qml \
-    qml/components/DeletePlaylistDialog.qml
+    qml/components/DeletePlaylistDialog.qml \
+    qml/components/InfoBanner.qml
 
 
 

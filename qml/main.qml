@@ -194,44 +194,6 @@ ApplicationWindow
         inputBlock.enabled = false
     }
 
-   /* function updateCurrentPlaying(list)
-    {
-        mTitle = list[0];
-        mAlbum = list[1];
-        mArtist = list[2];
-        if(mPositionSliderActive==false) {
-            mPosition = list[3];
-        }
-        mLength = list[4];
-        //currentsongpage.lengthtextcurrent = formatLength(list[3]);
-        mLengthText = list[4]==0 ? "": formatLength(list[4]);
-        mBitrate = list[5]+"kbps";
-        playbuttoniconsource = (list[6]=="playing") ? "image://theme/icon-l-pause" : "image://theme/icon-l-play";
-        playbuttoniconsourcecover = (list[6]=="playing") ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play";
-        playing = (list[6]=="playing") ? true : false;
-        stopped = (list[6]=="stop") ? true : false;
-        if(!volumeChanging){
-            mVolume = list[7];
-        }
-        mRepeat = (list[8]=="0" ?  false:true);
-        mShuffle = (list[9]=="0" ?  false:true);
-        mTrackNr = (list[10]==0? "":list[10]);
-        mUri = list[11];
-        if(list[12]!=lastsongid)
-        {
-            lastsongid = list[12];
-        }
-        if(stopped) {
-            coverimageurl = "";
-            artistimageurl = "";
-            mArtist=""
-            mAlbum=""
-            mTitle=""
-        }
-        mPlaylistlength = list[16];
-        mAudioProperties = list[13]+ "Hz "+ list[14] + "Bits " + list[15]+ "Channels";
-    }*/
-
     function savedPlaylistClicked(modelData)
     {
         playlistname = modelData;
@@ -313,15 +275,6 @@ ApplicationWindow
         artistimageurl = url;
     }
 
-    function jumpNowPlaying()
-    {
-        pageStack.clear();
-        pageStack.push(initialPage);
-        pageStack.push();
-        pageStack.push(Qt.resolvedUrl("pages/database/CurrentPlaylistPage.qml"));
-        pageStack.push(Qt.resolvedUrl("pages/database/CurrentSong.qml"));
-    }
-
     // Notifies user about ongoing action in netaccess
     BusyIndicator
     {
@@ -343,11 +296,9 @@ ApplicationWindow
     ControlPanel {
         id: quickControlPanel
     }
-    //bottomMargin: (orientation===Orientation.Portrait ? quickControlPanel.visibleSize : 0 )
     bottomMargin: quickControlPanel.visibleSize
 
 
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
-
 }

@@ -595,10 +595,6 @@ Page {
                 open: true
             }
             PropertyChanges {
-                target: pageHeading
-                visible: true
-            }
-            PropertyChanges {
                 target: landscapeImageRow
                 visible: false
             }

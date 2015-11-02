@@ -155,18 +155,18 @@ Page {
     }
 
     function parseClickedMainMenu(ident) {
-        if (ident == "playlist") {
+        if (ident === "playlist") {
             if (connected) {
                 pageStack.navigateForward(PageStackAction.Animated)
             }
-        } else if (ident == "settings") {
+        } else if (ident === "settings") {
             pageStack.push(Qt.resolvedUrl("settings/SettingsPage.qml"))
-        } else if (ident == "currentsong") {
+        } else if (ident === "currentsong") {
             if (connected)
                 pageStack.push(currentsongpage)
             //                        if(connected)
             //                            pageStack.push(Qt.resolvedUrl("CurrentSong.qml"));
-        } else if (ident == "albums") {
+        } else if (ident === "albums") {
             artistname = ""
             if (connected) {
                 requestAlbums()
@@ -174,23 +174,23 @@ Page {
                                    artistname: artistname
                                })
             }
-        } else if (ident == "artists") {
+        } else if (ident === "artists") {
             if (connected) {
                 requestArtists()
                 pageStack.push(Qt.resolvedUrl("database/ArtistListPage.qml"))
             }
-        } else if (ident == "files") {
+        } else if (ident === "files") {
             if (connected)
                 filesClicked("/")
-        } else if (ident == "connectto") {
+        } else if (ident === "connectto") {
             pageStack.push(Qt.resolvedUrl("settings/ConnectServerPage.qml"))
-        } else if (ident == "about") {
+        } else if (ident === "about") {
             aboutdialog.visible = true
             aboutdialog.version = versionstring
             aboutdialog.open()
-        } else if (ident == "updatedb") {
+        } else if (ident === "updatedb") {
             updateDB()
-        } else if (ident == "search") {
+        } else if (ident === "search") {
             pageStack.push(Qt.resolvedUrl("database/SearchPage.qml"))
         }
     }

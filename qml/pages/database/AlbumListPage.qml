@@ -13,18 +13,18 @@ Page {
         id: gridViewLoader
         active: false
         anchors.fill: albumslistPage
-
-        //        anchors.bottomMargin: quickControlPanel.visibleSize
         sourceComponent: Component {
             SilicaGridView {
                 id: albumGridView
-                clip: true
+                property bool scrolling: sectionScroller.scrolling
                 model: albumsModel
                 cellWidth: Screen.sizeCategory >= Screen.Large ? ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted)
-                                                                  ? (width / 6) : width / 4) :
+                                                                  ? (width / 6) : width / 5) :
                                                                  ((orientation === Orientation.Landscape) || (orientation === Orientation.LandscapeInverted) ? (width/4) : (width / 2))
                 cellHeight: cellWidth
+                cacheBuffer: 0
                 SectionScroller {
+                    id: sectionScroller
                     gridView: albumGridView
                     landscape: false
                     sectionPropertyName: "sectionprop"
