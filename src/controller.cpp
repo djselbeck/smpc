@@ -125,10 +125,6 @@ Controller::~Controller()
     if(mDBStatistic)
         delete(mDBStatistic);
 
-    if ( mNetAccess ) {
-        delete(mNetAccess);
-    }
-
     qDebug() << "everything cleared up nicely";
 }
 
@@ -429,6 +425,8 @@ void Controller::connectSignals()
     /* New status object connection */
     connect(mPlaybackStatus,SIGNAL(idChanged()),this,SLOT(updatePlaybackState()));
     connect(mPlaybackStatus,SIGNAL(playlistVersionChanged()),this,SLOT(updatePlaybackState()));
+    connect(mPlaybackStatus,SIGNAL(albumChanged()),this,SLOT(onNewAlbum()));
+    connect(mPlaybackStatus,SIGNAL(artistChanged()),this,SLOT(onNewArtist()));
 }
 
 void Controller::setPassword(QString password)
@@ -516,15 +514,6 @@ void Controller::updatePlaybackState()
             if (mCurrentSongID != -1 && mPlaylist && (mPlaylist->rowCount() > mCurrentSongID) ) {
                 mPlaylist->setPlaying(mCurrentSongID,false);
             }
-
-            // Request cover/artist art if song has changed
-            MpdAlbum tmpAlbum(this,mPlaybackStatus->getAlbum(),mPlaybackStatus->getArtist());
-            qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
-            emit requestCoverArt(tmpAlbum);
-
-            MpdArtist tmpArtist(this,mPlaybackStatus->getArtist());
-            qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
-            emit requestCoverArtistArt(tmpArtist);
         }
         // Set current playing song id
         mCurrentSongID = id;
@@ -546,16 +535,40 @@ void Controller::updatePlaybackState()
             }
             // Set last playing to -1 for nothing
             mCurrentSongID = -1;
-
-            // Clear cover/artist image by requesting empty images
-            MpdAlbum tmpAlbum(this,"","");
-            emit requestCoverArt(tmpAlbum);
-
-            MpdArtist tmpArtist(this,"");
-            emit requestCoverArtistArt(tmpArtist);
         }
     }
     mLastPlaybackState = playbackState;
+}
+
+void Controller::onNewAlbum()
+{
+    if ( mPlaybackStatus->getPlaybackStatus() != MPD_STOP ) {
+        // Request cover/artist art if song has changed
+        MpdAlbum tmpAlbum(this,mPlaybackStatus->getAlbum(),mPlaybackStatus->getArtist());
+        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+        emit requestCoverArt(tmpAlbum);
+    } else {
+        // Clear cover/artist image by requesting empty images
+        MpdAlbum tmpAlbum(this,"","");
+        emit requestCoverArt(tmpAlbum);
+    }
+}
+
+void Controller::onNewArtist()
+{
+    if ( mPlaybackStatus->getPlaybackStatus() != MPD_STOP ) {
+        // Request cover/artist art if song has changed
+        MpdAlbum tmpAlbum(this,mPlaybackStatus->getAlbum(),mPlaybackStatus->getArtist());
+        qDebug()  << "Requesting cover Image for currently playing album: " << tmpAlbum.getTitle() << tmpAlbum.getArtist();
+        emit requestCoverArt(tmpAlbum);
+
+        MpdArtist tmpArtist(this,mPlaybackStatus->getArtist());
+        qDebug() << "Requesting cover artist Image for currently playing title: " << tmpArtist.getName();
+        emit requestCoverArtistArt(tmpArtist);
+    } else {
+        MpdArtist tmpArtist(this,"");
+        emit requestCoverArtistArt(tmpArtist);
+    }
 }
 
 void Controller::seek(int pos)

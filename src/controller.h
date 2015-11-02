@@ -204,6 +204,8 @@ private slots:
     void wakeUpHost(int index);
 
     void updatePlaybackState();
+    void onNewAlbum();
+    void onNewArtist();
 
 };
 
