@@ -604,7 +604,6 @@ Page {
                             automaticCheck: false
                             checked: mpd_status.shuffle
                             onClicked: {
-                                console.debug("checked: " + checked);
                                 setShuffle(!checked)
                             }
                         }

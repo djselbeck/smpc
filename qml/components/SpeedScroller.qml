@@ -19,9 +19,10 @@ Item {
 
     Rectangle {
         id: sectionScrollIndicator
-        property bool listviewScrolling : ( listview && listview.flicking)
+        property bool listviewScrolling : ( listview && (listview.flicking || listview.dragging) )
         property bool inputAreaScrolling : inputArea.pressed
         opacity: ( (listviewScrolling || inputAreaScrolling) ? 1.0 : 0.0 )
+        visible: opacity > 0
         anchors.fill:parent
 
         gradient: Gradient {

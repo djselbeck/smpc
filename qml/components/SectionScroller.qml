@@ -14,6 +14,11 @@ Item {
     property bool scrolling;
     property var lastItem;
 
+    property bool listviewScrolling : ( listview && (listview.flicking || listview.dragging))
+    property bool gridviewScrolling : ( gridView && (gridView.flicking || gridView.dragging))
+    property bool pathviewScrolling : ( pathview && (pathview.flicking || pathview.dragging))
+    property bool inputAreaScrolling : inputArea.pressed
+
     Rectangle {
         id: testrect
         visible: mDebugEnabled
@@ -24,11 +29,9 @@ Item {
 
     Rectangle {
         id: sectionScrollIndicator
-        property bool listviewScrolling : ( listview && listview.flicking)
-        property bool gridviewScrolling : ( gridView && gridView.flicking)
-        property bool pathviewScrolling : ( pathview && pathview.flicking)
-        property bool inputAreaScrolling : inputArea.pressed
+
         opacity: ( (listviewScrolling || gridviewScrolling || pathviewScrolling || inputAreaScrolling) && !landscape ? 1.0 : 0.0 )
+        visible: opacity > 0
         anchors.fill:parent
 
         gradient: Gradient {
@@ -53,11 +56,8 @@ Item {
 
     Rectangle {
         id: sectionScrollIndicatorLandscape
-        property bool listviewScrolling : ( listview && listview.flicking)
-        property bool gridviewScrolling : ( gridView && gridView.flicking)
-        property bool pathviewScrolling : ( pathview && pathview.flicking)
-        property bool inputAreaScrolling : inputArea.pressed
         opacity: ( (listviewScrolling || gridviewScrolling || pathviewScrolling || inputAreaScrolling) && landscape ? 1.0 : 0.0 )
+        visible: opacity > 0
         anchors.fill:parent
         color: Theme.rgba(Theme.highlightBackgroundColor,0.4)
         Behavior on opacity {
