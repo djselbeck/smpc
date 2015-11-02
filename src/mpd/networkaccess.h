@@ -33,6 +33,9 @@ class NetworkAccess : public QThread
     
 public:
     explicit NetworkAccess(QObject *parent = 0);
+
+    ~NetworkAccess();
+
     /**
      * @brief connectToHost Initiates a new connection to the given mpd server.
      * @param hostname to connect to
@@ -70,12 +73,10 @@ public:
     void setQMLThread(QThread *thread);
 
     /**
-     * @brief registerPlaybackStatus This registers the playbackStatus object which is used
-     * by a controller to inform the user of the current playback status.
-     * This function must only be called once.
-     * @param playbackStatus Playbackstatus object to register.
+     * @brief getMPDPlaybackStatus Returns the status object to monitor status changes. No ~ allowed.
+     * @return Reference to status object.
      */
-    void registerPlaybackStatus(MPDPlaybackStatus *playbackStatus);
+    MPDPlaybackStatus *getMPDPlaybackStatus();
 
 
 signals:

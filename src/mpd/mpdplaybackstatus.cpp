@@ -47,6 +47,10 @@ MPDPlaybackStatus::MPDPlaybackStatus(const MPDPlaybackStatus &copyObject, QObjec
     pBitDepth = copyObject.pBitDepth;
 }
 
+MPDPlaybackStatus::~MPDPlaybackStatus() {
+
+}
+
 quint32 MPDPlaybackStatus::getPlaylistVersion()
 {
     return pPlaylistVersion;

@@ -11,8 +11,7 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
 
     mNetAccess = new NetworkAccess(0);
     mNetAccess->setUpdateInterval(1000);
-    mPlaybackStatus = new MPDPlaybackStatus(this);
-    mNetAccess->registerPlaybackStatus(mPlaybackStatus);
+    mPlaybackStatus = mNetAccess->getMPDPlaybackStatus();
 
     mNetworkThread = new QThread(this);
     mDBThread = new QThread(this);
@@ -126,8 +125,11 @@ Controller::~Controller()
     if(mDBStatistic)
         delete(mDBStatistic);
 
-    qDebug() << "everything cleared up nicely";
+    if ( mNetAccess ) {
+        delete(mNetAccess);
+    }
 
+    qDebug() << "everything cleared up nicely";
 }
 
 void Controller::updatePlaylistModel(QList<QObject*>* list)
@@ -275,11 +277,12 @@ void Controller::updateSearchedTracks(QList<QObject*>* list)
 void Controller::connectSignals()
 {
     QObject *item = (QObject *)mQuickView->rootObject();
-    qRegisterMetaType<MPDPlaybackStatus>("MPDPlaybackStatus");
+    qRegisterMetaType<MPDPlaybackStatus*>("MPDPlaybackStatus*");
     qRegisterMetaType<QList<MpdTrack*>*>("QList<MpdTrack*>*");
     qRegisterMetaType<QList<MpdAlbum*>*>("QList<MpdAlbum*>*");
     qRegisterMetaType<QList<MpdArtist*>*>("QList<MpdArtist*>*");
     qRegisterMetaType<QList<MpdFileEntry*>*>("QList<MpdFileEntry*>*");
+    qRegisterMetaType<QAbstractSocket::SocketState>("QAbstractSocket::SocketState");
     connect(item,SIGNAL(setHostname(QString)),this,SLOT(setHostname(QString)));
     connect(item,SIGNAL(setPassword(QString)),this,SLOT(setPassword(QString)));
     connect(item,SIGNAL(setPort(int)),this,SLOT(setPort(int)));

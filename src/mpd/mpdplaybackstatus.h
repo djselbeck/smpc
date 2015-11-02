@@ -4,8 +4,10 @@
 #include <QObject>
 #include <mpd/mpdcommon.h>
 
+class NetworkAccess;
 class MPDPlaybackStatus : public QObject
 {
+    friend class NetworkAccess;
     Q_OBJECT
     Q_PROPERTY(quint32 playlistVersion READ getPlaylistVersion WRITE setPlaylistVersion NOTIFY playlistVersionChanged)
     Q_PROPERTY(qint32 id READ getID WRITE setID NOTIFY idChanged)
@@ -134,6 +136,9 @@ private:
     quint32 pSamplerate;
     quint8 pChannelCount;
     quint8 pBitDepth;
+
+protected:
+    ~MPDPlaybackStatus();
 };
 
 #endif // MPDPLAYBACKSTATUS_H

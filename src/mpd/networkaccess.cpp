@@ -14,7 +14,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
 
     mStatusInterval = 1000;
     mPlaylistversion = -1;
-    mPlaybackStatus = 0;
+    mPlaybackStatus = new MPDPlaybackStatus();
     //create socket later used for communication
     mTCPSocket = new QTcpSocket(this);
     mStatusTimer = new QTimer(this);
@@ -42,6 +42,14 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     pServerInfo.mpd_cmd_idle = false;
 }
 
+NetworkAccess::~NetworkAccess()
+{
+    if(connected() ) {
+        // Try to disconnect here
+        disconnectFromServer();
+    }
+    delete(mPlaybackStatus);
+}
 
 /** connects to host and return true if successful, false if not. Takes an string as hostname and int as port */
 void NetworkAccess::connectToHost(QString hostname, quint16 port,QString password)
@@ -378,9 +386,6 @@ void NetworkAccess::getPlaylistTracks(QString name)
 
 void NetworkAccess::getStatus()
 {
-    if ( mPlaybackStatus == 0 ) {
-        return;
-    }
     qDebug() << "::getStatus()";
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         QString response ="";
@@ -477,6 +482,7 @@ void NetworkAccess::getStatus()
         }
 
         if ( newSong ) {
+            mPlaybackStatus->clearPlayback();
             response = "";
             sendMPDCommand("currentsong\n");
             MPD_WHILE_PARSE_LOOP
@@ -1802,11 +1808,8 @@ void NetworkAccess::checkServerCapabilities() {
     }
 }
 
-
-void NetworkAccess::registerPlaybackStatus(MPDPlaybackStatus *playbackStatus)
-{
-    Q_ASSERT(mPlaybackStatus == 0);
-    mPlaybackStatus = playbackStatus;
+MPDPlaybackStatus *NetworkAccess::getMPDPlaybackStatus() {
+    return mPlaybackStatus;
 }
 
 MpdPlaybackState NetworkAccess::getPlaybackState()
@@ -1893,7 +1896,7 @@ quint32 NetworkAccess::getPlaylistLength()
 
 void NetworkAccess::interpolateStatus()
 {
-    if ( mIdling && mPlaybackStatus ) {
+    if ( mIdling ) {
         /* Interpolate status here */
         if ( mPlaybackStatus->getPlaybackStatus() == MPD_PLAYING &&
              mPlaybackStatus->getLength() > mPlaybackStatus->getCurrentTime()) {
