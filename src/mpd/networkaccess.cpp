@@ -41,6 +41,8 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     pServerInfo.mpd_cmd_list_filter_criteria = false;
     pServerInfo.mpd_cmd_list_group_capabilites = false;
     pServerInfo.mpd_cmd_idle = false;
+
+    mTimeoutTimer = 0;
 }
 
 NetworkAccess::~NetworkAccess()
@@ -445,12 +447,15 @@ void NetworkAccess::getStatus()
                         response = response.right(response.length()-7);
                         if (response == "play")
                         {
-                            mPlaybackStatus->setPlaybackStatus(MPD_PLAYING);
-                            if ( !mStatusTimer->isActive() ) {
-                                mStatusTimer->start(1000);
+                            if ( mPlaybackStatus->getPlaybackStatus() == MPD_STOP) {
+                                newSong = true;
                             }
+                            mPlaybackStatus->setPlaybackStatus(MPD_PLAYING);
                         }
                         else if (response == "pause") {
+                            if ( mPlaybackStatus->getPlaybackStatus() == MPD_STOP) {
+                                newSong = true;
+                            }
                             mPlaybackStatus->setPlaybackStatus(MPD_PAUSE);
                         }
                         else if (response == "stop") {
@@ -1987,28 +1992,68 @@ void NetworkAccess::onConnectionStateChanged(QAbstractSocket::SocketState socket
     qDebug() << "New connection state: " << socketState;
     switch ( socketState ) {
         case QAbstractSocket::UnconnectedState: {
+        if ( mTimeoutTimer ) {
+            mTimeoutTimer->stop();
+            delete(mTimeoutTimer);
+            mTimeoutTimer = 0;
+        }
         emit ready();
         break;
     }
     case QAbstractSocket::HostLookupState: {
+        if ( mTimeoutTimer == 0 ) {
+            mTimeoutTimer = new QTimer(this);
+            mTimeoutTimer->setInterval(CONNECTION_TIMEOUT);
+            connect(mTimeoutTimer,SIGNAL(timeout()),this,SLOT(onConnectionTimeout()));
+            mTimeoutTimer->setSingleShot(true);
+            mTimeoutTimer->start();
+        } else {
+            mTimeoutTimer->stop();
+            mTimeoutTimer->start();
+        }
         emit busy();
         break;
     }
     case QAbstractSocket::ConnectingState : {
+        if ( mTimeoutTimer == 0 ) {
+            mTimeoutTimer = new QTimer(this);
+            mTimeoutTimer->setInterval(CONNECTION_TIMEOUT);
+            connect(mTimeoutTimer,SIGNAL(timeout()),this,SLOT(onConnectionTimeout()));
+            mTimeoutTimer->setSingleShot(true);
+            mTimeoutTimer->start();
+        } else {
+            mTimeoutTimer->stop();
+            mTimeoutTimer->start();
+        }
         emit busy();
         break;
     }
     case QAbstractSocket::ConnectedState : {
+        if ( mTimeoutTimer ) {
+            mTimeoutTimer->stop();
+            delete(mTimeoutTimer);
+            mTimeoutTimer = 0;
+        }
         emit ready();
         break;
     }
     case QAbstractSocket::ClosingState:  {
+        if ( mTimeoutTimer ) {
+            mTimeoutTimer->stop();
+            delete(mTimeoutTimer);
+            mTimeoutTimer = 0;
+        }
         emit busy();
         break;
     }
     default:
         emit ready();
     }
+}
+
+void NetworkAccess::onConnectionTimeout() {
+    qDebug() << "Connection attempt timeout";
+    mTCPSocket->abort();
 }
 
 void NetworkAccess::sendMPDCommand(QString cmd)

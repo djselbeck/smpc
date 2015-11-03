@@ -18,6 +18,8 @@
 #define READYREAD 15000
 #define IDLEWAIT 2000
 
+#define CONNECTION_TIMEOUT 10000
+
 /* Time after a resync of status with server is done. This is only to compensate
  for timedrift and will probably removed later. */
 #define RESYNC_TIME 120 * 1000
@@ -522,6 +524,11 @@ protected slots:
      */
     void onConnectionStateChanged(QAbstractSocket::SocketState socketState);
 
+    /**
+     * @brief onConnectionTimeout Handles connection timeouts after timer fires
+     */
+    void onConnectionTimeout();
+
 
 private:
     /**
@@ -642,6 +649,11 @@ private:
      * @return Map with all artists/albums
      */
     QMap<MpdArtist*, QList<MpdAlbum*>* > *getArtistsAlbumsMap_prv();
+
+    /**
+     * @brief mTimeoutTimer Timer to cancel connection attempts at predefined times
+     */
+    QTimer *mTimeoutTimer;
 
     /**
      * @brief checkServerCapabilities

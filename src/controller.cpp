@@ -767,6 +767,9 @@ void Controller::connectProfile(int index)
     mPassword = profile->getPassword();
     mProfilename = profile->getName();
     mReconnectTimer.setInterval(5000);
+    if ( mReconnectTimer.isActive() ) {
+        mReconnectTimer.stop();
+    }
     mQuickView->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(mProfilename)));
     if(mNetAccess->connected())
     {
@@ -901,6 +904,8 @@ void Controller::clearPlaylistList()
 void Controller::reconnectServer()
 {
     if( mWasConnected && !mNetAccess->connected() ) {
+        // Just one attempt. otherwise we hang in loop if server is not reachable anymore
+        mWasConnected = false;
         // Reconnect last profile
         connectToServer();
     }
