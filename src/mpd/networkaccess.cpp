@@ -66,6 +66,10 @@ void NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
         disconnectFromServer();
     }
 
+    if ( mTCPSocket->state() != QAbstractSocket::UnconnectedState ) {
+        mTCPSocket->abort();
+    }
+
     // Initiate TCP connection here
     mTCPSocket->connectToHost(hostname ,port,QIODevice::ReadWrite);
 }
@@ -311,7 +315,7 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
 void NetworkAccess::getAlbumTracks(QString album)
 {
     emit busy();
-    emit albumTracksReady((QList<QObject*>*)getAlbumTracks_prv(album));
+    emit trackListReady(getAlbumTracks_prv(album));
     emit ready();
 }
 
@@ -327,7 +331,7 @@ QList<MpdTrack*>* NetworkAccess::getAlbumTracks_prv(QString album)
 void  NetworkAccess::getAlbumTracks(QString album, QString cartist)
 {
     emit busy();
-    emit albumTracksReady((QList<QObject*>*)getAlbumTracks_prv(album,cartist));
+    emit trackListReady(getAlbumTracks_prv(album,cartist));
     emit ready();
 }
 
@@ -335,7 +339,7 @@ void  NetworkAccess::getAlbumTracks(QVariant albuminfo)
 {
     emit busy();
     QStringList strings = albuminfo.toStringList();
-    emit albumTracksReady((QList<QObject*>*)getAlbumTracks_prv(strings[1],strings[0]));
+    emit trackListReady(getAlbumTracks_prv(strings[1],strings[0]));
     emit ready();
 }
 
@@ -371,7 +375,7 @@ void NetworkAccess::getCurrentPlaylistTracks()
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand("playlistinfo\n");
     }
-    emit currentPlaylistReady((QList<QObject*>*)parseMPDTracks(""));
+    emit currentPlaylistReady(parseMPDTracks(""));
     emit ready();
 }
 
@@ -382,7 +386,7 @@ void NetworkAccess::getPlaylistTracks(QString name)
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand(QString("listplaylistinfo \"") + name + "\"\n");
     }
-    emit savedPlaylistTracksReady((QList<QObject*>*)parseMPDTracks(""));
+    emit trackListReady(parseMPDTracks(""));
     emit ready();
 }
 
@@ -1747,7 +1751,7 @@ void NetworkAccess::searchTracks(QVariant request)
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand(QString("search ") + searchrequest.at(0) + " \"" + searchrequest.at(1) + "\"\n");
     }
-    emit searchedTracksReady((QList<QObject*>*)parseMPDTracks(""));
+    emit trackListReady(parseMPDTracks(""));
     emit ready();
 }
 

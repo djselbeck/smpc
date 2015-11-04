@@ -131,12 +131,14 @@ signals:
      * Receiver needs to take care of clean up after use or receiving a new one.
      */
     void searchedTracksReady(QList<QObject*>*);
+
+    void trackListReady(QList<MpdTrack*>*);
     /**
      * @brief currentPlaylistReady Signals that the current active playlist is received. This signal
      * gets emitted everytime the server changes its playlist.
      * Receiver needs to take care of clean up after use or receiving a new one.
      */
-    void currentPlaylistReady(QList<QObject*>*);
+    void currentPlaylistReady(QList<MpdTrack*>*);
 
     /**
      * @brief savedPlaylistsReady Signals that the List of playlist names is ready.

@@ -8,6 +8,7 @@ Page {
     property string selectedsearch
     allowedOrientations: Orientation.All
 
+
     Drawer {
         id: mainDrawer
         anchors.fill: parent
@@ -75,16 +76,13 @@ Page {
 
             header: PageHeader {
                 title: qsTr("search")
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
+                width: searchsongListView.width
             }
 //            populate: Transition {
 //                NumberAnimation { properties: "x"; from:albumsongs_list_view.width*2 ;duration: populateDuration }
 //            }
             clip: true
-            model: searchedTracksModel
+            model: tracksModel
 
             PullDownMenu {
                 enabled: searchsongListView.model !== undefined
@@ -278,6 +276,6 @@ Page {
     }
 
     Component.onDestruction: {
-        clearSearchTracks();
+        clearTrackList();
     }
 }

@@ -107,10 +107,8 @@ private:
     AlbumModel *mOldAlbumModel;
     ArtistModel *mOldArtistModel;
     PlaylistModel *mPlaylist;
-    PlaylistModel *mAlbumTracks;
-    PlaylistModel *mPlaylistTracks;
+    PlaylistModel *mOtherTracks;
     QStringList *mSavedPlaylists;
-    PlaylistModel *mSearchedTracks;
     QList<MPDOutput*> *mOutputs;
     QStack<FileModel*> *mFileModels;
     ImageDatabase *mImgDB;
@@ -154,11 +152,8 @@ private slots:
     void updateAlbumsModel(QList<QObject*>* list);
     void updateArtistsModel(QList<QObject*>* list);
 //    void updateArtistAlbumsModel(QList<QObject*>* list);
-    void updatePlaylistModel(QList<QObject*>* list);
     void updateFilesModel(QList<QObject*>* list);
-    void updateAlbumTracksModel(QList<QObject*>* list);
     void updateOutputsModel(QList<QObject*>* list);
-    void updateSearchedTracks(QList<QObject*>* list);
     void setHostname(QString mHostname);
     void setPassword(QString mPassword);
     void setPort(int mPort);
@@ -169,7 +164,6 @@ private slots:
     void deleteProfile(int index);
     void connectProfile(int index);
     void updateSavedPlaylistsModel(QStringList*);
-    void updateSavedPlaylistModel(QList<QObject*>* list);
     void fileStackPop();
     void cleanFileStack();
     void exitRequest();
@@ -179,10 +173,8 @@ private slots:
 
     void clearAlbumList();
     void clearArtistList();
-    void clearPlaylistList();
     void clearPlaylists();
     void clearTrackList();
-    void clearSearchTracks();
 
     void reconnectServer();
 

@@ -20,18 +20,18 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mNetworkThread->start();
     mDBThread->start();
 
+    mPlaylist = new PlaylistModel(mImgDB,this);
+
+    mOtherTracks = new PlaylistModel(mImgDB,this);
+
 //    mStreamPlayer = new StreamPlayer(this);
 
     mCurrentSongID=0;
     mPlaylistVersion = 0;
-    mPlaylist = 0;
     mOutputs = 0;
     mOldArtistModel = 0;
     mOldAlbumModel = 0;
-    mAlbumTracks = 0;
-    mPlaylistTracks = 0;
     mSavedPlaylists = 0;
-    mSearchedTracks = 0;
     mServerProfiles = 0;
     mLastPlaybackState = MPD_STOP;
     connectSignals();
@@ -50,17 +50,16 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mQuickView->rootContext()->setContextProperty("coverstring","");
     mQuickView->rootContext()->setContextProperty("artistInfoText","");
     mQuickView->rootContext()->setContextProperty("albumInfoText","");
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
     mQuickView->rootContext()->setContextProperty("artistsModel",0);
     mQuickView->rootContext()->setContextProperty("albumsModel",0);
     mQuickView->rootContext()->setContextProperty("savedPlaylistsModel",0);
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
     mQuickView->rootContext()->setContextProperty("outputsModel",0);
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
+    mQuickView->rootContext()->setContextProperty("playlistModel",mPlaylist);
+    mQuickView->rootContext()->setContextProperty("tracksModel",mOtherTracks);
+
 
     mQuickView->rootContext()->setContextProperty("mpd_status",mPlaybackStatus);
 
-    updatePlaylistModel(0);
     viewer->engine()->addImageProvider("imagedbprovider",mQMLImgProvider);
     mNetAccess->setQMLThread(viewer->thread());
     //Start auto connect
@@ -103,17 +102,9 @@ Controller::~Controller()
         delete(mOldArtistModel);
     if(mPlaylist)
         delete(mPlaylist);
-    if(mAlbumTracks)
-    {
-        delete(mAlbumTracks);
-    }
-    if(mPlaylistTracks)
-    {
-        delete(mPlaylistTracks);
-    }
-    if(mSearchedTracks) {
-        delete(mSearchedTracks);
-    }
+    if(mOtherTracks)
+        delete(mOtherTracks);
+
     if(mOutputs) {
         qDeleteAll(*mOutputs);
         delete(mOutputs);
@@ -128,31 +119,6 @@ Controller::~Controller()
     qDebug() << "everything cleared up nicely";
 }
 
-void Controller::updatePlaylistModel(QList<QObject*>* list)
-{
-    qDebug() << "new playlist received";
-    PlaylistModel *model = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    qDebug() << "new playlist model created";
-    QQmlEngine::setObjectOwnership(model,QQmlEngine::CppOwnership);
-    qDebug() << "new playlist model ownership set";
-    mQuickView->rootContext()->setContextProperty("playlistModelVar",model);
-    qDebug() << "new playlist model set in qml context";
-    if(mPlaylist==0){
-        qDebug() << "no old playlist found";
-        mCurrentSongID=0;
-    } else{
-        qDebug() << "deleting old playlist";
-        delete(mPlaylist);
-        qDebug() << "old playlist deleted";
-        mPlaylist = 0;
-        qDebug() << "playlist = 0";
-    }
-    mCurrentSongID = -1;
-    mPlaylist = model;
-
-    updatePlaybackState();
-    qDebug() << "playlist = model";
-}
 
 void Controller::updateFilesModel(QList<QObject*>* list)
 {
@@ -180,17 +146,6 @@ void Controller::updateSavedPlaylistsModel(QStringList *list)
 
 }
 
-void Controller::updateSavedPlaylistModel(QList<QObject*>* list)
-{
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
-    if ( mPlaylistTracks ) {
-        delete(mPlaylistTracks);
-        mPlaylistTracks = 0;
-    }
-    mPlaylistTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",mPlaylistTracks);
-    emit savedPlaylistReady();
-}
 
 void Controller::updateArtistsModel(QList<QObject*>* list)
 {
@@ -245,31 +200,6 @@ void Controller::updateOutputsModel(QList<QObject*>* list)
 }
 
 
-void Controller::updateAlbumTracksModel(QList<QObject*>* list)
-{
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
-    if ( mAlbumTracks ) {
-        delete(mAlbumTracks);
-        mAlbumTracks = 0;
-    }
-    mAlbumTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",mAlbumTracks);
-    emit albumTracksReady();
-}
-
-void Controller::updateSearchedTracks(QList<QObject*>* list)
-{
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
-    if(mSearchedTracks!=0)
-    {
-        delete (mSearchedTracks);
-        mSearchedTracks = 0;
-    }
-    mSearchedTracks = new PlaylistModel((QList<MpdTrack*>*)list,mImgDB,this);
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",mSearchedTracks);
-    emit searchedTracksReady();
-}
-
 void Controller::connectSignals()
 {
     QObject *item = (QObject *)mQuickView->rootObject();
@@ -279,6 +209,9 @@ void Controller::connectSignals()
     qRegisterMetaType<QList<MpdArtist*>*>("QList<MpdArtist*>*");
     qRegisterMetaType<QList<MpdFileEntry*>*>("QList<MpdFileEntry*>*");
     qRegisterMetaType<QAbstractSocket::SocketState>("QAbstractSocket::SocketState");
+    qRegisterMetaType<MpdPlaybackState>("MpdPlaybackState");
+
+
     connect(item,SIGNAL(setHostname(QString)),this,SLOT(setHostname(QString)));
     connect(item,SIGNAL(setPassword(QString)),this,SLOT(setPassword(QString)));
     connect(item,SIGNAL(setPort(int)),this,SLOT(setPort(int)));
@@ -309,16 +242,13 @@ void Controller::connectSignals()
     connect(item,SIGNAL(deleteSavedPlaylist(QString)),mNetAccess,SLOT(deletePlaylist(QString)));
     connect(item,SIGNAL(requestSavedPlaylists()),mNetAccess,SLOT(getSavedPlaylists()));
     connect(mNetAccess,SIGNAL(savedPlaylistsReady(QStringList*)),this,SLOT(updateSavedPlaylistsModel(QStringList*)));
-    connect(mNetAccess,SIGNAL(savedPlaylistTracksReady(QList<QObject*>*)),this,SLOT(updateSavedPlaylistModel(QList<QObject*>*)));
-    connect(mNetAccess,SIGNAL(currentPlaylistReady(QList<QObject*>*)),this,SLOT(updatePlaylistModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(albumsReady(QList<QObject*>*)),this,SLOT(updateAlbumsModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(artistsReady(QList<QObject*>*)),this,SLOT(updateArtistsModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(artistAlbumsReady(QList<QObject*>*)),this,SLOT(updateAlbumsModel(QList<QObject*>*)));
-    connect(mNetAccess,SIGNAL(albumTracksReady(QList<QObject*>*)),this,SLOT(updateAlbumTracksModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(filesReady(QList<QObject*>*)),this,SLOT(updateFilesModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(connectionEstablished()),this,SLOT(connectedToServer()));
     connect(mNetAccess,SIGNAL(disconnected()),this,SLOT(disconnectedToServer()));
-    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged()),this,SLOT(updatePlaybackState()));
+    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged(MpdPlaybackState)),this,SLOT(updatePlaybackState()));
     connect(mNetAccess,SIGNAL(busy()),item,SLOT(busy()));
     connect(mNetAccess,SIGNAL(ready()),item,SLOT(ready()));
     connect(item,SIGNAL(newProfile(QVariant)),this,SLOT(newProfile(QVariant)));
@@ -355,7 +285,6 @@ void Controller::connectSignals()
     connect(item,SIGNAL(disableOutput(int)),mNetAccess,SLOT(disableOutput(int)));
 
     connect(item,SIGNAL(requestSearch(QVariant)),mNetAccess,SLOT(searchTracks(QVariant)));
-    connect(mNetAccess,SIGNAL(searchedTracksReady(QList<QObject*>*)),this,SLOT(updateSearchedTracks(QList<QObject*>*)));
     connect(item,SIGNAL(addlastsearch()),this,SLOT(addlastsearchtoplaylist()));
     connect(this,SIGNAL(addURIToPlaylist(QString)),mNetAccess,SLOT(addTrackToPlaylist(QString)));
 
@@ -427,6 +356,14 @@ void Controller::connectSignals()
     connect(mPlaybackStatus,SIGNAL(playlistVersionChanged()),this,SLOT(updatePlaybackState()));
     connect(mPlaybackStatus,SIGNAL(albumChanged()),this,SLOT(onNewAlbum()));
     connect(mPlaybackStatus,SIGNAL(artistChanged()),this,SLOT(onNewArtist()));
+
+    /* new playlist model connects */
+    connect(mNetAccess,SIGNAL(currentPlaylistReady(QList<MpdTrack*>*)),mPlaylist,SLOT(receiveNewTrackList(QList<MpdTrack*>*)));
+    connect(mPlaybackStatus,SIGNAL(idChanged(quint32)),mPlaylist,SLOT(onTrackNoChanged(quint32)));
+    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged(MpdPlaybackState)),mPlaylist,SLOT(onPlaybackStateChanged(MpdPlaybackState)));
+
+    /* new saved tracks model connects */
+    connect(mNetAccess,SIGNAL(trackListReady(QList<MpdTrack*>*)),mOtherTracks,SLOT(receiveNewTrackList(QList<MpdTrack*>*)));
 }
 
 void Controller::setPassword(QString password)
@@ -503,41 +440,7 @@ void Controller::disconnectedToServer()
 
 void Controller::updatePlaybackState()
 {
-    qDebug() << "::updatePlaybackState()";
-    MpdPlaybackState playbackState = (MpdPlaybackState)mPlaybackStatus->getPlaybackStatus();
-    if( (playbackState == MPD_PLAYING) || (playbackState == MPD_PAUSE) )
-    {
-        quint32 id = mPlaybackStatus->getID();
-        qDebug() << "new id: " << id << "new state: " << playbackState << " old id: " << mCurrentSongID;
-        // check for old playing track and set false
-        if (mCurrentSongID != id) {
-            if (mCurrentSongID != -1 && mPlaylist && (mPlaylist->rowCount() > mCurrentSongID) ) {
-                mPlaylist->setPlaying(mCurrentSongID,false);
-            }
-        }
-        // Set current playing song id
-        mCurrentSongID = id;
 
-        // Set current playing attribute
-        if ( mPlaylist && (mPlaylist->rowCount() > mCurrentSongID) && mCurrentSongID >= 0 )
-        {
-            mPlaylist->setPlaying(mCurrentSongID,true);
-        }
-
-    } else if ( playbackState == MPD_STOP )
-    {
-        // Just stopped
-        if ( mLastPlaybackState != MPD_STOP ) {
-            // Disable playing attribute for last song
-            if ( mPlaylist && (mPlaylist->rowCount() > mCurrentSongID)
-                 && (mCurrentSongID >= 0) ) {
-                mPlaylist->setPlaying(mCurrentSongID,false);
-            }
-            // Set last playing to -1 for nothing
-            mCurrentSongID = -1;
-        }
-    }
-    mLastPlaybackState = playbackState;
 }
 
 void Controller::onNewAlbum()
@@ -836,21 +739,15 @@ void Controller::cleanFileStack()
         delete(list);
     }
     mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
-    if(mSearchedTracks!=0){
-        delete(mSearchedTracks);
-        mSearchedTracks = 0;
-    }
     emit filePopCleared();
 }
 
 void Controller::addlastsearchtoplaylist()
 {
-    if ( mSearchedTracks ) {
-        for(int i = 0;i<mSearchedTracks->rowCount();i++)
+        for(int i = 0;i<mOtherTracks->rowCount();i++)
         {
-            emit addURIToPlaylist(mSearchedTracks->get(i)->getFileUri());
+            emit addURIToPlaylist(mOtherTracks->get(i)->getFileUri());
         }
-    }
 }
 
 void Controller::clearAlbumList()
@@ -875,11 +772,7 @@ void Controller::clearArtistList()
 
 void Controller::clearTrackList()
 {
-    mQuickView->rootContext()->setContextProperty("albumTracksModel",0);
-    if ( mAlbumTracks ) {
-        delete(mAlbumTracks);
-        mAlbumTracks = 0;
-    }
+    mOtherTracks->receiveNewTrackList(0);
 }
 
 void Controller::clearPlaylists()
@@ -889,15 +782,6 @@ void Controller::clearPlaylists()
     {
         delete(mSavedPlaylists);
         mSavedPlaylists = 0;
-    }
-}
-
-void Controller::clearPlaylistList()
-{
-    mQuickView->rootContext()->setContextProperty("savedPlaylistModel",0);
-    if ( mPlaylistTracks ) {
-        delete(mPlaylistTracks);
-        mPlaylistTracks = 0;
     }
 }
 
@@ -1026,14 +910,6 @@ QString Controller::getLastFMArtSize(int index)
     return LASTFMDEFAULTSIZE;
 }
 
-void Controller::clearSearchTracks()
-{
-    mQuickView->rootContext()->setContextProperty("searchedTracksModel",0);
-    if(mSearchedTracks!=0){
-        delete(mSearchedTracks);
-        mSearchedTracks = 0;
-    }
-}
 
 void Controller::trimCache()
 {

@@ -62,6 +62,14 @@ Item {
         }
     }
 
+    Connections {
+        target: (listview && listview.model) ? listview.model : null
+        onModelReset: {
+            Sections.fillSections(listview);
+        }
+    }
+
+
     MouseArea {
         id: inputArea
         anchors.fill:parent

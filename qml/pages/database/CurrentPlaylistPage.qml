@@ -24,7 +24,7 @@ Page {
 //            bottomMargin: quickControlPanel.visibleSize
         }
 
-        model: playlistModelVar
+        model: playlistModel
         quickScrollEnabled: jollaQuickscroll
         highlightFollowsCurrentItem: true
         highlightMoveDuration: 0

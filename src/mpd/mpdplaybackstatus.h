@@ -10,7 +10,7 @@ class MPDPlaybackStatus : public QObject
     friend class NetworkAccess;
     Q_OBJECT
     Q_PROPERTY(quint32 playlistVersion READ getPlaylistVersion WRITE setPlaylistVersion NOTIFY playlistVersionChanged)
-    Q_PROPERTY(qint32 id READ getID WRITE setID NOTIFY idChanged)
+    Q_PROPERTY(quint32 id READ getID WRITE setID NOTIFY idChanged)
     Q_PROPERTY(quint32 bitrate READ getBitrate WRITE setBitrate NOTIFY bitrateChanged)
     Q_PROPERTY(qint32 trackNo READ getTrackNo WRITE setTrackNo NOTIFY trackNoChanged)
     Q_PROPERTY(qint32 albumTrackCount READ getAlbumTrackCount WRITE setAlbumTrackCount NOTIFY albumTrackCountChanged)
@@ -61,7 +61,7 @@ public:
     quint8 getBitDepth();
 
     void setPlaylistVersion(quint32 playlistVersion);
-    void setID(qint32 id);
+    void setID(quint32 id);
     void setBitrate(quint32 bitrate);
     void setTrackNo(qint32 trackNo);
     void setAlbumTrackCount(qint32 getAlbumTrackCount);
@@ -91,9 +91,9 @@ public:
 
 signals:
     void playlistVersionChanged();
-    void idChanged();
+    void idChanged(quint32);
     void bitrateChanged();
-    void trackNoChanged();
+    void trackNoChanged(quint32 trackno);
     void albumTrackCountChanged();
     void volumeChanged();
 
@@ -102,7 +102,7 @@ signals:
     void artistChanged();
     void uriChanged();
 
-    void playbackStatusChanged();
+    void playbackStatusChanged(MpdPlaybackState state);
     void repeatChanged();
     void shuffleChanged();
 
@@ -118,7 +118,7 @@ public slots:
 
 private:
     quint32 pPlaylistVersion;
-    qint32 pID;
+    quint32 pID;
     quint32 pBitrate;
     qint32 pTrackNo;
     qint32 pAlbumTrackCount;

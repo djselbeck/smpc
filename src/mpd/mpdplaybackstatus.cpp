@@ -157,11 +157,11 @@ void MPDPlaybackStatus::setPlaylistVersion(quint32 playlistVersion)
     }
 }
 
-void MPDPlaybackStatus::setID(qint32 id)
+void MPDPlaybackStatus::setID(quint32 id)
 {
     if (pID != id) {
         pID = id;
-        emit idChanged();
+        emit idChanged(pID);
     }
 }
 
@@ -177,7 +177,7 @@ void MPDPlaybackStatus::setTrackNo(qint32 trackNo)
 {
     if (pTrackNo != trackNo) {
         pTrackNo = trackNo;
-        emit trackNoChanged();
+        emit trackNoChanged(pTrackNo);
     }
 }
 
@@ -238,7 +238,7 @@ void MPDPlaybackStatus::setPlaybackStatus(quint8 playbackStatus)
         if (pPlaybackStatus == MPD_STOP) {
             clearPlayback();
         }
-        emit playbackStatusChanged();
+        emit playbackStatusChanged(pPlaybackStatus);
     }
 }
 
@@ -313,7 +313,7 @@ void MPDPlaybackStatus::clearPlayback()
     pBitrate = 0;
     emit bitrateChanged();
     pTrackNo = 0;
-    emit trackNoChanged();
+    emit trackNoChanged(pTrackNo);
     pAlbumTrackCount = 0;
     emit albumTrackCountChanged();
     pTitle = "";

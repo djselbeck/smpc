@@ -27,7 +27,7 @@ Page {
 
             width: parent.width / 2
 
-            model: playlistModelVar
+            model: playlistModel
             quickScrollEnabled: jollaQuickscroll
             highlightFollowsCurrentItem: true
             highlightMoveDuration: 0

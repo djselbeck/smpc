@@ -1,5 +1,7 @@
 #include <mpd/mpdtrack.h>
 
+#include <QDebug>
+
 MpdTrack::MpdTrack(QObject *parent) :
     QObject(parent)
 {
@@ -177,6 +179,7 @@ void MpdTrack::setTitle(QString title)
 
 void MpdTrack::setPlaying(bool playing)
 {
+    qDebug() << mTitle << playing;
     this->mPlaying = playing;
     emit playingchanged();
 }

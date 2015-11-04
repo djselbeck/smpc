@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 
 #include <mpd/mpdtrack.h>
+#include <mpd/mpdcommon.h>
 
 #include <localdb/imagedatabase.h>
 
@@ -14,15 +15,16 @@ class PlaylistModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount)
 public:
     explicit PlaylistModel(QObject *parent = 0);
-    PlaylistModel(QList<MpdTrack*>* list,ImageDatabase *db, QObject *parent = 0);
+    PlaylistModel(ImageDatabase *db, QObject *parent = 0);
     ~PlaylistModel();
 
     Q_INVOKABLE MpdTrack* get(int index);
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const;
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE QHash<int, QByteArray> roleNames() const;
-    void setPlaying(int position,bool playing);
+    void setPlaying(quint32 position,bool playing);
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
+
 
     enum EntryRoles {
         NameRole = Qt::UserRole + 1,
@@ -47,9 +49,16 @@ private:
     QList<MpdTrack*>* mEntries;
     ImageDatabase *mDB;
 
+    MpdPlaybackState mPlaybackState;
+    quint32 mTrackNo;
+
 signals:
 
 public slots:
+    void receiveNewTrackList(QList<MpdTrack*>* tracks);
+
+    void onTrackNoChanged(quint32 trackNo);
+    void onPlaybackStateChanged(MpdPlaybackState state);
 };
 
 #endif // PLAYLISTMODEL_H

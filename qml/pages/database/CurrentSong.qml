@@ -639,10 +639,6 @@ Page {
                 open: false
             }
             PropertyChanges {
-                target: pageHeading
-                visible: false
-            }
-            PropertyChanges {
                 target: landscapeImageRow
                 visible: true
             }

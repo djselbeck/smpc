@@ -10,7 +10,7 @@ Page
     property int lastIndex;
     SilicaListView {
             id : playlistTracksListView
-            model: savedPlaylistModel
+            model: tracksModel
             quickScrollEnabled: jollaQuickscroll
             SpeedScroller {
                 listview: playlistTracksListView

@@ -1,14 +1,18 @@
 #include "playlistmodel.h"
 
+#include <QDebug>
+
 PlaylistModel::PlaylistModel(QObject *parent) :
     QAbstractListModel(parent)
 {
 }
 
-PlaylistModel::PlaylistModel(QList<MpdTrack *> *list, ImageDatabase *db, QObject *parent) : QAbstractListModel(parent)
+PlaylistModel::PlaylistModel(ImageDatabase *db, QObject *parent) : QAbstractListModel(parent)
 {
-    mEntries = list;
     mDB = db;
+    mEntries = 0;
+    mPlaybackState = MPD_STOP;
+    mTrackNo = 0;
 }
 
 PlaylistModel::~PlaylistModel(){
@@ -152,9 +156,9 @@ QHash<int, QByteArray> PlaylistModel::roleNames() const {
     return roles;
 }
 
-void PlaylistModel::setPlaying(int position, bool playing) {
-    if(position<mEntries->length()) {
-        mEntries->at(position)->setPlaying(playing);
+void PlaylistModel::setPlaying(quint32 position, bool playing) {
+    if(position< (quint32) rowCount()) {
+        mEntries->at((int)position)->setPlaying(playing);
         emit dataChanged(createIndex(position,0),createIndex(position,0),QVector<int>(1,playingRole));
     }
 }
@@ -175,4 +179,46 @@ MpdTrack* PlaylistModel::get(int index) {
     } else {
         return 0;
     }
+}
+
+void PlaylistModel::receiveNewTrackList(QList<MpdTrack *>* tracks)
+{
+    beginResetModel();
+
+    QList<MpdTrack*> *tmpPointer = mEntries;
+    mEntries = tracks;
+    endResetModel();
+
+    if ( mPlaybackState != MPD_STOP ) {
+        setPlaying(mTrackNo,true);
+    }
+    if ( tmpPointer != 0 ) {
+       qDeleteAll(*tmpPointer);
+       delete(tmpPointer);
+    }
+}
+
+void PlaylistModel::onPlaybackStateChanged(MpdPlaybackState state)
+{
+    mPlaybackState = state;
+    if ( mPlaybackState == MPD_STOP ) {
+        // Unset playing flag for last track played
+        setPlaying(mTrackNo,false);
+    } else {
+        setPlaying(mTrackNo, true);
+    }
+}
+
+void PlaylistModel::onTrackNoChanged(quint32 trackNo)
+{
+    // Check boundaries
+    if ( trackNo >= (quint32)rowCount() ) {
+        mTrackNo = trackNo;
+        return;
+    }
+
+    // Change track playing flags
+    setPlaying(mTrackNo, false);
+    mTrackNo = trackNo;
+    setPlaying(mTrackNo, true);
 }

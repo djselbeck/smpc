@@ -21,7 +21,7 @@ Page {
                 id: albumTracksListView
                 quickScrollEnabled: jollaQuickscroll
                 contentWidth: width
-                model: albumTracksModel
+                model: tracksModel
                 clip: true
                 populate: Transition {
                     NumberAnimation {
@@ -32,7 +32,7 @@ Page {
                 }
                 header: Item {
                     height: headerColumn.height
-                    width: parent.width
+                    width: albumTracksListView.width
                     Column {
                         id: headerColumn
                         height: header.height + imageRow.height
@@ -213,7 +213,7 @@ Page {
 
                     }
 
-                    model: albumTracksModel
+                    model: tracksModel
                     clip: true
                     populate: Transition {
                         NumberAnimation {
@@ -280,7 +280,7 @@ Page {
     }
 
     Component.onDestruction: {
-        clearTrackList()
+        clearTrackList();
     }
 
     Component {
