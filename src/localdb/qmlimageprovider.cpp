@@ -19,7 +19,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             QPixmap tmpImg = mDB->getAlbumImage(idList[1].toInt());
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;
@@ -27,7 +27,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             QPixmap tmpImg = mDB->getArtistImage(idList[1].toInt());
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;
@@ -39,7 +39,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             }
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;
@@ -47,7 +47,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             QPixmap tmpImg = mDB->getArtistImageForAlbum(idList[1]);
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;
@@ -55,7 +55,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             QPixmap tmpImg = mDB->getArtistImage(idList[1]);
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;
@@ -64,7 +64,7 @@ QPixmap QMLImageProvider::requestPixmap(const QString &id, QSize *size, const QS
             QPixmap tmpImg = mDB->getAlbumImage(idList[1]);
             size->setHeight(tmpImg.height());
             size->setWidth(tmpImg.width());
-            if ( requestedSize.isValid()) {
+            if ( requestedSize.isValid() && !tmpImg.isNull() ) {
                 tmpImg = tmpImg.scaled(requestedSize, Qt::KeepAspectRatio,Qt::SmoothTransformation);
             }
             return tmpImg;

@@ -56,7 +56,7 @@ quint32 MPDPlaybackStatus::getPlaylistVersion()
     return pPlaylistVersion;
 }
 
-qint32 MPDPlaybackStatus::getID()
+quint32 MPDPlaybackStatus::getID()
 {
     return pID;
 }

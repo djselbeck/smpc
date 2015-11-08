@@ -26,7 +26,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
         qDebug() << path;
     }
 
-    Controller control(&(*view),0);
+    Controller *control = new Controller(view,0);
     view->show();
     return app->exec();
 }

@@ -21,11 +21,17 @@ ArtistModel::~ArtistModel()
 
 int ArtistModel::rowCount(const QModelIndex &parent) const
 {
+    if ( parent.isValid() ) {
+        return 0;
+    }
     return mEntries->length();
 }
 
 QVariant ArtistModel::data(const QModelIndex &index, int role) const
 {
+    if ( Q_UNLIKELY(index.row() < 0 || index.row() > rowCount())) {
+        return QVariant(QVariant::Invalid);
+    }
     if(role==NameRole)
         return mEntries->at(index.row())->getName();
     else if(role==SectionRole)
@@ -50,6 +56,7 @@ QVariant ArtistModel::data(const QModelIndex &index, int role) const
             return url;
         }
     }
+    return QVariant(QVariant::Invalid);;
 }
 
 QHash<int, QByteArray> ArtistModel::roleNames() const

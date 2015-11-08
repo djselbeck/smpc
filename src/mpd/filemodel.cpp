@@ -25,6 +25,9 @@ FileModel::~FileModel()
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
+    if ( Q_UNLIKELY(index.row() < 0 || index.row() > rowCount())) {
+        return QVariant(QVariant::Invalid);
+    }
     if(role==NameRole)
     {
         return mEntries->at(index.row())->getName();
@@ -100,11 +103,14 @@ QVariant FileModel::data(const QModelIndex &index, int role) const
             }
         }
     }
-    return 0;
+    return QVariant(QVariant::Invalid);
 }
 
 int FileModel::rowCount(const QModelIndex &parent) const
 {
+    if ( parent.isValid() ) {
+        return 0;
+    }
     if ( mEntries )
         return mEntries->length();
     return 0;

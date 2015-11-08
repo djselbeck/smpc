@@ -37,7 +37,7 @@ public:
     MPDPlaybackStatus(const MPDPlaybackStatus &copyObject, QObject *parent = 0);
 
     quint32 getPlaylistVersion();
-    qint32 getID();
+    quint32 getID();
     quint32 getBitrate();
     qint32 getTrackNo();
     qint32 getAlbumTrackCount();

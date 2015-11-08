@@ -79,11 +79,12 @@ bool ImageDatabase::syncAlbums(QList<MpdAlbum*> *albums,MpdArtist *artist) {
 }
 
 bool ImageDatabase::syncArtists(QList<MpdAlbum*> &artists) {
-
+    Q_UNUSED(artists);
     return true;
 }
 
 void ImageDatabase::albumReady(AlbumInformation *albumInformation) {
+    Q_UNUSED(albumInformation);
     delete(mCurrentAlbumProvider);
     if ( mAlbumNo < mAlbums->size() ) {
         mAlbumNo++;
@@ -418,7 +419,7 @@ QPixmap ImageDatabase::getAlbumImage(QString album, QString artist, bool downloa
     return QPixmap();
 }
 
-QPixmap ImageDatabase::getAlbumImage(QString album,bool download)
+QPixmap ImageDatabase::getAlbumImage(QString album)
 {
     int artworkID = imageIDFromAlbum(album);
     if ( artworkID == -1 ) {
@@ -446,7 +447,7 @@ QPixmap ImageDatabase::getAlbumImage(QString album,bool download)
     return  QPixmap();
 }
 
-QPixmap ImageDatabase::getArtistImage(QString artist,bool download)
+QPixmap ImageDatabase::getArtistImage(QString artist)
 {
     int artworkID = imageIDFromArtist(artist);
     if ( artworkID == -1 ) {

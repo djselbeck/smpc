@@ -11,7 +11,7 @@ AlbumInformation::AlbumInformation(QString name, QString artist, QString albumIn
     }
 }
 
-AlbumInformation::AlbumInformation(const AlbumInformation &copyObject) {
+AlbumInformation::AlbumInformation(const AlbumInformation &copyObject) : QObject(0){
     mAlbumName = copyObject.mAlbumName;
     mImageURL = copyObject.mImageURL;
     if(copyObject.mImageData) {

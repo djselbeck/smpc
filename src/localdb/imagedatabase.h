@@ -46,9 +46,9 @@ public:
 
 
     QPixmap getAlbumImage(QString album, QString artist, bool download=false);
-    QPixmap getAlbumImage(QString album, bool download=false);
+    QPixmap getAlbumImage(QString album);
     QPixmap getAlbumImage(int artworkID);
-    QPixmap getArtistImage(QString artist,bool download=false);
+    QPixmap getArtistImage(QString artist);
     QPixmap getArtistImage(int artworkID);
     QPixmap getArtistImageForAlbum(QString album);
 

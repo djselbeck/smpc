@@ -31,6 +31,9 @@ AlbumModel::~AlbumModel()
 
 QVariant AlbumModel::data(const QModelIndex &index, int role) const
 {
+    if ( Q_UNLIKELY(index.row() < 0 || index.row() > rowCount())) {
+        return QVariant(QVariant::Invalid);
+    }
     if(role==AlbumRole)
     {
         return mEntries->at(index.row())->getTitle();
@@ -99,10 +102,13 @@ QVariant AlbumModel::data(const QModelIndex &index, int role) const
             }
         }
     }
-    return 0;
+    return QVariant(QVariant::Invalid);;
 }
 
 int AlbumModel::rowCount(const QModelIndex &parent) const{
+    if ( parent.isValid() ) {
+        return 0;
+    }
     return mEntries->length();
 }
 

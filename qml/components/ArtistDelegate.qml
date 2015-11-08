@@ -22,7 +22,10 @@ Component {
                 source: (artistGridView.scrolling) ? "" : imageURL
                 cache: false
                 asynchronous: true
-                fillMode: Image.PreserveAspectCrop
+                fillMode: Image.PreserveAspectFit
+                onSourceSizeChanged: {
+                    console.debug("Source size: " + sourceSize.width + ":" + sourceSize.height)
+                }
             }
             Rectangle {
                 id: gradientRect

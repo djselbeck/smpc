@@ -83,6 +83,13 @@ Page {
                                         imageRow.height = 0
                                     }
                                 }
+
+                                MouseArea {
+                                    anchors.fill: albumImage
+                                    onClicked: {
+                                        playAlbum([artistname, albumname])
+                                    }
+                                }
                             }
                         }
                     }
@@ -172,6 +179,13 @@ Page {
                                     && artistImageLC.status == Image.Error) {
                                 // Disable image and set imageRow height to 0
                                 pictureColumn.width = 0
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: albumImageLC
+                            onClicked: {
+                                playAlbum([artistname, albumname])
                             }
                         }
                     }

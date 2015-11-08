@@ -3,7 +3,7 @@
 /** Constructor for NetworkAccess object. Handles all the network stuff
   */
 
-#define MPD_WHILE_PARSE_LOOP while ((mTCPSocket->state()==QTcpSocket::ConnectedState)&&(!response.startsWith("OK"))&&(!response.startsWith("ACK")))
+#define MPD_WHILE_PARSE_LOOP while (Q_LIKELY((mTCPSocket->state()==QTcpSocket::ConnectedState)&&(!response.startsWith("OK"))&&(!response.startsWith("ACK"))))
 
 NetworkAccess::NetworkAccess(QObject *parent) :
     QThread(parent)
@@ -116,6 +116,7 @@ void NetworkAccess::getAlbums()
         MpdAlbum *tempalbum;
         QString name;
         QString mbid;
+        bool emptyAlbum = false;
         MPD_WHILE_PARSE_LOOP
         {
             mTCPSocket->waitForReadyRead(READYREAD);
@@ -127,7 +128,7 @@ void NetworkAccess::getAlbums()
                 /* Parse album name and if server is new enough parse mbid */
                 if ( response.startsWith("Album: ") ) {
                     // Append album if name is already set(last album)
-                    if ( name != "" ) {
+                    if ( name != "" || emptyAlbum ) {
                         tempalbum = new MpdAlbum(NULL,name,"",mbid);
 
                         /* This helps with qml Q_PROPERTY accesses */
@@ -135,15 +136,19 @@ void NetworkAccess::getAlbums()
                         /* Set ownership to CppOwnership to guarantee that the GC of qml never deletes this */
                         QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                         albums->append(tempalbum);
+                        emptyAlbum = false;
                     }
                     name = response.right(response.length() - 7);
+                    if ( name == "" ) {
+                        emptyAlbum = true;
+                    }
                 }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID:") ) {
                     mbid = response.right(response.length() - 21);
                 }
             }
         }
         /* Make sure the last album isn't missed because of loop structure */
-        if ( name != "" ) {
+        if ( name != "" || emptyAlbum ) {
             tempalbum = new MpdAlbum(NULL,name,"",mbid);
             /* See above */
             tempalbum->moveToThread(mQMLThread);
@@ -273,6 +278,7 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         MpdAlbum *tempalbum;
         QString name;
         QString mbid;
+        bool emptyAlbum = false;
 
         MPD_WHILE_PARSE_LOOP
         {
@@ -284,20 +290,26 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
                 response.chop(1);
                 if ( response.startsWith("Album: ") ) {
                     // Append album if name is already set(last album)
-                    if ( name != "" ) {
+                    if ( name != "" || emptyAlbum ) {
                         tempalbum = new MpdAlbum(NULL,name,artist,mbid);
+                        qDebug() << "Album: " << name;
                         tempalbum->moveToThread(mQMLThread);
                         QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
                         albums->append(tempalbum);
+                        emptyAlbum = false;
                     }
                     name = response.right(response.length() - 7);
+                    if ( name == "" ) {
+                        emptyAlbum = true;
+                    }
                 }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID:") ) {
                     mbid = response.right(response.length() - 21);
                 }
             }
         }
         /* Append last album also */
-        if ( name != "" ) {
+        if ( name != "" || emptyAlbum) {
+            qDebug() << "Album: " << name;
             tempalbum = new MpdAlbum(NULL,name,artist,mbid);
             tempalbum->moveToThread(mQMLThread);
             QQmlEngine::setObjectOwnership(tempalbum, QQmlEngine::CppOwnership);
@@ -840,7 +852,7 @@ void NetworkAccess::playTrackNext(int index)
 {
     quint32 currentPosition = getPlaybackID();
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
-        if ( index < currentPosition) {
+        if ( (quint32) index < currentPosition) {
             sendMPDCommand(QString("move ") + QString::number(index) + " " + QString::number(currentPosition) + "\n");
         } else {
             sendMPDCommand(QString("move ") + QString::number(index) + " " + QString::number(currentPosition + 1) + "\n");
@@ -1591,7 +1603,7 @@ QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
             {
             }
 
-            while (mTCPSocket->canReadLine())
+            while (Q_LIKELY(mTCPSocket->canReadLine()))
             {
                 response = QString::fromUtf8(mTCPSocket->readLine());
                 // Remove new line
@@ -1705,8 +1717,8 @@ void NetworkAccess::getOutputs()
         QString tempstring;
         QList<MPDOutput*> *outputlist = new QList<MPDOutput*>();
         QString outputname;
-        int outputid;
-        bool outputenabled;
+        int outputid = 0;
+        bool outputenabled = false;
 
 
         sendMPDCommand("outputs\n");
@@ -1788,8 +1800,9 @@ void NetworkAccess::checkServerCapabilities() {
     /* Check server version */
     if ( pServerInfo.version.mpdMajor2 >= 19 ) {
         /* Enable new list command features */
-        pServerInfo.mpd_cmd_list_filter_criteria = true;
-        pServerInfo.mpd_cmd_list_group_capabilites = true;
+        /* Disabled until database support is finished as well */
+        pServerInfo.mpd_cmd_list_filter_criteria = false;//true;
+        pServerInfo.mpd_cmd_list_group_capabilites = false;//true;
         qDebug() << "Enable new list features of version 0.19";
     } else {
         pServerInfo.mpd_cmd_list_filter_criteria = false;
@@ -1824,7 +1837,7 @@ MPDPlaybackStatus *NetworkAccess::getMPDPlaybackStatus() {
 
 MpdPlaybackState NetworkAccess::getPlaybackState()
 {
-    MpdPlaybackState playbackState;
+    MpdPlaybackState playbackState = MPD_STOP;
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand("status\n");
         QString response;
@@ -1859,7 +1872,7 @@ MpdPlaybackState NetworkAccess::getPlaybackState()
 quint32 NetworkAccess::getPlaybackID()
 {
     qDebug() << "::getPlaybackID";
-    quint32 playbackID;
+    quint32 playbackID = 0;
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand("status\n");
         QString response = "";
@@ -1883,7 +1896,7 @@ quint32 NetworkAccess::getPlaybackID()
 
 quint32 NetworkAccess::getPlaylistLength()
 {
-    quint32 playlistLength;
+    quint32 playlistLength = 0;
     if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
         sendMPDCommand("status\n");
         QString response = "";

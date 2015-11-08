@@ -22,6 +22,9 @@ ServerProfileModel::~ServerProfileModel()
 
 QVariant ServerProfileModel::data(const QModelIndex &index, int role) const
 {
+    if ( Q_UNLIKELY(index.row() < 0 || index.row() > rowCount())) {
+        return QVariant(QVariant::Invalid);
+    }
     if(role==ServerNameRole)
     {
         return mEntries->at(index.row())->getHostname();
@@ -47,10 +50,13 @@ QVariant ServerProfileModel::data(const QModelIndex &index, int role) const
         return mEntries->at(index.row())->getMACAddress();
     }
 
-    return 0;
+    return QVariant(QVariant::Invalid);
 }
 
 int ServerProfileModel::rowCount(const QModelIndex &parent) const{
+    if ( parent.isValid() ) {
+        return 0;
+    }
     return mEntries->length();
 }
 

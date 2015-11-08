@@ -4,7 +4,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 }
 
-Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQuickView(viewer),mPassword(""),mHostname(""),mPort(6600)
+Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQuickView(viewer),mHostname(""),mPassword(""),mPort(6600)
 {
     mImgDB = new ImageDatabase();
     mQMLImgProvider = new QMLImageProvider(mImgDB);
@@ -21,7 +21,6 @@ Controller::Controller(QQuickView *viewer,QObject *parent) : QObject(parent),mQu
     mDBThread->start();
 
     mPlaylist = new PlaylistModel(mImgDB,this);
-
     mOtherTracks = new PlaylistModel(mImgDB,this);
 
 //    mStreamPlayer = new StreamPlayer(this);
@@ -248,7 +247,6 @@ void Controller::connectSignals()
     connect(mNetAccess,SIGNAL(filesReady(QList<QObject*>*)),this,SLOT(updateFilesModel(QList<QObject*>*)));
     connect(mNetAccess,SIGNAL(connectionEstablished()),this,SLOT(connectedToServer()));
     connect(mNetAccess,SIGNAL(disconnected()),this,SLOT(disconnectedToServer()));
-    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged(MpdPlaybackState)),this,SLOT(updatePlaybackState()));
     connect(mNetAccess,SIGNAL(busy()),item,SLOT(busy()));
     connect(mNetAccess,SIGNAL(ready()),item,SLOT(ready()));
     connect(item,SIGNAL(newProfile(QVariant)),this,SLOT(newProfile(QVariant)));
@@ -302,9 +300,7 @@ void Controller::connectSignals()
     connect(item,SIGNAL(clearAlbumList()),this,SLOT(clearAlbumList()));
     connect(item,SIGNAL(clearArtistList()),this,SLOT(clearArtistList()));
     connect(item,SIGNAL(clearTrackList()),this,SLOT(clearTrackList()));
-    connect(item,SIGNAL(clearPlaylistTracks()),this,SLOT(clearPlaylistList()));
     connect(item,SIGNAL(clearPlaylists()),this,SLOT(clearPlaylists()));
-    connect(item,SIGNAL(clearSearchTracks()),this,SLOT(clearSearchTracks()));
 
     connect(this,SIGNAL(connected(QVariant)),item,SLOT(slotConnected(QVariant)));
     connect(this,SIGNAL(disconnected()),item,SLOT(slotDisconnected()));
@@ -352,8 +348,6 @@ void Controller::connectSignals()
     connect(item,SIGNAL(wakeUpServer(int)),this,SLOT(wakeUpHost(int)));
 
     /* New status object connection */
-    connect(mPlaybackStatus,SIGNAL(idChanged()),this,SLOT(updatePlaybackState()));
-    connect(mPlaybackStatus,SIGNAL(playlistVersionChanged()),this,SLOT(updatePlaybackState()));
     connect(mPlaybackStatus,SIGNAL(albumChanged()),this,SLOT(onNewAlbum()));
     connect(mPlaybackStatus,SIGNAL(artistChanged()),this,SLOT(onNewArtist()));
 
@@ -435,12 +429,6 @@ void Controller::disconnectedToServer()
          mReconnectTimer.setSingleShot(true);
          mReconnectTimer.start();
      }
-}
-
-
-void Controller::updatePlaybackState()
-{
-
 }
 
 void Controller::onNewAlbum()

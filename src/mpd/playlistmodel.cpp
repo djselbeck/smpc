@@ -27,8 +27,8 @@ PlaylistModel::~PlaylistModel(){
 
 QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
-    if ( index.row() < 0 || index.row() > mEntries->length()) {
-        return 0;
+    if ( Q_UNLIKELY(index.row() < 0 || index.row() > rowCount())) {
+        return QVariant(QVariant::Invalid);
     }
     if(role==NameRole)
     {
@@ -123,10 +123,13 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    return 0;
+    return QVariant(QVariant::Invalid);;
 }
 
 int PlaylistModel::rowCount(const QModelIndex &parent) const{
+    if ( parent.isValid() ) {
+        return 0;
+    }
     if(mEntries)
         return mEntries->length();
     else
@@ -172,7 +175,7 @@ bool PlaylistModel::setData(const QModelIndex & index, const QVariant & value, i
 }
 
 MpdTrack* PlaylistModel::get(int index) {
-    if ( mEntries && (mEntries->size() > index) ) {
+    if ( rowCount() > index ) {
         MpdTrack *retTrack = mEntries->at(index);
         QQmlEngine::setObjectOwnership(retTrack,QQmlEngine::CppOwnership);
         return retTrack;
@@ -183,9 +186,9 @@ MpdTrack* PlaylistModel::get(int index) {
 
 void PlaylistModel::receiveNewTrackList(QList<MpdTrack *>* tracks)
 {
-    beginResetModel();
-
     QList<MpdTrack*> *tmpPointer = mEntries;
+
+    beginResetModel();
     mEntries = tracks;
     endResetModel();
 
@@ -193,7 +196,11 @@ void PlaylistModel::receiveNewTrackList(QList<MpdTrack *>* tracks)
         setPlaying(mTrackNo,true);
     }
     if ( tmpPointer != 0 ) {
-       qDeleteAll(*tmpPointer);
+//       qDeleteAll(*tmpPointer);
+        QList<MpdTrack*>::Iterator it;
+        for ( it = tmpPointer->begin(); it != tmpPointer->end() ; ++it ) {
+            (*it)->deleteLater();
+        }
        delete(tmpPointer);
     }
 }

@@ -117,7 +117,7 @@ Page {
                             text: qsTr("play as next")
                             onClicked: {
                                 /* Workaround for to fast model change, seems to segfault */
-                                while ( contextMenu.active ){}
+//                                while ( contextMenu.active ){}
                                 playPlaylistSongNext(index)
                             }
                         }
