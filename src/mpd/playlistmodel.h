@@ -53,6 +53,7 @@ private:
     quint32 mTrackNo;
 
 signals:
+    void clearModel();
 
 public slots:
     void receiveNewTrackList(QList<MpdTrack*>* tracks);

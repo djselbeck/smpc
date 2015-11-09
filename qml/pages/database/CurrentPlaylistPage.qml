@@ -18,22 +18,39 @@ Page {
         clip: true
         delegate: trackDelegate
         currentIndex: lastsongid
-
+        cacheBuffer: 0
         anchors {
             fill: parent
 //            bottomMargin: quickControlPanel.visibleSize
         }
 
-        model: playlistModel
+        model: dummyModel
+        ListModel {
+            id: dummyModel
+        }
+
+        Connections {
+            target: playlistModel
+            onClearModel: {
+                console.debug("Clear model requested");
+                playlistView.currentIndex = -1;
+                playlistView.model = dummyModel
+                playlistView.forceLayout();
+            }
+            onModelReset: {
+                playlistView.model = Qt.binding(function() { return playlistModel;})
+                playlistView.currentIndex = -1
+                playlistView.currentIndex = lastsongid
+            }
+        }
+
         quickScrollEnabled: jollaQuickscroll
         highlightFollowsCurrentItem: true
         highlightMoveDuration: 0
         header: PageHeader {
             title: qsTr("playlist")
         }
-//        populate: Transition {
-//            NumberAnimation { properties: "x"; from:playlistView.width*2 ;duration: populateDuration }
-//        }
+
         PullDownMenu {
             MenuItem {
                 text: qsTr("add url")
@@ -117,8 +134,7 @@ Page {
                             text: qsTr("play as next")
                             onClicked: {
                                 /* Workaround for to fast model change, seems to segfault */
-//                                while ( contextMenu.active ){}
-                                playPlaylistSongNext(index)
+                                playNextWOTimer.windUp(index);
                             }
                         }
 
@@ -268,5 +284,24 @@ Page {
     onLastIndexChanged: {
         playlistView.currentIndex = -1
         playlistView.currentIndex = lastIndex
+    }
+
+    /* FIXME really bad workaround for segmentation fault.
+       Otherwise QML/Qt seems to crash if model changes significantly on contextmenu actions*/
+    Timer {
+        id: playNextWOTimer
+        property int index;
+        interval: 250
+        repeat: false
+        onTriggered: {
+            console.debug("send signal: " + index);
+            playPlaylistSongNext(index);
+        }
+
+        function windUp(pIndex) {
+            console.debug("Workaround timer windup");
+            index = pIndex;
+            start();
+        }
     }
 }

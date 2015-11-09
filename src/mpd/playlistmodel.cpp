@@ -187,6 +187,7 @@ MpdTrack* PlaylistModel::get(int index) {
 void PlaylistModel::receiveNewTrackList(QList<MpdTrack *>* tracks)
 {
     QList<MpdTrack*> *tmpPointer = mEntries;
+    emit clearModel();
 
     beginResetModel();
     mEntries = tracks;

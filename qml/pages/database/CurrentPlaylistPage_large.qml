@@ -4,7 +4,6 @@ import "../../components"
 
 Page {
     id: currentPlaylistPage
-    //property alias listmodel: playlistView.model
     allowedOrientations: Orientation.All
     property int lastIndex: lastsongid
     property bool mDeleteRemorseRunning: false
@@ -12,6 +11,7 @@ Page {
     Component.onDestruction: {
         mPlaylistPage = null
     }
+
     Row {
         anchors.fill: parent
         SilicaListView {
@@ -20,23 +20,43 @@ Page {
             delegate: trackDelegate
             currentIndex: lastsongid
 
+            cacheBuffer: 0
             anchors {
                 top: parent.top
                 bottom: parent.bottom
             }
 
+
+            Connections {
+                target: playlistModel
+                onClearModel: {
+                    console.debug("Clear model requested");
+                    playlistView.currentIndex = -1;
+                    playlistView.model = dummyModel
+                    playlistView.forceLayout();
+                }
+                onModelReset: {
+                    playlistView.model = Qt.binding(function() { return playlistModel;})
+                    playlistView.currentIndex = -1
+                    playlistView.currentIndex = lastsongid
+                }
+            }
+
             width: parent.width / 2
 
-            model: playlistModel
+            model: dummyModel
+            ListModel {
+                id: dummyModel
+            }
+
+
             quickScrollEnabled: jollaQuickscroll
             highlightFollowsCurrentItem: true
             highlightMoveDuration: 0
             header: PageHeader {
                 title: qsTr("playlist")
             }
-            //        populate: Transition {
-            //            NumberAnimation { properties: "x"; from:playlistView.width*2 ;duration: populateDuration }
-            //        }
+
             PullDownMenu {
                 MenuItem {
                     text: qsTr("add url")
@@ -85,11 +105,6 @@ Page {
                     Component {
                         id: contextMenu
                         ContextMenu {
-                            //                        MenuItem {
-                            //                            visible: !playing
-                            //                            text: qsTr("play song")
-                            //                            onClicked: playPlaylistTrack(index)
-                            //                        }
                             MenuItem {
                                 text: qsTr("remove song")
                                 visible: !mDeleteRemorseRunning
@@ -128,9 +143,7 @@ Page {
                                 visible: !playing
                                 text: qsTr("play as next")
                                 onClicked: {
-                                    /* Workaround for to fast model change, seems to segfault */
-                                    while ( contextMenu.active ) {}
-                                    playPlaylistSongNext(index)
+                                    playNextWOTimer.windUp(index);
                                 }
                             }
 
@@ -686,5 +699,24 @@ Page {
     onLastIndexChanged: {
         playlistView.currentIndex = -1
         playlistView.currentIndex = lastIndex
+    }
+
+    /* FIXME really bad workaround for segmentation fault.
+       Otherwise QML/Qt seems to crash if model changes significantly on contextmenu actions*/
+    Timer {
+        id: playNextWOTimer
+        property int index;
+        interval: 250
+        repeat: false
+        onTriggered: {
+            console.debug("send signal: " + index);
+            playPlaylistSongNext(index);
+        }
+
+        function windUp(pIndex) {
+            console.debug("Workaround timer windup");
+            index = pIndex;
+            start();
+        }
     }
 }
