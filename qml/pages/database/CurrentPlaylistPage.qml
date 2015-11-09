@@ -24,25 +24,25 @@ Page {
 //            bottomMargin: quickControlPanel.visibleSize
         }
 
-        model: dummyModel
+        model: playlistModel
         ListModel {
             id: dummyModel
         }
 
-        Connections {
-            target: playlistModel
-            onClearModel: {
-                console.debug("Clear model requested");
-                playlistView.currentIndex = -1;
-                playlistView.model = dummyModel
-                playlistView.forceLayout();
-            }
-            onModelReset: {
-                playlistView.model = Qt.binding(function() { return playlistModel;})
-                playlistView.currentIndex = -1
-                playlistView.currentIndex = lastsongid
-            }
-        }
+//        Connections {
+//            target: playlistModel
+//            onClearModel: {
+//                console.debug("Clear model requested");
+//                playlistView.currentIndex = -1;
+//                playlistView.model = dummyModel
+//                playlistView.forceLayout();
+//            }
+//            onModelReset: {
+//                playlistView.model = Qt.binding(function() { return playlistModel;})
+//                playlistView.currentIndex = -1
+//                playlistView.currentIndex = lastsongid
+//            }
+//        }
 
         quickScrollEnabled: jollaQuickscroll
         highlightFollowsCurrentItem: true
