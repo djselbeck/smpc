@@ -16,16 +16,10 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     mPlaylistversion = -1;
     mPlaybackStatus = new MPDPlaybackStatus();
     //create socket later used for communication
-    mTCPSocket = new QTcpSocket(this);
+    mTCPSocket = 0;
     mStatusTimer = new QTimer(this);
     mQMLThread = 0;
 
-    // TCP signal handling
-    connect(mTCPSocket,SIGNAL(connected()),this,SLOT(onServerConnected()));
-    connect(mTCPSocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
-    connect(mTCPSocket,SIGNAL(disconnected()),this,SLOT(onServerDisconnected()));
-    connect(mTCPSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onConnectionError()));
-    connect(mTCPSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(onConnectionStateChanged(QAbstractSocket::SocketState)));
 
     // Status updating/interpolation
     connect(mStatusTimer,SIGNAL(timeout()),this,SLOT(interpolateStatus()));
@@ -62,23 +56,37 @@ void NetworkAccess::connectToHost(QString hostname, quint16 port,QString passwor
     mPort = port;
     mPassword = password;
     /* Check if the client is currently connected to a server, if yes disconnect */
-    if ( connected() ) {
-        disconnectFromServer();
+
+    disconnectFromServer();
+
+    Q_ASSERT(!mTCPSocket);
+
+    if ( !mTCPSocket ) {
+        qDebug() << "Created new socket";
+        mTCPSocket = new QTcpSocket(this);
+
+        // TCP signal handling
+        connect(mTCPSocket,SIGNAL(connected()),this,SLOT(onServerConnected()));
+        connect(mTCPSocket,SIGNAL(disconnected()),this,SIGNAL(disconnected()));
+        connect(mTCPSocket,SIGNAL(disconnected()),this,SLOT(onServerDisconnected()));
+        connect(mTCPSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onConnectionError()));
+        connect(mTCPSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(onConnectionStateChanged(QAbstractSocket::SocketState)));
     }
 
-    if ( mTCPSocket->state() != QAbstractSocket::UnconnectedState ) {
-        mTCPSocket->abort();
-    }
+    mIdling = false;
 
     // Initiate TCP connection here
+    qDebug() << "Connecting to: " << hostname << ":" << port;
     mTCPSocket->connectToHost(hostname ,port,QIODevice::ReadWrite);
 }
 
 void NetworkAccess::disconnectFromServer()
 {
+    qDebug() << "Disconnect requested";
+
     emit busy();
     // Check if the socket is really connected before trying to close the connection.
-    if ( connected() ) {
+    if ( connected() && mTCPSocket ) {
         // Send connection termination request.
         sendMPDCommand("close\n");
 
@@ -87,8 +95,15 @@ void NetworkAccess::disconnectFromServer()
         mTCPSocket->waitForDisconnected(5000);
         if ( mTCPSocket->state() != QAbstractSocket::UnconnectedState) {
             mTCPSocket->abort();
+            mTCPSocket->reset();
         }
+        mIdling = false;
     }
+    if ( mTCPSocket ) {
+        mTCPSocket->deleteLater();
+        mTCPSocket = 0;
+    }
+    qDebug() << "Old socket cleared for deletion";
     emit ready();
 }
 
@@ -100,7 +115,7 @@ void NetworkAccess::getAlbums()
 {
     emit busy();
     QList<MpdAlbum*> *albums = new QList<MpdAlbum*>();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         /* Start getting list from mpd. If server is new enough try to filter my musicbrainz album id.
          * This helps with albums that have the same name as others (e.g. "Greatest Hits").
          * Not fully implemented yet */
@@ -180,7 +195,7 @@ void NetworkAccess::getArtists()
 QList<MpdArtist*> *NetworkAccess::getArtists_prv()
 {
     QList<MpdArtist*> *artists = new QList<MpdArtist*>();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         //Start getting list from mpd
         //Send request
         sendMPDCommand("list artist\n");
@@ -222,7 +237,7 @@ QList<MpdArtist*> *NetworkAccess::getArtists_prv()
 /* Tries to authenticate with mpd server. Returns true if successfully authenticated */
 bool NetworkAccess::authenticate(QString password)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
 
         QTextStream outstream(mTCPSocket);
         outstream.setCodec("UTF-8");
@@ -263,7 +278,7 @@ void NetworkAccess::getArtistsAlbums(QString artist)
 QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
 {
     QList<MpdAlbum*> *albums = new QList<MpdAlbum*>();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         //Start getting list from mpd
         //Send request
         artist = artist.replace('\"',"\\\"");
@@ -333,7 +348,7 @@ void NetworkAccess::getAlbumTracks(QString album)
 
 QList<MpdTrack*>* NetworkAccess::getAlbumTracks_prv(QString album)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         album.replace(QString("\""),QString("\\\""));
         sendMPDCommand(QString("find album \"") + album + "\"\n");
     }
@@ -362,7 +377,7 @@ QList<MpdTrack*>*  NetworkAccess::getAlbumTracks_prv(QString album, QString cart
 
         return getAlbumTracks_prv(album);
     }
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         album.replace(QString("\""),QString("\\\""));
         sendMPDCommand(QString("find album \"") + album + "\"\n");
     }
@@ -372,7 +387,7 @@ QList<MpdTrack*>*  NetworkAccess::getAlbumTracks_prv(QString album, QString cart
 void NetworkAccess::getTracks()
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("listallinfo\n");
     }
     emit parseMPDTracks("");
@@ -384,7 +399,7 @@ void NetworkAccess::getTracks()
 void NetworkAccess::getCurrentPlaylistTracks()
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("playlistinfo\n");
     }
     emit currentPlaylistReady(parseMPDTracks(""));
@@ -395,7 +410,7 @@ void NetworkAccess::getCurrentPlaylistTracks()
 void NetworkAccess::getPlaylistTracks(QString name)
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("listplaylistinfo \"") + name + "\"\n");
     }
     emit trackListReady(parseMPDTracks(""));
@@ -406,7 +421,7 @@ void NetworkAccess::getPlaylistTracks(QString name)
 void NetworkAccess::getStatus()
 {
     qDebug() << "::getStatus()";
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         QString response ="";
 
         QString playlistidstring="-1";
@@ -558,7 +573,7 @@ void NetworkAccess::getStatus()
 
 void NetworkAccess::pause()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         MpdPlaybackState playbackState = getPlaybackState();
         if(playbackState != MPD_STOP) {
             sendMPDCommand("pause\n");
@@ -583,7 +598,7 @@ void NetworkAccess::pause()
 
 void NetworkAccess::stop()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("stop\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -601,7 +616,7 @@ void NetworkAccess::stop()
 
 void NetworkAccess::enableOutput(int nr)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("enableoutput ") + QString::number(nr) + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -618,7 +633,7 @@ void NetworkAccess::enableOutput(int nr)
 
 void NetworkAccess::disableOutput(int nr)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("disableoutput ") + QString::number(nr) + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -634,7 +649,7 @@ void NetworkAccess::disableOutput(int nr)
 }
 void NetworkAccess::updateDB()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("update\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -652,7 +667,7 @@ void NetworkAccess::updateDB()
 
 void NetworkAccess::next()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("next\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -670,7 +685,7 @@ void NetworkAccess::next()
 
 void NetworkAccess::previous()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("previous\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -689,7 +704,7 @@ void NetworkAccess::previous()
 void NetworkAccess::addAlbumToPlaylist(QString album)
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         QList<MpdTrack*> *temptracks = new QList<MpdTrack*>();
         QString response ="";
 
@@ -718,7 +733,7 @@ void NetworkAccess::addAlbumToPlaylist(QString album)
 void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         QList<MpdTrack*> *temptracks = new QList<MpdTrack*>();
         //album.replace(QString("\""),QString("\\\""));
         QString response ="";
@@ -783,7 +798,7 @@ void NetworkAccess::playAlbum(QString album)
 
 void NetworkAccess::addTrackToPlaylist(QString fileuri)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("add \"") + fileuri + "\"\n");
         QString response ="";
         //Clear read buffer
@@ -807,7 +822,7 @@ void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
     if ( inputStrings.size() != 2 ) {
         return;
     }
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("playlistadd \"") + inputStrings.at(1) + "\" \"" + inputStrings.at(0) + "\"\n");
         QString response ="";
         //Clear read buffer
@@ -831,7 +846,7 @@ void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
     if ( inputStrings.size() != 2 ) {
         return;
     }
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("playlistdelete \"") + inputStrings.at(1) + "\" " + inputStrings.at(0) + "\n");
         QString response ="";
         //Clear read buffer
@@ -851,7 +866,7 @@ void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
 void NetworkAccess::playTrackNext(int index)
 {
     quint32 currentPosition = getPlaybackID();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         if ( (quint32) index < currentPosition) {
             sendMPDCommand(QString("move ") + QString::number(index) + " " + QString::number(currentPosition) + "\n");
         } else {
@@ -877,7 +892,7 @@ void NetworkAccess::playTrackNext(int index)
 void NetworkAccess::addTrackAfterCurrent(QString fileuri)
 {
     quint32 currentPosition = getPlaybackID();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("addid \"") + fileuri + "\" " + QString::number(currentPosition+1) + "\n");
         QString response ="";
         //Clear read buffer
@@ -898,7 +913,7 @@ void NetworkAccess::addTrackAfterCurrent(QString fileuri)
 void NetworkAccess::playFiles(QString fileuri)
 {
     clearPlaylist();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("add \"") + fileuri + "\"\n");
         QString response ="";
         //Clear read buffer
@@ -923,7 +938,7 @@ void NetworkAccess::playFiles(QString fileuri)
 // Append track to playlist and plays it.
 void NetworkAccess::playTrack(QString fileuri)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("add \"") + fileuri + "\"\n");
         QString response ="";
         //Clear read buffer
@@ -946,7 +961,7 @@ void NetworkAccess::playTrack(QString fileuri)
 
 void NetworkAccess::playTrackByNumber(int nr)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("play ") + QString::number(nr).toUtf8() + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -964,7 +979,7 @@ void NetworkAccess::playTrackByNumber(int nr)
 
 void NetworkAccess::deleteTrackByNumer(int nr)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("delete " ) + QString::number(nr).toUtf8() + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -983,7 +998,7 @@ void NetworkAccess::deleteTrackByNumer(int nr)
 void NetworkAccess::seekPosition(int id, int pos)
 {
     qDebug() << "seek: " << id << ":" << pos;
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("seek ") + QString::number(id).toUtf8() + " " +  QString::number(pos).toUtf8() + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1008,7 +1023,7 @@ void NetworkAccess::seek(int pos)
 
 void NetworkAccess::setRepeat(bool repeat)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("repeat ") + (repeat ? "1":"0") + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1025,7 +1040,7 @@ void NetworkAccess::setRepeat(bool repeat)
 
 void NetworkAccess::setRandom(bool random)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("random ") + (random ? "1":"0") + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1045,7 +1060,7 @@ void NetworkAccess::setRandom(bool random)
 
 void NetworkAccess::setVolume(int volume)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("setvol ") + QString::number(volume).toUtf8() + "\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1063,7 +1078,7 @@ void NetworkAccess::setVolume(int volume)
 void NetworkAccess::savePlaylist(QString name)
 {
     emit ready();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("save \"") + name + "\"\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1092,7 +1107,7 @@ void NetworkAccess::savePlaylist(QString name)
 
 void NetworkAccess::deletePlaylist(QString name)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("rm \"") + name + "\"\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1120,7 +1135,7 @@ void NetworkAccess::getSavedPlaylists()
 {
     emit busy();
     QStringList *tempplaylists  = new QStringList();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("listplaylists\n");
         QString response ="";
         QString name;
@@ -1149,7 +1164,7 @@ void NetworkAccess::getSavedPlaylists()
 void NetworkAccess::addPlaylist(QString name)
 {
     emit busy();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("load \"") + name + "\"\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1169,7 +1184,7 @@ void NetworkAccess::playPlaylist(QString name)
 {
     emit busy();
     clearPlaylist();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("load \"") + name + "\"\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1188,7 +1203,7 @@ void NetworkAccess::playPlaylist(QString name)
 
 void NetworkAccess::clearPlaylist()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("clear\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1225,13 +1240,16 @@ void NetworkAccess::onServerDisconnected()
     pServerInfo.mpd_cmd_list_filter_criteria = false;
     pServerInfo.mpd_cmd_list_group_capabilites = false;
     pServerInfo.mpd_cmd_idle = false;
+
     emit ready();
 }
 
 void NetworkAccess::onServerConnected() {
     qDebug() << "Connected to mpd server";
 
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    mIdling = false;
+
+    if (connected()) {
         //Do host authentication
         mTCPSocket->waitForReadyRead(READYREAD);
         QString response;
@@ -1281,7 +1299,7 @@ void NetworkAccess::onServerConnected() {
 quint32 NetworkAccess::getPlayListVersion()
 {
     quint32 playlistversion = 0;
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("status\n");
         QString response ="";
         QString versionstring;
@@ -1306,7 +1324,7 @@ void NetworkAccess::getDirectory(QString path)
 {
     emit busy();
     QList<MpdFileEntry*> *tempfiles = new QList<MpdFileEntry*>();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         path.replace(QString("\""),QString("\\\""));
 
         sendMPDCommand(QString("lsinfo \"") + path + "\"\n");
@@ -1533,7 +1551,7 @@ void NetworkAccess::setUpdateInterval(int ms)
 
 bool NetworkAccess::connected()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState)
+    if (mTCPSocket && mTCPSocket->state() != QAbstractSocket::UnconnectedState)
     {
         return true;
     } else {
@@ -1581,7 +1599,7 @@ void NetworkAccess::connectToHost()
 QList<MpdTrack*>* NetworkAccess::parseMPDTracks(QString cartist)
 {
     QList<MpdTrack*> *temptracks = new QList<MpdTrack*>();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         QString response ="";
 
         MpdTrack *temptrack=NULL;
@@ -1711,7 +1729,7 @@ void NetworkAccess::exitRequest()
 
 void NetworkAccess::getOutputs()
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         emit busy();
         QString response ="";
         QString tempstring;
@@ -1760,7 +1778,7 @@ void NetworkAccess::searchTracks(QVariant request)
 {
     emit busy();
     QStringList searchrequest = request.toStringList();
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand(QString("search ") + searchrequest.at(0) + " \"" + searchrequest.at(1) + "\"\n");
     }
     emit trackListReady(parseMPDTracks(""));
@@ -1811,7 +1829,7 @@ void NetworkAccess::checkServerCapabilities() {
 
     /*
      * Get allowed commands */
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("commands\n");
         QString response ="";
         MPD_WHILE_PARSE_LOOP
@@ -1838,7 +1856,7 @@ MPDPlaybackStatus *NetworkAccess::getMPDPlaybackStatus() {
 MpdPlaybackState NetworkAccess::getPlaybackState()
 {
     MpdPlaybackState playbackState = MPD_STOP;
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("status\n");
         QString response;
         MPD_WHILE_PARSE_LOOP
@@ -1873,7 +1891,7 @@ quint32 NetworkAccess::getPlaybackID()
 {
     qDebug() << "::getPlaybackID";
     quint32 playbackID = 0;
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("status\n");
         QString response = "";
         MPD_WHILE_PARSE_LOOP
@@ -1897,7 +1915,7 @@ quint32 NetworkAccess::getPlaybackID()
 quint32 NetworkAccess::getPlaylistLength()
 {
     quint32 playlistLength = 0;
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         sendMPDCommand("status\n");
         QString response = "";
         MPD_WHILE_PARSE_LOOP
@@ -1948,7 +1966,7 @@ void NetworkAccess::goIdle()
     qDebug() << "Start idling";
     /* Start the idling and connect newData signal to slot */
     connect(mTCPSocket,SIGNAL(readyRead()),this,SLOT(onNewNetworkData()));
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         QTextStream outstream(mTCPSocket);
         outstream.setCodec("UTF-8");
         outstream << "idle mixer player options playlist" << "\n";
@@ -1967,7 +1985,7 @@ void NetworkAccess::cancelIdling()
     mIdling = false;
     qDebug() << "Stop idling";
     /* Start the idling and connect newData signal to slot */
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         //Do host authentication
         QTextStream outstream(mTCPSocket);
         outstream.setCodec("UTF-8");
@@ -2075,7 +2093,7 @@ void NetworkAccess::onConnectionTimeout() {
 
 void NetworkAccess::sendMPDCommand(QString cmd)
 {
-    if (mTCPSocket->state() == QAbstractSocket::ConnectedState) {
+    if (connected()) {
         /* It is important to cancel the idle command first
          * otherwise MPD disconnects the client */
         if ( mIdling ) {

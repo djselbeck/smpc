@@ -662,10 +662,6 @@ void Controller::connectProfile(int index)
         mReconnectTimer.stop();
     }
     mQuickView->rootContext()->setContextProperty("profilename",QVariant::fromValue(QString(mProfilename)));
-    if(mNetAccess->connected())
-    {
-        emit requestDisconnect();
-    }
     connectToServer();
 }
 
