@@ -334,4 +334,11 @@ void MPDPlaybackStatus::clearPlayback()
     emit channelCountChanged();
     pBitDepth = 0;
     emit bitDepthChanged();
+    pShuffle = false;
+    emit shuffleChanged();
+    pRepeat = false;
+    emit repeatChanged();
+    pVolume = 0;
+    emit volumeChanged();
+
 }
