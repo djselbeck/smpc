@@ -271,7 +271,7 @@ Page {
 
     function newSearch() {
         searchfield.text=""
-        clearSearchTracks();
+        clearTrackList();
         mainDrawer.show()
     }
 
