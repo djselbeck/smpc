@@ -95,6 +95,9 @@ void LastFMArtistProvider::parseArtist(QXmlStreamReader &xmlReader) {
     bool foundPreferredArtistArt = false;
 
     while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "artist") ) {
+        if (xmlReader.tokenType() == QXmlStreamReader::Invalid) {
+            return;
+        }
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
              xmlReader.name() == "image" && !foundPreferredArtistArt ) {
 
@@ -147,6 +150,9 @@ void LastFMArtistProvider::parseWikiInformation(QXmlStreamReader &xmlReader) {
         if ( xmlReader.tokenType() == QXmlStreamReader::StartElement &&
              xmlReader.name() == "content") {
             while ( !(xmlReader.tokenType() == QXmlStreamReader::EndElement && xmlReader.name() == "content") )  {
+                if (xmlReader.tokenType() == QXmlStreamReader::Invalid) {
+                    return;
+                }
                 if ( xmlReader.tokenType() == QXmlStreamReader::Characters ) {
                     qDebug() << "Reached content block";
                     mArtistInfo.append(xmlReader.text().toString());
