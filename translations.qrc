@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/translations">
         <file>harbour-smpc_de.qm</file>
+        <file>harbour-smpc_fr.qm</file>
     </qresource>
 </RCC>
