@@ -454,7 +454,6 @@ Page {
                         if (!pressed) {
                             volumeChanging = false
                             setVolume(value)
-                            mVolume = value;
                             value  = Qt.binding(function() {return mVolume;});
                             volumeControl.state = "sliderInvisible"
                         } else {

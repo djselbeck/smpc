@@ -1072,6 +1072,9 @@ void NetworkAccess::setVolume(int volume)
 
             }
         }
+        if( mPlaybackStatus ) {
+            mPlaybackStatus->setVolume(volume);
+        }
     }
 }
 
