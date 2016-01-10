@@ -453,7 +453,7 @@
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentPlaylistPage_large.qml" line="587"/>
+        <location filename="qml/pages/database/CurrentPlaylistPage_large.qml" line="586"/>
         <source>position</source>
         <translation>Position</translation>
     </message>
@@ -501,7 +501,7 @@
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="qml/pages/database/CurrentSong.qml" line="490"/>
+        <location filename="qml/pages/database/CurrentSong.qml" line="489"/>
         <source>position</source>
         <translation>Position</translation>
     </message>
@@ -1086,52 +1086,42 @@
         <translation>Supprimer le serveur</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="48"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="41"/>
         <source>edit profile</source>
         <translation>Éditer le serveur</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="54"/>
-        <source>profilename:</source>
-        <translation>Nom du profile :</translation>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="47"/>
+        <source>Profile name</source>
+        <translation>Nom du profile</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="61"/>
-        <source>input profilename</source>
-        <translation>Entrez le nom du profile</translation>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="55"/>
+        <source>Hostname or IP address</source>
+        <translation>Nom d&apos;hôte ou adresse IP</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="69"/>
-        <source>hostname:</source>
-        <translation>Nom d&apos;hôte ou adresse IP :</translation>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="63"/>
+        <source>Port</source>
+        <translation>Port</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="76"/>
-        <source>input hostname or ip</source>
-        <translation>Entrez le nom d&apos;hôte ou l&apos;adresse IP</translation>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="73"/>
+        <source>Password</source>
+        <translation>Mot de passe</translation>
     </message>
     <message>
         <location filename="qml/pages/settings/ServerEditPage.qml" line="82"/>
-        <source>port:</source>
-        <translation>Port :</translation>
+        <source>Streaming port</source>
+        <translation>Port de streaming</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="98"/>
-        <source>password:</source>
-        <translation>Mot de passe :</translation>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="94"/>
+        <source>MAC address (optional)</source>
+        <translation>Adresse MAC (facultative)</translation>
     </message>
     <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="112"/>
-        <source>streaming port:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="127"/>
-        <source>mac address:</source>
-        <translation>Adresse MAC :</translation>
-    </message>
-    <message>
-        <location filename="qml/pages/settings/ServerEditPage.qml" line="145"/>
+        <location filename="qml/pages/settings/ServerEditPage.qml" line="106"/>
         <source>autoconnect</source>
         <translation>Connecter automatiquement</translation>
     </message>
