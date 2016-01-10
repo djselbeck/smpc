@@ -1013,9 +1013,9 @@
     </message>
     <message>
         <location filename="qml/pages/MainPage.qml" line="26"/>
-        <source>connected to</source>
-        <oldsource>connected</oldsource>
-        <translation>verbunden mit</translation>
+        <source>connected to: %1</source>
+        <oldsource>connected to</oldsource>
+        <translation>verbunden mit: %1</translation>
     </message>
     <message>
         <location filename="qml/pages/MainPage.qml" line="26"/>

@@ -830,8 +830,9 @@
     <name>MainPage</name>
     <message>
         <location filename="qml/pages/MainPage.qml" line="26"/>
-        <source>connected to</source>
-        <translation>Connecté à</translation>
+        <source>connected to: %1</source>
+        <oldsource>connected to</oldsource>
+        <translation>Connecté à : %1</translation>
     </message>
     <message>
         <location filename="qml/pages/MainPage.qml" line="26"/>

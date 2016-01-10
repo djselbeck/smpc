@@ -23,7 +23,7 @@ Page {
         }
         horizontalAlignment: Text.AlignHCenter
         color: Theme.highlightColor
-        text: connected ? qsTr("connected to") + ": " + profilename : qsTr(
+        text: connected ? qsTr("connected to: %1").arg(profilename) : qsTr(
                               "disconnected")
     }
     SilicaFlickable {
