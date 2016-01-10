@@ -46,7 +46,7 @@ Page {
                     height: Theme.itemSizeMedium
                 }
                 PullDownMenu {
-                    enabled: artistname !== ""
+                    visible: artistname !== ""
                     MenuItem {
                         text: qsTr("add albums")
                         onClicked: {
