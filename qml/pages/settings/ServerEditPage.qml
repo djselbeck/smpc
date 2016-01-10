@@ -20,7 +20,7 @@ Dialog
         id: serverSettingFlickable
         anchors.fill: parent
         clip: true
-        contentHeight: settingsContent.height + 20;
+        contentHeight: settingsContent.height
         VerticalScrollDecorator {}
         PullDownMenu {
             MenuItem {
@@ -36,111 +36,72 @@ Dialog
         Column
         {
             id: settingsContent;
-            clip: true
-            anchors {
-                right: parent.right
-                left: parent.left
-                verticalCenter: parent.verticalCenter
-                leftMargin: listPadding
-                rightMargin: listPadding
-            }
+            width: parent.width
             DialogHeader {
                 title: qsTr("edit profile");
             }
-            Label
-            {
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text: qsTr("profilename:")
-            }
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: profilenameInputField
-                placeholderText:  qsTr("input profilename")
+                label: qsTr("Profile name")
+                placeholderText:  label
                 inputMethodHints: Qt.ImhNoPredictiveText
-            }
-
-            Label
-            {
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text: qsTr("hostname:")
             }
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: hostnameInputField
-                placeholderText: qsTr("input hostname or ip")
+                label: qsTr("Hostname or IP address")
+                placeholderText: label
                 inputMethodHints: Qt.ImhNoPredictiveText
-            }
-            Label{
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text:qsTr("port:")
             }
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: portInputField
+                label: qsTr("Port")
+                placeholderText: label
                 text: "6600"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: portvalidator
             }
-
-            Label
-            {
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text: qsTr("password:")
-            }
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: passwordInputField
+                label: qsTr("Password")
+                placeholderText: label
                 inputMethodHints: Qt.ImhNoPredictiveText
                 echoMode: TextInput.Password
             }
-            Label{
-                visible: false
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text:qsTr("streaming port:")
-            }
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: streamingPortInputField
+                label: qsTr("Streaming port")
+                placeholderText: label
                 text: "8081"
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: portvalidator
                 visible: false
             }
-            Label{
-                anchors.right: parent.right
-                anchors.left: parent.left
-                text:qsTr("mac address:")
-            }
+
             TextField
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
                 id: macAddressField
-                placeholderText: "optional for wake on lan"
+                width: parent.width
+                label: qsTr("MAC address (optional)")
+                placeholderText: label
                 labelVisible: true
                 inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
                 validator: macValidator
                 visible: true
             }
+
             TextSwitch
             {
-                anchors.right: parent.right
-                anchors.left: parent.left
+                width: parent.width
                 id: autoconnectSwitch;
                 text: qsTr("autoconnect");
             }
