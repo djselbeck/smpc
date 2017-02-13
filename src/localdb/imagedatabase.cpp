@@ -1,5 +1,7 @@
 #include <localdb/imagedatabase.h>
 
+#include <QJSValue>
+
 ImageDatabase::ImageDatabase(QObject *parent) :
     QObject(parent)
 {
@@ -844,6 +846,10 @@ QString ImageDatabase::getArtistBioInformation(QString artist)
 
 void ImageDatabase::requestAlbumWikiInformation(QVariant album)
 {
+    if (album.userType() == qMetaTypeId<QJSValue>()) {
+        album = qvariant_cast<QJSValue>(album).toVariant();
+    }
+
     QStringList strings = album.toStringList();
     if(strings.length()==2)
         emit albumWikiInformationReady(getAlbumWikiInformation(strings[0],strings[1]));

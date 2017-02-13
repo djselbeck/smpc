@@ -393,6 +393,10 @@ void Controller::requestCurrentPlaylist()
 
 void Controller::requestAlbum(QVariant array)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (array.userType() == qMetaTypeId<QJSValue>()) {
+        array = qvariant_cast<QJSValue>(array).toVariant();
+    }
     QStringList strings = array.toStringList();
     for(int i=0;i<strings.length();i++)
     {
@@ -588,6 +592,10 @@ void Controller::exitRequest()
 
 void Controller::newProfile(QVariant profile)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (profile.userType() == qMetaTypeId<QJSValue>()) {
+        profile = qvariant_cast<QJSValue>(profile).toVariant();
+    }
     QStringList strings = profile.toStringList();
     QString hostname,password, profilename;
     hostname = strings[2];
@@ -617,6 +625,10 @@ void Controller::newProfile(QVariant profile)
 
 void Controller::changeProfile(QVariant profile)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (profile.userType() == qMetaTypeId<QJSValue>()) {
+        profile = qvariant_cast<QJSValue>(profile).toVariant();
+    }
     QStringList strings = profile.toStringList();
     int i = strings.at(0).toInt();
     mServerProfiles->get(i)->setName(strings[1]);
@@ -834,6 +846,10 @@ void Controller::receiveDownloadSize(int size)
 
 void Controller::receiveSettingKey(QVariant setting)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (setting.userType() == qMetaTypeId<QJSValue>()) {
+        setting = qvariant_cast<QJSValue>(setting).toVariant();
+    }
     QStringList settings = setting.toStringList();
     if ( settings.length() == 2 ) {
         if ( settings.at(0) == "albumView" ) {

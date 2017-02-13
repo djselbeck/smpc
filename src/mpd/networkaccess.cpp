@@ -365,6 +365,11 @@ void  NetworkAccess::getAlbumTracks(QString album, QString cartist)
 void  NetworkAccess::getAlbumTracks(QVariant albuminfo)
 {
     emit busy();
+    // New qt 5.4 qml->c++ qvariant cast
+    if (albuminfo.userType() == qMetaTypeId<QJSValue>()) {
+        albuminfo = qvariant_cast<QJSValue>(albuminfo).toVariant();
+    }
+
     QStringList strings = albuminfo.toStringList();
     emit trackListReady(getAlbumTracks_prv(strings[1],strings[0]));
     emit ready();
@@ -764,6 +769,11 @@ void NetworkAccess::addArtistAlbumToPlaylist(QString artist, QString album)
 
 void NetworkAccess::addArtistAlbumToPlaylist(QVariant albuminfo)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (albuminfo.userType() == qMetaTypeId<QJSValue>()) {
+        albuminfo = qvariant_cast<QJSValue>(albuminfo).toVariant();
+    }
+
     QStringList strings = albuminfo.toStringList();
     addArtistAlbumToPlaylist(strings[0],strings[1]);
 }
@@ -771,6 +781,10 @@ void NetworkAccess::addArtistAlbumToPlaylist(QVariant albuminfo)
 void NetworkAccess::playArtistAlbum(QVariant albuminfo)
 {
     clearPlaylist();
+    // New qt 5.4 qml->c++ qvariant cast
+    if (albuminfo.userType() == qMetaTypeId<QJSValue>()) {
+        albuminfo = qvariant_cast<QJSValue>(albuminfo).toVariant();
+    }
     addArtistAlbumToPlaylist(albuminfo);
     playTrackByNumber(0);
     setRandom(false);
@@ -818,6 +832,11 @@ void NetworkAccess::addTrackToPlaylist(QString fileuri)
 // Format [URI,playlistName]
 void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (data.userType() == qMetaTypeId<QJSValue>()) {
+        data = qvariant_cast<QJSValue>(data).toVariant();
+    }
+
     QStringList inputStrings = data.toStringList();
     if ( inputStrings.size() != 2 ) {
         return;
@@ -842,6 +861,10 @@ void NetworkAccess::addTrackToSavedPlaylist(QVariant data)
 // Format [index,playlistName]
 void NetworkAccess::removeTrackFromSavedPlaylist(QVariant data)
 {
+    // New qt 5.4 qml->c++ qvariant cast
+    if (data.userType() == qMetaTypeId<QJSValue>()) {
+        data = qvariant_cast<QJSValue>(data).toVariant();
+    }
     QStringList inputStrings = data.toStringList();
     if ( inputStrings.size() != 2 ) {
         return;
@@ -1780,6 +1803,10 @@ void NetworkAccess::getOutputs()
 void NetworkAccess::searchTracks(QVariant request)
 {
     emit busy();
+    // New qt 5.4 qml->c++ qvariant cast
+    if (request.userType() == qMetaTypeId<QJSValue>()) {
+        request = qvariant_cast<QJSValue>(request).toVariant();
+    }
     QStringList searchrequest = request.toStringList();
     if (connected()) {
         sendMPDCommand(QString("search ") + searchrequest.at(0) + " \"" + searchrequest.at(1) + "\"\n");
