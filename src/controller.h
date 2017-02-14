@@ -89,6 +89,18 @@ signals:
     void newDownloadSize(QString);
     void newDownloadEnabled(bool);
 
+    /*
+     * Workaround signals for QJSValue->QVariant cast crashes
+     */
+    void requestAlbum(QVariant);
+    void addAlbum(QVariant);
+    void playAlbum(QVariant);
+    void requestSearch(QVariant);
+    void requestAlbumInfo(QVariant);
+    void addSongToSaved(QVariant);
+    void removeSongFromSaved(QVariant);
+
+
 private:
     QQuickView *mQuickView;
     NetworkAccess *mNetAccess;
@@ -141,7 +153,6 @@ private:
 
 private slots:
     void requestCurrentPlaylist();
-    void requestAlbum(QVariant array);
     void requestFilePage(QString);
     void seek(int);
     void incVolume();
@@ -197,6 +208,17 @@ private slots:
 
     void onNewAlbum();
     void onNewArtist();
+
+    /*
+     * Workaround slots for QJSValue->QVariant cast crashes
+     */
+    void getAlbumTracks(QVariant album);
+    void addArtistAlbumToPlaylist(QVariant album);
+    void playArtistAlbum(QVariant album);
+    void searchTracks(QVariant search);
+    void requestAlbumWikiInformation(QVariant album);
+    void addTrackToSavedPlaylist(QVariant);
+    void removeTrackFromSavedPlaylist(QVariant);
 
 };
 

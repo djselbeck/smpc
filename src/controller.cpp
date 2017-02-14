@@ -224,14 +224,20 @@ void Controller::connectSignals()
     //  connect(item,SIGNAL(requestCurrentPlaylist()),this,SLOT(requestCurrentPlaylist()));
     connect(item,SIGNAL(playPlaylistTrack(int)),mNetAccess,SLOT(playTrackByNumber(int)));
     connect(item,SIGNAL(deletePlaylistTrack(int)),mNetAccess,SLOT(deleteTrackByNumer(int)));
-    connect(item,SIGNAL(requestAlbum(QVariant)),mNetAccess,SLOT(getAlbumTracks(QVariant)));
+    // WORKAROUND
+    connect(item,SIGNAL(requestAlbum(QVariant)),this,SLOT(getAlbumTracks(QVariant)));
+    connect(this,SIGNAL(requestAlbum(QVariant)),mNetAccess,SLOT(getAlbumTracks(QVariant)));
     connect(item,SIGNAL(stop()),mNetAccess,SLOT(stop()));
     connect(item,SIGNAL(play()),mNetAccess,SLOT(pause()));
     connect(item,SIGNAL(next()),mNetAccess,SLOT(next()));
     connect(item,SIGNAL(prev()),mNetAccess,SLOT(previous()));
     connect(item,SIGNAL(deletePlaylist()),mNetAccess,SLOT(clearPlaylist()));
-    connect(item,SIGNAL(addAlbum(QVariant)),mNetAccess,SLOT(addArtistAlbumToPlaylist(QVariant)));
-    connect(item,SIGNAL(playAlbum(QVariant)),mNetAccess,SLOT(playArtistAlbum(QVariant)));
+    // WORKAROUND
+    connect(item,SIGNAL(addAlbum(QVariant)),this,SLOT(addArtistAlbumToPlaylist(QVariant)));
+    connect(this,SIGNAL(addAlbum(QVariant)),mNetAccess,SLOT(addArtistAlbumToPlaylist(QVariant)));
+    connect(item,SIGNAL(playAlbum(QVariant)),this,SLOT(playArtistAlbum(QVariant)));
+    connect(this,SIGNAL(playAlbum(QVariant)),mNetAccess,SLOT(playArtistAlbum(QVariant)));
+
     connect(item,SIGNAL(addFiles(QString)),mNetAccess,SLOT(addTrackToPlaylist(QString)));
     connect(item,SIGNAL(seek(int)),mNetAccess,SLOT(seek(int)));
     connect(item,SIGNAL(setVolume(int)),mNetAccess,SLOT(setVolume(int)));
@@ -282,7 +288,10 @@ void Controller::connectSignals()
     connect(item,SIGNAL(enableOutput(int)),mNetAccess,SLOT(enableOutput(int)));
     connect(item,SIGNAL(disableOutput(int)),mNetAccess,SLOT(disableOutput(int)));
 
-    connect(item,SIGNAL(requestSearch(QVariant)),mNetAccess,SLOT(searchTracks(QVariant)));
+    // WORKAROUND
+    connect(item,SIGNAL(requestSearch(QVariant)),this,SLOT(searchTracks(QVariant)));
+    connect(this,SIGNAL(requestSearch(QVariant)),mNetAccess,SLOT(searchTracks(QVariant)));
+
     connect(item,SIGNAL(addlastsearch()),this,SLOT(addlastsearchtoplaylist()));
     connect(this,SIGNAL(addURIToPlaylist(QString)),mNetAccess,SLOT(addTrackToPlaylist(QString)));
 
@@ -326,7 +335,10 @@ void Controller::connectSignals()
     connect(item,SIGNAL(cleanupArtists()),mImgDB,SLOT(cleanupArtists()));
     connect(item,SIGNAL(cleanupDB()),mImgDB,SLOT(cleanupDatabase()));
 
-    connect(item,SIGNAL(requestAlbumInfo(QVariant)),mImgDB,SLOT(requestAlbumWikiInformation(QVariant)));
+    // WORKAROUND
+    connect(item,SIGNAL(requestAlbumInfo(QVariant)),this,SLOT(requestAlbumWikiInformation(QVariant)));
+    connect(this,SIGNAL(requestAlbumInfo(QVariant)),mImgDB,SLOT(requestAlbumWikiInformation(QVariant)));
+
     connect(item,SIGNAL(requestArtistInfo(QString)),mImgDB,SLOT(requestArtistBioInformation(QString)));
 
     connect(mImgDB,SIGNAL(albumWikiInformationReady(QString)),this,SLOT(setAlbumWikiInfo(QString)));
@@ -339,8 +351,11 @@ void Controller::connectSignals()
     // Receive GUI settings here
     connect(item,SIGNAL(newSettingKey(QVariant)),this,SLOT(receiveSettingKey(QVariant)));
 
-    connect(item,SIGNAL(addSongToSaved(QVariant)),mNetAccess,SLOT(addTrackToSavedPlaylist(QVariant)));
-    connect(item,SIGNAL(removeSongFromSaved(QVariant)),mNetAccess,SLOT(removeTrackFromSavedPlaylist(QVariant)));
+    // WORKAROUND
+    connect(item,SIGNAL(addSongToSaved(QVariant)),this,SLOT(addTrackToSavedPlaylist(QVariant)));
+    connect(this,SIGNAL(addSongToSaved(QVariant)),mNetAccess,SLOT(addTrackToSavedPlaylist(QVariant)));
+    connect(item,SIGNAL(removeSongFromSaved(QVariant)),this,SLOT(removeTrackFromSavedPlaylist(QVariant)));
+    connect(this,SIGNAL(removeSongFromSaved(QVariant)),mNetAccess,SLOT(removeTrackFromSavedPlaylist(QVariant)));
 
     // Set downloading enabled variable to imagedatabase
     connect(this,SIGNAL(newDownloadEnabled(bool)),mImgDB,SLOT(setDownloadEnabled(bool)));
@@ -389,22 +404,6 @@ void Controller::requestCurrentPlaylist()
 {
     //netaccess->getCurrentPlaylistTracks();
 }
-
-
-void Controller::requestAlbum(QVariant array)
-{
-    // New qt 5.4 qml->c++ qvariant cast
-    if (array.userType() == qMetaTypeId<QJSValue>()) {
-        array = qvariant_cast<QJSValue>(array).toVariant();
-    }
-    QStringList strings = array.toStringList();
-    for(int i=0;i<strings.length();i++)
-    {
-    }
-    mNetAccess->getAlbumTracks(strings.at(1),strings.at(0));
-}
-
-
 
 void Controller::connectedToServer()
 {
@@ -932,4 +931,57 @@ void Controller::wakeUpHost(int index)
 
     qint64 bytesSend = udpSocket.writeDatagram(dataGram,QHostAddress::Broadcast,9);
     qDebug() << "Send WoL: " << bytesSend << " bytes, content: " << dataGram.toHex() << endl;
+}
+
+/*
+ * WORKAROUND SLOTS
+ */
+
+void Controller::getAlbumTracks(QVariant album) {
+    if (album.userType() == qMetaTypeId<QJSValue>()) {
+        album = qvariant_cast<QJSValue>(album).toVariant();
+    }
+    emit requestAlbum(album);
+}
+
+void Controller::addArtistAlbumToPlaylist(QVariant album) {
+    if (album.userType() == qMetaTypeId<QJSValue>()) {
+        album = qvariant_cast<QJSValue>(album).toVariant();
+    }
+    emit addAlbum(album);
+}
+
+void Controller::playArtistAlbum(QVariant album) {
+    if (album.userType() == qMetaTypeId<QJSValue>()) {
+        album = qvariant_cast<QJSValue>(album).toVariant();
+    }
+    emit playAlbum(album);
+}
+
+void Controller::searchTracks(QVariant search) {
+    if (search.userType() == qMetaTypeId<QJSValue>()) {
+        search = qvariant_cast<QJSValue>(search).toVariant();
+    }
+    emit requestSearch(search);
+}
+
+void Controller::requestAlbumWikiInformation(QVariant album) {
+    if (album.userType() == qMetaTypeId<QJSValue>()) {
+        album = qvariant_cast<QJSValue>(album).toVariant();
+    }
+    emit requestAlbumInfo(album);
+}
+
+void Controller::addTrackToSavedPlaylist(QVariant variant) {
+    if (variant.userType() == qMetaTypeId<QJSValue>()) {
+        variant = qvariant_cast<QJSValue>(variant).toVariant();
+    }
+    emit addSongToSaved(variant);
+}
+
+void Controller::removeTrackFromSavedPlaylist(QVariant variant) {
+    if (variant.userType() == qMetaTypeId<QJSValue>()) {
+        variant = qvariant_cast<QJSValue>(variant).toVariant();
+    }
+    emit removeSongFromSaved(variant);
 }
