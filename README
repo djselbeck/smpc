@@ -1,4 +1,6 @@
-JollaMPC
+SMPC
+
+*** DISCONTINUED. NO FURTHER SUPPORT FOR SMPC. ***
 
 This is a port of the symbian Qt/Qml Application qmobilempd. It uses the old c++ code and a new qml gui written especially for jolla.
 
