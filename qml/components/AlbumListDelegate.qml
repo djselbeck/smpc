@@ -33,11 +33,16 @@ Component {
                 }
             }
 
-
-            Label {
-                id: albumLabel
+            Column {
                 anchors.verticalCenter: parent.verticalCenter
-                text: (title === "" ? qsTr("no album tag") : title)
+                Label {
+                    id: albumLabel
+                    text: (title === "" ? qsTr("no album tag") : title)
+                }
+                Label {
+                    id: artistLabel
+                    text: (artist === "" ? qsTr("no artist tag") : artist)
+                }
             }
         }
         OpacityRampEffect {
@@ -48,17 +53,17 @@ Component {
 
         onClicked: {
             listView.currentIndex = index;
-            albumClicked(artistname, title);
-            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:title});
+            albumClicked(artist, title);
+            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artist,albumname:title});
         }
         function playAlbumRemorse() {
             remorseAction(qsTr("playing album"), function () {
-                playAlbum([artistname, title])
+                playAlbum([artist, title])
             }, 3000)
         }
         function addAlbumRemorse() {
             remorseAction(qsTr("adding album"), function () {
-                addAlbum([artistname, title])
+                addAlbum([artist, title])
             }, 3000)
         }
         Component {

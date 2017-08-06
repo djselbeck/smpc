@@ -9,6 +9,7 @@ class MpdAlbum : public QObject
     Q_PROPERTY(QString title READ getTitle NOTIFY changed )
     Q_PROPERTY(QString sectionprop READ getSection NOTIFY changed )
     Q_PROPERTY(QString mbid READ getMBID NOTIFY changed )
+    Q_PROPERTY(QString artist READ getArtist NOTIFY changed )
 public:
     explicit MpdAlbum(QObject *parent = 0);
     MpdAlbum(QObject *parent,QString mTitle,QString artist="", QString mbid="");

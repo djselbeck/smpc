@@ -119,7 +119,7 @@ void NetworkAccess::getAlbums()
          * Not fully implemented yet */
 
         if ( mServerInfo->getListGroupSupported() ) {
-            sendMPDCommand(QString("list album group MUSICBRAINZ_ALBUMID\n"));
+            sendMPDCommand(QString("list album group albumartist group MUSICBRAINZ_ALBUMID group date \n"));
         } else {
             sendMPDCommand(QString("list album\n"));
         }
@@ -129,6 +129,7 @@ void NetworkAccess::getAlbums()
         MpdAlbum *tempalbum;
         QString name;
         QString mbid;
+        QString albumartist;
         bool emptyAlbum = false;
         MPD_WHILE_PARSE_LOOP
         {
@@ -142,7 +143,7 @@ void NetworkAccess::getAlbums()
                 if ( response.startsWith("Album: ") ) {
                     // Append album if name is already set(last album)
                     if ( name != "" || emptyAlbum ) {
-                        tempalbum = new MpdAlbum(NULL,name,"",mbid);
+                        tempalbum = new MpdAlbum(NULL,name,albumartist,mbid);
 
                         /* This helps with qml Q_PROPERTY accesses */
                         tempalbum->moveToThread(mQMLThread);
@@ -155,14 +156,16 @@ void NetworkAccess::getAlbums()
                     if ( name == "" ) {
                         emptyAlbum = true;
                     }
-                }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID:") ) {
+                }  else if ( response.startsWith("MUSICBRAINZ_ALBUMID: ") ) {
                     mbid = response.right(response.length() - 21);
+                }  else if ( response.startsWith("AlbumArtist: ") ) {
+                    albumartist = response.right(response.length() - 13);
                 }
             }
         }
         /* Make sure the last album isn't missed because of loop structure */
         if ( name != "" || emptyAlbum ) {
-            tempalbum = new MpdAlbum(NULL,name,"",mbid);
+            tempalbum = new MpdAlbum(NULL,name,albumartist,mbid);
             /* See above */
             tempalbum->moveToThread(mQMLThread);
             /* Set ownership to CppOwnership to guarantee that the GC of qml never deletes this */
