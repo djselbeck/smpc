@@ -64,8 +64,8 @@ ListItem {
 
         onClicked: {
             albumGridView.currentIndex = index
-            albumClicked(artistname, title)
-            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:title});
+            albumClicked(artist, title)
+            pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artist,albumname:title});
         }
 
     }

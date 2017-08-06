@@ -190,7 +190,7 @@ BackgroundItem {
                             id: addButton
                             icon.source: "image://theme/icon-m-add"
                             onClicked: {
-                                addAlbum([artistname, title])
+                                addAlbum([artist, title])
                                 if ( flipped ) {
                                     rotateOut.running = true
                                     flipped = false
@@ -202,8 +202,8 @@ BackgroundItem {
                             id: moreButton
                             icon.source: "image://theme/icon-m-other"
                             onClicked: {
-                                albumClicked(artistname, title)
-                                pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artistname,albumname:title});
+                                albumClicked(artist, title)
+                                pageStack.push(Qt.resolvedUrl("../pages/database/AlbumTracksPage.qml"),{artistname:artist,albumname:title});
                                 if ( flipped ) {
                                     rotateOut.running = true
                                     flipped = false
@@ -276,7 +276,7 @@ BackgroundItem {
                             }
 
                             onClicked: {
-                                playAlbum([albumslistPage.artistname, album]);
+                                playAlbum([artist, album]);
                                 playPlaylistTrack(index);
                             }
                             function playTrackRemorse() {
@@ -335,7 +335,7 @@ BackgroundItem {
     onClicked: {
         // Only flip front cover
         if ( coverRotation == 0 ) {
-            albumClicked(artistname, title)
+            albumClicked(artist, title)
             if (!flipped) {
                 backsideLoader.active = true
                 flipped = true
