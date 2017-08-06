@@ -590,7 +590,7 @@ private:
     /**
      * @brief pServerInfo Holds information for the currently connected server. Like capabilities, version
      */
-    MpdServerInfo pServerInfo;
+    MPD_server_info_t pServerInfo;
 
     /**
      * @brief mLastSyncTime Time of last real status update. This is used to minimze time drift between
@@ -668,7 +668,7 @@ private:
      * mpd server.
      * @return Current playback state of the connected mpd server
      */
-    MpdPlaybackState getPlaybackState();
+    MPD_PLAYBACK_STATE getPlaybackState();
 
     /**
      * @brief getPlaybackID Queries the current playlist position.

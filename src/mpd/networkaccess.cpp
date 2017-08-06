@@ -579,7 +579,7 @@ void NetworkAccess::getStatus()
 void NetworkAccess::pause()
 {
     if (connected()) {
-        MpdPlaybackState playbackState = getPlaybackState();
+        MPD_PLAYBACK_STATE playbackState = getPlaybackState();
         if(playbackState != MPD_STOP) {
             sendMPDCommand("pause\n");
             QString response ="";
@@ -1883,9 +1883,9 @@ MPDPlaybackStatus *NetworkAccess::getMPDPlaybackStatus() {
     return mPlaybackStatus;
 }
 
-MpdPlaybackState NetworkAccess::getPlaybackState()
+MPD_PLAYBACK_STATE NetworkAccess::getPlaybackState()
 {
-    MpdPlaybackState playbackState = MPD_STOP;
+    MPD_PLAYBACK_STATE playbackState = MPD_STOP;
     if (connected()) {
         sendMPDCommand("status\n");
         QString response;

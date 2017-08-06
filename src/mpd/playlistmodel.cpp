@@ -206,7 +206,7 @@ void PlaylistModel::receiveNewTrackList(QList<MpdTrack *>* tracks)
     }
 }
 
-void PlaylistModel::onPlaybackStateChanged(MpdPlaybackState state)
+void PlaylistModel::onPlaybackStateChanged(MPD_PLAYBACK_STATE state)
 {
     mPlaybackState = state;
     if ( mPlaybackState == MPD_STOP ) {

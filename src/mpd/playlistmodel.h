@@ -49,7 +49,7 @@ private:
     QList<MpdTrack*>* mEntries;
     ImageDatabase *mDB;
 
-    MpdPlaybackState mPlaybackState;
+    MPD_PLAYBACK_STATE mPlaybackState;
     quint32 mTrackNo;
 
 signals:
@@ -59,7 +59,7 @@ public slots:
     void receiveNewTrackList(QList<MpdTrack*>* tracks);
 
     void onTrackNoChanged(quint32 trackNo);
-    void onPlaybackStateChanged(MpdPlaybackState state);
+    void onPlaybackStateChanged(MPD_PLAYBACK_STATE state);
 };
 
 #endif // PLAYLISTMODEL_H

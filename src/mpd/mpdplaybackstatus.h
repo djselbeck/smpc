@@ -102,7 +102,7 @@ signals:
     void artistChanged();
     void uriChanged();
 
-    void playbackStatusChanged(MpdPlaybackState state);
+    void playbackStatusChanged(MPD_PLAYBACK_STATE state);
     void repeatChanged();
     void shuffleChanged();
 
@@ -127,7 +127,7 @@ private:
     QString pAlbum;
     QString pArtist;
     QString pURI;
-    MpdPlaybackState pPlaybackStatus;
+    MPD_PLAYBACK_STATE pPlaybackStatus;
     bool pRepeat;
     bool pShuffle;
     quint32 pLength;

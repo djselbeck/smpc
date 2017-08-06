@@ -208,7 +208,7 @@ void Controller::connectSignals()
     qRegisterMetaType<QList<MpdArtist*>*>("QList<MpdArtist*>*");
     qRegisterMetaType<QList<MpdFileEntry*>*>("QList<MpdFileEntry*>*");
     qRegisterMetaType<QAbstractSocket::SocketState>("QAbstractSocket::SocketState");
-    qRegisterMetaType<MpdPlaybackState>("MpdPlaybackState");
+    qRegisterMetaType<MPD_PLAYBACK_STATE>("MpdPlaybackState");
 
 
     connect(item,SIGNAL(setHostname(QString)),this,SLOT(setHostname(QString)));
@@ -369,7 +369,7 @@ void Controller::connectSignals()
     /* new playlist model connects */
     connect(mNetAccess,SIGNAL(currentPlaylistReady(QList<MpdTrack*>*)),mPlaylist,SLOT(receiveNewTrackList(QList<MpdTrack*>*)));
     connect(mPlaybackStatus,SIGNAL(idChanged(quint32)),mPlaylist,SLOT(onTrackNoChanged(quint32)));
-    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged(MpdPlaybackState)),mPlaylist,SLOT(onPlaybackStateChanged(MpdPlaybackState)));
+    connect(mPlaybackStatus,SIGNAL(playbackStatusChanged(MPD_PLAYBACK_STATE)),mPlaylist,SLOT(onPlaybackStateChanged(MPD_PLAYBACK_STATE)));
 
     /* new saved tracks model connects */
     connect(mNetAccess,SIGNAL(trackListReady(QList<MpdTrack*>*)),mOtherTracks,SLOT(receiveNewTrackList(QList<MpdTrack*>*)));

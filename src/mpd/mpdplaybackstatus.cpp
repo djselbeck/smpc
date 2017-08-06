@@ -234,7 +234,7 @@ void MPDPlaybackStatus::setURI(QString uri)
 void MPDPlaybackStatus::setPlaybackStatus(quint8 playbackStatus)
 {
     if ( pPlaybackStatus != playbackStatus ) {
-        pPlaybackStatus = (MpdPlaybackState)playbackStatus;
+        pPlaybackStatus = (MPD_PLAYBACK_STATE)playbackStatus;
         if (pPlaybackStatus == MPD_STOP) {
             clearPlayback();
         }
