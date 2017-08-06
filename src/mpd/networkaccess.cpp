@@ -32,9 +32,7 @@ NetworkAccess::NetworkAccess(QObject *parent) :
     connect(mIdleCountdown,SIGNAL(timeout()),this,SLOT(goIdle()));
 
     /* Reset server capabilities */
-    pServerInfo.mpd_cmd_list_filter_criteria = false;
-    pServerInfo.mpd_cmd_list_group_capabilites = false;
-    pServerInfo.mpd_cmd_idle = false;
+    mServerInfo = nullptr;
 
     mTimeoutTimer = 0;
 }
@@ -120,7 +118,7 @@ void NetworkAccess::getAlbums()
          * This helps with albums that have the same name as others (e.g. "Greatest Hits").
          * Not fully implemented yet */
 
-        if ( pServerInfo.mpd_cmd_list_group_capabilites ) {
+        if ( mServerInfo->getListGroupSupported() ) {
             sendMPDCommand(QString("list album group MUSICBRAINZ_ALBUMID\n"));
         } else {
             sendMPDCommand(QString("list album\n"));
@@ -282,7 +280,7 @@ QList<MpdAlbum*> *NetworkAccess::getArtistsAlbums_prv(QString artist)
         //Start getting list from mpd
         //Send request
         artist = artist.replace('\"',"\\\"");
-        if ( pServerInfo.mpd_cmd_list_group_capabilites && pServerInfo.mpd_cmd_list_filter_criteria ) {
+        if ( mServerInfo->getListFilterSupported() && mServerInfo->getListGroupSupported() ) {
             sendMPDCommand(QString("list album artist \"")  + artist + "\"" + " group MUSICBRAINZ_ALBUMID\n");
         } else {
             sendMPDCommand(QString("list album \"") + artist + "\"\n");
@@ -1263,9 +1261,10 @@ void NetworkAccess::onServerDisconnected()
     }
 
     /* Reset server capabilities */
-    pServerInfo.mpd_cmd_list_filter_criteria = false;
-    pServerInfo.mpd_cmd_list_group_capabilites = false;
-    pServerInfo.mpd_cmd_idle = false;
+    if(mServerInfo != nullptr) {
+        delete(mServerInfo);
+        mServerInfo = nullptr;
+    }
 
     emit ready();
 }
@@ -1274,6 +1273,12 @@ void NetworkAccess::onServerConnected() {
     qDebug() << "Connected to mpd server";
 
     mIdling = false;
+
+    // Create new ServerInfo instance
+    if (mServerInfo != nullptr) {
+        delete(mServerInfo);
+    }
+    mServerInfo = new ServerInfo();
 
     if (connected()) {
         //Do host authentication
@@ -1291,13 +1296,11 @@ void NetworkAccess::onServerConnected() {
             QString versionString = response.remove("OK MPD ");
             QStringList versionParts = versionString.split(".");
             if ( versionParts.length() == 3 ) {
-                if ( pServerInfo.version.mpdMajor2 != versionParts[1].toUInt()) {
-                    qDebug() << "New server version, check capabilities";
-                    /* Version has changed, so recheck capabilities */
-                    pServerInfo.version.mpdMajor1 = versionParts[0].toUInt();
-                    pServerInfo.version.mpdMajor2 = versionParts[1].toUInt();
-                    pServerInfo.version.mpdMinor = versionParts[2].toUInt();
-                }
+                MPD_version_t version;
+                version.mpdMajor1 = versionParts[0].toUInt();
+                version.mpdMajor2 = versionParts[1].toUInt();
+                version.mpdMinor = versionParts[2].toUInt();
+                mServerInfo->setVersion(version);
             }
         }
 
@@ -1845,20 +1848,25 @@ QMap<MpdArtist*, QList<MpdAlbum*>* > *NetworkAccess::getArtistsAlbumsMap_prv()
 
 
 void NetworkAccess::checkServerCapabilities() {
+    MPD_version_t *version = mServerInfo->getVersion();
     /* Check server version */
-    if ( pServerInfo.version.mpdMajor2 >= 19 ) {
+    if ( (version->mpdMajor2 >= 19 && version->mpdMajor1 == 0) || (version->mpdMajor1 > 0) ) {
         /* Enable new list command features */
         /* Disabled until database support is finished as well */
-        pServerInfo.mpd_cmd_list_filter_criteria = false;//true;
-        pServerInfo.mpd_cmd_list_group_capabilites = false;//true;
+        mServerInfo->setListGroupSupported(true);
+        mServerInfo->setListFilterSupported(true);
+
+        // FIXME check with tags command
+        mServerInfo->setMBIDTagsSupported(true);
         qDebug() << "Enable new list features of version 0.19";
     } else {
-        pServerInfo.mpd_cmd_list_filter_criteria = false;
-        pServerInfo.mpd_cmd_list_group_capabilites = false;
+        mServerInfo->setListGroupSupported(false);
+        mServerInfo->setListFilterSupported(false);
     }
 
     /*
-     * Get allowed commands */
+     * Get allowed commands
+     */
     if (connected()) {
         sendMPDCommand("commands\n");
         QString response ="";
@@ -1872,7 +1880,7 @@ void NetworkAccess::checkServerCapabilities() {
                 response = response.right(response.length()-9);
                 qDebug() << response;
                 if ( response == "idle") {
-                    pServerInfo.mpd_cmd_idle = true;
+                    mServerInfo->setIdleSupported(true);
                 }
             }
         }
@@ -1981,7 +1989,7 @@ void NetworkAccess::interpolateStatus()
     } else {
         qDebug() << "Not idling, polling status";
         getStatus();
-        if ( !mIdleCountdown->isActive() && connected() && pServerInfo.mpd_cmd_idle ) {
+        if ( !mIdleCountdown->isActive() && connected() && mServerInfo->getIdleSupported()) {
             qDebug() << "Idle counter is starting";
             mIdleCountdown->start();
         }

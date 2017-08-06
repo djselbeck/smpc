@@ -12,6 +12,8 @@
 #include <mpd/mpdplaybackstatus.h>
 #include <mpd/mpdcommon.h>
 
+#include <mpd/serverinfo.h>
+
 #include <common.h>
 
 // Timeout value for network communication
@@ -590,7 +592,7 @@ private:
     /**
      * @brief pServerInfo Holds information for the currently connected server. Like capabilities, version
      */
-    MPD_server_info_t pServerInfo;
+    ServerInfo *mServerInfo;
 
     /**
      * @brief mLastSyncTime Time of last real status update. This is used to minimze time drift between
